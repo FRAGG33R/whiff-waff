@@ -17,5 +17,6 @@ model User {
   lastName  String
   avatar  String
   email String  @unique
-  password  String
+  passwordHash  String
+  passwordSalt  String
 }

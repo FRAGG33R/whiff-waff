@@ -93,21 +93,6 @@ model Friendship {
     @@id([senderId, receivedId])
 }
 
-enum Type {
-    FRIENDSHIP
-    GAME
-    ACHIEVEMENT
-    MESSAGE
-}
-
-enum Status {
-    PENDING
-    ACCEPTED
-    REFUSED
-    BLOCKED
-    EXPIRED
-}
-
 
 model Message {
   id         String @id @default(uuid())
@@ -194,3 +179,19 @@ enum ChatRoomType {
     PUBLIC
     PROTECTED
 }
+
+enum Type {
+    FRIENDSHIP
+    GAME
+    ACHIEVEMENT
+    MESSAGE
+}
+
+enum Status {
+    PENDING
+    ACCEPTED
+    REFUSED
+    BLOCKED
+    EXPIRED
+}
+

@@ -23,18 +23,21 @@ model User {
   onRight      Play[]    @relation("right")
   sender       Chat[]    @relation("sender")
   receiver     Chat[]    @relation("receiver")
+  senderM      Message[] @relation("sender")
+  receiverM    Message[] @relation("receiver")
   role         HasRole?
-  messages     Message[]
   chatrooms    Join[]
 
   @@map("user")
 }
 
 model Chat {
-  sender     User   @relation("sender", fields: [senderId], references: [id])
-  receiver   User   @relation("receiver", fields: [receiverId], references: [id])
+  sender     User      @relation("sender", fields: [senderId], references: [id])
+  receiver   User      @relation("receiver", fields: [receiverId], references: [id])
   senderId   String
   receiverId String
+  message    Message[]
+  messageId  String
 
   @@id([senderId, receiverId])
 }
@@ -42,9 +45,12 @@ model Chat {
 model Message {
   id         String @id @default(uuid())
   message    String
-  sender     User   @relation(fields: [senderId], references: [id])
+  chat       Chat   @relation(fields: [senderId, receiverId], references: [senderId, receiverId])
+  sender     User?  @relation("sender", fields: [senderId], references: [id])
   senderId   String
-  roomSender Join   @relation(fields: [roomChatId, senderId], references: [roomChatId, userId])
+  receiver   User?  @relation("receiver", fields: [receiverId], references: [id])
+  receiverId String
+  roomSender Join?  @relation(fields: [roomChatId, senderId], references: [roomChatId, userId])
   roomChatId String
 }
 
@@ -81,21 +87,22 @@ model Play {
   gameMode    Mode
   gameMap     Map
   gameHistory GameHistory[]
-  playerOne   User         @relation("left", fields: [leftUserId], references: [id])
+  playerOne   User          @relation("left", fields: [leftUserId], references: [id])
   rightUserId String
-  playerTwo   User         @relation("right", fields: [rightUserId], references: [id])
+  playerTwo   User          @relation("right", fields: [rightUserId], references: [id])
   leftUserId  String
 
   @@id([leftUserId, rightUserId])
 }
 
 model GameHistory {
-  id  String  @id @default(uuid())
-  game        Play   @relation(fields: [leftUserId, RightUserId], references: [leftUserId, rightUserId])
-  leftUserId  String 
+  id          String  @id @default(uuid())
+  game        Play    @relation(fields: [leftUserId, RightUserId], references: [leftUserId, rightUserId])
+  leftUserId  String
   RightUserId String
   scoreLeft   Int
   scoreRight  Int
+  accepted    Boolean
 }
 
 enum Mode {

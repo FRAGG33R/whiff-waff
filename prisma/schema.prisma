@@ -2,90 +2,188 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id                   String         @unique @default(uuid())
-  nickName             String         @unique @map("nick_name")
-  firstName            String         @map("first_name")
-  lastName             String
-  avatar               String
-  email                String         @unique
-  passwordHash         String         @map("password_hash")
-  passwordSalt         String         @map("password_salt")
-  stat                 Stats?
-  sendedNotification   Notification[] @relation("sendNotfication")
-  receivedNotification Notification[] @relation("receiveNotification")
-  senderFriendship     Friendship[]   @relation("sendFriendship")
-  receiverFriendship   Friendship[]   @relation("receiveFriendship")
+    id                   String         @unique @default(uuid())
+    nickName             String         @unique @map("nick_name")
+    firstName            String         @map("first_name")
+    lastName             String
+    avatar               String
+    email                String         @unique
+    passwordHash         String         @map("password_hash")
+    passwordSalt         String         @map("password_salt")
+    stat                 Stats?
+    sendedNotification   Notification[] @relation("sendNotfication")
+    receivedNotification Notification[] @relation("receiveNotification")
+    senderFriendship     Friendship[]   @relation("sendFriendship")
+    receiverFriendship   Friendship[]   @relation("receiveFriendship")
+    oneLeft              Play[]         @relation("left")
+    onRight              Play[]         @relation("right")
+    sender               Chat[]         @relation("sender")
+    receiver             Chat[]         @relation("receiver")
+    role                 HasRole?
+    messages             Message[]
+    chatrooms            Join[]
 
-  @@map("user")
+    @@map("user")
 }
 
 model Stats {
-  id                       String                     @unique @default(uuid())
-  wins                     Int
-  loses                    Int
-  level                    Float
-  rank                     String
-  userId                   String                     @unique
-  user                     User                       @relation(fields: [userId], references: [id])
-  statsIncludesAchievement StatsIncludesAchievement[]
+    id                       String                     @unique @default(uuid())
+    wins                     Int
+    loses                    Int
+    level                    Float
+    rank                     String
+    userId                   String                     @unique
+    user                     User                       @relation(fields: [userId], references: [id])
+    statsIncludesAchievement StatsIncludesAchievement[]
 }
 
 model Achievement {
-  id                       String                     @id @default(uuid())
-  name                     String
-  description              String
-  level                    String
-  statsIncludesAchievement StatsIncludesAchievement[]
+    id                       String                     @id @default(uuid())
+    name                     String
+    description              String
+    level                    String
+    statsIncludesAchievement StatsIncludesAchievement[]
 }
 
 model StatsIncludesAchievement {
-  Stat          Stats       @relation(fields: [statsId], references: [id])
-  statsId       String      @map("stats_id")
-  achievement   Achievement @relation(fields: [achievementId], references: [id])
-  achievementId String      @map("achievement_id")
+    Stat          Stats       @relation(fields: [statsId], references: [id])
+    statsId       String      @map("stats_id")
+    achievement   Achievement @relation(fields: [achievementId], references: [id])
+    achievementId String      @map("achievement_id")
 
-  @@id([statsId, achievementId])
+    @@id([statsId, achievementId])
 }
 
 model Notification {
-  id         String @id @default(uuid())
-  type       Type
-  senderId   String @map("sender_id")
-  sender     User   @relation("sendNotfication", fields: [senderId], references: [id])
-  receiverId String @map("receiver_id")
-  receiver   User   @relation("receiveNotification", fields: [receiverId], references: [id])
+    id         String @id @default(uuid())
+    type       Type
+    senderId   String @map("sender_id")
+    sender     User   @relation("sendNotfication", fields: [senderId], references: [id])
+    receiverId String @map("receiver_id")
+    receiver   User   @relation("receiveNotification", fields: [receiverId], references: [id])
 }
 
 model Friendship {
-  receiver   User   @relation("receiveFriendship", fields: [receivedId], references: [id])
-  receivedId String @map("received_id")
-  senderId   String @map("sender_id")
-  sender     User   @relation("sendFriendship", fields: [senderId], references: [id])
-  status     Status
+    receiver   User   @relation("receiveFriendship", fields: [receivedId], references: [id])
+    receivedId String @map("received_id")
+    senderId   String @map("sender_id")
+    sender     User   @relation("sendFriendship", fields: [senderId], references: [id])
+    status     Status
 
-  @@id([senderId, receivedId])
+    @@id([senderId, receivedId])
 }
 
 enum Type {
-  FRIENDSHIP
-  GAME
-  ACHIEVEMENT
-  MESSAGE
+    FRIENDSHIP
+    GAME
+    ACHIEVEMENT
+    MESSAGE
 }
 
 enum Status {
-  PENDING
-  ACCEPTED
-  REFUSED
-  BLOCKED
-  EXPIRED
+    PENDING
+    ACCEPTED
+    REFUSED
+    BLOCKED
+    EXPIRED
+}
+
+model Chat {
+    sender     User   @relation("sender", fields: [senderId], references: [id])
+    receiver   User   @relation("receiver", fields: [receiverId], references: [id])
+    senderId   String
+    receiverId String
+
+    @@id([senderId, receiverId])
+}
+
+model Message {
+    id         String @id @default(uuid())
+    message    String
+    sender     User   @relation(fields: [senderId], references: [id])
+    senderId   String
+    roomSender Join   @relation(fields: [roomChatId, senderId], references: [roomChatId, userId])
+    roomChatId String
+}
+
+model RoomChat {
+    id           String       @id @default(uuid())
+    type         ChatRoomType
+    passwordHash String
+    passwordSalt String
+    joins        Join[]
+    role         HasRole?
+}
+
+model HasRole {
+    roomChat   RoomChat @relation(fields: [roomChatId], references: [id])
+    user       User     @relation(fields: [userId], references: [id])
+    role       Role
+    roomChatId String   @unique
+    userId     String   @unique
+
+    @@id([roomChatId, userId])
+}
+
+model Join {
+    roomChat   RoomChat  @relation(fields: [roomChatId], references: [id])
+    user       User      @relation(fields: [userId], references: [id])
+    roomChatId String
+    userId     String
+    messages   Message[]
+
+    @@id([roomChatId, userId])
+}
+
+model Play {
+    gameMode    Mode
+    gameMap     Map
+    gameHistory GameHistory[]
+    playerOne   User          @relation("left", fields: [leftUserId], references: [id])
+    rightUserId String
+    playerTwo   User          @relation("right", fields: [rightUserId], references: [id])
+    leftUserId  String
+
+    @@id([leftUserId, rightUserId])
+}
+
+model GameHistory {
+    id          String @id @default(uuid())
+    game        Play   @relation(fields: [leftUserId, RightUserId], references: [leftUserId, rightUserId])
+    leftUserId  String
+    RightUserId String
+    scoreLeft   Int
+    scoreRight  Int
+}
+
+enum Mode {
+    CHALLENGE
+    TIME
+}
+
+enum Map {
+    BASIC
+    INTERMEDIATE
+    ADVANCED
+}
+
+enum Role {
+    ADMIN
+    BANNED
+    MUTED
+}
+
+enum ChatRoomType {
+    PRIVATE
+    PUBLIC
+    PROTECTED
 }

@@ -11,12 +11,81 @@ datasource db {
 }
 
 model User {
-  id  String  @default(uuid()) @unique
-  nickName  String  @unique
-  firstName String
-  lastName  String
-  avatar  String
-  email String  @unique
-  passwordHash  String
-  passwordSalt  String
+  id                   String         @unique @default(uuid())
+  nickName             String         @unique @map("nick_name")
+  firstName            String         @map("first_name")
+  lastName             String
+  avatar               String
+  email                String         @unique
+  passwordHash         String         @map("password_hash")
+  passwordSalt         String         @map("password_salt")
+  stat                 Stats?
+  sendedNotification   Notification[] @relation("sendNotfication")
+  receivedNotification Notification[] @relation("receiveNotification")
+  senderFriendship     Friendship[]   @relation("sendFriendship")
+  receiverFriendship   Friendship[]   @relation("receiveFriendship")
+
+  @@map("user")
+}
+
+model Stats {
+  id                       String                     @unique @default(uuid())
+  wins                     Int
+  loses                    Int
+  level                    Float
+  rank                     String
+  userId                   String                     @unique
+  user                     User                       @relation(fields: [userId], references: [id])
+  statsIncludesAchievement StatsIncludesAchievement[]
+}
+
+model Achievement {
+  id                       String                     @id @default(uuid())
+  name                     String
+  description              String
+  level                    String
+  statsIncludesAchievement StatsIncludesAchievement[]
+}
+
+model StatsIncludesAchievement {
+  Stat          Stats       @relation(fields: [statsId], references: [id])
+  statsId       String      @map("stats_id")
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  achievementId String      @map("achievement_id")
+
+  @@id([statsId, achievementId])
+}
+
+model Notification {
+  id         String @id @default(uuid())
+  type       Type
+  senderId   String @map("sender_id")
+  sender     User   @relation("sendNotfication", fields: [senderId], references: [id])
+  receiverId String @map("receiver_id")
+  receiver   User   @relation("receiveNotification", fields: [receiverId], references: [id])
+}
+
+model Friendship {
+  receiver   User   @relation("receiveFriendship", fields: [receivedId], references: [id])
+  receivedId String @map("received_id")
+  senderId   String @map("sender_id")
+  sender     User   @relation("sendFriendship", fields: [senderId], references: [id])
+  status     Status
+
+  @@id([senderId, receivedId])
+}
+
+enum Type {
+  FRIENDSHIP
+  GAME
+  ACHIEVEMENT
+  MESSAGE
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
+  REFUSED
+  BLOCKED
+  EXPIRED
 }

@@ -15,7 +15,9 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="flex flex-col items-center justify-center min-h-screen">
       <ThemeProvider>
-        <ToggleSwitch />
+        <ToggleSwitch
+        firstValue='SignIn'
+        secondValue='SignUp' />
       </ThemeProvider>
     </div>
     

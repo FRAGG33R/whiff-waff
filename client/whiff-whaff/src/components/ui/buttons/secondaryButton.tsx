@@ -15,3 +15,4 @@ const secondaryButton: React.FC<ButtonProps> = ({text, onClick}) => {
 }
 
 export default secondaryButton
+

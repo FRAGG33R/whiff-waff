@@ -1,19 +1,62 @@
-import React, { useState } from 'react';
-import {Switch} from '@material-tailwind/react';
+import React, { useState , useEffect} from 'react';
+import {
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  TabPanel,
+} from "@material-tailwind/react";
+import { on } from 'events';
 
-const ToggleSwitch: React.FC = () => {
-  const [checked, setChecked] = useState(false);
 
-  const handleChange = () => {
-    setChecked(!checked);
-  };
+type ButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
+  firstValue: string;
+  secondValue: string;
+}
+const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue}) => {
+  const [activeTab, setActiveTab] = useState(firstValue);
+
+  const data = [
+    {
+      label: firstValue,
+      value: firstValue,
+    },
+    {
+      label: secondValue,
+      value: secondValue,
+    },
+   
+  ];
+
+  useEffect(() => {
+      if (activeTab === firstValue) {
+        console.log('first value');
+      }else if (activeTab === secondValue) {
+        console.log('second value');
+      }
+  }, [activeTab]);
 
   return (
-    <div className="flex items-center ">
-    <Switch checked={checked} onChange={handleChange} className={!checked ? 'bg-black' : 'bg-GreenishYellow'} color='yellow'>
-    
-    </Switch>
-  </div>
+    <Tabs value={activeTab}  >
+      <TabsHeader
+        className="rounded-full bg-black bg-opacity-100 font-teko w-32 md:w-32 lg:w-36 h-8 md:h-10 lg:h-12  "
+        indicatorProps={{
+          className: "bg-GreenishYellow  shadow-none rounded-full font-teko text-Ceramic",
+        }}
+      >
+        {data.map(({ label, value }) => (
+          <Tab
+            key={value}
+            value={value}
+            onClick={() => setActiveTab(value)}
+            className={activeTab === value ? "text-DarkBg font-teko " : "font-teko text-Ceramic"}
+          >
+            {label}
+          </Tab>
+        ))}
+      </TabsHeader>
+    </Tabs>
+  
   );
 };
 

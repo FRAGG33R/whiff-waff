@@ -1,31 +1,20 @@
-import { Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import {
-  MeshReflectorMaterial,
-  OrbitControls,
-  PerspectiveCamera,
-} from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
-import {
-  BoxGeometry,
-  LinearEncoding,
-  MeshBasicMaterial,
-  RepeatWrapping,
-  SphereGeometry,
-} from "three";
+import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
-import { TextureLoader } from "three/src/loaders/TextureLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Mesh } from "three";
-import { AccumulativeShadows, RandomizedLight } from "@react-three/drei";
 
 const RoomModel = () => {
   const gltf = useLoader(GLTFLoader, "Model/Room3d.gltf");
+
   useEffect(() => {
     gltf.scene.scale.set(0.3, 0.3, 0.3);
     gltf.scene.position.set(0, 0, 0);
     gltf.scene.traverse((child) => {
+      if (child.name.includes("lamp")) {
+        console.log(child.position);
+      }
       if (child instanceof Mesh) {
         child.castShadow = true;
         child.receiveShadow = true;
@@ -48,8 +37,13 @@ export default function Room() {
         <color attach="background" args={["#E4E5E7"]} />
         <OrbitControls target={[0, 0.35, 0]} maxPolarAngle={1.45} />
         <ambientLight intensity={0.31} />
-        <spotLight position={[1, 7, -11]} angle={0.15} penumbra={1.2} />
-        <pointLight position={[-10, -10, -10]} />
+        <spotLight
+          position={[2, 13, 5]}
+          angle={0.10}
+          penumbra={1.2}
+          color="#FFFFB9"
+        />
+        <pointLight position={[-10, -10, -10]}/>
         <spotLight
           castShadow
           color={"#8B8B8B"}
@@ -59,6 +53,13 @@ export default function Room() {
           penumbra={1}
           shadow-normalBias={0.05}
           shadow-bias={0.0001}
+        />
+        <spotLight
+          angle={0.0009}
+          position={[224.5967712402344, -524.24398803710938, 274.5648803710938,]}
+          color={"yellow"}
+          intensity={2}
+          penumbra={0.4}
         />
         <RoomModel />
       </Canvas>

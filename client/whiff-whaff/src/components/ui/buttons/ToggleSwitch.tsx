@@ -32,9 +32,9 @@ const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunc
 
   useEffect(() => {
       if (activeTab === firstValue) {
-        //firstFunction();
+        firstFunction();
       }else if (activeTab === secondValue) {
-        //secondFunction();
+        secondFunction();
       }
   }, [activeTab]);
 

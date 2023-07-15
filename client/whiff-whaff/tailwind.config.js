@@ -23,6 +23,7 @@ module.exports = withMT({
         'RhinoBlue': '#23336C',
         'NightBlack': '#1B2436',
         'Ceramic': '#FFFFFF',
+        'CarbonGrey': '#606060',
       },
     },
   },

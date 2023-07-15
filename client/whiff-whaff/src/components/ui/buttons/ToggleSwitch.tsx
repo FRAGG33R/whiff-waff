@@ -12,8 +12,10 @@ import { on } from 'events';
 type ButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
   firstValue: string;
   secondValue: string;
+  firstFunction: () => void;
+  secondFunction: () => void;
 }
-const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue}) => {
+const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunction, secondFunction}) => {
   const [activeTab, setActiveTab] = useState(firstValue);
 
   const data = [
@@ -30,9 +32,9 @@ const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue}) => {
 
   useEffect(() => {
       if (activeTab === firstValue) {
-        console.log('first value');
+        //firstFunction();
       }else if (activeTab === secondValue) {
-        console.log('second value');
+        //secondFunction();
       }
   }, [activeTab]);
 

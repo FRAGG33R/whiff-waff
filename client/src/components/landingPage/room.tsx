@@ -15,7 +15,7 @@ const RoomModel = (props: { deltaY: number }) => {
 
   useEffect(() => {
     gltf.scene.scale.set(0.3, 0.3, 0.3);
-    gltf.scene.position.set(0, 0, 0);
+    gltf.scene.position.set(0, -0.8, 0.11);
     gltf.scene.traverse((child) => {
       if (child instanceof Mesh) {
         child.castShadow = true;
@@ -45,9 +45,10 @@ export default function Room() {
     setRotation((prevRotation) => prevRotation + rotationDelta);
   };
   useEffect(() => {
+    console.log("r ->", rotation);
+
     console.log(rotation < 0 ? 0 : rotation * 3.66);
-	console.log(36 + (rotation < 0 ? rotation / 2 : rotation));
-	
+    // console.log(36 + (rotation < 0 ? rotation / 2 : rotation));
   }, [rotation]);
 
   useEffect(() => {
@@ -65,8 +66,12 @@ export default function Room() {
       <Canvas style={{ width: "100%", height: "100%" }} shadows>
         <PerspectiveCamera
           makeDefault
-          position={[-10.9, 4, rotation < 0 ? 0 : rotation * 3.66]}
-          fov={36 + (rotation < 0 ? rotation / 2 : rotation)}
+          position={[
+            -10.9,
+            rotation < 0 ? 0.1 : rotation + 0.88,
+            rotation < 0 ? 0 : rotation * 3.66666,
+          ]}
+          fov={36 + (rotation < -0.2 ? rotation / 2 : rotation)}
         />
         <color attach="background" args={["#E4E5E7"]} />
         <OrbitControls

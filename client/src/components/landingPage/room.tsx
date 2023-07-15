@@ -12,9 +12,6 @@ const RoomModel = () => {
     gltf.scene.scale.set(0.3, 0.3, 0.3);
     gltf.scene.position.set(0, 0, 0);
     gltf.scene.traverse((child) => {
-      if (child.name.includes("lamp")) {
-        console.log(child.position);
-      }
       if (child instanceof Mesh) {
         child.castShadow = true;
         child.receiveShadow = true;
@@ -33,17 +30,23 @@ export default function Room() {
   return (
     <div className="flex w-full h-full items-center justify-center">
       <Canvas style={{ width: "100%", height: "100%" }} shadows>
-        <PerspectiveCamera makeDefault position={[-8.8, 2, 8]} fov={50} />
+        <PerspectiveCamera makeDefault position={[-9.9, 4, 11]} fov={40} />
         <color attach="background" args={["#E4E5E7"]} />
-        <OrbitControls target={[0, 0.35, 0]} maxPolarAngle={1.45} />
-        <ambientLight intensity={0.31} />
+        <OrbitControls
+          target={[0, 0.35, 0]}
+          minAzimuthAngle={-Math.PI / 2}
+          maxAzimuthAngle={Math.PI / 24}
+          minPolarAngle={Math.PI / 6}
+          maxPolarAngle={Math.PI  / 2}
+        />
+        <spotLight intensity={0.45} position={[-20, 20, 20]} penumbra={0.2} />
         <spotLight
           position={[2, 13, 5]}
-          angle={0.10}
+          angle={0.1}
           penumbra={1.2}
           color="#FFFFB9"
         />
-        <pointLight position={[-10, -10, -10]}/>
+        <pointLight position={[-10, -10, -10]} intensity={0.35} />
         <spotLight
           castShadow
           color={"#8B8B8B"}
@@ -56,7 +59,7 @@ export default function Room() {
         />
         <spotLight
           angle={0.0009}
-          position={[224.5967712402344, -524.24398803710938, 274.5648803710938,]}
+          position={[224.5967712402344, -594.24398803710938, 244.5648803710938]}
           color={"yellow"}
           intensity={2}
           penumbra={0.4}

@@ -1,9 +1,10 @@
 import "../app/globals.css";
+import Room from "@/components/landingPage/room";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      Home page
-    </div>
+    <main className="flex md:min-h-screen h-screen items-start justify-center overflow-x-hidden">
+		<Room />
+    </main>
   );
 }

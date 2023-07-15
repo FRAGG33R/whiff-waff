@@ -41,19 +41,21 @@ export default function Room() {
     setDeltaY(e.deltaY);
 
     const rotateSpeed = 0.5;
-    const rotationDelta = e.deltaY * rotateSpeed * 0.001;
+    const rotationDelta = e.deltaY * rotateSpeed * 0.002;
+	console.log('rotationDelta', rotationDelta);
     setRotation((prevRotation) => prevRotation + rotationDelta);
   };
   useEffect(() => {
-    console.log("r ->", rotation);
+    console.log("rotation  ->", rotation);
 
-    console.log(rotation < 0 ? 0 : rotation * 3.66);
-    // console.log(36 + (rotation < 0 ? rotation / 2 : rotation));
+    console.log('result', (rotation < 0 ? 0 : (rotation * 3.66666).toFixed(2)));
   }, [rotation]);
 
   useEffect(() => {
+	// @ts-ignore
     containerRef.current?.addEventListener("wheel", handleWheel);
     return () => {
+	// @ts-ignore
       containerRef.current?.removeEventListener("wheel", handleWheel);
     };
   }, []);
@@ -68,10 +70,10 @@ export default function Room() {
           makeDefault
           position={[
             -10.9,
-            rotation < 0 ? 0.1 : rotation + 0.88,
-            rotation < 0 ? 0 : rotation * 3.66666,
+            rotation < 0 ? 0 : rotation + 0.88,
+            (rotation < 0 ? 0 : (rotation * 3.66).toFixed(8)) as number,
           ]}
-          fov={36 + (rotation < -0.2 ? rotation / 2 : rotation)}
+          fov={36 + rotation}
         />
         <color attach="background" args={["#E4E5E7"]} />
         <OrbitControls
@@ -84,7 +86,7 @@ export default function Room() {
           rotateSpeed={0.5}
         />
 
-        <spotLight intensity={0.45} position={[-20, 20, 20]} penumbra={0.2} />
+        <spotLight intensity={0.52} position={[-20, 20, 20]} penumbra={0.2} />
         <spotLight
           position={[2, 13, 5]}
           angle={0.1}

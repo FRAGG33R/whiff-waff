@@ -8,6 +8,7 @@ import { useRef, useState, WheelEvent } from "react";
 import { motion } from "framer-motion";
 import { useFrame } from "@react-three/fiber";
 import { useThree } from "@react-three/fiber";
+import { TextureLoader } from "three";
 
 const RoomModel = (props: { rotation: number, setRotation : (rt : number) => void }) => {
   const gltf = useLoader(GLTFLoader, "Model/Room3d.gltf");
@@ -24,7 +25,6 @@ const RoomModel = (props: { rotation: number, setRotation : (rt : number) => voi
     );
   });
   useEffect(() => {
-	console.log(rotation);
 	if (rotation < -11)
 		props.setRotation(-11.1);
     cameraPosition.current = [
@@ -45,6 +45,12 @@ const RoomModel = (props: { rotation: number, setRotation : (rt : number) => voi
         if (childMaterial.envMapIntensity !== undefined) {
           childMaterial.envMapIntensity = 20;
         }
+		if (child.name.includes("Cube007"))
+		{
+			const cubeTexture = new TextureLoader().load('signin.png');
+			childMaterial.map = cubeTexture;
+			childMaterial.needsUpdate = true;
+		}
       }
     });
   }, [gltf]);
@@ -134,8 +140,8 @@ export default function Room() {
           shadow-bias={0.0001}
         />
         <spotLight
-          angle={0.0009}
-          position={[224.5967712402344, -594.24398803710938, 244.5648803710938]}
+          angle={0.0014}
+          position={[224.5967712402344, -1304.24398803710938, 224.5648803710938]}
           color={"yellow"}
           intensity={2}
           penumbra={0.4}

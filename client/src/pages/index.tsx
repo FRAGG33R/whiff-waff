@@ -3,7 +3,7 @@ import Room from "@/components/landingPage/room";
 
 export default function Home() {
   return (
-    <main className="flex md:min-h-screen h-screen items-start justify-center overflow-x-hidden bg-black">
+    <main className="flex md:min-h-screen h-screen items-start justify-center overflow-x-hidden bg-black overflow-y-hidden">
 		<Room />
     </main>
   );

@@ -10,7 +10,7 @@ import { useFrame } from "@react-three/fiber";
 import { useThree } from "@react-three/fiber";
 import { TextureLoader } from "three";
 import * as THREE from "three";
-import { useScroll } from "framer-motion";
+import { useRouter } from "next/router";
 
 const RoomModel = (props: {
   rotation: number;
@@ -65,6 +65,7 @@ export default function Room() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [rotation, setRotation] = useState(3);
   const wheelDeltaBuffer = useRef<number[]>([]);
+  const router = useRouter();
 
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -83,6 +84,10 @@ export default function Room() {
     });
   };
 
+  useEffect(()=> {
+	rotation.toFixed(0) === '-11' ? router.push('/login') : null
+	
+  } , [rotation])
   useEffect(() => {
     // @ts-ignore
     containerRef.current?.addEventListener("wheel", handleWheel);

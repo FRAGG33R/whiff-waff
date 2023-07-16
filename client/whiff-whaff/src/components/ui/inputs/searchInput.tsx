@@ -5,7 +5,7 @@ import { useState, ChangeEvent } from 'react';
 
 const searchInput: React.FC = () => {
 
-    const [value, setValue] = React.useState('Enter your search here');
+    const [value, setValue] = React.useState('Search for everything...');
     const searchHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const {target} = e;
         setValue(target.value);

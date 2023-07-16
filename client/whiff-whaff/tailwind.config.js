@@ -24,6 +24,7 @@ module.exports = withMT({
         'NightBlack': '#1B2436',
         'Ceramic': '#FFFFFF',
         'CarbonGrey': '#606060',
+        'PastelGrey': '#CDCBCB',
       },
     },
   },

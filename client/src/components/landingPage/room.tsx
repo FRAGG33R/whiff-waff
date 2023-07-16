@@ -17,7 +17,7 @@ const RoomModel = (props: {
   setRotation: (rt: number) => void;
 }) => {
   const gltf = useLoader(GLTFLoader, "Model/Room3d.gltf");
-  const texture = useLoader(TextureLoader, "Model/Frame.png");
+
   const { rotation } = props;
   const { camera } = useThree();
   const cameraPosition = useRef([-10.9, 0.88, 11]);
@@ -52,12 +52,11 @@ const RoomModel = (props: {
           childMaterial.envMapIntensity = 20;
         }
         if (child.name.includes("Cube007")) {
-          child.material.map = texture;
-          child.material.needsUpdate = true;
+
         }
       }
     });
-  }, [gltf, texture]);
+  }, [gltf]);
 
   return <primitive object={gltf.scene} />;
 };

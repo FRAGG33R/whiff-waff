@@ -12,7 +12,7 @@ datasource db {
 
 model User {
   id                   String            @id @default(uuid())
-  nickName             String            @unique @map("nick_name")
+  userName             String            @unique @map("user_name")
   firstName            String            @map("first_name")
   lastName             String            @map("last_name")
   avatar               String
@@ -20,6 +20,7 @@ model User {
   passwordHash         String            @map("password_hash")
   passwordSalt         String            @map("password_salt")
   twoFactorAuth        Boolean           @map("two_factor_auth")
+  status               StatusPlayer
   stat                 Stats?
   sentNotification     Notification[]    @relation("sendNotfication")
   receivedNotification Notification[]    @relation("receiveNotification")
@@ -112,7 +113,7 @@ model GameHistory {
 }
 
 model Stats {
-  id     String @unique @default(uuid())
+  id     String @id @default(uuid())
   wins   Int
   loses  Int
   level  Float
@@ -233,4 +234,12 @@ enum Rank {
   LEGEND
 
   @@map("rank")
+}
+
+enum StatusPlayer {
+  ONLINE
+  OFFLINE
+  IN_GAME
+
+  @@map("status_player")
 }

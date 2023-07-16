@@ -16,6 +16,7 @@ const RoomModel = (props: { rotation: number, setRotation : (rt : number) => voi
   const cameraPosition = useRef([-10.9, 0.88, 11]);
 
   useFrame(() => {
+	if (rotation !== 3)
     camera.position.set(
       cameraPosition.current[0],
       cameraPosition.current[1],
@@ -23,6 +24,7 @@ const RoomModel = (props: { rotation: number, setRotation : (rt : number) => voi
     );
   });
   useEffect(() => {
+	console.log(rotation);
 	if (rotation < -11)
 		props.setRotation(-11.1);
     cameraPosition.current = [
@@ -104,12 +106,12 @@ export default function Room() {
           minZoom={0}
           maxZoom={0}
           enableZoom
-		  enableRotate={false}
+		  enableRotate={rotation === 3 ? true : false}
           target={[0, 0.35, 0]}
-        //   minAzimuthAngle={-Math.PI / 2}
-        //   maxAzimuthAngle={Math.PI / 24}
-        //   minPolarAngle={Math.PI / 6}
-        //   maxPolarAngle={Math.PI / 2}
+          minAzimuthAngle={-Math.PI / 2}
+          maxAzimuthAngle={Math.PI / 24}
+          minPolarAngle={Math.PI / 6}
+          maxPolarAngle={Math.PI / 2}
           rotateSpeed={0.5}
         />
 

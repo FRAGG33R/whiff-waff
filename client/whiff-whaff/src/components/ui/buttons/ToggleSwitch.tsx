@@ -6,8 +6,6 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
-import { on } from 'events';
-
 
 type ButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
   firstValue: string;

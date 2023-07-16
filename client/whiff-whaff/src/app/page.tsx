@@ -16,14 +16,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-RhinoBlue">
       <div className="flex flex-col items-center  justify-around  min-h-screen">
-        <UserInput 
-          label="Username"
-          placeholder="Enter your username"
-          isError={false}
-          isDisabled={false}
-          type='text'
-          lableColor='#23336C'
-          width='sm'
+        <SearchInput
         />
     </div>
     

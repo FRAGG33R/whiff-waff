@@ -4,14 +4,13 @@ import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Mesh } from "three";
-import { useFrame } from "@react-three/fiber";
 import { useThree } from "@react-three/fiber";
 import { useRef, useState, WheelEvent } from "react";
+import { motion } from "framer-motion";
 
-const RoomModel = (props: { deltaY: number }) => {
+const RoomModel = (props: { rotation: number }) => {
   const gltf = useLoader(GLTFLoader, "Model/Room3d.gltf");
-  const { deltaY } = props;
-  const { camera } = useThree();
+  const { rotation } = props;
 
   useEffect(() => {
     gltf.scene.scale.set(0.3, 0.3, 0.3);
@@ -32,24 +31,38 @@ const RoomModel = (props: { deltaY: number }) => {
 };
 
 export default function Room() {
+
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [deltaY, setDeltaY] = useState(0);
+
   const [rotation, setRotation] = useState(3);
 
+  const wheelDeltaBuffer = useRef<number[]>([]);
+  
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setDeltaY(e.deltaY);
+	
+	wheelDeltaBuffer.current.push(e.deltaY);
+	
+    if (wheelDeltaBuffer.current.length > 3) {
+      wheelDeltaBuffer.current.shift();
+    }
 
-    const rotateSpeed = 0.5;
-    const rotationDelta = e.deltaY * rotateSpeed * 0.002;
-	console.log('rotationDelta', rotationDelta);
-    setRotation((prevRotation) => prevRotation + rotationDelta);
+
+    const averageDeltaY =
+      wheelDeltaBuffer.current.reduce((acc, value) => acc + value, 0) /
+      wheelDeltaBuffer.current.length;
+
+
+    const rotateSpeed = 0.001;
+	const rotationDelta = averageDeltaY * rotateSpeed;
+	
+	setRotation((prevRotation) => {
+
+		const newRotation = prevRotation + rotationDelta;
+		return newRotation;
+	});
+
   };
-  useEffect(() => {
-    console.log("rotation  ->", rotation);
-
-    console.log('result', (rotation < 0 ? 0 : (rotation * 3.66666).toFixed(2)));
-  }, [rotation]);
 
   useEffect(() => {
 	// @ts-ignore
@@ -61,22 +74,27 @@ export default function Room() {
   }, []);
 
   return (
-    <div
+    <motion.div
+	whileInView={{ y: 0, transition: { duration: 1.9 } }}
+	style={{ y: 650  }}
+
       ref={containerRef}
       className="flex w-full h-full items-center justify-center"
     >
-      <Canvas style={{ width: "100%", height: "100%" }} shadows>
+      <Canvas style={{ width: "100%", height: "100%" } } shadows>
         <PerspectiveCamera
           makeDefault
           position={[
             -10.9,
-            rotation < 0 ? 0 : rotation + 0.88,
-            (rotation < 0 ? 0 : (rotation * 3.66).toFixed(8)) as number,
+            rotation < 0 ? 0 : rotation + 0.888888,
+            (rotation < 0 ? 0 : (rotation * 3.6666666).toFixed(2)) as number,
           ]}
           fov={36 + rotation}
         />
-        <color attach="background" args={["#E4E5E7"]} />
+        <color attach="background" args={["black"]} />
         <OrbitControls
+		minZoom={0}
+		maxZoom={0}
           enableZoom
           target={[0, 0.35, 0]}
           minAzimuthAngle={-Math.PI / 2}
@@ -86,7 +104,7 @@ export default function Room() {
           rotateSpeed={0.5}
         />
 
-        <spotLight intensity={0.52} position={[-20, 20, 20]} penumbra={0.2} />
+        <spotLight intensity={0.45} position={[-20, 20, 20]} penumbra={0.2} />
         <spotLight
           position={[2, 13, 5]}
           angle={0.1}
@@ -97,9 +115,9 @@ export default function Room() {
         <spotLight
           castShadow
           color={"#8B8B8B"}
-          intensity={1}
+          intensity={1.6}
           position={[-4, 5, 3]}
-          angle={0.6}
+          angle={0.63}
           penumbra={1}
           shadow-normalBias={0.05}
           shadow-bias={0.0001}
@@ -111,9 +129,8 @@ export default function Room() {
           intensity={2}
           penumbra={0.4}
         />
-
-        <RoomModel deltaY={deltaY} />
+        <RoomModel rotation={rotation} />
       </Canvas>
-    </div>
+    </motion.div>
   );
 }

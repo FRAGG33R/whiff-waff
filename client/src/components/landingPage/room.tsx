@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { useFrame } from "@react-three/fiber";
 import { useThree } from "@react-three/fiber";
 
-const RoomModel = (props: { rotation: number }) => {
+const RoomModel = (props: { rotation: number, setRotation : (rt : number) => void }) => {
   const gltf = useLoader(GLTFLoader, "Model/Room3d.gltf");
   const { rotation } = props;
   const { camera } = useThree();
@@ -23,7 +23,8 @@ const RoomModel = (props: { rotation: number }) => {
     );
   });
   useEffect(() => {
-	console.log(rotation);
+	if (rotation < -11)
+		props.setRotation(-11.1);
     cameraPosition.current = [
       -10.9,
       rotation < 0 ? 0.888888 : rotation + 0.888888,
@@ -63,8 +64,9 @@ export default function Room() {
     const averageDeltaY =
       wheelDeltaBuffer.current.reduce((acc, value) => acc + value, 0) /
       wheelDeltaBuffer.current.length;
-    const rotateSpeed = 0.001;
-    const rotationDelta = averageDeltaY * rotateSpeed;
+
+    const rotateSpeed = 0.05;
+    const rotationDelta = averageDeltaY * rotateSpeed * 0.02;
     setRotation((prevRotation) => {
       const newRotation = prevRotation + rotationDelta;
       return newRotation;
@@ -95,18 +97,19 @@ export default function Room() {
             rotation < 0 ? 0.888888 : rotation + 0.888888,
             (rotation < 0 ? 0 : (rotation * 3.6666666).toFixed(2)) as number,
           ]}
-          fov={36 + (rotation < -11 ? -32 : rotation * 3)}
+          fov={36 + (rotation < -11 ? -32.5 : rotation * 3)}
         />
         <color attach="background" args={["black"]} />
         <OrbitControls
           minZoom={0}
           maxZoom={0}
           enableZoom
+		  enableRotate={false}
           target={[0, 0.35, 0]}
-          minAzimuthAngle={-Math.PI / 2}
-          maxAzimuthAngle={Math.PI / 24}
-          minPolarAngle={Math.PI / 6}
-          maxPolarAngle={Math.PI / 2}
+        //   minAzimuthAngle={-Math.PI / 2}
+        //   maxAzimuthAngle={Math.PI / 24}
+        //   minPolarAngle={Math.PI / 6}
+        //   maxPolarAngle={Math.PI / 2}
           rotateSpeed={0.5}
         />
 
@@ -135,7 +138,7 @@ export default function Room() {
           intensity={2}
           penumbra={0.4}
         />
-        <RoomModel rotation={rotation} />
+        <RoomModel rotation={rotation} setRotation={setRotation}/>
       </Canvas>
     </motion.div>
   );

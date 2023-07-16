@@ -1,20 +1,39 @@
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Mesh } from "three";
-import { useThree } from "@react-three/fiber";
 import { useRef, useState, WheelEvent } from "react";
 import { motion } from "framer-motion";
+import { useFrame } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 
 const RoomModel = (props: { rotation: number }) => {
   const gltf = useLoader(GLTFLoader, "Model/Room3d.gltf");
   const { rotation } = props;
+  const { camera } = useThree();
+  const cameraPosition = useRef([-10.9, 0.88, 11]);
+
+  useFrame(() => {
+    camera.position.set(
+      cameraPosition.current[0],
+      cameraPosition.current[1],
+      cameraPosition.current[2]
+    );
+  });
+  useEffect(() => {
+	console.log(rotation);
+    cameraPosition.current = [
+      -10.9,
+      rotation < 0 ? 0.888888 : rotation + 0.888888,
+      (rotation < 0 ? 0 : (rotation * 3.6666666).toFixed(2)) as number,
+    ];
+  }, [rotation]);
 
   useEffect(() => {
     gltf.scene.scale.set(0.3, 0.3, 0.3);
-    gltf.scene.position.set(0, -0.8, 0.11);
+    gltf.scene.position.set(0, -0.85, 0.11);
     gltf.scene.traverse((child) => {
       if (child instanceof Mesh) {
         child.castShadow = true;
@@ -31,70 +50,57 @@ const RoomModel = (props: { rotation: number }) => {
 };
 
 export default function Room() {
-
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [rotation, setRotation] = useState(3);
 
   const wheelDeltaBuffer = useRef<number[]>([]);
-  
+
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
-	
-	wheelDeltaBuffer.current.push(e.deltaY);
-	
-    if (wheelDeltaBuffer.current.length > 3) {
-      wheelDeltaBuffer.current.shift();
-    }
-
-
+    wheelDeltaBuffer.current.push(e.deltaY);
+    if (wheelDeltaBuffer.current.length > 3) wheelDeltaBuffer.current.shift();
     const averageDeltaY =
       wheelDeltaBuffer.current.reduce((acc, value) => acc + value, 0) /
       wheelDeltaBuffer.current.length;
-
-
     const rotateSpeed = 0.001;
-	const rotationDelta = averageDeltaY * rotateSpeed;
-	
-	setRotation((prevRotation) => {
-
-		const newRotation = prevRotation + rotationDelta;
-		return newRotation;
-	});
-
+    const rotationDelta = averageDeltaY * rotateSpeed;
+    setRotation((prevRotation) => {
+      const newRotation = prevRotation + rotationDelta;
+      return newRotation;
+    });
   };
 
   useEffect(() => {
-	// @ts-ignore
+    // @ts-ignore
     containerRef.current?.addEventListener("wheel", handleWheel);
     return () => {
-	// @ts-ignore
+      // @ts-ignore
       containerRef.current?.removeEventListener("wheel", handleWheel);
     };
   }, []);
 
   return (
     <motion.div
-	whileInView={{ y: 0, transition: { duration: 1.9 } }}
-	style={{ y: 650  }}
-
+      whileInView={{ y: 0, transition: { duration: 1.9 } }}
+      style={{ y: 650 }}
       ref={containerRef}
       className="flex w-full h-full items-center justify-center"
     >
-      <Canvas style={{ width: "100%", height: "100%" } } shadows>
+      <Canvas style={{ width: "100%", height: "100%" }} shadows>
         <PerspectiveCamera
           makeDefault
           position={[
             -10.9,
-            rotation < 0 ? 0 : rotation + 0.888888,
+            rotation < 0 ? 0.888888 : rotation + 0.888888,
             (rotation < 0 ? 0 : (rotation * 3.6666666).toFixed(2)) as number,
           ]}
-          fov={36 + rotation}
+          fov={36 + (rotation < -11 ? -32 : rotation * 3)}
         />
         <color attach="background" args={["black"]} />
         <OrbitControls
-		minZoom={0}
-		maxZoom={0}
+          minZoom={0}
+          maxZoom={0}
           enableZoom
           target={[0, 0.35, 0]}
           minAzimuthAngle={-Math.PI / 2}

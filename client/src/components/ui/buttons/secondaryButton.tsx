@@ -1,7 +1,7 @@
 import React from 'react'
-import {  SecondaryButtonProps } from '../../../types/buttonsType';
+import {  PrimaryButtonProps } from '../../../types/buttonsType';
 
-const secondaryButton: React.FC<SecondaryButtonProps> = ({text, onClick}) => {
+const secondaryButton: React.FC<PrimaryButtonProps> = ({text, onClick}) => {
   return (
     <button
 		onClick={onClick}

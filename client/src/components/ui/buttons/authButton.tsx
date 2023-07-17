@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { IconChevronRight } from '@tabler/icons-react';
-import { authButtonProps } from '../../../types/buttonsType';
+import { PrimaryButtonProps } from '../../../types/buttonsType';
   
-  const Button: React.FC<authButtonProps> = ({  text, onClick }) => {
+  const Button: React.FC<PrimaryButtonProps> = ({  text, onClick }) => {
     return (
       <button
         className='rounded-full  bg-GreenishYellow border-primary w-20 md:w-28  lg:w-30  h-8 md:h-10 lg:h-12 font-teko  text-NightBlack flex items-center justify-center '

@@ -12,17 +12,3 @@ export type PrimaryButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttribu
     text: string;
     onClick: () => void;
 }
-export type SecondaryButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
-    text: string;
-    onClick: () => void;
-}
-
-export type intraButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
-    text: string;
-    onClick: () => void;
-}
-
-export type authButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
-    text: string;
-    onClick: () => void;
-}

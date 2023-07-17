@@ -11,7 +11,8 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useRouter } from "next/router";
 import PrimaryButton from "../ui/buttons/primaryButton";
-import Link from "next/link";
+import Image from "next/image";
+
 const RoomModel = (props: {
   rotation: number;
   setRotation: (rt: number) => void;
@@ -52,7 +53,6 @@ const RoomModel = (props: {
           childMaterial.envMapIntensity = 20;
         }
         if (child.name.includes("Cube007")) {
-
         }
       }
     });
@@ -84,14 +84,12 @@ export default function Room() {
       return newRotation;
     });
   };
-  useEffect(()=> {
-	rotation.toFixed(0) === '-11' ? router.push('/login') : null
-	
-  } , [rotation])
+  useEffect(() => {
+    rotation.toFixed(0) === "-11" ? router.push("/login") : null;
+  }, [rotation]);
 
   useEffect(() => {
-	if (window.innerWidth < 700)
-		setIsMobile(true)
+    if (window.innerWidth < 700) setIsMobile(true);
     // @ts-ignore
     containerRef.current?.addEventListener("wheel", handleWheel);
     return () => {
@@ -105,7 +103,7 @@ export default function Room() {
       <motion.div
         style={{ y: 10, opacity: rotation < -3.2 ? 0 : 1 }}
         whileInView={{
-          y: rotation * (isMobile ? 20 : 45),
+          y: rotation * (isMobile ? 14 : 45),
           transition: { duration: rotation === 3 ? 1 : 0.1 },
         }}
         className="absolute z-10 text-white flex items-center justify-center flex-col space-y-4 w-full "
@@ -121,9 +119,9 @@ export default function Room() {
         whileInView={{ y: 0, transition: { duration: 1.9 } }}
         style={{ y: 650 }}
         ref={containerRef}
-        className="flex md:w-full h-full items-center justify-center flex-col"
+        className="flex w-full h-full items-center justify-center flex-col "
       >
-        <Canvas  shadows>
+        <Canvas shadows className="md:flex hidden">
           <PerspectiveCamera
             makeDefault
             position={[
@@ -131,7 +129,7 @@ export default function Room() {
               rotation < 0 ? 0.888888 : rotation + 0.888888,
               (rotation < 0 ? 0 : (rotation * 3.6666666).toFixed(2)) as number,
             ]}
-            fov={(isMobile ? 50 : 34) + (rotation < -11 ? -32.5 : rotation * 3)}
+            fov={34 + (rotation < -11 ? -32.5 : rotation * 3)}
           />
           <color attach="background" args={["#121A28"]} />
           <OrbitControls
@@ -176,9 +174,21 @@ export default function Room() {
           />
           <RoomModel rotation={rotation} setRotation={setRotation} />
         </Canvas>
-		<div className="absolute bottom-24 w-full h-12 flex items-center justify-center md:hidden">
-		<PrimaryButton text="Get started" onClick={() => {router.push('/login')}}/>
-	  </div>
+        <Image
+          src="/room2.png"
+          alt="room"
+		  width={600}
+		  height={600}
+          className="bg-cover md:hidden "
+        />
+        <div className="absolute bottom-24 w-full h-12 flex items-center justify-center md:hidden">
+          <PrimaryButton
+            text="Get started"
+            onClick={() => {
+              router.push("/login");
+            }}
+          />
+        </div>
       </motion.div>
     </div>
   );

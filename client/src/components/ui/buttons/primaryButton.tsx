@@ -1,12 +1,13 @@
 import { type } from 'os'
 import React from 'react'
-import { ButtonProps } from '../../../types/buttonsType'
+import { PrimaryButtonProps } from '@/types/buttonsType'
 
-const PrimaryButton: React.FC<ButtonProps> = ({text, onClick}) => {
+const PrimaryButton: React.FC<PrimaryButtonProps> = ({text, onClick}) => {
   return (
-    <button 
-        className='flex items-center justify-center bg-GreenishYellow font-teko rounded-full w-24 md:w-28 lg:w-32  h-5 md:h-6 lg:h-7 text-NightBlack'>
-        <span>{text}</span>
+    <button
+		onClick={onClick}
+        className='flex items-center justify-center bg-GreenishYellow font-teko rounded-full w-32 lg:w-36  h-8 md:h-6 lg:h-10 text-NightBlack text-2xl'>
+        <div className='flex items-center justify-center'>{text}</div>
     </button>
   )
 }

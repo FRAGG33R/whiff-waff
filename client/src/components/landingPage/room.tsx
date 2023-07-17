@@ -10,7 +10,8 @@ import { useFrame } from "@react-three/fiber";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useRouter } from "next/router";
-
+import PrimaryButton from "../ui/buttons/primaryButton";
+import Link from "next/link";
 const RoomModel = (props: {
   rotation: number;
   setRotation: (rt: number) => void;
@@ -64,6 +65,7 @@ export default function Room() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [rotation, setRotation] = useState(3);
   const wheelDeltaBuffer = useRef<number[]>([]);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   const router = useRouter();
 
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
@@ -82,45 +84,46 @@ export default function Room() {
       return newRotation;
     });
   };
-
   useEffect(()=> {
 	rotation.toFixed(0) === '-11' ? router.push('/login') : null
 	
   } , [rotation])
+
   useEffect(() => {
+	if (window.innerWidth < 700)
+		setIsMobile(true)
     // @ts-ignore
     containerRef.current?.addEventListener("wheel", handleWheel);
     return () => {
       // @ts-ignore
       containerRef.current?.removeEventListener("wheel", handleWheel);
     };
-  }, []);
+  }, [isMobile]);
 
   return (
-    <div className="w-full h-full items-center justify-center flex-col bg-[#1B2436]">
+    <div className="w-full h-full items-center justify-center flex-col bg-[#121A28]">
       <motion.div
         style={{ y: 10, opacity: rotation < -3.2 ? 0 : 1 }}
         whileInView={{
-          y: rotation * 45,
+          y: rotation * (isMobile ? 20 : 45),
           transition: { duration: rotation === 3 ? 1 : 0.1 },
         }}
         className="absolute z-10 text-white flex items-center justify-center flex-col space-y-4 w-full "
       >
-        <div className="text-3xl sm:text-5xl md:text-7xl font-bold font-teko tracking-wider">
+        <div className="text-6xl md:text-7xl font-bold font-teko tracking-wider">
           WHIFF-WHAFF
         </div>
-        <div className=" text-white  text-xl sm:text-2xl md:text-3xl  font-extralight text-center font-poppins">
-          Futuristic ping pong at its finest. Unleash skills, challenge friends,{" "}
+        <div className=" text-white md:w-full w-10/12 text-lg sm:text-2xl md:text-3xl  font-extralight text-center font-poppins">
+          Futuristic ping pong at its finest. Unleash skills, challenge friends{" "}
         </div>
       </motion.div>
-
       <motion.div
         whileInView={{ y: 0, transition: { duration: 1.9 } }}
         style={{ y: 650 }}
         ref={containerRef}
-        className="flex w-full h-full items-center justify-center flex-col"
+        className="flex md:w-full h-full items-center justify-center flex-col"
       >
-        <Canvas style={{ width: "100%", height: "100%" }} shadows>
+        <Canvas  shadows>
           <PerspectiveCamera
             makeDefault
             position={[
@@ -128,9 +131,9 @@ export default function Room() {
               rotation < 0 ? 0.888888 : rotation + 0.888888,
               (rotation < 0 ? 0 : (rotation * 3.6666666).toFixed(2)) as number,
             ]}
-            fov={34 + (rotation < -11 ? -32.5 : rotation * 3)}
+            fov={(isMobile ? 50 : 34) + (rotation < -11 ? -32.5 : rotation * 3)}
           />
-          <color attach="background" args={["#1B2436"]} />
+          <color attach="background" args={["#121A28"]} />
           <OrbitControls
             minZoom={0}
             maxZoom={0}
@@ -173,6 +176,9 @@ export default function Room() {
           />
           <RoomModel rotation={rotation} setRotation={setRotation} />
         </Canvas>
+		<div className="absolute bottom-24 w-full h-12 flex items-center justify-center md:hidden">
+		<PrimaryButton text="Get started" onClick={() => {router.push('/login')}}/>
+	  </div>
       </motion.div>
     </div>
   );

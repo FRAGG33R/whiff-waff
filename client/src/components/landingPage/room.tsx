@@ -1,4 +1,4 @@
-import { use, useEffect, useLayoutEffect } from "react";
+import { use, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
@@ -8,7 +8,6 @@ import { useRef, useState, WheelEvent } from "react";
 import { motion } from "framer-motion";
 import { useFrame } from "@react-three/fiber";
 import { useThree } from "@react-three/fiber";
-import { TextureLoader } from "three";
 import * as THREE from "three";
 import { useRouter } from "next/router";
 
@@ -105,12 +104,12 @@ export default function Room() {
           y: rotation * 45,
           transition: { duration: rotation === 3 ? 1 : 0.1 },
         }}
-        className="absolute z-10 text-white flex items-center justify-center flex-col space-y-8 w-full "
+        className="absolute z-10 text-white flex items-center justify-center flex-col space-y-4 w-full "
       >
-        <div className="text-3xl sm:text-5xl md:text-7xl font-bold">
+        <div className="text-3xl sm:text-5xl md:text-7xl font-bold font-teko tracking-wider">
           WHIFF-WHAFF
         </div>
-        <div className=" text-white  text-2xl sm:text-3xl md:text-4xl font-light text-center">
+        <div className=" text-white  text-xl sm:text-2xl md:text-3xl  font-extralight text-center font-poppins">
           Futuristic ping pong at its finest. Unleash skills, challenge friends,{" "}
         </div>
       </motion.div>

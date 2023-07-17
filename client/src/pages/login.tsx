@@ -1,7 +1,11 @@
-import '../app/globals.css';
-
+import "../app/globals.css";
+import Button
+ from "@/components/ui/buttons/authButton";
+ 
 export default function Login() {
-	return (
-		<div className="flex md:min-h-screen h-screen items-start justify-center overflow-x-hidden bg-black text-7xl text-white">Log in Page</div>
-	)
+  return (
+    <div className="flex md:min-h-screen h-screen items-center justify-center overflow-x-hidden  text-white ">
+	  <Button text="next" onClick={() => {}}  firstValue="afds" secondFunction={() => {}} secondValue="asdf" firstFunction={() =>{}}/>
+    </div>
+  );
 }

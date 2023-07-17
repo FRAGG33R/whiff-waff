@@ -1,9 +1,6 @@
 import React, { useEffect } from 'react';
 import { IconChevronRight } from '@tabler/icons-react';
-type ButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
-    text: string;
-    onClick: () => void;
-  };
+import { ButtonProps } from '../../../types/buttonsType';
   
   const Button: React.FC<ButtonProps> = ({  text, onClick }) => {
     return (

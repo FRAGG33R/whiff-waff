@@ -1,14 +1,5 @@
 import React from 'react'
-
-interface InputProps {
-  label: string;
-  isError: boolean;
-  placeholder: string;
-  isDisabled: boolean;
-  type: string;
-  lableColor: string;
-  width: string;
-}
+import { InputProps } from '../../../types/inputsType'
 const userInput: React.FC<InputProps> = ({
   label,
   isError = false,

@@ -6,13 +6,8 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
+import { ButtonProps } from '../../../types/buttonsType';
 
-type ButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
-  firstValue: string;
-  secondValue: string;
-  firstFunction: () => void;
-  secondFunction: () => void;
-}
 const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunction, secondFunction}) => {
   const [activeTab, setActiveTab] = useState(firstValue);
 

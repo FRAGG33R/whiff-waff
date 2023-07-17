@@ -1,11 +1,8 @@
 import React from 'react'
 import IntraIcon from '../../../../public/intraIcon.svg'
 import Image from 'next/image';
+import { ButtonProps } from '../../../types/buttonsType';
 
-type ButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
-    text: string;
-    onClick: () => void;
-};
 const intraButton: React.FC<ButtonProps> = ({text, onClick }) => {
   return (
     <button 

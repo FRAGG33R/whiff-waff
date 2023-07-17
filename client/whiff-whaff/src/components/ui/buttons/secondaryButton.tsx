@@ -1,9 +1,6 @@
 import React from 'react'
+import { ButtonProps } from '../../../types/buttonsType';
 
-type ButtonProps = React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>&{
-  text: string;
-  onClick: () => void;
-}
 const secondaryButton: React.FC<ButtonProps> = ({text, onClick}) => {
   return (
     <button 

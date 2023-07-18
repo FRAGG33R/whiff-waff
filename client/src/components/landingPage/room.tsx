@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
@@ -11,7 +11,6 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useRouter } from "next/router";
 import PrimaryButton from "../ui/buttons/primaryButton";
-import Image from "next/image";
 
 const RoomModel = (props: {
   rotation: number;
@@ -68,18 +67,24 @@ export default function Room() {
   const wheelDeltaBuffer = useRef<number[]>([]);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const router = useRouter();
+  const [progressBar, setProgressBar] = useState<number>(0);
+  const progressRef = useRef(0);
+
+  progressRef.current = progressBar;
 
   const updateProgress = (loader: GLTFLoader) => {
     loader.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
-      const inputElement = document.getElementById(
-        "ProgressText"
-      ) as HTMLInputElement;
-      inputElement.textContent =
-        "[BUILDING " +
-        ((itemsLoaded / itemsTotal) * 100).toFixed(0).toString() +
-        "%]";
+		console.log((itemsLoaded / itemsTotal) * 100);
+		let i = 0;
+		const setInter = setInterval(() => {
+			setProgressBar(i++);
+			if (i > (itemsLoaded / itemsTotal) * 100) {
+				clearInterval(setInter);
+			}
+		}, 15)
     };
   };
+
 
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -126,9 +131,8 @@ export default function Room() {
           WHIFF-WHAFF
           <p
             className="bg-transparent text-teko font-bold text-5xl flex items-center justify-center text-GreenishYellow"
-            id="ProgressText"
           >
-            [BUILDING 0%]
+            {`[BUILDING ${progressRef.current}%]`}
           </p>
         </div>
         <div className=" text-white md:w-full w-10/12 text-lg sm:text-2xl md:text-3xl  font-extralight text-center font-poppins">
@@ -139,7 +143,7 @@ export default function Room() {
         ref={containerRef}
         className="flex w-full h-full items-center justify-center flex-col"
       >
-        <Canvas shadows className="md:flex hidden">
+        <Canvas shadows className={`${progressRef.current == 100 ? 'visible' :  'invisible'} `}>
           <PerspectiveCamera
             makeDefault
             position={[
@@ -196,13 +200,6 @@ export default function Room() {
             updateProgress={updateProgress}
           />
         </Canvas>
-        <Image
-          src="/room2.png"
-          alt="room"
-          width={600}
-          height={600}
-          className="bg-cover md:hidden "
-        />
         <div className="absolute bottom-24 w-full h-12 flex items-center justify-center md:hidden">
           <PrimaryButton
             text="Get started"

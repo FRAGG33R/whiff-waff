@@ -18,9 +18,9 @@ model User {
   avatar               String
   email                String            @unique
   passwordHash         String            @map("password_hash")
-  passwordSalt         String            @map("password_salt")
+  passwordSalt         String?            @map("password_salt")
   twoFactorAuth        Boolean           @map("two_factor_auth")
-  status               StatusPlayer
+  status               PlayerStatus
   stat                 Stats?
   sentNotification     Notification[]    @relation("sendNotfication")
   receivedNotification Notification[]    @relation("receiveNotification")
@@ -30,10 +30,7 @@ model User {
   onRightPlay          Play[]            @relation("right")
   sender               Chat[]            @relation("sender")
   receiver             Chat[]            @relation("receiver")
-  senderMessage        Message[]         @relation("sender")
-  receiverMessage      Message[]         @relation("receiver")
   achievements         haveAchievement[]
-  role                 HasRole?
   chatrooms            Join[]
 
   @@map("user")
@@ -51,6 +48,28 @@ model Chat {
   @@map("chat")
 }
 
+model RoomChat {
+  id           String       @id @default(uuid())
+  passwordHash String?      @map("password_hash")
+  passwordSalt String?      @map("password_salt")
+  type         ChatRoomType
+  joins        Join[]
+
+  @@map("room_chat")
+}
+
+model Join {
+  roomChatId String     @map("room_chat_id")
+  userId     String     @map("user_id")
+  statut     UserStatus
+  messages   Message[]
+  roomChat   RoomChat   @relation(fields: [roomChatId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@id([userId, roomChatId])
+  @@map("join")
+}
+
 model Message {
   id         String @id @default(uuid())
   message    String
@@ -58,33 +77,9 @@ model Message {
   receiverId String @map("received_id")
   roomChatId String @map("room_chat_id")
   chat       Chat   @relation(fields: [senderId, receiverId], references: [senderId, receiverId])
-  sender     User?  @relation("sender", fields: [senderId], references: [id])
-  receiver   User?  @relation("receiver", fields: [receiverId], references: [id])
   roomSender Join?  @relation(fields: [roomChatId, senderId], references: [roomChatId, userId])
 
   @@map("message")
-}
-
-model RoomChat {
-  id           String       @id @default(uuid())
-  passwordHash String       @map("password_hash")
-  passwordSalt String       @map("password_salt")
-  type         ChatRoomType
-  joins        Join[]
-  role         HasRole?
-
-  @@map("room_chat")
-}
-
-model HasRole {
-  roomChat   RoomChat @relation(fields: [roomChatId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
-  role       Role
-  roomChatId String   @unique @map("room_chat_id")
-  userId     String   @unique @map("user_id")
-
-  @@id([roomChatId, userId])
-  @@map("has_role")
 }
 
 model Play {
@@ -145,36 +140,25 @@ model haveAchievement {
 }
 
 model Notification {
-  id         String @id @default(uuid())
-  type       Type
-  senderId   String @map("sender_id")
-  receiverId String @map("receiver_id")
-  sender     User   @relation("sendNotfication", fields: [senderId], references: [id])
-  receiver   User   @relation("receiveNotification", fields: [receiverId], references: [id])
+  id         String           @id @default(uuid())
+  type       NotificationType
+  senderId   String           @map("sender_id")
+  receiverId String           @map("receiver_id")
+  sender     User             @relation("sendNotfication", fields: [senderId], references: [id])
+  receiver   User             @relation("receiveNotification", fields: [receiverId], references: [id])
 
   @@map("notification")
 }
 
 model Friendship {
-  receivedId String @map("received_id")
-  senderId   String @map("sender_id")
-  status     Status
-  sender     User   @relation("sendFriendship", fields: [senderId], references: [id])
-  receiver   User   @relation("receiveFriendship", fields: [receivedId], references: [id])
+  receivedId String           @map("received_id")
+  senderId   String           @map("sender_id")
+  status     FriendshipStatus
+  sender     User             @relation("sendFriendship", fields: [senderId], references: [id])
+  receiver   User             @relation("receiveFriendship", fields: [receivedId], references: [id])
 
   @@id([senderId, receivedId])
   @@map("friendship")
-}
-
-model Join {
-  roomChatId String    @map("room_chat_id")
-  userId     String    @map("user_id")
-  messages   Message[]
-  roomChat   RoomChat  @relation(fields: [roomChatId], references: [id])
-  user       User      @relation(fields: [userId], references: [id])
-
-  @@id([roomChatId, userId])
-  @@map("join")
 }
 
 enum Mode {
@@ -192,39 +176,23 @@ enum Map {
   @@map("map")
 }
 
-enum Role {
-  ADMIN
-  BANNED
-  MUTED
-
-  @@map("role")
-}
-
-enum ChatRoomType {
-  PRIVATE
-  PUBLIC
-  PROTECTED
-
-  @@map("chat_root_type")
-}
-
-enum Type {
+enum NotificationType {
   FRIENDSHIP
   GAME
   ACHIEVEMENT
   MESSAGE
 
-  @@map("type")
+  @@map("notification_type")
 }
 
-enum Status {
+enum FriendshipStatus {
   PENDING
   ACCEPTED
   REFUSED
   BLOCKED
   EXPIRED
 
-  @@map("status")
+  @@map("friendship_status")
 }
 
 enum Rank {
@@ -236,10 +204,26 @@ enum Rank {
   @@map("rank")
 }
 
-enum StatusPlayer {
+enum PlayerStatus {
   ONLINE
   OFFLINE
   IN_GAME
 
   @@map("status_player")
+}
+
+enum ChatRoomType {
+  PRIVATE
+  PUBLIC
+  PROTECTED
+
+  @@map("chat_room_type")
+}
+
+enum UserStatus {
+  ADMIN
+  BANNED
+  MUTED
+
+  @@map("user_status")
 }

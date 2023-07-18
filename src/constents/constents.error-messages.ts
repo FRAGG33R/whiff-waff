@@ -1,0 +1,1 @@
+export const P2002_MSG  = 'field already in use : '

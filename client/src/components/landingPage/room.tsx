@@ -23,7 +23,6 @@ export default function Room() {
 
   const updateProgress = (loader: GLTFLoader) => {
     loader.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
-      console.log((itemsLoaded / itemsTotal) * 100);
       let i = 0;
       const setInter = setInterval(() => {
         setProgressBar(i++);
@@ -52,7 +51,9 @@ export default function Room() {
   };
 
   useEffect(() => {
-    rotation.toFixed(0) === "-11" ? router.push("/login") : null;
+	console.log(rotation.toFixed(0));
+	
+    rotation.toFixed(0) === "-1" ? router.push("/login") : null;
   }, [rotation]);
 
   useEffect(() => {
@@ -64,11 +65,10 @@ export default function Room() {
       containerRef.current?.removeEventListener("wheel", handleWheel);
     };
   }, [isMobile]);
-  //   <ProgressCounter progressValue={progressRef.current} />
   return (
-    <div className="w-full h-full items-center justify-center flex-col bg-[#121A28]">
+    <div className="w-full h-full items-center justify-center flex-col bg-[#121A28] overflow-y-hidden">
       <div
-        className={`w-full h-full items-center justify-center ${
+        className={`w-full h-full items-center justify-center overflow-y-hidden ${
           progressRef.current == 100 ? "visible" : "invisible"
         }`}
       >
@@ -102,7 +102,7 @@ export default function Room() {
                   ? 0
                   : (rotation * 3.6666666).toFixed(2)) as number,
               ]}
-              fov={34 + (rotation < -11 ? -32.5 : rotation * 3)}
+              fov={(isMobile ? 52 : 10) + (rotation < -1 ? -12.5 : rotation * 10)}
             />
             <color attach="background" args={["#121A28"]} />
             <OrbitControls
@@ -167,8 +167,8 @@ export default function Room() {
         </motion.div>
       </div>
       <div
-        className={`w-full h-full absolute  top-1/2 ${
-          progressRef.current == 100 ? "invisible" : "visible"
+        className={` w-full absolute  top-1/2 overflow-y-hidden ${
+          progressRef.current == 100 ? "invisible " : "visible"
         }`}
       >
 		<ProgressCounter progressValue={progressRef.current} />

@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 
 export default function AnimatedScroll(props: { rotation: number }) {
-
   return (
     <motion.div
       style={{
@@ -11,30 +10,46 @@ export default function AnimatedScroll(props: { rotation: number }) {
       className="absolute bottom-24 w-full h-12 md:flex items-center justify-center hidden flex-row  text-GreenishYellow "
     >
       <svg
-        width="50"
-        height="50"
-        viewBox="0 0 1027 2112"
+        width="51"
+        height="48"
+        viewBox="0 0 51 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path
-          d="M949.774 1624.08L533.686 2089.74C524.387 2100.14 508.12 2100.2 498.749 2089.86L76.5478 1623.94C59.6754 1605.32 79.8644 1576.77 103.041 1586.48L505.987 1755.26C512.579 1758.02 520.007 1758 526.585 1755.21L923.063 1586.8C946.167 1576.98 966.499 1605.37 949.774 1624.08Z"
-          fill="#CBFC01"
-          stroke="#CBFC01"
-          strokeWidth="3"
-        />
-        <path
-          d="M77.2264 487.369L493.314 21.7162C502.613 11.3092 518.88 11.2526 528.251 21.5945L950.452 487.516C967.325 506.136 947.136 534.679 923.959 524.972L521.013 356.195C514.421 353.434 506.993 353.453 500.415 356.247L103.937 524.657C80.8333 534.47 60.5008 506.087 77.2264 487.369Z"
-          fill="#CBFC01"
-          stroke="#CBFC01"
-          strokeWidth="3"
-        />
-        <path
-          d="M849.146 1052.54C849.146 1239.91 699.034 1391.77 513.899 1391.77C328.763 1391.77 178.651 1239.91 178.651 1052.54C178.651 865.164 328.763 713.299 513.899 713.299C699.034 713.299 849.146 865.164 849.146 1052.54Z"
-          fill="#CBFC01"
-          stroke="#CBFC01"
-          strokeWidth="3"
-        />
+        <g clip-path="url(#clip0_903_608)">
+          <path
+            d="M15.1452 11.2096L24.9958 0.185649C25.2159 -0.0607284 25.601 -0.0620684 25.8229 0.182768L35.8182 11.2131C36.2176 11.6539 35.7397 12.3297 35.191 12.0999L25.6515 8.10418C25.4955 8.03882 25.3196 8.03927 25.1639 8.10541L15.7776 12.0924C15.2306 12.3247 14.7493 11.6528 15.1452 11.2096Z"
+            fill="#CBFC01"
+            stroke="#CBFC01"
+            stroke-width="0.0236742"
+          />
+          <motion.path
+		  initial={{ y: -3 }}
+		  animate={{ y: 3 }}
+		  transition={{
+			duration: 0.9,
+			repeat: Infinity,
+			repeatType: "reverse",
+			ease: "easeInOut",
+		  }}
+            d="M32.983 23.6466C32.983 27.7891 29.6248 31.1465 25.483 31.1465C21.3412 31.1465 17.983 27.7891 17.983 23.6466C17.983 19.504 21.3412 16.1465 25.483 16.1465C29.6248 16.1465 32.983 19.504 32.983 23.6466Z"
+            fill="#CBFC01"
+            stroke="#CBFC01"
+            stroke-width="0.0236742"
+          />
+          <path
+            
+            d="M35.8208 36.0831L25.9702 47.1072C25.7501 47.3534 25.365 47.3548 25.1431 47.11L15.1478 36.0797C14.7484 35.6389 15.2263 34.963 15.775 35.1929L25.3145 39.1886C25.4705 39.254 25.6464 39.2535 25.8021 39.1875L35.1884 35.2005C35.7354 34.968 36.2167 35.6401 35.8208 36.0831Z"
+            fill="#CBFC01"
+            stroke="#CBFC01"
+            stroke-width="0.0236742"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_903_608">
+            <rect width="50.966" height="47.2925" fill="white" />
+          </clipPath>
+        </defs>
       </svg>
       <div className="font-teko font-bold text-3xl pt-1 ">SCROLL</div>
     </motion.div>

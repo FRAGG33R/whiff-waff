@@ -1,66 +1,14 @@
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
-import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Mesh } from "three";
 import { useRef, useState, WheelEvent } from "react";
 import { motion } from "framer-motion";
-import { useFrame } from "@react-three/fiber";
-import { useThree } from "@react-three/fiber";
-import * as THREE from "three";
 import { useRouter } from "next/router";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import AnimatedScroll from "./animatedScroll";
-
-const RoomModel = (props: {
-  rotation: number;
-  setRotation: (rt: number) => void;
-  updateProgress: (loader: GLTFLoader) => void;
-}) => {
-  const gltf = useLoader(GLTFLoader, "Model/Room3d.gltf", props.updateProgress);
-
-  const { rotation } = props;
-  const { camera } = useThree();
-  const cameraPosition = useRef([-10.9, 0.88, 11]);
-
-  useFrame(() => {
-    if (rotation !== 3)
-      camera.position.set(
-        cameraPosition.current[0],
-        cameraPosition.current[1],
-        cameraPosition.current[2]
-      );
-  });
-
-  useEffect(() => {
-    if (rotation < -11) props.setRotation(-11.1);
-    cameraPosition.current = [
-      -10.9,
-      rotation < 0 ? 0.888888 : rotation + 0.888888,
-      (rotation < 0 ? 0 : (rotation * 3.6666666).toFixed(2)) as number,
-    ];
-  }, [rotation]);
-
-  useEffect(() => {
-    gltf.scene.scale.set(0.3, 0.3, 0.3);
-    gltf.scene.position.set(0, -0.85, 0.11);
-    gltf.scene.traverse((child) => {
-      if (child instanceof Mesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        const childMaterial = child.material as THREE.MeshStandardMaterial;
-        if (childMaterial.envMapIntensity !== undefined) {
-          childMaterial.envMapIntensity = 20;
-        }
-        if (child.name.includes("Cube007")) {
-        }
-      }
-    });
-  }, [gltf]);
-
-  return <primitive object={gltf.scene} />;
-};
+import RoomModel from "./roomModel";
+import ProgressCounter from "./progressCounter";
 
 export default function Room() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -130,11 +78,7 @@ export default function Room() {
       >
         <div className="text-6xl md:text-7xl font-bold font-teko tracking-wider">
           WHIFF-WHAFF
-          <p
-            className="bg-transparent text-teko font-bold text-5xl flex items-center justify-center text-GreenishYellow"
-          >
-            {`[BUILDING ${progressRef.current}%]`}
-          </p>
+		  <ProgressCounter progressValue={progressRef.current} />
         </div>
         <div className=" text-white md:w-full w-10/12 text-lg sm:text-2xl md:text-3xl  font-extralight text-center font-poppins">
           Futuristic ping pong at its finest. Unleash skills, challenge friends{" "}

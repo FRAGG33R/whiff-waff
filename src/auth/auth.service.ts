@@ -6,6 +6,7 @@ import * as bcrytpt from 'bcrypt';
 import * as ErrorCode from '../constents/constents.code-error';
 import * as  CodeMessages from 'src/constents/constents.error-messages';
 import { printSync } from '@swc/core';
+import { DEFAULT_LEVEL_ACHIEVEMENT_USER, DEFAULT_LEVEL_USER, DEFAULT_NB_LOSES_USER, DEFAULT_NB_WINS_USER, DEFAULT_RANK_USER } from 'src/constents/constents.values';
 @Injectable()
 export class AuthService {
     constructor(private readonly prismaService: PrismaService) { }
@@ -25,29 +26,28 @@ export class AuthService {
                     passwordSalt: salt,
                     twoFactorAuth: dto.twoFactorAuth,
                     status: dto.status,
-                    stat : {
-                        create : {
-                            wins: 0,
-                            loses: 0,
-                            level: 0,
-                            rank: "ROOKIE"
+                    stat: {
+                        create: {
+                            wins: DEFAULT_NB_WINS_USER,
+                            loses: DEFAULT_NB_LOSES_USER,
+                            level: DEFAULT_LEVEL_USER,
+                            rank: DEFAULT_RANK_USER
                         }
                     },
                 }
             });
 
             const achievements = await this.prismaService.achievement.findMany();
-            for (let i = 0; i < achievements.length; i++)
-            {
+            for (let i = 0; i < achievements.length; i++) {
                 await this.prismaService.haveAchievement.create({
-                    data : {
+                    data: {
                         userId: userInfos.id,
                         achievementId: achievements[i].id,
-                        level: 0
+                        level: DEFAULT_LEVEL_ACHIEVEMENT_USER
                     }
                 })
             }
-            
+
             delete userInfos.passwordHash;
             delete userInfos.passwordSalt;
             return (userInfos);

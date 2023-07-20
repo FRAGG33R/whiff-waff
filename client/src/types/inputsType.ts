@@ -1,3 +1,8 @@
+export interface searchInputProps {
+    placeholder: string;
+    onSearch: (value: string) => void;
+}
+
 export interface InputProps {
     label: string;
     isError: boolean;
@@ -6,5 +11,6 @@ export interface InputProps {
     type: string;
     lableColor: string;
     width: string;
-    onSearch: (value: string) => void;
-  }
+	value: string;
+	setValue	: (value: string) => void;
+}

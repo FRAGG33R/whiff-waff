@@ -15,12 +15,12 @@ export default function Room() {
   const [rotation, setRotation] = useState(3);
   const wheelDeltaBuffer = useRef<number[]>([]);
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  const router = useRouter();
   const [progressBar, setProgressBar] = useState<number>(0);
+  const [isLightOn, setIsLightOn] = useState(true);
+  const router = useRouter();
   const progressRef = useRef(0);
 
   progressRef.current = progressBar;
-
   const updateProgress = (loader: GLTFLoader) => {
     loader.manager.onProgress = (url, itemsLoaded, itemsTotal) => {
       let i = 0;
@@ -32,7 +32,6 @@ export default function Room() {
       }, 15);
     };
   };
-
 
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -51,11 +50,20 @@ export default function Room() {
     });
   };
 
+  // -- HOOKS --
   useEffect(() => {
-	// console.log();
-	
     rotation.toFixed(1) as unknown as number < -2.3 ? router.push("/login") : null;
   }, [rotation]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsLightOn((prevValue) => !prevValue);
+    }, (Math.random() % 60000) * 180);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     if (window.innerWidth < 700) setIsMobile(true);
@@ -75,10 +83,10 @@ export default function Room() {
       >
         <motion.div
           style={{ y: 10, opacity: rotation.toFixed(1) as unknown as number < 0.5 ? 0 : 1 }}
-          whileInView={{
+          whileInView={progressRef.current === 100 ? {
             y: -160 + Math.abs(rotation) * 100 ,
-            transition: { duration: rotation === 3 ? 1 : 0.1 },
-          }}
+            transition: { duration: rotation === 3 ? 1.2 : 0.1 },
+          } : {}}
           className="absolute z-10 text-white flex items-center justify-center flex-col space-y-4 w-full"
         >
           <div className="text-6xl md:text-7xl font-bold font-teko tracking-wider">
@@ -90,10 +98,12 @@ export default function Room() {
           </div>
         </motion.div>
         <motion.div
+		 whileInView={progressRef.current === 100 ? { y: 0, transition: { duration: 1.2 }} : {}}
+		 style={{ y: 650 }}
           ref={containerRef}
           className="flex w-full h-full items-center justify-center flex-col"
         >
-          <Canvas shadows className={` `}>
+          <Canvas shadows>
             <PerspectiveCamera
               makeDefault
               position={[
@@ -129,6 +139,7 @@ export default function Room() {
               angle={0.1}
               penumbra={1.2}
               color="#FFFFB9"
+			  intensity={isLightOn ? 1 : 0.8}
             />
             <pointLight position={[-10, -10, -10]} intensity={0.35} />
             <spotLight
@@ -147,7 +158,7 @@ export default function Room() {
                 224.5967712402344, -1304.24398803710938, 224.5648803710938,
               ]}
               color={"yellow"}
-              intensity={2}
+              intensity={isLightOn ? 2 : 1.1}
               penumbra={0.4}
             />
             <RoomModel

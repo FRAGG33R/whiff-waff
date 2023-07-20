@@ -3,7 +3,6 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Mesh } from "three";
 import { useFrame, useLoader, useThree } from "@react-three/fiber";
 
-
 export default function RoomModel (props: {
 	rotation: number;
 	setRotation: (rt: number) => void;
@@ -25,7 +24,7 @@ export default function RoomModel (props: {
 	});
   
 	useEffect(() => {
-	  if (rotation < -11) props.setRotation(-11.1);
+	  if (rotation.toFixed(1) as unknown as number <  -2.3) props.setRotation(-2.4);
 	  cameraPosition.current = [
 		-10.9,
 		rotation < 0 ? 0.888888 : rotation + 0.888888,

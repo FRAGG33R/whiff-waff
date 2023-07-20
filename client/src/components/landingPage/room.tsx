@@ -93,8 +93,7 @@ export default function Room() {
             WHIFF-WHAFF
           </div>
           <div className="text-white md:w-full w-10/12 text-lg sm:text-2xl md:text-3xl font-extralight text-center font-poppins">
-            Futuristic ping pong at its finest. Unleash skills, challenge
-            friends{" "}
+		  Connect, compete, and chat in thrilling ping pong battles online.{" "}
           </div>
         </motion.div>
         <motion.div

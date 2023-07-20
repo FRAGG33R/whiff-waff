@@ -8,7 +8,7 @@ export default function RoomModel (props: {
 	setRotation: (rt: number) => void;
 	updateProgress: (loader: GLTFLoader) => void;
   }) {
-	const gltf = useLoader(GLTFLoader, "Model/Room3d.gltf", props.updateProgress);
+	const gltf = useLoader(GLTFLoader, "Model/filledRoom.gltf", props.updateProgress);
   
 	const { rotation } = props;
 	const { camera } = useThree();

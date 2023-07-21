@@ -32,6 +32,7 @@ const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunc
   }, [activeTab]);
 
   return (
+    
     <Tabs value={activeTab}  >
       <TabsHeader
         className="rounded-full bg-black bg-opacity-100 font-teko w-32 md:w-32 lg:w-36 h-8 md:h-10 lg:h-12  "

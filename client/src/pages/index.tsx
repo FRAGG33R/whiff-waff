@@ -8,7 +8,7 @@ const AnimatedCursor = dynamic(() => import("react-animated-cursor"), {
 
 export default function Home() {
   return (
-    <main className="flex md:min-h-screen h-screen items-start justify-center overflow-x-hidden bg-black overflow-y-hidden">
+    <main className="flex md:min-h-screen h-screen items-start justify-center overflow-x-hidden bg-[#121A28] overflow-y-hidden">
 		<AnimatedCursor
         color="203, 252, 1"
         innerSize={8}

@@ -15,14 +15,13 @@ import { IconBell } from '@tabler/icons-react';
 const notificationDrop = () => {
   return (
     <Fragment>
-       <div className='flex mb-3 gap-3 bg-CarbonGrey opacity-10 rounded-lg'>
+       <div className='flex mb-3 gap-3 bg-CarbonGrey bg-opacity-10 rounded-lg'>
             <Menu placement="bottom">
                 <MenuHandler>
-                    <Badge content="8" >
                       <IconButton variant="text">
+                        <Badge content="2" className='text-xs'/>
                         <IconBell className="h-5 w-5 text-Ceramic " />
                     </IconButton>
-                    </Badge>
                 </MenuHandler>
                 <MenuList className="flex flex-col gap-2 bg-black">
                     <MenuItem className="flex items-center gap-4 py-2 pr-8 pl-2">

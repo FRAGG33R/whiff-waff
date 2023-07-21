@@ -82,12 +82,12 @@ export default function Room() {
         }`}
       >
         <motion.div
-          style={isMobile ? {} : { y: 10, opacity: rotation.toFixed(1) as unknown as number < 0.5 ? 0 : 1 }}
-          whileInView={isMobile ? {} :  (progressRef.current === 100 ? {
+          style={{ y: 10, opacity: rotation.toFixed(1) as unknown as number < 0.5 ? 0 : 1 }}
+          whileInView={progressRef.current === 100 ? {
             y: -160 + Math.abs(rotation) * 100 ,
             transition: { duration: rotation === 3 ? 1.2 : 0.1 },
-          } : {})}
-          className="absolute z-10 text-white flex items-center justify-center flex-col space-y-4 w-full md:pt-0 pt-10"
+          } : {}}
+          className="absolute z-10 text-white flex items-center justify-center flex-col space-y-4 w-full"
         >
           <div className="text-6xl md:text-7xl font-bold font-teko tracking-wider">
             WHIFF-WHAFF
@@ -97,8 +97,8 @@ export default function Room() {
           </div>
         </motion.div>
         <motion.div
-		 whileInView={isMobile ? {}  : (progressRef.current === 100 ? { y: 0, transition: { duration: 1.2 }} : {})}
-		 style={isMobile ? {} : { y: 650 }}
+		 whileInView={progressRef.current === 100 ? { y: 0, transition: { duration: 1.2 }} : {}}
+		 style={{ y: 650 }}
           ref={containerRef}
           className="flex w-full h-full items-center justify-center flex-col"
         >
@@ -112,13 +112,12 @@ export default function Room() {
                   ? 0
                   : (rotation * 3.6666666).toFixed(2)) as number,
               ]}
-              fov={(isMobile ? 27 : 20) + ( rotation * 7)}
+              fov={(isMobile ? 52 : 20) + ( rotation * 7)}
             />
             <color attach="background" args={["#121A28"]} />
             <OrbitControls
               minZoom={0}
               maxZoom={0}
-			  enablePan={false}
               enableZoom={false}
               enableRotate={rotation === 3 ? true : false}
               target={[0, 0.35, 0]}
@@ -167,7 +166,7 @@ export default function Room() {
               updateProgress={updateProgress}
             />
           </Canvas>
-          <div className="absolute bottom-12 md:bottom-44 w-full h-12 flex items-center justify-center md:hidden">
+          <div className="absolute bottom-44 w-full h-12 flex items-center justify-center md:hidden">
             <PrimaryButton
               text="Get started"
               onClick={() => {

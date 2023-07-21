@@ -14,7 +14,7 @@ import { ClockIcon } from "@heroicons/react/24/outline";
 import { IconBell } from '@tabler/icons-react'; 
 import { NotificationProps} from '../../../types/dropDownType';
 
-const notificationDrop: React.FC<NotificationProps> = (props) => {
+const NotificationDropDown: React.FC<NotificationProps> = (props) => {
     const {notifications, content } = props;
   return (
     <Fragment>
@@ -27,14 +27,14 @@ const notificationDrop: React.FC<NotificationProps> = (props) => {
                     </IconButton>
                 </MenuHandler>
                     </Badge>
-                <MenuList className="flex flex-col  bg-HokiCl border-0"  >
+                <MenuList className="flex flex-col  bg-HokiCl border-0 "  >
                       <p className='flex items-center justify-center text-Mercury font-teko text-2xl'>Notification</p>
                         {notifications && notifications.length > 0 && notifications.map((notification, index) => (
-                             <MenuItem key={index} className="flex items-center gap-4 py-2 pr-8 pl-2 ">
+                             <MenuItem key={index} className=" flex items-center gap-4 py-2 pr-8 pl-2 ">
                               <Avatar
                                 className='border-4  border-DeepRose rounded-2xl'
                                 variant="rounded" alt={notification.name} src={notification.src} />
-                             <div className="flex flex-col gap-1 -space-y-1">
+                             <div className="flex flex-col gap-1 -space-y-1 ">
                                <Typography  className="gab-3 font-poppins  flex flex-col  -space-y-1">
                                  <span className="font-teko font-semibold text-lg text-Mercury ">{notification.name}</span> 
                                  <span className='font-poppins text-Mercury flex items-center justify-center'>{notification.message}</span>
@@ -53,4 +53,4 @@ const notificationDrop: React.FC<NotificationProps> = (props) => {
   )
 }
 
-export default notificationDrop
+export default NotificationDropDown

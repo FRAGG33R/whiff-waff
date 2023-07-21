@@ -16,6 +16,13 @@ import { NotificationProps} from '../../../types/dropDownType';
 
 const NotificationDropDown: React.FC<NotificationProps> = (props) => {
     const {notifications, content } = props;
+
+    const updateMessage = (message :string) => {
+      if (message.length > 20) {
+        return message.substring(0, 20) + '...';
+      }
+      return message;
+    }
   return (
     <Fragment>
        <div className='flex mb-5 gap-5  bg-CarbonGrey bg-opacity-10 rounded-lg '>
@@ -37,7 +44,7 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
                              <div className="flex flex-col gap-1 -space-y-1 ">
                                <Typography  className="gab-3 font-poppins  flex flex-col  -space-y-1">
                                  <span className="font-teko font-semibold text-lg text-Mercury ">{notification.name}</span> 
-                                 <span className='font-poppins text-Mercury flex items-center justify-center'>{notification.message}</span>
+                                 <span className='font-poppins text-Mercury flex items-center justify-center'>{updateMessage(notification.message)}</span>
                                </Typography>
                                <Typography variant="small" className="flex items-center gap-1 text-xs font-bold text-GreenishYellow">
                                  <ClockIcon className="h-3 w-3 " />

@@ -13,6 +13,8 @@ import {
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { IconBell } from '@tabler/icons-react'; 
 import { NotificationProps} from '../../../types/dropDownType';
+
+
 const MessageDropDown: React.FC<NotificationProps> = (props) => {
   const {notifications, content } = props;
 
@@ -32,7 +34,7 @@ const MessageDropDown: React.FC<NotificationProps> = (props) => {
                      <IconBell className="h-5 w-5 text-Ceramic " />
                  </IconButton>
              </MenuHandler>
-                 </Badge>
+              </Badge>
              <MenuList className="flex flex-col  bg-HokiCl border-0 "  >
                    <p className='flex items-center justify-center text-Mercury font-teko text-2xl'>Message</p>
                      {notifications && notifications.length > 0 && notifications.map((notification, index) => (
@@ -50,9 +52,6 @@ const MessageDropDown: React.FC<NotificationProps> = (props) => {
                               {notification.time}
                             </Typography>
                           </div >
-                            <div className="ml-auto">
-                              <Badge content={content} />
-                            </div>
                         </MenuItem>
                      ))}
                  </MenuList>

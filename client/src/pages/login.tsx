@@ -194,7 +194,7 @@ export default function Login() {
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center overflow-x-hidden  text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
         <ThemeProvider value={theme}>
-          <LevelBar />     
+          <LevelBar level={8} progress={50} />     
         </ThemeProvider>
     </div>
   );

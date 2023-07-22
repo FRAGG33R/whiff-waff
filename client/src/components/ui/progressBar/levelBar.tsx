@@ -1,16 +1,17 @@
 import React from "react";
 import { Typography } from "@material-tailwind/react";
+import { LevelProps } from "../../../types/levelType"
 
-const LevelBar = () => {
+const LevelBar: React.FC<LevelProps> = ({level, progress }) => {
   return (
     
     <div className="w-64 sm:w-30 md:w-40 lg:w-64 h-3 md:h-2 lg:h-3">
       <div className="mb-2 flex items-center justify-between text-HokiCl gap-4">
         <Typography  variant="small">
-          Level 9
+          Level {level}
         </Typography>
         <Typography  variant="small">
-          23/100
+          {progress}/100
         </Typography>
       </div>
       <div className="w-64 sm:w-30 md:w-40 lg:w-64 h-3 md:h-2 lg:h-3 bg-HokiCl rounded-full  dark:bg-gray-700">

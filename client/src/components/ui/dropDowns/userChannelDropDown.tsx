@@ -13,7 +13,7 @@ import { IconBan } from '@tabler/icons-react';
 const UserChannelDropDown = () => {
     const [selected, setSelected] = useState<string| null>(null);
 
-    const handleClick = (option:string) => {
+    const OptionClick = (option:string) => {
        setSelected(option);
     };
     
@@ -40,14 +40,14 @@ const UserChannelDropDown = () => {
         </MenuHandler>
         <MenuList className='bg-HokiCl border-0 '>
             <MenuItem className="flex space-x-2  gap-2 "
-                onClick={() => handleClick("1 hour")}>
+                onClick={() => OptionClick("1 hour")}>
                     <IconBan className='text-Mercury'/>
             <Typography  className="flex  font-teko text-2xl text-Mercury ">
                 Ban
             </Typography>
             </MenuItem>
             <MenuItem className="flex space-x-2 gap-2 "
-                    onClick={()=> handleClick("8 hour")} >
+                    onClick={()=> OptionClick("8 hour")} >
                     <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_567_579)">
                         <path d="M14.0834 13V13.0117" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
@@ -67,7 +67,7 @@ const UserChannelDropDown = () => {
             </Typography>
             </MenuItem>
             <MenuItem className="flex space-x-2  items-end gap-2"
-                        onClick={()=> handleClick("always")}>
+                        onClick={()=> OptionClick("always")}>
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g clip-path="url(#clip0_567_599)">
                             <path d="M12 2L16 8L21 4L19 14H5L3 4L8 8L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

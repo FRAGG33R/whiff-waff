@@ -12,7 +12,7 @@ import {motion } from 'framer-motion';
 const MuteDropDown = () => {
     const [selected, setSelected] = useState<string| null>(null);
 
-    const handleClick = (option:string) => {
+    const selectTime = (option:string) => {
        setSelected(option);
     };
     
@@ -29,19 +29,19 @@ const MuteDropDown = () => {
         </MenuHandler>
         <MenuList className='bg-HokiCl border-0 '>
             <MenuItem className="flex items-centre justify-center gap-2 "
-                onClick={() => handleClick("1 hour")}>
+                onClick={() => selectTime("1 hour")}>
             <Typography  className="font-teko text-2xl text-Mercury ">
                 1 hour
             </Typography>
             </MenuItem>
             <MenuItem className="flex items-center justify-center gap-2 "
-                    onClick={()=> handleClick("8 hour")} >
+                    onClick={()=> selectTime("8 hour")} >
             <Typography  className="font-teko text-2xl text-Mercury">
                 8 hours
             </Typography>
             </MenuItem>
             <MenuItem className="flex items-center justify-center gap-2"
-                        onClick={()=> handleClick("always")}>   
+                        onClick={()=> selectTime("always")}>   
             <Typography  className="font-teko text-2xl text-Mercury">
                 Always
             </Typography>

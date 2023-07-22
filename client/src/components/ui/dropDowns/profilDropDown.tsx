@@ -9,12 +9,13 @@ import {
   } from "@material-tailwind/react";
 import {motion } from 'framer-motion';
 const ProfilDropDown = () => {
+    const LogOut= () =>{}
   return (
-    <Menu>
+    <Menu placement="left-start" >
       <MenuHandler>
         <motion.div
-            initial={{ scale: 1.3 }}
-            whileHover={{ scale: 1.2 }}
+            initial={{ scale: 0.9 }}
+            whileHover={{ scale: 1.5 }}
          >
             <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 1.78344L1.31387 0L9 10.5223L16.6861 0L18 1.78344L9 14L0 1.78344Z" fill="#CBFC01"/>
@@ -23,14 +24,14 @@ const ProfilDropDown = () => {
 
       </MenuHandler>
       <MenuList className="flex flex-col  bg-HokiCl border-0 ">
-        <MenuItem className="flex items-center gap-2">
+        <MenuItem className="flex items-center gap-2 h-9">
         <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={2}
             stroke="currentColor"
-            className="h-5 w-5 text-GreenishYellow "
+            className="h-5 w-5 text-GreenishYellow flex "
           >
             <path
               strokeLinecap="round"
@@ -38,11 +39,11 @@ const ProfilDropDown = () => {
               d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          <Typography variant="small" className="font-teko text-xl text-Mercury">
+          <Typography variant="body2" className="font-teko text-xl text-Mercury">
             My Profile
           </Typography>
         </MenuItem>
-        <MenuItem className="flex items-center gap-2">
+        <MenuItem className="flex items-center gap-2 h-9">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -62,12 +63,12 @@ const ProfilDropDown = () => {
               d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
             />
           </svg>
-          <Typography variant="small" className="font-teko text-xl text-Mercury">
+          <Typography variant="body2" className="font-teko text-xl text-Mercury">
             Edit Profile
           </Typography>
         </MenuItem>
-        <hr className="my-2 border-GreenishYellow" />
-        <MenuItem className="flex items-center gap-2 ">
+        <hr className="my-2 border-GreenishYellow " />
+        <MenuItem className="flex items-center gap-2  h-9">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -82,8 +83,11 @@ const ProfilDropDown = () => {
               d="M5.636 5.636a9 9 0 1012.728 0M12 3v9"
             />
           </svg>
-          <Typography variant="small" className="font-teko text-xl text-Mercury">
-            Sign Out
+          <Typography variant="body2" className="font-teko text-xl text-Mercury"
+            onClick={LogOut}
+            >
+            Log Out
+            
           </Typography>
         </MenuItem>
       </MenuList>

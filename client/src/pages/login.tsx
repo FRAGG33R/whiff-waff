@@ -5,6 +5,7 @@ import NotificationDropDown from "@/components/ui/dropDowns/notificationDropDown
 import MessageDropDown from "@/components/ui/dropDowns/messageDropDown"; 
 import MuteDropDown from "@/components/ui/dropDowns/muteDropDown";
 import UserChannelDropDown from "@/components/ui/dropDowns/userChannelDropDown";
+import ProfilDropDown from "@/components/ui/dropDowns/profilDropDown";
 
 export default function Login() {
   // const notifications = [
@@ -25,7 +26,7 @@ export default function Login() {
   // ];
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center overflow-x-hidden  text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-      <UserChannelDropDown
+      <ProfilDropDown
         // notifications={notifications}
         // content={notifications.length}
        />

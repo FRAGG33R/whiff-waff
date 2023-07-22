@@ -13,6 +13,7 @@ import {
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { IconBell } from '@tabler/icons-react'; 
 import { NotificationProps} from '../../../types/dropDownType';
+import { motion } from 'framer-motion';
 
 
 const MessageDropDown: React.FC<NotificationProps> = (props) => {
@@ -28,6 +29,10 @@ const MessageDropDown: React.FC<NotificationProps> = (props) => {
     <Fragment>
     <div className='flex mb-5 gap-5  bg-CarbonGrey bg-opacity-10 rounded-lg '>
          <Menu placement="bottom" >
+             <motion.div
+            initial={{ scale: 0.9 }}
+            whileHover={{ scale: 1.2 }}
+         >
              <Badge content={content} >
              <MenuHandler >
                  <IconButton variant="text">
@@ -35,6 +40,7 @@ const MessageDropDown: React.FC<NotificationProps> = (props) => {
                  </IconButton>
              </MenuHandler>
               </Badge>
+                  </motion.div>
              <MenuList className="flex flex-col  bg-HokiCl border-0 "  >
                    <p className='flex items-center justify-center text-Mercury font-teko text-2xl'>Message</p>
                      {notifications && notifications.length > 0 && notifications.map((notification, index) => (

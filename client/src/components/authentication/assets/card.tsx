@@ -7,7 +7,6 @@ import IntraButton from "@/components/ui/buttons/intraButton";
 import { useRouter } from "next/router";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
-  const router = useRouter();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastNam] = useState("");
   const [username, setUsername] = useState("");
@@ -15,6 +14,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   const [password, setPassword] = useState("");
   const [step, setStep] = useState(0);
   const [error, setError] = useState(false);
+  const router = useRouter();
 
   const signinArray = [
     {
@@ -23,7 +23,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       value: email,
       setValue: setEmail,
       type: "email",
-	  RegExp : /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      RegExp: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      errorMessage: "Invalid email",
     },
     {
       label: "Enter your Password",
@@ -31,7 +32,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       value: password,
       setValue: setPassword,
       type: "password",
-	  RegExp : /^.{6,}$/
+      RegExp: /^.{6,}$/,
+      errorMessage: "Invalid password",
     },
   ];
   const signupArray = [
@@ -41,7 +43,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       value: firstName,
       setValue: setFirstName,
       type: "text",
-	  RegExp : /^.{3}$/
+      RegExp: /^.{3,}$/,
+      errorMessage: "Invalid first name",
     },
     {
       label: "Enter your Last name",
@@ -49,7 +52,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       value: lastName,
       setValue: setLastNam,
       type: "text",
-	  RegExp : /^.{3}$/
+      RegExp: /^.{3,}$/,
+      errorMessage: "Invalid last name",
     },
     {
       label: "Enter your Username",
@@ -57,7 +61,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       value: username,
       setValue: setUsername,
       type: "text",
-	  RegExp : /^[a-zA-Z0-9_.]{3,16}$/
+      RegExp: /^[a-zA-Z0-9_.]{3,16}$/,
+      errorMessage: "Invalid username",
     },
     {
       label: "Enter your Email",
@@ -65,7 +70,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       value: email,
       setValue: setEmail,
       type: "email",
-	  RegExp : /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      RegExp: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      errorMessage: "Invalid email",
     },
     {
       label: "Enter your Password",
@@ -73,7 +79,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       value: password,
       setValue: setPassword,
       type: "password",
-	  RegExp : /^.{6,}$/
+      RegExp: /^.{6,}$/,
+      errorMessage: "Invalid password",
     },
   ];
 
@@ -89,64 +96,85 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       step <
       (props.Mode === "signin" ? signinArray.length : signupArray.length) - 1
     ) {
-		if (props.Mode === "signin" && signinArray[step].RegExp.test(signinArray[step].value)){
-			setStep((prev) => prev + 1);
-			setError(false);
-		}
-		else if (props.Mode === "signup" && signupArray[step].RegExp.test(signupArray[step].value)){
-			setStep((prev) => prev + 1);
-			setError(false);
-		}
-		else
-			setError(true);
+      if (
+        props.Mode === "signin" &&
+        signinArray[step].RegExp.test(signinArray[step].value)
+      ) {
+        setStep((prev) => prev + 1);
+        setError(false);
+      } else if (
+        props.Mode === "signup" &&
+        signupArray[step].RegExp.test(signupArray[step].value)
+      ) {
+        setStep((prev) => prev + 1);
+        setError(false);
+      } else setError(true);
     } else {
-		console.log('Submit');
-		setError(false);
+      if (
+        (props.Mode === "signup" &&
+          signupArray[step].RegExp.test(signupArray[step].value)) ||
+        (props.Mode === "signin" &&
+          signinArray[step].RegExp.test(signinArray[step].value))
+      ) {
+        setError(false);
+        console.log("Submit");
+      }
     }
   };
 
   return (
-    <div className="min-h-1 min-w-1 z-10 px-10 md:px-24 md:py-24 py-6 flex items-center justify-center flex-col space-y-16 md:space-y-12 bg-DarkGrey rounded-xl">
+    <div className="min-h-1 min-w-1 z-10 px-10 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-16 md:space-y-12 bg-DarkGrey rounded-xl">
       <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
         <Image src={Logo} alt="Logo" className="w-10/12" />
         <div className="text-3xl font-teko font-bold">
           {props.Mode === "signin" ? "Welcome Back !" : "Welcome !"}
         </div>
       </div>
-      <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-8">
-        <UserInput
-          label={
-            props.Mode === "signin"
-              ? signinArray[step].label
-              : signupArray[step].label
-          }
-          placeholder={
-            props.Mode === "signin"
-              ? signinArray[step].placeholder
-              : signupArray[step].placeholder
-          }
-          isError={error}
-		  setError={setError}
-          isDisabled={false}
-          lableColor="#222222"
-		  regExp={props.Mode === "signin" ? signinArray[step].RegExp : signupArray[step].RegExp}
-          value={
-            props.Mode === "signin"
-              ? signinArray[step].value
-              : signupArray[step].value
-          }
-          setValue={
-            props.Mode === "signin"
-              ? signinArray[step].setValue
-              : signupArray[step].setValue
-          }
-          type={
-            props.Mode === "signin"
-              ? signinArray[step].type
-              : signupArray[step].type
-          }
-          width="md"
-        />
+      <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-6">
+        <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-2">
+          <UserInput
+            label={
+              props.Mode === "signin"
+                ? signinArray[step].label
+                : signupArray[step].label
+            }
+            placeholder={
+              props.Mode === "signin"
+                ? signinArray[step].placeholder
+                : signupArray[step].placeholder
+            }
+            isError={error}
+            setError={setError}
+            isDisabled={false}
+            lableColor="#222222"
+            regExp={
+              props.Mode === "signin"
+                ? signinArray[step].RegExp
+                : signupArray[step].RegExp
+            }
+            value={
+              props.Mode === "signin"
+                ? signinArray[step].value
+                : signupArray[step].value
+            }
+            setValue={
+              props.Mode === "signin"
+                ? signinArray[step].setValue
+                : signupArray[step].setValue
+            }
+            type={
+              props.Mode === "signin"
+                ? signinArray[step].type
+                : signupArray[step].type
+            }
+            width="md"
+          />
+         {error === true &&  <p className="text-md text-red-500 font-poppins ">
+            {props.Mode === "signin"
+              ? signinArray[step].errorMessage
+              : signupArray[step].errorMessage}
+          </p>}
+        </div>
         <AuthButton text="Continue" onClick={handleNext} />
       </div>
       {props.Mode === "signin" && (

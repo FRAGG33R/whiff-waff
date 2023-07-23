@@ -16,7 +16,7 @@ const LevelBar: React.FC<LevelProps> = ({level, progress }) => {
       </div>
       <div className="w-64 sm:w-30 md:w-40 lg:w-64 h-3 md:h-2 lg:h-3 bg-HokiCl rounded-full  dark:bg-gray-700">
         <div
-          style={{ width: "60%" }}
+          style={{ width: `${progress}%` }}
           className="bg-GreenishYellow h-3 md:h-2 lg:h-3 rounded-full"
         ></div>
       </div>

@@ -1,8 +1,8 @@
 export type LevelProps = {
-    level: number;
-    progress: number;
-}
+  level: number;
+  progress: number;
+};
 
 export type AchievementProps = {
-    achievmentprogress: number;
-}
+  achievmentprogress: number;
+};

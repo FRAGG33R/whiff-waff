@@ -7,9 +7,11 @@ import {
   TabPanel,
 } from "@material-tailwind/react";
 import { ButtonProps } from '../../../types/buttonsType';
+import { useRouter } from 'next/router';
 
 const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunction, secondFunction}) => {
-  const [activeTab, setActiveTab] = useState(firstValue);
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState(router.pathname === '/login' ? firstValue : secondValue);
 
   const data = [
     {
@@ -23,13 +25,14 @@ const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunc
    
   ];
 
-  useEffect(() => {
-      if (activeTab === firstValue) {
-        firstFunction();
-      }else if (activeTab === secondValue) {
-        secondFunction();
-      }
-  }, [activeTab]);
+  function switchTab(value: any) {
+    setActiveTab(value);
+    if (activeTab === firstValue) {
+      firstFunction();
+    }else if (activeTab === secondValue) {
+      secondFunction();
+    }
+  }
 
   return (
     <Tabs value={activeTab}  >
@@ -43,7 +46,7 @@ const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunc
           <Tab
             key={value}
             value={value}
-            onClick={() => setActiveTab(value)}
+            onClick={() => switchTab(value)}
             className={activeTab === value ? "text-DarkBg font-teko " : "font-teko text-Ceramic"}
           >
             {label}

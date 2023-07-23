@@ -16,13 +16,13 @@ import Image from "next/image";
 const ProfilDropDown = () => {
   const LogOut = () => {};
   return (
-    <Menu placement="left-start"  >
+    <Menu  placement="left-start" >
       <MenuHandler>
         <motion.div initial={{ scale: 0.9 }} whileHover={{ scale: 1.5 }}>
           <Image src={Profil} alt="profil"  />
         </motion.div>
       </MenuHandler>
-      <MenuList className="flex flex-col  bg-HokiCl border-0 ">
+      <MenuList className="flex flex-col  bg-HokiCl border-0 " >
         <MenuItem className="flex flex-row space-y-1 items-center gap-2 h-9">
           <IconUserCircle size={22} color="#CBFC01" className="flex items-center"/>
           <Typography

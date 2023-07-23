@@ -11,9 +11,9 @@ const UserInput: React.FC<InputProps> = ({
   value,
   setValue,
 }) => {
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setValue(e.target.value)
-	}
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
+  };
 
   return (
     <div className="relative w-full">
@@ -27,8 +27,8 @@ const UserInput: React.FC<InputProps> = ({
         type={type}
         placeholder={placeholder}
         disabled={isDisabled}
-		onChange={handleChange}
-		value={value}
+        onChange={handleChange}
+        value={value}
         className={`bg-transparent rounded-full font-poppins text-xs placeholder-PastelGrey placeholder-left pl-3 border-2 border-Mercury
          focus:border-2 focus:border-GreenishYellow focus:outline-none
         ${isError ? "border-red-500" : ""}

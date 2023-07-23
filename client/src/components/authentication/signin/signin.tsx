@@ -4,7 +4,7 @@ export default function SignInComponent()
 {
 	return (
 		<div className="w-full h-full flex items-center justify-center">
-			<Card Mode="signup"/>
+			<Card Mode="signin"/>
 		</div>
 	)
 }

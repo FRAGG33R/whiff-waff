@@ -23,14 +23,6 @@ export default function Login() {
         innerScale={1}
         outerScale={1.7}
       /> */}
-	  <div className="h-44 w-44 fixed  top-0  md:right-0 flex items-center md:items-end justify-center md:justify-start ">
-	  {/* <ToggleSwitch
-        firstValue="Login"
-        secondValue="Signup"
-        firstFunction={() => {router.push('/signup')}}
-        secondFunction={() => {router.push('/')}}
-      /> */}
-	  </div>
       <SignInComponent />
       <Wave />
     </div>

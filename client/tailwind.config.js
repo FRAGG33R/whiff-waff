@@ -28,8 +28,15 @@ module.exports = withMT({
         'Ceramic': '#FFFFFF',
         'CarbonGrey': '#606060',
         'PastelGrey': '#CDCBCB',
+		'DarkGrey': '#222222',
+      },
+	  screens: {
+        '3xl': '1920px',
       },
     },
+	screen: {
+		'3xl': '1920px',
+	}
   },
   plugins: [],
 });

@@ -12,5 +12,7 @@ export interface InputProps {
     lableColor: string;
     width: string;
 	value: string;
-	setValue	: (value: string) => void;
+	setValue  : (value: string) => void;
+	setError  : (value: boolean) => void;
+	regExp    : RegExp;
 }

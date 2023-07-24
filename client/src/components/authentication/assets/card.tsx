@@ -5,6 +5,7 @@ import { useState } from "react";
 import AuthButton from "@/components/ui/buttons/authButton";
 import IntraButton from "@/components/ui/buttons/intraButton";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
@@ -86,7 +87,15 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
 
   const signIn = async () => {
     try {
-      router.push("http://e3r8p18.1337.ma:3000/auth/signin/42");
+      const res = await axios.get(
+        "http://e3r8p18.1337.ma:3000/api/v1/auth/signin/42",
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
+      );
+      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
@@ -169,11 +178,13 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
             }
             width="md"
           />
-         {error === true &&  <p className="text-md text-red-500 font-poppins ">
-            {props.Mode === "signin"
-              ? signinArray[step].errorMessage
-              : signupArray[step].errorMessage}
-          </p>}
+          {error === true && (
+            <p className="text-md text-red-500 font-poppins ">
+              {props.Mode === "signin"
+                ? signinArray[step].errorMessage
+                : signupArray[step].errorMessage}
+            </p>
+          )}
         </div>
         <AuthButton text="Continue" onClick={handleNext} />
       </div>

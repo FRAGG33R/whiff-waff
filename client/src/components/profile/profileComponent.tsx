@@ -1,9 +1,12 @@
+import AchievementComponent from "./achievementComponents";
+import MatchComponents from "./matchComponent";
 import ProfileInformations from "./profileInformations";
+import RankComponent from "./rankComponent";
 
 
 export default function ProfileComponent() {
   return (
-    <div className="w-full md:w-[98%] h-full md:h-[95%] flex items-center justify-start flex-row  text-white">
+    <div className="w-full md:w-[98%] h-full md:h-[95%] flex items-center justify-start flex-row text-white">
       <div className="h-full w-[13%] lg:w-[5%] border-2 border-white">
 		sidebar
 	  </div>
@@ -17,15 +20,15 @@ export default function ProfileComponent() {
 				<ProfileInformations />
             </div>
             <div className="w-full lg:w-[45%] h-full border-2 border-white">
-              rank
+              <RankComponent />
             </div>
           </div>
           <div className="w-full h-full flex flex-col-reverse lg:flex-row border-2 border-white">
             <div className="w-full h-[50%] lg:h-full border-2 border-white">
-              match history
+              <MatchComponents />
             </div>
             <div className="w-full lg:w-7/12  h-[50%] lg:h-full border-2 border-white">
-              achievement
+              <AchievementComponent />
             </div>
           </div>
         </div>

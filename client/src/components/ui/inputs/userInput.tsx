@@ -17,6 +17,7 @@ const UserInput: React.FC<InputProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 	setValue(e.target.value);
   };
+  
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
 	if (regExp.test(value))
 		setError(false);
@@ -41,7 +42,7 @@ const UserInput: React.FC<InputProps> = ({
         value={value}
         className={`bg-transparent rounded-full font-poppins text-md placeholder-PastelGrey placeholder-left pl-8 border-2 border-Mercury
          focus:outline-none
-        ${isError ? "border-red-500 " : "focus:border-GreenishYellow"}
+        ${isError ? "border-red-500" : "focus:border-GreenishYellow"}
         ${
           width === "sm"
             ? "w-40 md:w-52 lg:w-64 h-12 text-sm"

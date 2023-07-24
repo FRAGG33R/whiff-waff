@@ -13,6 +13,7 @@ import { useState } from "react";
 
 export default function Signup() {
   const [activeTab, setActiveTab] = useState("Signup");
+  const router = useRouter();
 
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
@@ -25,19 +26,23 @@ export default function Signup() {
         /> */}
       <div className="h-44 w-44 fixed  top-0  md:right-0 flex items-center md:items-end justify-center md:justify-start ">
         <ToggleSwitch
+          tab="Signup"
           firstValue="Login"
           secondValue="Signup"
           firstFunction={() => {
-            setActiveTab("Signup");
+            // setActiveTab("Login");
+            router.push("/login");
           }}
           secondFunction={() => {
-            setActiveTab("Login");
+            // setActiveTab("Signup");
+            router.push("/signup");
           }}
         />
       </div>
-      {
+      {/* {
         activeTab === "Signup" ? <SignUpComponent /> : <SignInComponent />
-      }
+      } */}
+      <SignUpComponent />
       <Wave />
     </div>
   );

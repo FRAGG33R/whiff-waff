@@ -16,7 +16,7 @@ import SignUpComponent from "@/components/authentication/signup/signup";
 export default function Login() {
   const [activeTab, setActiveTab] = useState("Login");
   
-
+  const router = useRouter();
   return (
     <div className="flex h-screen items-center justify-start text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet overflow-y-hidden">
       {/* <AnimatedCursor
@@ -28,19 +28,23 @@ export default function Login() {
       /> */}
       <div className="h-44 w-44 fixed  top-0  md:right-0 flex items-center md:items-end justify-center md:justify-start ">
         <ToggleSwitch
+          tab="Login"
           firstValue="Login"
           secondValue="Signup"
           firstFunction={() => {
-            setActiveTab("Signup");
+            // setActiveTab("Login");
+            router.push("/login");
           }}
           secondFunction={() => {
-            setActiveTab("Login");
+            // setActiveTab("Signup");
+            router.push("/signup");
           }}
         />
       </div>
       {
-        activeTab === "Signup" ? <SignUpComponent /> : <SignInComponent />
+        // activeTab === "Login" ? <SignUpComponent /> : <SignInComponent />
       }
+      <SignInComponent />
       <Wave />
     </div>
   );

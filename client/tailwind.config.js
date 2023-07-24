@@ -8,6 +8,9 @@ module.exports = withMT({
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    colors : {
+      'GreenishYellow': '#CBFC01'
+    },
     fontFamily: {
       'teko': ['Teko', 'sans-serif'],
       'poppins': ['Poppins', 'sans-serif'],

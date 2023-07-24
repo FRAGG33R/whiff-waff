@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState , useEffect} from 'react';
 import {
   Tabs,
   TabsHeader,
@@ -6,15 +6,13 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
-import { ButtonProps } from "../../../types/buttonsType";
+import { ButtonProps } from '../../../types/buttonsType';
+import { useRouter } from 'next/router';
+import { ToggleProps } from '@/types/toggleType';
 
-const ToggleSwitch: React.FC<ButtonProps> = ({
-  firstValue,
-  secondValue,
-  firstFunction,
-  secondFunction,
-}) => {
-  const [activeTab, setActiveTab] = useState(firstValue);
+const ChannelToggleSwitch: React.FC<ToggleProps> = ({firstValue, secondValue, firstFunction, secondFunction, tab}) => {
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState(tab);
 
   const data = [
     {
@@ -25,20 +23,21 @@ const ToggleSwitch: React.FC<ButtonProps> = ({
       label: secondValue,
       value: secondValue,
     },
+   
   ];
-
-  useEffect(() => {
+  function switchTab(value: any) {
+    setActiveTab(value);
     if (activeTab === firstValue) {
       firstFunction();
-    } else if (activeTab === secondValue) {
+    }else if (activeTab === secondValue) {
       secondFunction();
     }
-  }, [activeTab, firstValue, secondValue]);
+  }
 
   return (
     <Tabs value={activeTab}>
       <TabsHeader
-        className="rounded-full bg-black bg-opacity-100 font-teko w-44 md:w-52 lg:w-52 h-14 md:h-12 lg:h-14  "
+        className="rounded-full bg-black bg-opacity-100 font-teko w-40 md:w-40 lg:w-44 h-8 md:h-8 lg:h-10  "
         indicatorProps={{
           className:
             "bg-GreenishYellow  shadow-none rounded-full font-teko text-Ceramic",
@@ -48,7 +47,7 @@ const ToggleSwitch: React.FC<ButtonProps> = ({
           <Tab
             key={value}
             value={value}
-            onClick={() => setActiveTab(value)}
+            onClick={() => switchTab(value)}
             className={
               activeTab === value
                 ? "text-DarkBg font-teko "
@@ -60,7 +59,8 @@ const ToggleSwitch: React.FC<ButtonProps> = ({
         ))}
       </TabsHeader>
     </Tabs>
+  
   );
 };
 
-export default ToggleSwitch;
+export default ChannelToggleSwitch;

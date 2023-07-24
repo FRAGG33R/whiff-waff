@@ -7,15 +7,16 @@ import { ThemeProvider } from "@material-tailwind/react";
 import AchievementsProgressBar from "@/components/ui/progressBar/achievementsProgressBar";
 import ProfilDropDown from "@/components/ui/dropDowns/profilDropDown";
 import UserChannelDropDown from "@/components/ui/dropDowns/userChannelDropDown";
-import ToggleSwitch from "@/components/ui/buttons/ToggleSwitch";
+import LoginToggleSwitch from "@/components/ui/buttons/loginToggleSwitch";
 import MuteDropDown from "@/components/ui/dropDowns/muteDropDown";
-
+import ChannelToggleSwitch from "@/components/ui/buttons/channelToggleSwitch";
+import {theme }  from '../Them/userTheme'
 export default function Login() {
- 
+
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center overflow-x-hidden  text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-        <ThemeProvider >
-          <ProfilDropDown />  
+        <ThemeProvider value={theme} >
+          <ProfilDropDown  /> 
         </ThemeProvider>
     </div>
   );

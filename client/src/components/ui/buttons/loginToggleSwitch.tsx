@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Tabs,
   TabsHeader,
@@ -6,13 +6,15 @@ import {
   Tab,
   TabPanel,
 } from "@material-tailwind/react";
-import { ButtonProps } from '../../../types/buttonsType';
-import { useRouter } from 'next/router';
-
-const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunction, secondFunction, tab}) => {
+import { ToggleProps } from "@/types/toggleType";
+import { useRouter } from "next/router";
+const LoginToggleSwitch: React.FC<ToggleProps> = ({
+  firstValue,
+  secondValue,
+  tab
+}) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(tab);
-
   const data = [
     {
       label: firstValue,
@@ -22,9 +24,7 @@ const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunc
       label: secondValue,
       value: secondValue,
     },
-   
   ];
-
   return (
     <Tabs value={activeTab}  >
       <TabsHeader
@@ -47,8 +47,8 @@ const ToggleSwitch: React.FC<ButtonProps> = ({firstValue, secondValue, firstFunc
         ))}
       </TabsHeader>
     </Tabs>
-  
+    
   );
 };
 
-export default ToggleSwitch;
+export default LoginToggleSwitch;

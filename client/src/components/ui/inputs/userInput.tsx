@@ -15,14 +15,12 @@ const UserInput: React.FC<InputProps> = ({
   setValue,
 }) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-	setValue(e.target.value);
+    setValue(e.target.value);
   };
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-	if (regExp.test(value))
-		setError(false);
-	else
-		setError(true);
-}
+    if (regExp.test(value)) setError(false);
+    else setError(true);
+  };
 
   return (
     <div className="relative w-full">
@@ -37,7 +35,7 @@ const UserInput: React.FC<InputProps> = ({
         placeholder={placeholder}
         disabled={isDisabled}
         onChange={handleChange}
-		onBlur={handleBlur}
+        onBlur={handleBlur}
         value={value}
         className={`bg-transparent rounded-full font-poppins text-md placeholder-PastelGrey placeholder-left pl-8 border-2 border-Mercury
          focus:outline-none

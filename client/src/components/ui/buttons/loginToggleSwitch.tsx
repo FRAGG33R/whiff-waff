@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Tabs,
   TabsHeader,
-  TabsBody,
   Tab,
-  TabPanel,
 } from "@material-tailwind/react";
 import { ToggleProps } from "@/types/toggleType";
 import { useRouter } from "next/router";

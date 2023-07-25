@@ -1,16 +1,16 @@
-import React, { useState , useEffect} from 'react';
-import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
-  Tab,
-  TabPanel,
-} from "@material-tailwind/react";
-import { ButtonProps } from '../../../types/buttonsType';
-import { useRouter } from 'next/router';
-import { ToggleProps } from '@/types/toggleType';
+import React, { useState, useEffect } from "react";
+import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
+import { ButtonProps } from "../../../types/buttonsType";
+import { useRouter } from "next/router";
+import { ToggleProps } from "@/types/toggleType";
 
-const ChannelToggleSwitch: React.FC<ToggleProps> = ({firstValue, secondValue, firstFunction, secondFunction, tab}) => {
+const ChannelToggleSwitch: React.FC<ToggleProps> = ({
+  firstValue,
+  secondValue,
+  firstFunction,
+  secondFunction,
+  tab,
+}) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(tab);
 
@@ -23,13 +23,12 @@ const ChannelToggleSwitch: React.FC<ToggleProps> = ({firstValue, secondValue, fi
       label: secondValue,
       value: secondValue,
     },
-   
   ];
   function switchTab(value: any) {
     setActiveTab(value);
     if (activeTab === firstValue) {
       firstFunction();
-    }else if (activeTab === secondValue) {
+    } else if (activeTab === secondValue) {
       secondFunction();
     }
   }
@@ -59,7 +58,6 @@ const ChannelToggleSwitch: React.FC<ToggleProps> = ({firstValue, secondValue, fi
         ))}
       </TabsHeader>
     </Tabs>
-  
   );
 };
 

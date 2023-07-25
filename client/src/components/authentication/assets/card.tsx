@@ -5,7 +5,8 @@ import { useState } from "react";
 import AuthButton from "@/components/ui/buttons/authButton";
 import IntraButton from "@/components/ui/buttons/intraButton";
 import { useRouter } from "next/router";
-
+import axios from "axios";
+ 
 export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastNam] = useState("");
@@ -85,13 +86,9 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   ];
 
   const signIn = async () => {
-    try {
-      router.push("http://e3r8p18.1337.ma:3000/auth/signin/42");
-    } catch (error) {
-      console.log(error);
-    }
+   router.push("http://e3r10p14.1337.ma:3000/api/v1/auth/signin/42/");
   };
-  const handleNext = () => {
+  const handleNext = async () => {
     if (
       step <
       (props.Mode === "signin" ? signinArray.length : signupArray.length) - 1
@@ -117,7 +114,30 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           signinArray[step].RegExp.test(signinArray[step].value))
       ) {
         setError(false);
-        console.log("Submit");
+        let req;
+        props.Mode === "signin" ? 
+          req ={
+            email,
+            password,
+          }
+          : req = {
+            firstName,
+            lastName,
+            userName: username,
+            email,
+            password,
+          }
+        try {
+          const res = await axios.post(`http://e3r10p14.1337.ma:3000/api/v1/auth/${props.Mode}/`, req);
+          console.log(res);
+          console.log(res.data);
+          const token = res.data.token;
+          localStorage.setItem("token", token);
+          router.push("/profil");
+        }
+        catch (error) {
+          console.log(error);
+        }
       }
     }
   };

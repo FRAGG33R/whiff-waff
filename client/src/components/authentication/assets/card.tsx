@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Logo from "../../../../public/logo.svg";
 import UserInput from "@/components/ui/inputs/userInput";
@@ -86,21 +87,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   ];
 
   const signIn = async () => {
-    try {
-		const req = {
-			firstName: "Kamal",
-			lastName: "Faouzi",
-			username: "kamalFaouzi",
-			email: "kamalFaouzi@gmail.com",
-			password: "st333r22ing",
-		  }
-		console.log('request is : ', req);
-      const res = await axios.post(
-        "http://e3r10p14.1337.ma:3000/api/v1/auth/signup/", req);
-      console.log('res is ', res);
-    } catch (error) {
-      console.log(error);
-    }
+   router.push("http://e3r10p14.1337.ma:3000/api/v1/auth/signin/42/");
   };
   const handleNext = async () => {
     if (
@@ -128,7 +115,30 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           signinArray[step].RegExp.test(signinArray[step].value))
       ) {
         setError(false);
-        console.log("Submit");
+        let req;
+        props.Mode === "signin" ? 
+          req ={
+            email,
+            password,
+          }
+          : req = {
+            firstName,
+            lastName,
+            userName: username,
+            email,
+            password,
+          }
+        try {
+          const res = await axios.post(`http://e3r10p14.1337.ma:3000/api/v1/auth/${props.Mode}/`, req);
+          console.log(res);
+          console.log(res.data);
+          const token = res.data.token;
+          localStorage.setItem("token", token);
+          router.push("/profil");
+        }
+        catch (error) {
+          console.log(error);
+        }
       }
 	  
     }

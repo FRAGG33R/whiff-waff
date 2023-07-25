@@ -1,7 +1,7 @@
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import ProfileComponent from "@/components/profile/profileComponent";
-import "../app/globals.css";
+import "../../app/globals.css";
 
 const AnimatedCursor = dynamic(() => import("react-animated-cursor"), {
   ssr: false,

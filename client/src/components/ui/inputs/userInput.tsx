@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { InputProps } from "../../../types/inputsType";
 
 const UserInput: React.FC<InputProps> = ({
@@ -14,6 +14,8 @@ const UserInput: React.FC<InputProps> = ({
   value,
   setValue,
 }) => {
+	const inputRef = React.useRef<HTMLInputElement>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 	setValue(e.target.value);
   };
@@ -24,7 +26,9 @@ const UserInput: React.FC<InputProps> = ({
 	else
 		setError(true);
 }
-
+	useEffect(() => {
+		inputRef.current?.focus();
+	}, [inputRef, placeholder])
   return (
     <div className="relative w-full">
       <div
@@ -34,6 +38,7 @@ const UserInput: React.FC<InputProps> = ({
         <label>{label}</label>
       </div>
       <input
+		ref={inputRef}
         type={type}
         placeholder={placeholder}
         disabled={isDisabled}

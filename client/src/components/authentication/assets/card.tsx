@@ -87,20 +87,22 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
 
   const signIn = async () => {
     try {
-      const res = await axios.get(
-        "http://e3r8p18.1337.ma:3000/api/v1/auth/signin/42",
-        {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
-      console.log(res.data);
+		const req = {
+			firstName: "Kamal",
+			lastName: "Faouzi",
+			username: "kamalFaouzi",
+			email: "kamalFaouzi@gmail.com",
+			password: "st333r22ing",
+		  }
+		console.log('request is : ', req);
+      const res = await axios.post(
+        "http://e3r10p14.1337.ma:3000/api/v1/auth/signup/", req);
+      console.log('res is ', res);
     } catch (error) {
       console.log(error);
     }
   };
-  const handleNext = () => {
+  const handleNext = async () => {
     if (
       step <
       (props.Mode === "signin" ? signinArray.length : signupArray.length) - 1
@@ -128,6 +130,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
         setError(false);
         console.log("Submit");
       }
+	  
     }
   };
 

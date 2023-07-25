@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Tabs,
   TabsHeader,
@@ -26,7 +26,7 @@ const LoginToggleSwitch: React.FC<ToggleProps> = ({
   return (
     <Tabs value={activeTab}  >
       <TabsHeader
-        className="rounded-full bg-black bg-opacity-100 font-teko w-40 md:w-40 lg:w-44 h-14 md:h-14 lg:h-16  "
+        className="rounded-full bg-black bg-opacity-100 font-teko w-40 md:w-40 lg:w-44 h-12 md:h-12 lg:h-14  "
         indicatorProps={{
           className: "bg-GreenishYellow  shadow-none rounded-full font-teko text-Ceramic",
         }}

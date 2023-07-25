@@ -6,6 +6,7 @@ import { useState } from "react";
 import AuthButton from "@/components/ui/buttons/authButton";
 import IntraButton from "@/components/ui/buttons/intraButton";
 import { useRouter } from "next/router";
+import { KeyboardEvent } from "react";
 import axios from "axios";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
@@ -85,6 +86,12 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       errorMessage: "Invalid password",
     },
   ];
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+	if (e.key === "Enter")
+	{
+		handleNext();
+	}
+  }
 
   const signIn = async () => {
    router.push("http://e3r10p14.1337.ma:3000/api/v1/auth/signin/42/");
@@ -140,7 +147,6 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           console.log(error);
         }
       }
-	  
     }
   };
 
@@ -155,6 +161,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-6">
         <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-2">
           <UserInput
+		  handleKeyDown={handleKeyDown}
             label={
               props.Mode === "signin"
                 ? signinArray[step].label

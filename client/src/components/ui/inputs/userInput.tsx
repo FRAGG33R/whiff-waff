@@ -13,6 +13,7 @@ const UserInput: React.FC<InputProps> = ({
   regExp,
   value,
   setValue,
+  handleKeyDown
 }) => {
 	const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -40,6 +41,7 @@ const UserInput: React.FC<InputProps> = ({
       <input
 		ref={inputRef}
         type={type}
+		onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={isDisabled}
         onChange={handleChange}

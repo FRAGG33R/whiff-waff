@@ -9,7 +9,8 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({ text, onClick }) => {
       whileHover={{ scale: 1.07 }}
       whileTap={{ scale: 0.9 }}
       onClick={onClick}
-      className="flex items-center justify-center bg-GreenishYellow font-teko rounded-full w-32 lg:w-36  h-9 md:h-6 lg:h-10 text-NightBlack text-2xl"
+      className="flex items-center justify-center bg-GreenishYellow font-teko rounded-full
+       w-20 md:w-24 lg:w-28  h-5 md:h-6 lg:h-7 text-NightBlack "
     >
       <div className="flex items-center justify-center pt-1">{text}</div>
     </motion.button>

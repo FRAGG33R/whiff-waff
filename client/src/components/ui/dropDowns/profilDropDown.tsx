@@ -22,7 +22,7 @@ const itemVariants: Variants = {
   },
   closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
 };
-const ProfilDropDown = () => {
+const ProfileDropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const LogOut = () => {};
   return (
@@ -64,7 +64,7 @@ const ProfilDropDown = () => {
           pointerEvents: isOpen ? "auto" : "none",
           padding: "0.5rem",
         }}
-        className="bg-HokiCl border-0 w-40  "
+        className="bg-HokiCl border-0 w-40"
       >
         <motion.li variants={itemVariants}>
           <MenuItem className="flex flex-row space-y-1 items-center gap-2 h-9">
@@ -114,4 +114,4 @@ const ProfilDropDown = () => {
   );
 };
 
-export default ProfilDropDown;
+export default ProfileDropDown;

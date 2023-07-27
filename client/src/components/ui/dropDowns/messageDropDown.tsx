@@ -27,16 +27,16 @@ const MessageDropDown: React.FC<NotificationProps> = (props) => {
   };
   return (
     <Fragment>
-      <div className="flex min-w-1 items-center justify-center rounded-lg ">
+      <div className="flex min-w-1 h-full items-center justify-center rounded-lg ">
         <Menu placement="bottom">
           <motion.div className="flex items-center justify-center">
-            <Badge content={content}>
+            <Badge content={content} >
               <MenuHandler>
-                <motion.button whileTap={{scale : 0.9}} whileHover={{ scale : 1.1}} className="bg-[#606060]/[12%] w-12 h-12 md:w-16 md:h-16 flex items-center justify-center rounded-[20px]">
+                <motion.button whileTap={{scale : 0.9}} whileHover={{ scale : 1.1}} className="bg-[#606060]/[12%] w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-[20px]">
                   <Image
                     src={chatIcon}
                     alt="chat notification icon"
-					className="w-6 md:w-8"
+					className="w-5 sm:w-6 md:w-8"
                   />
                 </motion.button>
               </MenuHandler>

@@ -23,7 +23,7 @@ export default function NavBar() {
           onClick={() => {
             setOpen((prev) => !prev);
           }}
-          className="flex h-full w-[15%] md:hidden  items-center justify-center  bg-[#606060]/[12%] rounded-[20px]"
+          className="flex h-full w-[15%] md:hidden  items-center justify-center bg-[#606060]/[12%] rounded-[20px]"
         >
           <Image src={searchIcon} alt="search icon" className="w-5" />
         </button>
@@ -33,7 +33,7 @@ export default function NavBar() {
             Level 9
           </div>
         </div>
-        <div className="h-full w-[20%] lg:w-[15%] xl:w-[10%] flex flex-row gap-1 xl:gap-6">
+        <div className="h-full w-[20%] lg:w-[15%] xl:w-[10%] flex flex-row gap-1 xl:gap-6 ">
           <MessageDropDown
             notifications={[
               {
@@ -57,7 +57,8 @@ export default function NavBar() {
             ]}
             content={10}
           />
-		  <NotificationDropDown notifications={[
+          <NotificationDropDown
+            notifications={[
               {
                 avatar: "https://i.imgur.com/1Qwk9rX.png",
                 name: "John Doe",
@@ -77,11 +78,18 @@ export default function NavBar() {
                 time: "2h ago",
               },
             ]}
-            content={4} />
+            content={4}
+          />
         </div>
-        <div className="h-full w-[30%] lg:w-[20%] xl:w-[15%] flex flex-row border-2 border-red-400">
-			<ProfileDropDown />
-		</div>
+        <div className="w-[40%] lg:w-[20%] xl:w-[15%] flex items-center justify-end">
+          <div className="w-full h-full flex items-center justify-end space-x-4">
+            <div className="h-full w-12 sm:w-14 sm:h-12 md:w-16 md:h-16 border-4 border-DeepRose rounded-[20px] hidden md:flex"></div>
+            <div className="font-teko font-bold text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-wider sm:flex hidden">
+              Aissam
+            </div>
+          </div>
+          <ProfileDropDown />
+        </div>
       </div>
 
       {open && (

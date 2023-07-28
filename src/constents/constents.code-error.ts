@@ -1,1 +1,0 @@
-export const DUPLICATE_ENTRY_ERROR_CODE = 'P2002';

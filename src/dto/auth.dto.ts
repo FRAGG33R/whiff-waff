@@ -1,33 +1,27 @@
-import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, isBoolean } from "class-validator";
-import {PlayerStatus} from '@prisma/client'
+import { ApiProperty } from "@nestjs/swagger";
+import { IsAlpha, IsBoolean, IsEmail, IsEnum, IsNotEmpty, Matches, MaxLength, MinLength, isBoolean, isEmail } from "class-validator";
 
+export class SignUpDto {
 
-export class AuthDto {
-
+    @ApiProperty()
     @IsNotEmpty()
     userName: string;
 
+    @ApiProperty()
     @IsNotEmpty()
     firstName: string;
 
+    @ApiProperty()
     @IsNotEmpty()
     lastName: string;
 
-    @IsNotEmpty()
-    avatar: string;
-
+    @ApiProperty()
     @IsEmail()
     @IsNotEmpty()
     email: string;
 
+    @ApiProperty()
+    @MinLength(6)
     @IsNotEmpty()
-    passwordHash: string;
-
-    @IsNotEmpty()
-    @IsBoolean()
-    twoFactorAuth: boolean;
-
-    @IsNotEmpty()
-    @IsEnum(PlayerStatus)
-    status: PlayerStatus
+    password: string;
 }

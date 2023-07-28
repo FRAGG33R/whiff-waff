@@ -17,9 +17,9 @@ model User {
   lastName             String            @map("last_name")
   avatar               String
   email                String            @unique
-  passwordHash         String            @map("password_hash")
-  passwordSalt         String?            @map("password_salt")
+  password             String?           @map("password_hash")
   twoFactorAuth        Boolean           @map("two_factor_auth")
+  verfiedEmail         Boolean           @map("verfied_email")
   status               PlayerStatus
   stat                 Stats?
   sentNotification     Notification[]    @relation("sendNotfication")

@@ -1,68 +1,41 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { AuthDto } from 'src/dto';
+import { ConsoleLogger, ForbiddenException, HttpStatus, Injectable } from '@nestjs/common';
+import { SignUpDto } from 'src/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import * as bcrytpt from 'bcrypt';
-import * as ErrorCode from '../constents/constents.code-error';
-import * as  CodeMessages from 'src/constents/constents.error-messages';
-import { printSync } from '@swc/core';
-import { DEFAULT_LEVEL_ACHIEVEMENT_USER, DEFAULT_LEVEL_USER, DEFAULT_NB_LOSES_USER, DEFAULT_NB_WINS_USER, DEFAULT_RANK_USER } from 'src/constents/constents.values';
+import * as  messages from 'src/shared/constants/constants.messages';
+import { UsersService } from 'src/users/users.service';
+import { JwtService } from '@nestjs/jwt';
+import { SuccessResponse } from 'src/shared/responses/responses.sucess-response';
+import { ConfigService } from '@nestjs/config';
+
 @Injectable()
 export class AuthService {
-    constructor(private readonly prismaService: PrismaService) { }
+    constructor(
+        private readonly prismaService: PrismaService,
+        private readonly userService: UsersService,
+        private readonly jwt: JwtService,
+        private readonly config: ConfigService) { }
 
-    async singUp(dto: AuthDto): Promise<User> {
-        try {
-            const salt: string = await bcrytpt.genSalt(10);
-            dto.passwordHash = await bcrytpt.hash(dto.passwordHash, salt);
-            const userInfos: User = await this.prismaService.user.create({
-                data: {
-                    userName: dto.userName,
-                    firstName: dto.firstName,
-                    lastName: dto.lastName,
-                    avatar: dto.avatar,
-                    email: dto.email,
-                    passwordHash: dto.passwordHash,
-                    passwordSalt: salt,
-                    twoFactorAuth: dto.twoFactorAuth,
-                    status: dto.status,
-                    stat: {
-                        create: {
-                            wins: DEFAULT_NB_WINS_USER,
-                            loses: DEFAULT_NB_LOSES_USER,
-                            level: DEFAULT_LEVEL_USER,
-                            rank: DEFAULT_RANK_USER
-                        }
-                    },
-                }
-            });
-
-            const achievements = await this.prismaService.achievement.findMany();
-            for (let i = 0; i < achievements.length; i++) {
-                await this.prismaService.haveAchievement.create({
-                    data: {
-                        userId: userInfos.id,
-                        achievementId: achievements[i].id,
-                        level: DEFAULT_LEVEL_ACHIEVEMENT_USER
-                    }
-                })
-            }
-
-            delete userInfos.passwordHash;
-            delete userInfos.passwordSalt;
-            return (userInfos);
-        }
-        catch (error) {
-            if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                if (error.code === ErrorCode.DUPLICATE_ENTRY_ERROR_CODE) {
-                    throw new ForbiddenException(CodeMessages.P2002_MSG + error.meta.target)
-                }
-            }
-            throw error;
-        }
+    async singUp(dto: SignUpDto): Promise<SuccessResponse<string>> {
+        const userInfos = await this.userService.createUser(dto);
+        const jwt = await this.signToken(userInfos);
+        return new SuccessResponse(HttpStatus.CREATED, messages.SUCESSFULL_MSG, jwt);
     }
 
-    singIn() {
-        return ("singin")
+    async signToken(user: User): Promise<string> {
+        console.log('used secret : ', this.config.get('JWT_SECRET'));
+        const jwt = await this.jwt.signAsync(user, { secret: this.config.get('JWT_SECRET') });
+        return (jwt);
+    }
+
+    async validateUser(email: string, password: string): Promise<string> {
+        const user = await this.userService.findOneUser(email);
+        if (user) {
+            const expectedPassword = await bcrytpt.compare(password, user.password)
+            if (expectedPassword)
+                return (delete user.password, delete user.email, this.signToken(user));
+        }
+        return (null);
     }
 }

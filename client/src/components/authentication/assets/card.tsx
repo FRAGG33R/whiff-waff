@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Logo from "../../../../public/logo.svg";
 import UserInput from "@/components/ui/inputs/userInput";
@@ -7,7 +6,8 @@ import AuthButton from "@/components/ui/buttons/authButton";
 import IntraButton from "@/components/ui/buttons/intraButton";
 import { useRouter } from "next/router";
 import { KeyboardEvent } from "react";
-import axios from "axios";
+import { api } from "@/components/axios/instance";
+import { motion } from "framer-motion";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
@@ -17,6 +17,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   const [password, setPassword] = useState("");
   const [step, setStep] = useState(0);
   const [error, setError] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
   const signinArray = [
@@ -87,14 +89,13 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
     },
   ];
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-	if (e.key === "Enter")
-	{
-		handleNext();
-	}
-  }
+    if (e.key === "Enter") {
+      handleNext();
+    }
+  };
 
   const signIn = async () => {
-   router.push("http://e3r10p14.1337.ma:3000/api/v1/auth/signin/42/");
+    router.push("http://e3r10p13.1337.ma:3000/api/v1/auth/signin/42/");
   };
   const handleNext = async () => {
     if (
@@ -113,7 +114,11 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       ) {
         setStep((prev) => prev + 1);
         setError(false);
-      } else setError(true);
+      }
+	  else {
+		setError(true);
+		setErrorMessage(props.Mode === "signin" ? signinArray[step].errorMessage : signupArray[step].errorMessage);
+	}
     } else {
       if (
         (props.Mode === "signup" &&
@@ -123,45 +128,57 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       ) {
         setError(false);
         let req;
-        props.Mode === "signin" ? 
-          req ={
-            email,
-            password,
-          }
-          : req = {
-            firstName,
-            lastName,
-            userName: username,
-            email,
-            password,
-          }
+        props.Mode === "signin"
+          ? (req = {
+              email,
+              password,
+            })
+          : (req = {
+              firstName,
+              lastName,
+              userName: username,
+              email,
+              password,
+            });
         try {
-          const res = await axios.post(`http://e3r10p14.1337.ma:3000/api/v1/auth/${props.Mode}/`, req);
-          console.log(res);
+          const res = await api.post(`auth/${props.Mode}/`, req);
           console.log(res.data);
-          const token = res.data.token;
+          const {statusCode, token, message } = res.data;
+          console.log("status code : ", statusCode);
+          console.log("status code : ", token);
+          console.log("message : ", message);
           localStorage.setItem("token", token);
-          router.push("/profil");
-        }
-        catch (error) {
-          console.log(error);
+          if (statusCode === 201)
+		  	setNeedsVerification((prev) => !prev);
+          //   router.push("/profil");
+        } catch (error) {
+			const {statusCode, message } = (error as any).response.data;
+			console.log("status code : ", statusCode);
+			console.log("message : ", message);
+			setError(true);
+			setErrorMessage(message);
         }
       }
+	  else
+	  {
+		setError(true);
+		setErrorMessage(props.Mode === "signin" ? signinArray[step].errorMessage : signupArray[step].errorMessage);
+	  }
     }
   };
 
   return (
-    <div className="min-h-1 min-w-1 z-10 px-10 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-16 md:space-y-12 bg-DarkGrey rounded-xl">
+    <div className="min-h-1 min-w-1 z-10 px-6 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-12 bg-DarkGrey rounded-xl">
       <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
-        <Image src={Logo} alt="Logo" className="w-10/12" />
-        <div className="text-3xl font-teko font-bold">
+        <Image src={Logo} alt="Logo" className="" />
+        <div className="text-2xl md:text-3xl font-teko font-bold">
           {props.Mode === "signin" ? "Welcome Back !" : "Welcome !"}
         </div>
       </div>
       <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-6">
         <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-2">
           <UserInput
-		  handleKeyDown={handleKeyDown}
+            handleKeyDown={handleKeyDown}
             label={
               props.Mode === "signin"
                 ? signinArray[step].label
@@ -200,16 +217,26 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           />
           {error === true && (
             <p className="text-md text-red-500 font-poppins ">
-              {props.Mode === "signin"
-                ? signinArray[step].errorMessage
-                : signupArray[step].errorMessage}
+             {errorMessage}
             </p>
           )}
         </div>
         <AuthButton text="Continue" onClick={handleNext} />
       </div>
+      {needsVerification && (
+        <motion.div
+		  initial={{ x: 0 }}
+		  style={{ x: 0 }}
+		  whileInView={{ x: 110 }}
+          className="p-4 mb-4 text-sm absolute z-10 bottom-0 left-0 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+          role="alert"
+        >
+          <span className="font-medium">Account created successfully,</span>
+          {" "}Please check your email to verify your account.
+        </motion.div>
+      )}
       {props.Mode === "signin" && (
-        <div className="w-full h-full flex items-center justify-center space-y-8 md:space-y-12 flex-col">
+        <div className="w-full h-full flex items-center justify-center space-y-2 md:space-y-12 flex-col">
           <div className="w-full min-h-1 flex items-center justify-center">
             <div className="absolute w-72 md:w-96 border-b-2 border-white"></div>
             <div className="relative  z-10  min-w-1 text-center md:text-2xl text-xl text-white font-teko bg-DarkGrey px-4">

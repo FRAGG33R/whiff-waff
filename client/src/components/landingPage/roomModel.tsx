@@ -9,7 +9,7 @@ export default function RoomModel (props: {
 	updateProgress: (loader: GLTFLoader) => void;
   }) {
 	const gltf = useLoader(GLTFLoader, "Model/filledRoom.gltf", props.updateProgress);
-  
+	const previousRotationRef = useRef<number>(0);
 	const { rotation } = props;
 	const { camera } = useThree();
 	const cameraPosition = useRef([-10.9, 0.88, 11]);
@@ -24,12 +24,15 @@ export default function RoomModel (props: {
 	});
   
 	useEffect(() => {
-	  if (rotation.toFixed(1) as unknown as number <  -2.3) props.setRotation(-2.4);
+		if(previousRotationRef.current == rotation)
+			return;
+	  if (rotation.toFixed(1) as unknown as number <  -2.4) props.setRotation(-2.4);
 	  cameraPosition.current = [
 		-10.9,
 		rotation < 0 ? 0.888888 : rotation + 0.888888,
 		(rotation < 0 ? 0 : (rotation * 3.6666666).toFixed(2)) as number,
 	  ];
+	  previousRotationRef.current = rotation;
 	}, [rotation]);
   
 	useEffect(() => {
@@ -42,8 +45,6 @@ export default function RoomModel (props: {
 		  const childMaterial = child.material as THREE.MeshStandardMaterial;
 		  if (childMaterial.envMapIntensity !== undefined) {
 			childMaterial.envMapIntensity = 20;
-		  }
-		  if (child.name.includes("Cube007")) {
 		  }
 		}
 	  });

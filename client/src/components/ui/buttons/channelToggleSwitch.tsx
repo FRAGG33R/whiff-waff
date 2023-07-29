@@ -7,8 +7,8 @@ import { ToggleProps } from "@/types/toggleType";
 const ChannelToggleSwitch: React.FC<ToggleProps> = ({
   firstValue,
   secondValue,
-  firstFunction,
-  secondFunction,
+//   firstFunction,
+//   secondFunction,
   tab,
 }) => {
   const router = useRouter();
@@ -26,11 +26,11 @@ const ChannelToggleSwitch: React.FC<ToggleProps> = ({
   ];
   function switchTab(value: any) {
     setActiveTab(value);
-    if (activeTab === firstValue) {
-      firstFunction();
-    } else if (activeTab === secondValue) {
-      secondFunction();
-    }
+    // if (activeTab === firstValue) {
+    //   firstFunction();
+    // } else if (activeTab === secondValue) {
+    //   secondFunction();
+    // }
   }
 
   return (

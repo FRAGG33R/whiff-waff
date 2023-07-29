@@ -13,10 +13,11 @@ export default function Home() {
     <main className="flex md:min-h-screen h-screen items-start justify-center overflow-x-hidden bg-[#121A28] overflow-y-hidden">
 		<AnimatedCursor
         color="203, 252, 1"
-        innerSize={8}
-        outerSize={35}
-        innerScale={1}
-        outerScale={1.7}
+		outerAlpha={0.4}
+		innerScale={0.7}
+		outerScale={5}
+		innerSize={10}
+		outerSize={10}
       />
 		<Room />
     </main>

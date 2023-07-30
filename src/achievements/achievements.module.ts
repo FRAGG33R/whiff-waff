@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from "@nestjs/common";
+import { Logger, LoggerService, Module, OnModuleInit } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AchievementData, AchievementService } from "./achievements.service";
 import * as achievementsData from 'src/shared/constants/constants.achievements'
@@ -12,7 +12,7 @@ import * as ErrorCode from '../shared/constants/constants.code-error';
 })
 
 export class AchievementModule implements OnModuleInit {
-
+    private readonly logger = new Logger();
     constructor(private readonly achievementService: AchievementService) { }
 
     async onModuleInit() {
@@ -29,7 +29,7 @@ export class AchievementModule implements OnModuleInit {
         } catch (error) {
             if (error instanceof PrismaClientInitializationError) {
                 if (error.errorCode === ErrorCode.CONNECTION_DB_ERROR_CODE) {
-                    console.log('database error when inserting achievement');//TODO make this on logs
+                    this.logger.error(`${error.errorCode} : ${error.message}`);
                 }
             }
         }

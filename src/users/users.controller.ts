@@ -7,8 +7,8 @@ import { Request } from "express";
 @Controller("users")
 export class UsersController {
 
-    @UseGuards(AuthGuard('jwt'))
     @ApiBearerAuth()
+    @UseGuards(AuthGuard('jwt'))
     @Get('me')
     getUniqueUser(@Req() req: Request) {
         return (req.user);

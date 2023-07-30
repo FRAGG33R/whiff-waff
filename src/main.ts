@@ -4,11 +4,13 @@ import { AppModule } from './app/app.module';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import * as messages from 'src/shared/constants/constants.messages'
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule, { cors: true , logger: ['debug', 'error', 'log', 'verbose', 'warn']});
   app.setGlobalPrefix('api/v1');
   app.use(helmet());
+  app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));  
   app.enableCors();
   const config = new DocumentBuilder().setTitle(messages.TITLE_DOCS).setDescription(messages.DESCRITPION_DOCS).setVersion('1.0').addTag('whiff-whaff').addBearerAuth().build();

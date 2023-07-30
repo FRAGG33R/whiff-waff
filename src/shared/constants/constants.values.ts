@@ -8,3 +8,6 @@ export enum PlayerStatus {
     ACTIVE = 'ONLINE',
     INACTIVE = 'OFFLINE',
   }
+
+export const SALT_ROUNDS = 10
+export const JWT_EXPIRATION_TIME = '10d'

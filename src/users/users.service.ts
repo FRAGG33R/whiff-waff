@@ -1,32 +1,31 @@
 import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { User, Prisma } from "@prisma/client";
-import * as values from "src/shared/constants/constants.values"
-import * as messages from "src/shared/constants/constants.messages"
 import { SignUpDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
+import { AchievementService } from "src/achievements/achievements.service";
+import { PrismaClientInitializationError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import * as values from "src/shared/constants/constants.values"
 import * as bcrytpt from 'bcrypt';
 import * as ErrorCode from '../shared/constants/constants.code-error';
 import * as  CodeMessages from 'src/shared/constants/constants.messages';
-import { AchievementService } from "src/achievements/achievements.service";
-import { PrismaClientInitializationError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import * as variables from 'src/shared/constants/constants.name-variables'
 @Injectable()
 export class UsersService {
     constructor(private readonly prismaService: PrismaService, private readonly achievementService: AchievementService) { }
 
     async createUser(dto: SignUpDto): Promise<User> {
         try {
-            const salt: string = await bcrytpt.genSalt(10);
-            dto.password = await bcrytpt.hash(dto.password, salt);
             const userInfos: User = await this.prismaService.user.create({
                 data: {
                     userName: dto.userName,
                     firstName: dto.firstName,
                     lastName: dto.lastName,
-                    avatar: "default",
+                    avatar: dto.avatar,
                     email: dto.email,
                     password: dto.password,
-                    twoFactorAuth: false,
-                    status: values.PlayerStatus.INACTIVE,
+                    twoFactorAuth: dto.twoFactorAuth,
+                    status: dto.status,
+                    verfiedEmail: dto.verfiedEmail,
                     stat: {
                         create: {
                             wins: values.DEFAULT_NB_WINS_USER,
@@ -38,14 +37,16 @@ export class UsersService {
                 }
             });
             await this.achievementService.addAchievementsToUser(userInfos);
-            delete userInfos.password;
-
-            return (userInfos);
+            return (delete userInfos.password, userInfos);
         }
         catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === ErrorCode.DUPLICATE_ENTRY_ERROR_CODE) {
-                    throw new ForbiddenException(CodeMessages.P2002_MSG + error.meta.target)
+                    let field = (error.meta.target === variables.USERNAME_DB) ?
+                        this.prismaService.user.fields.userName.name :
+                        this.prismaService.user.fields.email.name;
+                    field = field.charAt(0).toUpperCase() + field.slice(1);
+                    throw new ForbiddenException(field + CodeMessages.P2002_MSG)
                 }
             }
             if (error instanceof PrismaClientInitializationError)

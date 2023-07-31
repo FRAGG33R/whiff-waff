@@ -1,44 +1,33 @@
 import React from "react";
 import {
-  Menu,
-  MenuHandler,
-  MenuList,
   MenuItem,
-  Avatar,
   Typography,
 } from "@material-tailwind/react";
-import { motion, Variants } from "framer-motion";
-import Profil from "../../../../public/Profil.svg";
+import { IconChevronDown } from '@tabler/icons-react';
+import { motion } from "framer-motion";
 import { IconUserCircle } from "@tabler/icons-react";
 import { IconSettings } from "@tabler/icons-react";
 import Logout from "../../../../public/🦆 iconLogout_.svg";
 import Image from "next/image";
 import { useState } from "react";
-const itemVariants: Variants = {
-  open: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 },
-  },
-  closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
-};
+import { itemVariants } from   "@/types/framerVariants";
+
 const ProfileDropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const LogOut = () => {};
+   const LogOut = () => {};
   return (
     <motion.nav
       initial={false}
       animate={isOpen ? "open" : "closed"}
-      className=" flex  w-12 "
+      className=" flex w-12"
     >
       <motion.div
         initial={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center w-12 h-10"
+        className="flex items-center justify-center w-8 md:w-12 h-10"
       >
-        <Image src={Profil} alt="channel" />
+		<IconChevronDown stroke={2.5} size={30} color="#CBFC01"/>
       </motion.div>
-
       <motion.ul
         variants={{
           open: {
@@ -64,7 +53,7 @@ const ProfileDropDown = () => {
           pointerEvents: isOpen ? "auto" : "none",
           padding: "0.5rem",
         }}
-        className="bg-HokiCl border-0 w-40 z-10 absolute top-[4rem] sm:top-[4.5rem] md:top-[5.4rem] right-[1.2rem] md:right-10"
+        className="bg-HokiCl border-0 w-40 z-10 absolute top-[4rem] sm:top-[4.5rem] md:top-[6rem] right-[1.2rem] md:right-10"
       >
         <motion.li variants={itemVariants}>
           <MenuItem className="flex flex-row space-y-1 items-center gap-2 h-9">

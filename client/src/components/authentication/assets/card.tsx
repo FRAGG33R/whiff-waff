@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { KeyboardEvent } from "react";
 import { api } from "@/components/axios/instance";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
@@ -95,7 +96,9 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   };
 
   const signIn = async () => {
-    router.push("http://e3r10p13.1337.ma:3000/api/v1/auth/signin/42/");
+	// axios.defaults.withCredentials = true;
+    // await axios.get('http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42')
+	router.push("http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42/");
   };
   const handleNext = async () => {
     if (
@@ -141,22 +144,31 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
               password,
             });
         try {
+		  setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
           console.log(res.data);
-          const {statusCode, token, message } = res.data;
+          const { statusCode, token, message } = res.data;
+
           console.log("status code : ", statusCode);
           console.log("status code : ", token);
           console.log("message : ", message);
           localStorage.setItem("token", token);
-          if (statusCode === 201)
+          if (statusCode === 201 && props.Mode === "signup") {
 		  	setNeedsVerification((prev) => !prev);
-          //   router.push("/profil");
-        } catch (error) {
+			  setTimeout(() => {
+				setNeedsVerification(false);
+				router.push("/login")
+			  }, 2000);
+		  }
+        } catch (error : any) {
+
+			if (error.response && error.response.data) {
 			const {statusCode, message } = (error as any).response.data;
 			console.log("status code : ", statusCode);
 			console.log("message : ", message);
 			setError(true);
 			setErrorMessage(message);
+			}
         }
       }
 	  else
@@ -168,7 +180,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   };
 
   return (
-    <div className="min-h-1 min-w-1 z-10 px-6 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-12 bg-DarkGrey rounded-xl">
+    <div className="min-h-1 min-w-1 z-10 px-6 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
       <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
         <Image src={Logo} alt="Logo" className="" />
         <div className="text-2xl md:text-3xl font-teko font-bold">
@@ -223,20 +235,20 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
         </div>
         <AuthButton text="Continue" onClick={handleNext} />
       </div>
-      {needsVerification && (
-        <motion.div
+     
+        {needsVerification && <motion.div
 		  initial={{ x: 0 }}
 		  style={{ x: 0 }}
-		  whileInView={{ x: 110 }}
-          className="p-4 mb-4 text-sm absolute z-10 bottom-0 left-0 text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+		  whileInView={{ x: 60 }}
+          className="p-4 mb-4 text-sm md:w-1/3 w-10/12 absolute z-10 bottom-10 -left-10 md:left-0 text-green-800 rounded-lg bg-green-50 dark:text-green-400"
           role="alert"
         >
           <span className="font-medium">Account created successfully,</span>
           {" "}Please check your email to verify your account.
-        </motion.div>
-      )}
+        </motion.div>}
+    
       {props.Mode === "signin" && (
-        <div className="w-full h-full flex items-center justify-center space-y-2 md:space-y-12 flex-col">
+        <div className="w-full h-full flex items-center justify-center space-y-2 md:space-y-6 flex-col">
           <div className="w-full min-h-1 flex items-center justify-center">
             <div className="absolute w-72 md:w-96 border-b-2 border-white"></div>
             <div className="relative  z-10  min-w-1 text-center md:text-2xl text-xl text-white font-teko bg-DarkGrey px-4">

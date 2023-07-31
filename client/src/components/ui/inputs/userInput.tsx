@@ -13,23 +13,24 @@ const UserInput: React.FC<InputProps> = ({
   regExp,
   value,
   setValue,
-  handleKeyDown
+  handleKeyDown,
 }) => {
-	const inputRef = React.useRef<HTMLInputElement>(null);
 
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
-  
+
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-	if (regExp.test(value))
-		setError(false);
-	else
-		setError(true);
-}
-	useEffect(() => {
-		inputRef.current?.focus();
-	}, [inputRef, placeholder])
+    if (regExp.test(value)) setError(false);
+    else setError(true);
+  };
+
+  useEffect(() => {
+	if(type !== 'email' && placeholder !== 'John')
+    	inputRef.current?.focus();
+  }, [inputRef, placeholder]);
+
   return (
     <div className="relative w-full">
       <div
@@ -39,9 +40,9 @@ const UserInput: React.FC<InputProps> = ({
         <label>{label}</label>
       </div>
       <input
-		ref={inputRef}
+        ref={inputRef}
         type={type}
-		onKeyDown={handleKeyDown}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={isDisabled}
         onChange={handleChange}

@@ -35,7 +35,7 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   whileHover={{ scale: 1.1 }}
-                  className="bg-[#606060]/[12%] w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-[20px]"
+                  className="bg-[#606060]/[12%] w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-[12px] md:rounded-[20px]"
                 >
                   <Image
                     src={Notification}

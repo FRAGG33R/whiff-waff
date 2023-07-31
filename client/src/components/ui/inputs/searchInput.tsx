@@ -12,11 +12,11 @@ const SearchInput: React.FC < searchInputProps> = ({onSearch}) => {
             name={'search'}
             placeholder={'Search for everything...'}
             onChange={e => onSearch(e.target.value)}
-            className='bg-transparent w-full placeholder:text-[#6C7FA7] placeholder:font-poppins h-full pl-10 lg:pl-16 text-sm md:text-md lg:text-xl focus:outline-none'
+            className='bg-transparent w-full text-[#6C7FA7] placeholder:text-[#6C7FA7] placeholder:font-poppins h-full pl-10 lg:pl-16 text-sm md:text-md lg:text-xl focus:outline-none'
         />
-        <button type='submit' className='w-5 lg:w-8 h-full absolute left-2 lg:left-5'>
+        <div className='w-5 lg:w-8 min-h-1 absolute left-4 xl:top-5 md:top-4 lg:left-5'>
             <Image src={VectorIcon } alt='vector icon'/>
-        </button>
+        </div>
       </div>
     );
 }

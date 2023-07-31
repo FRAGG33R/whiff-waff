@@ -10,7 +10,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 @Module({
-  imports: [ConfigModule, PrismaModule, UsersModule, PassportModule, JwtModule, MailerModule.forRoot({
+  imports: [PrismaModule, UsersModule, PassportModule, JwtModule, MailerModule.forRoot({
     transport: {
       host: 'smtp.gmail.com',
       auth: {

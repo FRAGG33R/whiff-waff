@@ -5,10 +5,11 @@ import { AchievementService } from "src/achievements/achievements.service";
 import { JwtStrategy } from "src/auth/strategies/jwt.strategy";
 import { PrismaModule } from "src/prisma/prisma.module";
 import { ConfigModule } from "@nestjs/config";
+import { AchievementModule } from "src/achievements/achievements.module";
 @Module({
-    imports: [PrismaModule,ConfigModule],
+    imports: [PrismaModule, AchievementModule],
     controllers: [UsersController],
-    providers: [UsersService, AchievementService, JwtStrategy],
+    providers: [UsersService, JwtStrategy],
     exports: [UsersService]
 })
 export class UsersModule { }

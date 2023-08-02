@@ -5,7 +5,6 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  IconButton,
   Avatar,
   Typography,
   Badge,
@@ -30,7 +29,7 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
       <div className="flex min-w-1 items-center justify-center bg-opacity-10 rounded-lg">
         <Menu placement="bottom">
           <motion.div>
-            <Badge content={content} className="">
+            <Badge content={content}>
               <MenuHandler>
                 <motion.button
                   whileTap={{ scale: 0.9 }}

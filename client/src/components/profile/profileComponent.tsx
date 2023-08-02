@@ -15,16 +15,16 @@ export default function ProfileComponent() {
         <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
           <NavBar />
         </div>
-        <div className="xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] overflow-auto space-y-2 md:space-y-10 border-2 border-red-400">
+        <div className="xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] overflow-auto space-y-2 md:space-y-10">
           <div className="w-full h-[600px] lg:h-[350px] flex flex-col lg:flex-row gap-2 md:gap-10">
-            <div className="w-full lg:w-[55%] h-full border-2 ">
+            <div className="w-full lg:w-[55%] h-full">
               <ProfileInformations />
             </div>
             <div className="w-full lg:w-[45%] h-[40%] lg:h-full">
               <RankComponent />
             </div>
           </div>
-          <div className="w-full h-full bg-green-400">
+          <div className="w-full h-full ">
 			
 		  </div>
           {/* <div className="w-full h-full lg:h-[35%] flex flex-col lg:flex-row gap-2 md:gap-10 ">

@@ -7,7 +7,8 @@ import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as values from 'src/shared/constants/constants.values'
-
+import * as path from 'src/shared/constants/constants.paths'
+import { v4 as uuidv4 } from 'uuid';
 @ApiTags('authentication')
 @Controller('auth')
 export class AuthController {
@@ -30,27 +31,29 @@ export class AuthController {
     @UseGuards(AuthGuard('42'))
     @Get('signin/42')
     async signFortyTwoIn(@Req() req: { user: SignUpDto }, @Res() res: Response) {
+        const generatedName = `${values.PREFIX_USERNAME}${uuidv4().slice(0, 8)}`;
         const dto: SignUpDto = {
-            userName: req.user.userName, firstName: req.user.firstName, lastName: req.user.lastName,
+            userName: generatedName, firstName: req.user.firstName, lastName: req.user.lastName,
             email: req.user.email, password: "", avatar: req.user.avatar,
             twoFactorAuth: false, status: values.PlayerStatus.INACTIVE, verfiedEmail: false
         };
         const token = await this.authService.insertIntraUser(dto);
-        res.cookie('token', token, {maxAge: 90000, httpOnly: true});
-        res.redirect('https://0a8a-197-230-30-146.ngrok-free.app/login');
+        res.cookie(values.NAME_KEY_KOOKIE_TOKEN, token, {
+            maxAge: 90000, httpOnly: true,
+            domain: path.CLIENT_DOMAIN, sameSite: 'none', path: '/'
+        });
+        res.redirect(path.REDIRECTION_ENDPOINT);
     }
- 
+
     @Get('verified/:token')
     async verfyEmail(@Req() req: Request, @Res() res: Response) {
-        const loginUrl = 'https://0a8a-197-230-30-146.ngrok-free.app/login';
-        // const loginUrl = 'http://localhost:3000/api/v1/auth/test'
-        this.authService.verfyEmail(req.params.token);
-        res.redirect(loginUrl);
+        const loginUrl = await this.authService.verfyEmail(req.params.token);
+        res.redirect((loginUrl).toString());
     }
 
     @Get('/test')
     async test(@Req() req: Request) {
-        console.log(req.cookies);
+        console.log(req);
         return ('profile');
     }
 }

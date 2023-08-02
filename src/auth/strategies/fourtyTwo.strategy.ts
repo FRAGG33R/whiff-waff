@@ -8,7 +8,7 @@ export class FourtyTwoStrategy extends PassportStrategy(Strategy, '42') {
         super({
             clientID: 'u-s4t2ud-82573d757bf7f76ec64fd426f2b6956cca48fda1f72cb2028a189dedcc8715f0',
             clientSecret: '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',
-            callbackURL: 'http://localhost:3000/api/v1/auth/signin/42'
+            callbackURL: 'http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42'
         });
     }
 

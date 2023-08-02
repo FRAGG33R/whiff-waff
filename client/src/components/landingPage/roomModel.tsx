@@ -26,7 +26,7 @@ export default function RoomModel (props: {
 	useEffect(() => {
 		if(previousRotationRef.current == rotation)
 			return;
-	  if (rotation.toFixed(1) as unknown as number <  -2.4) props.setRotation(-2.4);
+	  if (rotation.toFixed(2) as unknown as number <  -2.4) props.setRotation(-2.6);
 	  cameraPosition.current = [
 		-10.9,
 		rotation < 0 ? 0.888888 : rotation + 0.888888,

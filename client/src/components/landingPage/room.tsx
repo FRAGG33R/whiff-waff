@@ -53,8 +53,7 @@ export default function Room() {
   // -- HOOKS --
 
   useEffect(() => {
-    // console.log(rotation.toFixed(2));
-	rotation.toFixed(1) as unknown as number < -2.4 ? router.push("/login") : null;
+	rotation.toFixed(2) as unknown as number < -2.4 ? router.push("/login") : null;
 
   }, [rotation]);
 

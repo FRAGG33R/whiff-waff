@@ -63,7 +63,7 @@ export class AuthService {
     async sendEmail(receiver: string, subject: string, token: any, fullName: string) {
         const hostname = os.hostname();
         const port = this.config.get(env.PORT);
-        const confirmationLink: string = `${path.PROTOCOL}${hostname}${path.SEPARATOR}\
+        const confirmationLink: string = `${path.PROTOCOL}${hostname}${path.SEPARATOR} \
             ${port}${path.VALIDATION_EMAIL_ENDPOINT}${token}`;
         const fileContent: string = await emailVlidationContent(confirmationLink, fullName);
         await this.mailerService.sendMail({

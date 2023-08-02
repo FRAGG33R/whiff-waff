@@ -34,14 +34,11 @@ export class AuthController {
         const generatedName = `${values.PREFIX_USERNAME}${uuidv4().slice(0, 8)}`;
         const dto: SignUpDto = {
             userName: generatedName, firstName: req.user.firstName, lastName: req.user.lastName,
-            email: req.user.email, password: "", avatar: req.user.avatar,
+            email: req.user.email, password: values.DEFAULT_PASSWORD_42_USER, avatar: req.user.avatar,
             twoFactorAuth: false, status: values.PlayerStatus.INACTIVE, verfiedEmail: false
         };
         const token = await this.authService.insertIntraUser(dto);
-        res.cookie(values.NAME_KEY_KOOKIE_TOKEN, token, {
-            maxAge: 90000, httpOnly: true,
-            domain: path.CLIENT_DOMAIN, sameSite: 'none', path: '/'
-        });
+        res.cookie(values.NAME_KEY_KOOKIE_TOKEN, token);
         res.redirect(path.REDIRECTION_ENDPOINT);
     }
 

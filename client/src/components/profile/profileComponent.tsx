@@ -16,7 +16,7 @@ export default function ProfileComponent() {
           <NavBar />
         </div>
         <div className="w-full xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] overflow-auto space-y-2 xl:space-y-10">
-          <div className="max-w-full w-full h-[600px] lg:h-[350px] flex flex-col lg:flex-row gap-2 md:gap-10">
+          <div className="h-[600px] lg:h-[350px] flex flex-col lg:flex-row gap-2 md:gap-10">
             <div className="w-full lg:w-[55%] h-full">
               <ProfileInformations />
             </div>

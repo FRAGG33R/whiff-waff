@@ -11,8 +11,8 @@ export default function ProfileInformations() {
   return (
     <div className="w-full h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
       <div className="w-full h-[80%] flex flex-col md:flex-row items-center xl:space-x-8">
-        <div className="h-[70%] md:h-full  min-w-[150px] w-[150px] md:w-[27%] xl:w-[25%] md:-space-y-5 xl:space-y-0 flex flex-col">
-          <div className="w-full h-[80%] flex items-center justify-center py-8">
+        <div className="h-[70%] md:h-full max-w-[180px] w-[180px] md:w-[27%] xl:w-[25%] md:-space-y-5 xl:space-y-0 flex flex-col">
+          <div className="w-full h-[80%] flex items-center justify-center py-8 pl-2">
             <div className="mask mask-hexagon-2 flex items-center justify-center bg-DeepRose w-[280px] lg:w-[480px] h-32 lg:h-48 rotate-90">
               <div className="mask mask-hexagon-2 w-[92%] h-[92%] bg-white text-black flex items-center justify-center">
                 <img
@@ -34,7 +34,7 @@ export default function ProfileInformations() {
               color="#6C7FA7"
               stroke={1.5}
             />
-            <div className="font-teko font-normal text-xl lg:text-2xl text-HokiCl pt-1 ">
+            <div className="font-teko font-normal text-xl xl:text-2xl text-HokiCl pt-1 ">
               Edit Profile
             </div>
           </button>
@@ -44,12 +44,12 @@ export default function ProfileInformations() {
             <div className="w-full h-full flex items-end md:justify-start justify-center font-semibold font-teko text-3xl xl:text-4xl 2xl:text-5xl text-Mercury ">
               Aissam Barchil
             </div>
-            <div className="w-full h-full flex flex-row items-center md:justify-start justify-center space-x-2 xl:space-x-2 2xl:space-x-6">
+            <div className="w-full h-full flex flex-row items-center md:justify-start justify-center space-x-4 2xl:space-x-6">
               <SecondaryButton text="Connect" onClick={() => {}} />
               <SecondaryButton text="Message" onClick={() => {}} />
               <PrimaryButton text="Challenge" onClick={() => {}} />
             </div>
-            <div className="w-full h-full bg-blue-300 "></div>
+            <div className="w-full h-full"></div>
           </div>
         </div>
       </div>

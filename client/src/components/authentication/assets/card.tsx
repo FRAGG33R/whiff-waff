@@ -8,7 +8,6 @@ import { useRouter } from "next/router";
 import { KeyboardEvent } from "react";
 import { api } from "@/components/axios/instance";
 import { motion } from "framer-motion";
-import axios from "axios";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
@@ -96,8 +95,6 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   };
 
   const signIn = async () => {
-	// axios.defaults.withCredentials = true;
-    // await axios.get('http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42')
 	router.push("http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42/");
   };
   const handleNext = async () => {
@@ -246,7 +243,6 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           <span className="font-medium">Account created successfully,</span>
           {" "}Please check your email to verify your account.
         </motion.div>}
-    
       {props.Mode === "signin" && (
         <div className="w-full h-full flex items-center justify-center space-y-2 md:space-y-6 flex-col">
           <div className="w-full min-h-1 flex items-center justify-center">

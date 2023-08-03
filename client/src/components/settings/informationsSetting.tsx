@@ -62,7 +62,7 @@ const InformationsSetting = () => {
           IFORMATIONS
         </div>
       </div>
-      <div className="w-full h-[80%] md:h-[88%] border flex flex-col items-center justify-center gap-4 md:gap-10 ">
+      <div className="w-full h-[80%] md:h-[88%]  flex flex-col items-center justify-center gap-4 md:gap-10 ">
         <div className="w-[90%] h-[30%] flex items-center justify-center ">
           <div className="relative w-1/2">
             <div className="absolute inset-0 flex items-center justify-center">
@@ -126,7 +126,7 @@ const InformationsSetting = () => {
             </div>
           </div>
           <div className="h-[50%] w-[90%] flex flex-col  items-center justify-center gap-2 md:gap-4">
-            <div className="w-[90%] md:w-[88%] lg:w-[92%] h-[50%] md:h-[46%] lg:h-[50%] flex items-center justify-center ">
+            <div className="w-[90%]  md:w-[88%] lg:w-[92%] h-[50%] md:h-[46%] lg:h-[50%] flex items-center justify-center ">
               <div>
                 <UserInput
                   placeholder="Nawfal@gmail.com"
@@ -143,7 +143,7 @@ const InformationsSetting = () => {
                 />
               </div>
             </div>
-            <div className="w-[69%] md:w-[60%] sm:w-[60%] lg:w-[60%]  h-[50%] md:h-[52%] lg:h-[54%] flex items-center justify-end  gap-2">
+            <div className="w-[90%]  md:w-[88%] sm:w-[80%] lg:w-[75%]  h-[50%] md:h-[52%] lg:h-[54%] flex items-center justify-end  gap-2">
               <div className=" w-[30%] md:w-[31%] lg:w-[32%] h-[50%] h-[50%] md:h-[52%] lg:h-[54%] flex items-center justify-center ">
                 <SecondaryButton text="cancel" onClick={handleCancle} />
               </div>

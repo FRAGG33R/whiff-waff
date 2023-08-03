@@ -7,15 +7,23 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './strategies/local.strategy';
 import { FourtyTwoStrategy } from './strategies/fourtyTwo.strategy';
 import { PrismaModule } from 'src/prisma/prisma.module';
-import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+
+
+const defaultHost = 'smtp.gmail.com';
+const defaultUser = 'faouzikamal27@gmail.com';
+const defaultPassword = 'K#$%(FD12#$#TimeToPaintTheTapeComonShhutAAAA~+_)(*';
+const host = process.env.HOST;
+const user = process.env.USER;
+const password = process.env.PASSWORD;
+
 @Module({
   imports: [PrismaModule, UsersModule, PassportModule, JwtModule, MailerModule.forRoot({
     transport: {
-      host: 'smtp.gmail.com',
+      host: host || defaultHost,
       auth: {
-        user: 'faouzikamal27@gmail.com',
-        pass: 'xzbjggnafdlyiysy' 
+        user: user || defaultUser,
+        pass: password || defaultPassword
       }
     }
   })],

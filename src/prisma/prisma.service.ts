@@ -3,9 +3,10 @@ import { PrismaClient } from '@prisma/client';
 import { PrismaClientInitializationError } from "@prisma/client/runtime/library";
 import * as ErrorCode from '../shared/constants/constants.code-error';
 
+const contestLogger = 'Bootstrap'
 @Injectable()
 export class PrismaService extends PrismaClient {
-    private readonly logger = new Logger('PrismaService');
+    private readonly logger = new Logger(contestLogger);
     constructor() { super(); }
     async connect(): Promise<void> {
         try {

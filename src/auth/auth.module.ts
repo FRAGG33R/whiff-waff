@@ -11,19 +11,22 @@ import { MailerModule } from '@nestjs-modules/mailer';
 
 
 const defaultHost = 'smtp.gmail.com';
-const defaultUser = 'faouzikamal27@gmail.com';
-const defaultPassword = 'K#$%(FD12#$#TimeToPaintTheTapeComonShhutAAAA~+_)(*';
+const defaultUser = 'whiffwhaff4@gmail.com';
+const defaultPassword = 'qseobdkqfgmnxkxs';
+// const defaultPassword = 'K#$%(FD12#$#TimeToPaintTheTapeComonShhutAAAA~+_)(*';
+
+
 const host = process.env.HOST;
 const user = process.env.USER;
-const password = process.env.PASSWORD;
+const password = process.env.PASSWORD;//TODO check this
 
 @Module({
   imports: [PrismaModule, UsersModule, PassportModule, JwtModule, MailerModule.forRoot({
     transport: {
-      host: host || defaultHost,
+      host: defaultHost,
       auth: {
-        user: user || defaultUser,
-        pass: password || defaultPassword
+        user: defaultUser,
+        pass: defaultPassword
       }
     }
   })],

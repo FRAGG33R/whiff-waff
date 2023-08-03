@@ -1,8 +1,6 @@
 import { Module, OnModuleInit } from "@nestjs/common";
 import { PrismaService } from "./prisma.service";
 
-
-import * as  CodeMessages from 'src/shared/constants/constants.messages';
 @Module({
     providers: [PrismaService],
     exports: [PrismaService]

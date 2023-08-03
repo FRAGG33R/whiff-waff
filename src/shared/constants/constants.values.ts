@@ -12,4 +12,3 @@ export enum PlayerStatus {
   }
 
 export const SALT_ROUNDS = 10
-export const JWT_EXPIRATION_TIME = '10d'

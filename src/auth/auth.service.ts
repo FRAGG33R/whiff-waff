@@ -48,7 +48,7 @@ export class AuthService {
         if (user) {
             const expectedPassword = await bcrytpt.compare(password, user.password)
             if (expectedPassword) {
-                const token = await this.signToken(user, this.config.get(env.JWT_SECRET), values.JWT_EXPIRATION_TIME);
+                const token = await this.signToken(user, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
                 const fullName = `${user.firstName} ${user.lastName}`;
                 if (user.verfiedEmail == false) {
                     this.sendEmail(user.email, this.config.get(env.EMAIL_SUBJECT), token, fullName);
@@ -59,13 +59,13 @@ export class AuthService {
         }
         return (null);
     }//TODO chane any
+
     async sendEmail(receiver: string, subject: string, token: any, fullName: string) {
         const hostname = os.hostname();
         const port = this.config.get(env.PORT);
-        const confirmationLink: string = `${path.PROTOCOL}${hostname}${path.SEPARATOR} \
-            ${port}${path.VALIDATION_EMAIL_ENDPOINT}${token}`;
-        const fileContent: string = await emailVlidationContent(confirmationLink, fullName);
-        await this.mailerService.sendMail({
+        const confirmationLink: string = `${path.PROTOCOL}${hostname}${path.SEPARATOR}${port}${path.VALIDATION_EMAIL_ENDPOINT}${token}`;
+        const fileContent: string = emailVlidationContent(confirmationLink, fullName);
+        this.mailerService.sendMail({
             to: receiver,
             subject: subject,
             html: fileContent
@@ -75,9 +75,9 @@ export class AuthService {
     async verfyEmail(token: string): Promise<string> {
         let valid = true;
         try {
-            const value = await this.jwt.verify(token, { secret: this.config.get(env.JWT_EMAIL_SECRET) });
+            const value = await this.jwt.verify(token, { secret: this.config.get(env.JWT_EMAIL_SECRET)});
             if (value) {
-                this.prismaService.user.update({
+                await this.prismaService.user.update({
                     where: {
                         id: value.id
                     },
@@ -89,7 +89,7 @@ export class AuthService {
         } catch (error) {
             valid = false;
         }
-        const loginUrl = `${path.PROTOCOL}${path.REDIRECTION_ENDPOINT_VALID_EMAIL}${valid}`;
+        const loginUrl = `${path.PROTOCOL}${this.config.get(env.HOST_CLIENT)}${path.SEPARATOR}${this.config.get(env.CLIENT_PORT)}${path.REDIRECTION_ENDPOINT_VALID_EMAIL}${valid}`;
         return loginUrl;
     }
 
@@ -103,7 +103,7 @@ export class AuthService {
             if (!existsUser) {
                 existsUser = await this.userService.createUser(dto);
             }
-            const token = await this.signToken(existsUser, this.config.get(env.JWT_SECRET), values.JWT_EXPIRATION_TIME);
+            const token = await this.signToken(existsUser, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
             return (token);
         } catch (error) {
             throw new InternalServerErrorException();

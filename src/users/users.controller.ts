@@ -3,15 +3,17 @@ import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiHeader, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 
-@ApiTags('users')
-@Controller("users")
+const tagUserSwagger = 'users'
+const userEndPoint = 'users'
+const meEndPoint = 'me'
+@ApiTags(tagUserSwagger)
+@Controller(userEndPoint)
 export class UsersController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Get('me')
+    @Get(meEndPoint)
     getUniqueUser(@Req() req: Request) {
         return (req.user);
     }
-
 }

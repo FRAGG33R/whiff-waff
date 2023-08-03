@@ -59,7 +59,6 @@ export class AuthService {
         }
         return (null);
     }//TODO chane any
-
     async sendEmail(receiver: string, subject: string, token: any, fullName: string) {
         const hostname = os.hostname();
         const port = this.config.get(env.PORT);

@@ -26,7 +26,10 @@ async function bootstrap() {
 	const logger = new Logger(contestLogger);
 	let port = env.get(vamNames.PORT);
 	try {
-		const app = await NestFactory.create(AppModule, { cors: true, logger: [debugLogger, errorLogger, logLogger, verboseLogger, warnLogger] });
+		const app = await NestFactory.create(AppModule, {
+			cors: true, logger: [debugLogger, errorLogger,
+				logLogger, verboseLogger, warnLogger]
+		});
 		app.setGlobalPrefix(prefixRoute);
 		app.use(cookieParser());
 		app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

@@ -143,12 +143,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
         try {
 		  setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
-          console.log(res.data);
           const { statusCode, token, message } = res.data;
-
-          console.log("status code : ", statusCode);
-          console.log("status code : ", token);
-          console.log("message : ", message);
           localStorage.setItem("token", token);
           if (statusCode === 201 && props.Mode === "signup") {
 		  	setNeedsVerification((prev) => !prev);
@@ -158,11 +153,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
 			  }, 2000);
 		  }
         } catch (error : any) {
-
 			if (error.response && error.response.data) {
 			const {statusCode, message } = (error as any).response.data;
-			console.log("status code : ", statusCode);
-			console.log("message : ", message);
 			setError(true);
 			setErrorMessage(message);
 			}

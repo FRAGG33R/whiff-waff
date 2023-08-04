@@ -22,7 +22,7 @@ export default function Login() {
 		outerScale={5}
 		innerSize={10}
 		outerSize={10}
-      /> */}
+      /> */}``
       <div className="h-44 w-44 fixed top-0 md:pt-0 pt-2 md:mr-10 mr-0 right-24 md:right-0 flex items-start md:items-end justify-center bg--400">
         <LogintoggleSwitch
           tab="Login"

@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 import { matchStatistics } from "@/types/matchStatistics";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
+import LevelBar from "../ui/progressBar/levelBar";
 
 export default function ProfileInformations() {
   const router = useRouter();
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+    <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
       <div className="w-full h-[80%] flex flex-col md:flex-row items-center xl:space-x-8">
         <div className="h-[70%] md:h-full max-w-[180px] w-[180px] md:w-[27%] xl:w-[25%] md:-space-y-5 xl:space-y-0 flex flex-col">
           <div className="w-full h-[80%] flex items-center justify-center py-8 pl-2">
@@ -44,18 +45,21 @@ export default function ProfileInformations() {
             <div className="w-full h-full flex items-end md:justify-start justify-center font-normal md:font-semibold font-teko text-3xl xl:text-4xl 2xl:text-5xl text-Mercury ">
               Aissam Barchil
             </div>
-            <div className="w-full h-full flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
+            <div className="w-full h-full  flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
               <SecondaryButton text="Connect" onClick={() => {}} />
               <SecondaryButton text="Message" onClick={() => {}} />
               <PrimaryButton text="Challenge" onClick={() => {}} />
             </div>
-            <div className="w-full h-full"></div>
+            <div className="w-full h-12 py-2 md:h-full flex items-center justify-center ">
+              <LevelBar level={9} progress={32} />
+            </div>
           </div>
         </div>
       </div>
       <div className="w-full h-[24%] flex flex-row items-center justify-around xl:justify-between xl:px-12 border-t-[3px] border-HokiCl">
         {matchStatistics.map((item, index) => (
           <div
+            key={index}
             className={`h-full xl:w-1/5 flex items-center justify-center xl:space-x-8 flex-col lg:flex-row font-normal tracking-wide font-teko  ${
               index === 0 ? "pl-4" : null
             }`}

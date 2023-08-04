@@ -11,8 +11,8 @@ export default function NavBar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="w-full h-full flex flex-col">{}
-      <div className="w-full h-full flex flex-row justify-between md:gap-4">
+    <div className="w-full h-full flex flex-col">
+      <div className="w-full h-full flex flex-row justify-between md:gap-4 space-x-1 md:space-x-0">
         <div className="hidden h-full w-[40%] lg:w-[46%] xl:w-[40%] md:flex flex-row items-center bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
           <SearchInput
             onSearch={() => {}}
@@ -27,9 +27,9 @@ export default function NavBar() {
         >
           <Image src={searchIcon} alt="search icon" className="w-5" />
         </button>
-        <div className="h-full w-[23%] lg:w-[12%] xl:w[12%] 2xl:w-[10%] flex flex-row items-center justify-center space-x-1 md:space-x-2 xl:space-x-4 2xl:space-x-5 tracking-widest bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
-          <Image src={badgeIcon} alt="level icon" className="w-3 md:w-6" />
-          <div className="text-GreenishYellow font-teko text-md md:text-2xl xl:text-3xl 2xl:text-[1.9rem] md:pt-2">
+        <div className="h-full w-[23%] lg:w-[12%] xl:w[12%]  2xl:w-[10%] flex flex-row items-center justify-center space-x-1 md:space-x-2 xl:space-x-2 2xl:space-x-4 tracking-widest bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+          <Image src={badgeIcon} alt="level icon" className="w-3 md:w-4 xl:w-6" />
+          <div className="text-GreenishYellow font-teko text-sm md:text-xl xl:text-[1.7rem] 2xl:text-[1.9rem] pt-1 md:pt-2">
             Level 9
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function NavBar() {
             content={4}
           />
         </div>
-        <div className="min-w-1 lg:w-[20%] xl:w-[20%] flex items-center justify-end">
+        <div className="w-32 lg:w-[28%] xl:w-[23%] flex items-center justify-end ">
           <div className="w-full h-full flex items-center justify-end space-x-4">
             <img
               src={
@@ -100,7 +100,7 @@ export default function NavBar() {
         </div>
       </div>
       {open && (
-        <div className=" md:hidden w-[80%] h-12 top-[4.8rem] bg-HokiCl absolute rounded-[12px] md:rounded-[20px] ">
+        <div className=" z-10 md:hidden w-[80%] h-12 top-[4.8rem] bg-HokiCl absolute rounded-[12px] md:rounded-[20px] ">
           <SearchInput
             onSearch={() => {}}
             placeholder="Search for everything..."

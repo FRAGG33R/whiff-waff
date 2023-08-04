@@ -9,7 +9,7 @@ export default function ProfileComponent() {
 
   return (
     <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white">
-      <div className="h-full min-w-[65px] w-[65px] md:w-[100px]">
+      <div className="h-full min-w-[60px] w-[60px] md:w-[100px]">
         <SideBar />
       </div>
       <div className="h-full w-[81%] md:w-[90%] xl:w-[95%] space-y-2 md:space-y-8 ">
@@ -25,7 +25,8 @@ export default function ProfileComponent() {
               <RankComponent />
             </div>
           </div>
-          <div className="w-full h-full ">
+          <div className="w-full min-h-1 bg-red-400">
+				
 		  </div>
           {/* <div className="w-full h-full lg:h-[35%] flex flex-col lg:flex-row gap-2 md:gap-10 ">
             <div className="w-full lg:w-[55%] h-full">

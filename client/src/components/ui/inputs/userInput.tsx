@@ -40,6 +40,7 @@ const UserInput: React.FC<InputProps> = ({
         <label>{label}</label>
       </div>
       <input
+	  	autoComplete="off"
         ref={inputRef}
         type={type}
         onKeyDown={handleKeyDown}

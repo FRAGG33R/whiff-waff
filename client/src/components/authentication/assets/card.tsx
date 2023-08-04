@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import { KeyboardEvent } from "react";
 import { api } from "@/components/axios/instance";
 import { motion } from "framer-motion";
+import { useEffect } from "react";
+import ValidationAlert from "@/components/ui/alerts/validationAlert";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
@@ -18,6 +20,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   const [step, setStep] = useState(0);
   const [error, setError] = useState(false);
   const [needsVerification, setNeedsVerification] = useState(false);
+  const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
@@ -95,7 +98,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   };
 
   const signIn = async () => {
-	router.push("http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42/");
+    router.push("http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42/");
   };
   const handleNext = async () => {
     if (
@@ -114,11 +117,14 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       ) {
         setStep((prev) => prev + 1);
         setError(false);
+      } else {
+        setError(true);
+        setErrorMessage(
+          props.Mode === "signin"
+            ? signinArray[step].errorMessage
+            : signupArray[step].errorMessage
+        );
       }
-	  else {
-		setError(true);
-		setErrorMessage(props.Mode === "signin" ? signinArray[step].errorMessage : signupArray[step].errorMessage);
-	}
     } else {
       if (
         (props.Mode === "signup" &&
@@ -141,41 +147,58 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
               password,
             });
         try {
-		  setNeedsVerification(false);
+          setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
           console.log(res.data);
           const { statusCode, token, message } = res.data;
-
           console.log("status code : ", statusCode);
           console.log("status code : ", token);
           console.log("message : ", message);
           localStorage.setItem("token", token);
-          if (statusCode === 201 && props.Mode === "signup") {
-		  	setNeedsVerification((prev) => !prev);
-			  setTimeout(() => {
-				setNeedsVerification(false);
-				router.push("/login")
-			  }, 2000);
+          if (statusCode === 201) {
+            setNeedsVerification((prev) => !prev);
+            setTimeout(() => {
+              setNeedsVerification(false);
+              router.push("/login");
+            }, 2000);
+          }
+		  else if (statusCode == 200)
+		  {
+			router.push("/profile/hkadsf");
 		  }
-        } catch (error : any) {
-
-			if (error.response && error.response.data) {
-			const {statusCode, message } = (error as any).response.data;
-			console.log("status code : ", statusCode);
-			console.log("message : ", message);
-			setError(true);
-			setErrorMessage(message);
-			}
+        } catch (error: any) {
+          if (error.response && error.response.data) {
+            const { statusCode, message } = (error as any).response.data;
+            console.log("status code : ", statusCode);
+            console.log("message : ", message);
+            setError(true);
+            setErrorMessage(message);
+          }
         }
+      } else {
+        setError(true);
+        setErrorMessage(
+          props.Mode === "signin"
+            ? signinArray[step].errorMessage
+            : signupArray[step].errorMessage
+        );
       }
-	  else
-	  {
-		setError(true);
-		setErrorMessage(props.Mode === "signin" ? signinArray[step].errorMessage : signupArray[step].errorMessage);
-	  }
     }
   };
+  useEffect(() => {
+	console.log(router.query.validation);
+	const { validation } = router.query;
+	console.log(typeof validation);
 
+	if (validation == "true")
+	{
+		setIsValid(true);
+		setNeedsVerification(true);
+		setTimeout(() => {
+			setNeedsVerification(false);
+		  }, 2000);
+	}
+  }, [router.query]);
   return (
     <div className="min-h-1 min-w-1 z-10 px-6 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
       <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
@@ -225,24 +248,18 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
             width="md"
           />
           {error === true && (
-            <p className="text-md text-red-500 font-poppins ">
-             {errorMessage}
-            </p>
+            <p className="text-md text-red-500 font-poppins ">{errorMessage}</p>
           )}
         </div>
         <AuthButton text="Continue" onClick={handleNext} />
       </div>
-     
-        {needsVerification && <motion.div
-		  initial={{ x: 0 }}
-		  style={{ x: 0 }}
-		  whileInView={{ x: 60 }}
-          className="p-4 mb-4 text-sm md:w-1/3 w-10/12 absolute z-10 bottom-10 -left-10 md:left-0 text-green-800 rounded-lg bg-green-50 dark:text-green-400"
-          role="alert"
-        >
-          <span className="font-medium">Account created successfully,</span>
-          {" "}Please check your email to verify your account.
-        </motion.div>}
+
+      {(needsVerification && !isValid) && (
+		<ValidationAlert bigText="Account created successfully," smallText="Please check your email to verify your account."/>
+      )}
+	  {(needsVerification && isValid) && (
+		<ValidationAlert bigText="Account verified successfully," smallText="You can now login."/>
+	  )}
       {props.Mode === "signin" && (
         <div className="w-full h-full flex items-center justify-center space-y-2 md:space-y-6 flex-col">
           <div className="w-full min-h-1 flex items-center justify-center">

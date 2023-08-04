@@ -149,11 +149,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
         try {
           setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
-          console.log(res.data);
           const { statusCode, token, message } = res.data;
-          console.log("status code : ", statusCode);
-          console.log("status code : ", token);
-          console.log("message : ", message);
           localStorage.setItem("token", token);
           if (statusCode === 201) {
             setNeedsVerification((prev) => !prev);
@@ -166,14 +162,12 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
 		  {
 			router.push("/profile/hkadsf");
 		  }
-        } catch (error: any) {
-          if (error.response && error.response.data) {
-            const { statusCode, message } = (error as any).response.data;
-            console.log("status code : ", statusCode);
-            console.log("message : ", message);
-            setError(true);
-            setErrorMessage(message);
-          }
+        } catch (error : any) {
+			if (error.response && error.response.data) {
+			const {statusCode, message } = (error as any).response.data;
+			setError(true);
+			setErrorMessage(message);
+			}
         }
       } else {
         setError(true);

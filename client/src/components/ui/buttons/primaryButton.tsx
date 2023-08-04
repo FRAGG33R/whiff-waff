@@ -12,7 +12,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({ text, onClick }) => {
       onClick={onClick}
       className="flex items-center justify-center bg-GreenishYellow font-teko rounded-full w-28 md:w-24 xl:w-28 2xl:w-32 h-8 2xl:h-9 text-NightBlack text-[1rem] md:text-[1.4rem]"
     >
-      <div className="flex items-center justify-center pt-1">{text}</div>
+      <div className="flex items-center justify-center md:pt-1">{text}</div>
     </motion.button>
   );
 };

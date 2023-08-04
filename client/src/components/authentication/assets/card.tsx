@@ -7,7 +7,6 @@ import IntraButton from "@/components/ui/buttons/intraButton";
 import { useRouter } from "next/router";
 import { KeyboardEvent } from "react";
 import { api } from "@/components/axios/instance";
-import { motion } from "framer-motion";
 import { useEffect } from "react";
 import ValidationAlert from "@/components/ui/alerts/validationAlert";
 

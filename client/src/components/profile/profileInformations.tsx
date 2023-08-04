@@ -50,7 +50,7 @@ export default function ProfileInformations() {
               <SecondaryButton text="Message" onClick={() => {}} />
               <PrimaryButton text="Challenge" onClick={() => {}} />
             </div>
-            <div className="w-full h-12 py-2 md:h-full flex items-center justify-center ">
+            <div className="w-full md:w-10/12 2xl:w-full h-12 py-2 md:h-full flex items-center justify-center">
               <LevelBar level={9} progress={32} />
             </div>
           </div>

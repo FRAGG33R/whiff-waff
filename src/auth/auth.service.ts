@@ -54,7 +54,7 @@ export class AuthService {
                     this.sendEmail(user.email, this.config.get(env.EMAIL_SUBJECT), token, fullName);
                     throw new ForbiddenException(messages.REQUIRED_VALIDATION_EMAIL);
                 }
-                return { token: token };
+                return { statusCode: HttpStatus.OK, token: token };
             }
         }
         return (null);

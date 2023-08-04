@@ -8,6 +8,9 @@ module.exports = withMT({
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+	screens: {
+		'xs': '250px',
+	  },
     colors : {
       'GreenishYellow': '#CBFC01'
     },

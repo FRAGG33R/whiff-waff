@@ -27,7 +27,7 @@ export default function NavBar() {
         >
           <Image src={searchIcon} alt="search icon" className="w-5" />
         </button>
-        <div className="h-full w-[23%] lg:w-[12%] xl:w[12%]  2xl:w-[10%] flex flex-row items-center justify-center space-x-1 md:space-x-2 xl:space-x-2 2xl:space-x-4 tracking-widest bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+        <div className="h-full w-[23%] lg:w-[12%] xl:w[12%] 2xl:w-[10%] hidden sm:flex flex-row items-center justify-center space-x-1 md:space-x-2 xl:space-x-2 2xl:space-x-4 tracking-widest bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
           <Image src={badgeIcon} alt="level icon" className="w-3 md:w-4 xl:w-6" />
           <div className="text-GreenishYellow font-teko text-sm md:text-xl xl:text-[1.7rem] 2xl:text-[1.9rem] pt-1 md:pt-2">
             Level 9

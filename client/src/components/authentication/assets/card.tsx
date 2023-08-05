@@ -99,6 +99,13 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   const signIn = async () => {
     router.push("http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42/");
   };
+
+  const handlePrevious = () => {
+    if (step > 0) {
+      setStep((prev) => prev - 1);
+      setError(false);
+    }
+  };
   const handleNext = async () => {
     if (
       step <
@@ -156,17 +163,15 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
               setNeedsVerification(false);
               router.push("/login");
             }, 2000);
+          } else if (statusCode == 200) {
+            router.push("/profile/hkadsf");
           }
-		  else if (statusCode == 200)
-		  {
-			router.push("/profile/hkadsf");
-		  }
-        } catch (error : any) {
-			if (error.response && error.response.data) {
-			const {statusCode, message } = (error as any).response.data;
-			setError(true);
-			setErrorMessage(message);
-			}
+        } catch (error: any) {
+          if (error.response && error.response.data) {
+            const { statusCode, message } = (error as any).response.data;
+            setError(true);
+            setErrorMessage(message);
+          }
         }
       } else {
         setError(true);
@@ -179,18 +184,17 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
     }
   };
   useEffect(() => {
-	console.log(router.query.validation);
-	const { validation } = router.query;
-	console.log(typeof validation);
+    console.log(router.query.validation);
+    const { validation } = router.query;
+    console.log(typeof validation);
 
-	if (validation == "true")
-	{
-		setIsValid(true);
-		setNeedsVerification(true);
-		setTimeout(() => {
-			setNeedsVerification(false);
-		  }, 2000);
-	}
+    if (validation == "true") {
+      setIsValid(true);
+      setNeedsVerification(true);
+      setTimeout(() => {
+        setNeedsVerification(false);
+      }, 2000);
+    }
   }, [router.query]);
   return (
     <div className="min-h-1 min-w-1 z-10 px-6 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
@@ -244,15 +248,26 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
             <p className="text-md text-red-500 font-poppins ">{errorMessage}</p>
           )}
         </div>
-        <AuthButton text="Continue" onClick={handleNext} />
+        <div
+          className={`w-full h-full flex flex-row space-x-2 items-center justify-center`}
+        >
+          {step > 0 && <AuthButton text="Previous" onClick={handlePrevious} />}
+          <AuthButton text="Next" onClick={handleNext} />
+        </div>
       </div>
 
-      {(needsVerification && !isValid) && (
-		<ValidationAlert bigText="Account created successfully," smallText="Please check your email to verify your account."/>
+      {needsVerification && !isValid && (
+        <ValidationAlert
+          bigText="Account created successfully,"
+          smallText="Please check your email to verify your account."
+        />
       )}
-	  {(needsVerification && isValid) && (
-		<ValidationAlert bigText="Account verified successfully," smallText="You can now login."/>
-	  )}
+      {needsVerification && isValid && (
+        <ValidationAlert
+          bigText="Account verified successfully,"
+          smallText="You can now login."
+        />
+      )}
       {props.Mode === "signin" && (
         <div className="w-full h-full flex items-center justify-center space-y-2 md:space-y-6 flex-col">
           <div className="w-full min-h-1 flex items-center justify-center">

@@ -85,7 +85,7 @@ export default function NavBar() {
           <div className="w-full h-full flex items-center justify-end space-x-4">
             <img
               src={
-                "https://cdn.intra.42.fr/users/5d05347ef84ba22771ba3bcf84804482/abarchil.jpg"
+                "https://cdn.intra.42.fr/users/35ff685f27d505abc8e1d226a8befd14/machlouj.jpg"
               }
               width={90}
               height={90}
@@ -93,7 +93,7 @@ export default function NavBar() {
               className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 border-4 border-DeepRose rounded-[12px] md:rounded-[20px] lg:flex hidden"
             />
             <div className="font-teko  font-medium text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-wider ">
-              Aissam
+              L3AX
             </div>
           </div>
           <ProfileDropDown />

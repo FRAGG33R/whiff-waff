@@ -2,9 +2,11 @@ import HistoryIcon from '../../../public/historyIcon.svg'
 import { useState } from 'react'
 import Image from 'next/image'
 import MatchComponent from './matchComponent'
+import { Pagination } from '../ui/pagination/pagination'
 
 export default function MatchComponents()
 {
+	const [active, setActive] = useState(1);
 	return (
 		<div className="w-full h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
 			<div className="w-full h-[7%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
@@ -17,6 +19,7 @@ export default function MatchComponents()
 				<MatchComponent Mode='Lose'/>
 				<MatchComponent Mode='Lose'/>
 				<MatchComponent Mode='Lose'/>
+				<Pagination max={6} active={active}	setActive={setActive}/>
 			</div>
 		</div>
 	)

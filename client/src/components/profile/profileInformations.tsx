@@ -19,7 +19,7 @@ export default function ProfileInformations() {
                 <img
                   alt="profile picture"
                   className="bg-DeepRose w-[130px] lg:w-[200px] -rotate-90"
-                  src="https://cdn.intra.42.fr/users/2f44c3084696e9e7c96f6af38c788ebc/kfaouzi.jpg"
+                  src="https://cdn.intra.42.fr/users/35ff685f27d505abc8e1d226a8befd14/machlouj.jpg"
                 />
               </div>
             </div>
@@ -42,8 +42,8 @@ export default function ProfileInformations() {
         </div>
         <div className="h-[30%] md:h-full w-[75%] flex flex-col">
           <div className="h-full md:h-[70%] max-w-44 flex flex-col space-y-1 md:space-y-2">
-            <div className="w-full h-full flex items-end md:justify-start justify-center font-normal md:font-semibold font-teko text-3xl xl:text-4xl 2xl:text-5xl text-Mercury">
-              Aissam Barchil
+            <div className="w-full h-full flex items-end md:justify-start justify-center font-normal md:font-semibold font-teko text-3xl xl:text-4xl 2xl:text-5xl text-Mercury tracking-wider">
+              L3AX
             </div>
             <div className="w-full h-full flex flex-row items-center md:justify-start justify-clenter space-x-2 2xl:space-x-6">
               <SecondaryButton text="Connect" onClick={() => {}} />

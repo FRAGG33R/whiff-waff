@@ -36,7 +36,7 @@ export default function MatchComponent(props: { Mode: "Win" | "Lose" }) {
         <div className="h-full w-1/3 flex flex-row space-x-2 ">
           <div
             className={`h-full w-1/3 flex items-center justify-start md:justify-center text-3xl md:text-4xl font-teko tracking-wide ${
-              props.Mode === "Win" ? "text-black" : "text-white"
+              props.Mode === "Win" ? "text-[#090909]" : "text-white"
             }`}
           >
             {match.firstScore}
@@ -51,7 +51,7 @@ export default function MatchComponent(props: { Mode: "Win" | "Lose" }) {
 		  </div>
           <div
             className={`h-full w-1/3 flex items-center justify-end  md:justify-center text-3xl md:text-4xl font-teko ${
-              props.Mode === "Win" ? "text-black" : "text-white"
+              props.Mode === "Win" ? "text-[#090909]" : "text-white"
             }`}
           >
             {match.secondScore}

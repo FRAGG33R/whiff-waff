@@ -25,10 +25,10 @@ export default function ProfileComponent() {
             </div>
           </div>
           <div className="w-full flex flex-col  xl:flex-row justify-start gap-2 xl:gap-0 xl:space-x-10">
-            <div className="w-full h-[690px]">
+            <div className="w-full h-[590px] xl:h-[690px]">
               <MatchComponents />
             </div>
-            <div className="w-full xl:w-3/5 h-[690px]">
+            <div className="w-full xl:w-3/5 h-[590px] xl:h-[690px]">
               <AchievementComponent />
 			</div>
           </div>

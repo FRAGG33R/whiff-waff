@@ -11,11 +11,12 @@ export default function MatchComponents()
 				<Image src={HistoryIcon} alt='match history icon' className='w-7 md:w-10'/>
 				<div className='font-semibold font-teko text-2xl md:text-3xl tracking-wide text-Mercury md:pt-1'>GAME HISTORY</div>
 			</div>
-			<div className="w-full h-[90%] md:h-[95%] flex flex-col items-center space-y-6 ">
-				<MatchComponent />
-				<MatchComponent />
-				<MatchComponent />
-				<MatchComponent />
+			<div className="w-full h-[90%] md:h-[95%] flex flex-col items-center space-y-4">
+				<MatchComponent Mode='Lose'/>
+				<MatchComponent Mode='Win'/>
+				<MatchComponent Mode='Lose'/>
+				<MatchComponent Mode='Lose'/>
+				<MatchComponent Mode='Lose'/>
 			</div>
 		</div>
 	)

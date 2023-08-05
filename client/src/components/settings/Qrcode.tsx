@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import QRCode from "qrcode.react";
 
 interface QRCodeProps {
@@ -6,11 +6,40 @@ interface QRCodeProps {
 }
 
 const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
-  return (
-    <div style={{ maxWidth: "200%", backgroundColor: "#f2f2f2", borderRadius: "10px", padding: "10px", display: "inline-block" }}>
-      
+  const [qrSize, setQRSize] = useState(120);
 
-      <QRCode value={code} size={120} className="qrcode" />
+  useEffect(() => {
+    function updateQRCodeSize() {
+      const screenWidth = window.innerWidth;
+      if (screenWidth >= 992) { 
+        setQRSize(200); 
+      } else if (screenWidth >= 768) { 
+        setQRSize(150);
+      } else { 
+        setQRSize(130); 
+      }
+    }
+
+    window.addEventListener("load", updateQRCodeSize);
+    window.addEventListener("resize", updateQRCodeSize);
+
+    return () => {
+      window.removeEventListener("load", updateQRCodeSize);
+      window.removeEventListener("resize", updateQRCodeSize);
+    };
+  }, []);
+
+  return (
+    <div
+      style={{
+        maxWidth: "300%",
+        backgroundColor: "#f2f2f2",
+        borderRadius: "10px",
+        padding: "10px",
+        display: "inline-block"
+      }}
+    >
+      <QRCode value={code} size={qrSize} />
     </div>
   );
 };

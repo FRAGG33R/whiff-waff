@@ -12,9 +12,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
-    setSelectedFile(file);
-    onImageUpload(file);
-    uploadFile(file);
+    if (file && file.type.startsWith('image/')) {
+      setSelectedFile(file);
+      onImageUpload(file);
+      uploadFile(file);
+    } else {
+      console.error('Invalid file format. Please select an image file.');
+    }
   }, [onImageUpload]);
 
   const uploadFile = async (file: File) => {
@@ -47,9 +51,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
       {selectedFile ? (
         <p>{selectedFile.name}</p>
       ) : (
-        <>
-          <IconUpload  />
-        </>
+        <IconUpload />
       )}
     </div>
   );

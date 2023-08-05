@@ -13,21 +13,31 @@ const InformationsSetting = () => {
   const [lastName, setLastNam] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [error, setError] = useState(false);
+  const [firstError, setFirstError] = useState(false);
+  const [lastError, setLastError] = useState(false);
+  const [userError, setUserError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
   const handleCancle = () => {
     setFirstName("");
     setEmail("");
     setLastNam("");
     setUsername("");
-    setError(false);
+    setFirstError(false);
+    setEmailError(false);
+    setLastError(false);
+    setUserError(false);
   };
   const handleConfirm = async () => {
-    if ((firstName.match(/^.{3,}$/)) || (lastName.match(/^.{3,}$/)) || (username.match(/^[a-zA-Z0-9_.]{3,16}$/))
-      || (email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/))) {
+    if (!(firstName.match(/^.{3,}$/)))
+        setFirstError(true);
+    if (!(lastName.match(/^.{3,}$/)))
+        setLastError(true);
+    if (!(username.match(/^[a-zA-Z0-9_.]{3,16}$/)))
+        setUserError(true);
+    if (!(email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)))
+        setEmailError(true);
+    else   
       console.log("code is valid");
-    } else {
-      setError(true);
-    }
     const res ={
       firstName,
       lastName,
@@ -70,10 +80,10 @@ const InformationsSetting = () => {
             </div>
           </div>
         </div>
-        <div className=" w-full h-screen flex flex-col items-center  gap-2 md:gap-4 ">
+        <div className=" w-full h-screen flex flex-col items-center  gap-4 md:gap-4 ">
           <div className="w-[70%]  h-[35%] md:w-auto md:h-auto lg:w-auto lg:w-auto flex flex-col md:flex-row items-center  justify-center gap-4
            md:gap-4  ">
-            <div className="w-[45%] md:w-[50%] lg:w-[52%]  h-[90%] md:h-[92%] lg:[96%] flex items-start justify-center ">
+            <div className="w-full md:w-[50%] lg:w-[52%]  h-[90%] md:h-[92%] lg:[96%] flex  justify-start items-center ">
               <div>
                 <UserInput
                   placeholder="first name"
@@ -82,15 +92,15 @@ const InformationsSetting = () => {
                   lableColor="#27335c"
                   width="sml"
                   regExp={/^.{3,}$/}
-                  isError={error}
+                  isError={firstError}
                   isDisabled={false}
                   value={firstName}
-                  setError={setError}
+                  setError={setFirstError}
                   setValue={setFirstName}
                 />
               </div>
             </div>
-            <div className="w-[45%] md:w-[50%] lg:w-[52%] h-[90%] md:h-[92%] lg:[96%]  flex items-start justify-center  ">
+            <div className="w-full md:w-[50%] lg:w-[52%] h-[90%] md:h-[92%] lg:[96%]  flex items-center justify-start  ">
               <div>
                 <UserInput
                   placeholder="last name"
@@ -99,10 +109,10 @@ const InformationsSetting = () => {
                   lableColor="#283563"
                   width="sml"
                   regExp={/^.{3,}$/}
-                  isError={error}
+                  isError={lastError}
                   isDisabled={false}
                   value={lastName}
-                  setError={setError}
+                  setError={setLastError}
                   setValue={setLastNam}
                 />
               </div>
@@ -117,15 +127,15 @@ const InformationsSetting = () => {
                 lableColor="#293665"
                 width="2xl"
                 regExp={/^[a-zA-Z0-9_.]{3,16}$/}
-                isError={error}
+                isError={userError}
                 isDisabled={false}
                 value={username}
-                setError={setError}
+                setError={setUserError}
                 setValue={setUsername}
               />
             </div>
           </div>
-          <div className="h-[50%] w-[90%] flex flex-col  items-center justify-center gap-2 md:gap-4">
+          <div className="h-[40%] w-[90%] flex flex-col  items-center justify-center gap-2 md:gap-4">
             <div className="w-[90%]  md:w-[88%] lg:w-[92%] h-[50%] md:h-[46%] lg:h-[50%] flex items-center justify-center ">
               <div>
                 <UserInput
@@ -135,20 +145,20 @@ const InformationsSetting = () => {
                   lableColor="#293769"
                   width="2xl"
                   regExp={/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/}
-                  isError={error}
+                  isError={emailError}
                   isDisabled={false}
                   value={email}
-                  setError={setError}
+                  setError={setEmailError}
                   setValue={setEmail}
                 />
               </div>
             </div>
             <div className="w-[90%]  md:w-[88%] sm:w-[80%] lg:w-[75%]  h-[50%] md:h-[52%] lg:h-[54%] flex items-center justify-end  gap-2">
               <div className=" w-[30%] md:w-[31%] lg:w-[32%] h-[50%] h-[50%] md:h-[52%] lg:h-[54%] flex items-center justify-center ">
-                <SecondaryButton text="cancel" onClick={handleCancle} />
+                <SecondaryButton text="Discard" onClick={handleCancle} />
               </div>
               <div className="w-[30%] md:w-[31%] lg:w-[32%] h-[50%] h-[50%] md:h-[52%] lg:h-[54%]  flex items-center justify-center ">
-                <PrimaryButton text="confirm" onClick={handleConfirm} />
+                <PrimaryButton text="save" onClick={handleConfirm} />
               </div>
             </div>
           </div>

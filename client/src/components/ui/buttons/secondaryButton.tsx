@@ -9,7 +9,7 @@ const secondaryButton: React.FC<PrimaryButtonProps> = ({ text, onClick }) => {
       whileTap={{ scale: 0.9 }}
       onClick={onClick}
       className="flex items-center justify-center transparent font-teko   border-2 border-Ceramic
-        rounded-full w-20 md:w-24 lg:w-28  h-5 md:h-6 lg:h-7 text-Ceramic"
+        rounded-full w-32 md:w-28 lg:w-32  h-8 md:h-7 lg:h-9 text-Ceramic text-xl md:text-lg lg:text-2xl"
     >
       <span>{text}</span>
     </motion.button>

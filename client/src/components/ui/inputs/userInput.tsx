@@ -50,9 +50,9 @@ const UserInput: React.FC<InputProps> = ({
             : width === "xl"
             ? "w-40 sm:w-52 md:w-52 lg:w-72 md:h-12 h-10 text-sm md:text-md"
             : width === "sml"
-            ? "w-44 sm:w-56 md:w-44 lg:w-[17rem]   h-10   lg:h-12 text-sm md:text-md"
+            ? "w-full sm:w-56 md:w-44 lg:w-[15rem] xl:w-[17rem]   h-12   lg:h-12 text-sm md:text-md"
             : width === "2xl"
-            ? "w-full  md:w-96 lg:w-[35rem]  h-12 "
+            ? "w-full  md:w-96 lg:w-[30rem] xl:w-[35rem]  h-12 "
             : ""
         }`}
       ></input>

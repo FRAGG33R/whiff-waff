@@ -54,15 +54,15 @@ const TwoFactor = () => {
       </div>
       <div className="w-[96%] h-[35%] flex flex-col items-center  gap-2 ms:gap-5 ">
         <div className="w-full h-screen flex flex-col items-center justify-center ">
-          <div className="w-full h-[70%] md:w-auto md:h-auto flex items-center justify-center">
+          <div className="w-full h-[70%] md:h-auto  md:w-auto flex items-center justify-center">
             <Qrcode code={randomCode} />
           </div>
         </div>
-        <div className="w-full h-[40%]  font-poppins md:text-xl  sm:text-[0.7rem] text-center ">
+        <div className="w-full h-[40%] font-poppins md:text-xl  sm:text-[0.7rem] text-center ">
           Enter code from your two-factor authentication app
         </div>
       </div>
-      <div className="w-[96%] h-[15%] flex flex-col items-center justify-center ">
+      <div className="w-[96%] h-[15%]  flex flex-col items-center justify-center ">
         <div>
           <UserInput
             placeholder="*****"

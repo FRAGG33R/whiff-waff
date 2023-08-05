@@ -1,7 +1,7 @@
 import NavBar from "../layout/navBar";
 import SideBar from "../layout/sideBar";
 import AchievementComponent from "./achievementComponents";
-import MatchComponents from "./matchComponent";
+import MatchComponents from "./matchHistoryComponent";
 import ProfileInformations from "./profileInformations";
 import RankComponent from "./rankComponent";
 
@@ -27,7 +27,6 @@ export default function ProfileComponent() {
           <div className="w-full flex flex-col  xl:flex-row justify-start gap-2 xl:gap-0 xl:space-x-10">
             <div className="w-full h-[690px]">
               <MatchComponents />
-
             </div>
             <div className="w-full xl:w-3/5 h-[690px]">
               <AchievementComponent />

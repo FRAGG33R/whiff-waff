@@ -1,9 +1,7 @@
-export default function MatchComponents()
-{
+
+export default function MatchComponent() {
 	return (
-		<div className="w-full h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
-			<div className="w-full h-[10%]"></div>
-			<div className="w-full h-[90%] md:h-[95%]"></div>
+		<div className="w-[95%] h-24 bg-red-400 rounded-[12px] md:rounded-[20px]">
 		</div>
 	)
 }

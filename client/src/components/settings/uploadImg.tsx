@@ -2,10 +2,8 @@ import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import { IconUpload } from '@tabler/icons-react';
+import { ImageUploadProps } from "../../types/uploadType";
 
-interface ImageUploadProps {
-  onImageUpload: (file: File) => void;
-}
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);

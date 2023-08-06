@@ -19,7 +19,7 @@ export default function MatchComponents()
 				<MatchComponent Mode='Lose'/>
 				<MatchComponent Mode='Lose'/>
 				<MatchComponent Mode='Lose'/>
-				<Pagination max={6} active={active}	setActive={setActive}/>
+				<Pagination max={60} active={active} setActive={setActive}/>
 			</div>
 		</div>
 	)

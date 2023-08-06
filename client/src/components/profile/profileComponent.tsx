@@ -15,7 +15,7 @@ export default function ProfileComponent() {
         <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
           <NavBar />
         </div>
-        <div className="w-full xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] overflow-y-scroll lg:overflow-y-auto space-y-2 xl:space-y-10">
+        <div className="w-full xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] overflow-y-scroll overflow-x-hidden lg:overflow-y-auto space-y-2 xl:space-y-10">
           <div className="w-full h-[700px] lg:h-[350px] flex flex-col lg:flex-row gap-2 xl:gap-10">
             <div className="w-full lg:w-[55%] h-full">
               <ProfileInformations />
@@ -25,10 +25,10 @@ export default function ProfileComponent() {
             </div>
           </div>
           <div className="w-full flex flex-col  xl:flex-row justify-start gap-2 xl:gap-0 xl:space-x-10">
-            <div className="w-full h-[590px] xl:h-[690px]">
+            <div className="w-full h-[590px] xl:h-[685px]">
               <MatchComponents />
             </div>
-            <div className="w-full xl:w-3/5 h-[590px] xl:h-[690px]">
+            <div className="w-full xl:w-3/5 h-[590px] xl:h-[685px]">
               <AchievementComponent />
 			</div>
           </div>

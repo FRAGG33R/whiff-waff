@@ -1,7 +1,6 @@
-import { ForbiddenException, HttpStatus, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { SignUpDto } from 'src/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { SuccessResponse } from 'src/shared/responses/responses.sucess-response';
@@ -14,15 +13,17 @@ import * as  values from 'src/shared/constants/constants.values';
 import * as os from 'os';
 import * as env from 'src/shared/constants/constants.name-variables'
 import * as path from 'src/shared/constants/constants.paths'
+
+const authService = 'AuthService';
 @Injectable()
 export class AuthService {
+    logger = new Logger(authService);
     constructor(
         private readonly prismaService: PrismaService,
         private readonly userService: UsersService,
         private readonly jwt: JwtService,
         private readonly mailerService: MailerService,
         private readonly config: ConfigService) { }
-
     async singUp(dto: SignUpDto): Promise<SuccessResponse> {
         dto.status = values.PlayerStatus.INACTIVE;
         dto.twoFactorAuth = false;
@@ -38,17 +39,17 @@ export class AuthService {
         return new SuccessResponse(HttpStatus.CREATED, messages.SUCESSFULL_MSG);
     }
 
-    async signToken(user: User, secretKey: string, expire: string): Promise<string> {
+    async signToken(user: any, secretKey: string, expire: string): Promise<string> {
         const jwt = await this.jwt.signAsync(user, { secret: secretKey, expiresIn: expire });
         return (jwt);
     }
 
-    async validateUser(email: string, password: string): Promise<any> {
-        const user = await this.userService.findOneUser(email);
+    async validateUser(receiver: string, password: string): Promise<any> {
+        const user = await this.userService.findOneUser(receiver);
         if (user) {
             const expectedPassword = await bcrytpt.compare(password, user.password)
             if (expectedPassword) {
-                const token = await this.signToken(user, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
+                const token = await this.signToken({email: user.email}, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
                 const fullName = `${user.firstName} ${user.lastName}`;
                 if (user.verfiedEmail == false) {
                     this.sendEmail(user.email, this.config.get(env.EMAIL_SUBJECT), token, fullName);
@@ -58,24 +59,28 @@ export class AuthService {
             }
         }
         return (null);
-    }//TODO chane any
+    }
 
     async sendEmail(receiver: string, subject: string, token: any, fullName: string) {
-        const hostname = os.hostname();
-        const port = this.config.get(env.PORT);
-        const confirmationLink: string = `${path.PROTOCOL}${hostname}${path.SEPARATOR}${port}${path.VALIDATION_EMAIL_ENDPOINT}${token}`;
-        const fileContent: string = emailVlidationContent(confirmationLink, fullName);
-        this.mailerService.sendMail({
-            to: receiver,
-            subject: subject,
-            html: fileContent
-        });//TODO protect mail failure
+        try {
+            const hostname = os.hostname();
+            const port = this.config.get(env.PORT);
+            const confirmationLink: string = `${path.PROTOCOL}${hostname}${path.SEPARATOR}${port}${path.VALIDATION_EMAIL_ENDPOINT}${token}`;
+            const fileContent: string = emailVlidationContent(confirmationLink, fullName);
+            this.mailerService.sendMail({
+                to: receiver,
+                subject: subject,
+                html: fileContent
+            });
+        } catch (error) {
+            this.logger.error(error.messages)
+        }
     }
 
     async verfyEmail(token: string): Promise<string> {
         let valid = true;
         try {
-            const value = await this.jwt.verify(token, { secret: this.config.get(env.JWT_EMAIL_SECRET)});
+            const value = await this.jwt.verify(token, { secret: this.config.get(env.JWT_EMAIL_SECRET) });
             if (value) {
                 await this.prismaService.user.update({
                     where: {
@@ -109,4 +114,6 @@ export class AuthService {
             throw new InternalServerErrorException();
         }
     }
+
+    
 }

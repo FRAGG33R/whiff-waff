@@ -42,7 +42,7 @@ export class UsersService {
         catch (error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === ErrorCode.DUPLICATE_ENTRY_ERROR_CODE) {
-                    let field = (error.meta.target === variables.USERNAME_DB) ?
+                    let field = (error.meta.target == variables.USERNAME_DB) ?
                         this.prismaService.user.fields.userName.name :
                         this.prismaService.user.fields.email.name;
                     field = field.charAt(0).toUpperCase() + field.slice(1);

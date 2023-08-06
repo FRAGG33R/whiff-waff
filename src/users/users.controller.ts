@@ -5,7 +5,7 @@ import { Request } from "express";
 
 const tagUserSwagger = 'users'
 const userEndPoint = 'users'
-const meEndPoint = 'me'
+const meEndPoint = 'profile'
 @ApiTags(tagUserSwagger)
 @Controller(userEndPoint)
 export class UsersController {

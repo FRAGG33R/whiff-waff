@@ -43,9 +43,8 @@ async function bootstrap() {
 		});
 		await app.listen(port);
 	} catch (error) {
-
+		logger.error(error.messages);
 	}
-
 }
 
 bootstrap();

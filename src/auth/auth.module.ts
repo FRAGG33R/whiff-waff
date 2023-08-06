@@ -8,10 +8,6 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { FourtyTwoStrategy } from './strategies/fourtyTwo.strategy';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
-const host = process.env.HOST;
-const user = process.env.USER;
-const password = process.env.PASSWORD;
-
 @Module({
   imports: [PrismaModule, UsersModule, PassportModule, JwtModule],
   controllers: [AuthController],

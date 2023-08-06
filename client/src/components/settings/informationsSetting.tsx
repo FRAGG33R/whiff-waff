@@ -58,8 +58,44 @@ const InformationsSetting = () => {
     console.log(file);
   };
   return (
-    <div className="w-[96%]  md:w-[95%] h-[98%]  flex items-start  justify-start flex-col gap-4 md:gap-6 ">
-      <div className="w-[96%] md:w-[94%] h-[8%] md:h-[7%]  flex flex-row items-start  justify-start gap-1 
+    <div className="w-[96%]  md:w-[95%] h-[98%]  flex items-start  justify-start flex-col gap-4 md:gap-6">
+      <div className=" w-[99%] h-[8%] flex items-center justify-start flex-row gap-1 space-y-2 space-y-auto">
+        <Image src={InformationIcons} alt="TwoFactorIcon"
+          className="w-[8%] h-[80%] md:w-auto md:h-auto"
+          width={10}
+        />
+        <div className=" w-[50%] h-[80%] md:w-auto md:h-auto flex items-end justify-start  font-teko font-semibold sm:text-xl md:text-xl lg:text-3xl xl:text-4xl">
+          INFORMATION
+        </div>
+      </div>
+      <div className="border w-full h-screen flex items-center justify-start flex-col gap-2 md:gap-4">
+        <div className="border w-[90%] h-[30%] flex items-center justify-center">
+        <div className="relative w-1/2">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <ImageUpload onImageUpload={handleImageUpload} />
+            </div>
+          </div>
+        </div>
+        <div className="border w-[90%] h-[15%]">
+
+        </div>
+        <div className="border w-[90%] h-[15%]">
+
+        </div>
+        <div className="border w-[90%] h-[15%]">
+
+        </div>
+        <div className="border w-[90%] h-[15%]">
+
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default InformationsSetting;
+
+{/* <div className="w-[96%] md:w-[94%] h-[8%] md:h-[7%]  flex flex-row items-start  justify-start gap-1 
     xl:space-y-2 md:space-y-0 lg:space-y-1">
       
           <Image src={InformationIcons} alt="TwoFactorIcon"
@@ -156,9 +192,4 @@ const InformationsSetting = () => {
     <PrimaryButton text="Save" onClick={handleConfirm} />
   </div>
 </div>
-      </div>
-    </div>
-  );
-};
-
-export default InformationsSetting;
+      </div> */}

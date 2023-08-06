@@ -2,7 +2,7 @@ import { Body, Controller, Post, UseGuards, Get, Req, Res } from '@nestjs/common
 import { AuthService } from './auth.service';
 import { SignUpDto } from 'src/dto';
 import { AuthGuard } from '@nestjs/passport';
-import { LocalStrategy } from '../app/strategies/local.strategy';
+import { LocalStrategy } from './strategies/local.strategy';
 import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { PrismaService } from 'src/prisma/prisma.service';

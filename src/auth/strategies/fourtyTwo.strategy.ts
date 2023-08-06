@@ -1,14 +1,16 @@
 import { Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-42";
+import * as path from 'src/shared/constants/constants.paths'
 
 @Injectable()
 export class FourtyTwoStrategy extends PassportStrategy(Strategy, '42') {
-    constructor() {
+    constructor(private readonly config: ConfigService) {
         super({
-            clientID: 'u-s4t2ud-82573d757bf7f76ec64fd426f2b6956cca48fda1f72cb2028a189dedcc8715f0',
-            clientSecret: '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',
-            callbackURL: 'http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42'
+            clientID: config.get('API42_CLIENT_ID'),
+            clientSecret: config.get('API42_CLIENT_SECRET'),
+            callbackURL: path.API42_CALLBACKURL
         });
     }
 
@@ -16,7 +18,7 @@ export class FourtyTwoStrategy extends PassportStrategy(Strategy, '42') {
         try {
             const user = {
                 userName: profile._json.login,
-                firstName: profile._json.first_name,   
+                firstName: profile._json.first_name,
                 lastName: profile._json.last_name,
                 email: profile._json.email,
                 avatar: profile._json.image.link,

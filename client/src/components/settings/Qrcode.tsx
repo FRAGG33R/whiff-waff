@@ -11,7 +11,9 @@ const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
   useEffect(() => {
     function updateQRCodeSize() {
       const screenWidth = window.innerWidth;
-      if (screenWidth >= 992) { 
+      if (screenWidth >= 1200)
+        setQRSize(200); 
+      else if (screenWidth >= 992) { 
         setQRSize(180); 
       } else if (screenWidth >= 768) { 
         setQRSize(150);

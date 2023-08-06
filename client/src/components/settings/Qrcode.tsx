@@ -12,11 +12,11 @@ const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
     function updateQRCodeSize() {
       const screenWidth = window.innerWidth;
       if (screenWidth >= 992) { 
-        setQRSize(200); 
+        setQRSize(180); 
       } else if (screenWidth >= 768) { 
         setQRSize(150);
       } else { 
-        setQRSize(130); 
+        setQRSize(100); 
       }
     }
 
@@ -35,7 +35,7 @@ const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
         maxWidth: "300%",
         backgroundColor: "#f2f2f2",
         borderRadius: "10px",
-        padding: "10px",
+        padding: "30px",
         display: "inline-block"
       }}
     >

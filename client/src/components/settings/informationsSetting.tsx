@@ -58,18 +58,15 @@ const InformationsSetting = () => {
     console.log(file);
   };
   return (
-    <div className="w-[96%]  md:w-[95%] h-[98%]  flex items-center  justify-start flex-col gap-4 md:gap-6 ">
-      <div className="w-[96%] md:w[94%] h-[8%] md:h-[7%]  flex flex-row items-start  justify-start gap-2 md:gap-4">
-        <div className="md:h-[80%] ">
-          <Image
-            src={InformationIcons}
-            alt="TwoFactorIcon"
-            className="w-[70%] h-full flex items-center justify-center  "
-            width={10}
-          />
-        </div>
-        <div className="w-[75%] md:w-[74%] h-full  flex  items-center font-teko text-center font-semibold sm:text-xl md:text-xl lg:text-3xl xl:text-4xl ">
-          IFORMATIONS
+    <div className="w-[96%]  md:w-[95%] h-[98%]  flex items-start  justify-start flex-col gap-4 md:gap-6 ">
+      <div className="w-[96%] md:w-[94%] h-[8%] md:h-[7%]  flex flex-row items-start  justify-start gap-1 
+    xl:space-y-2 md:space-y-0 lg:space-y-1">
+      
+          <Image src={InformationIcons} alt="TwoFactorIcon"
+            className="w-[8%] h-full flex items-start justify-start  " width={15} />
+  
+        <div className="w-[75%] h-full flex  items-end justify-start font-teko font-semibold sm:text-xl md:text-xl lg:text-3xl xl:text-4xl">
+          INFORMATION
         </div>
       </div>
       <div className="w-full h-screen flex flex-col items-center justify-center gap-3 md:gap-6 ">
@@ -151,15 +148,14 @@ const InformationsSetting = () => {
             />
           </div>
         </div>
-        <div className="w-[90%] h-[15%] flex items-center justify-end  gap-2">
-          <div className=" w-[30%] md:w-[31%] lg:w-[32%] h-[50%] h-[50%] md:h-[52%] lg:h-[54%] flex items-center justify-center ">
-            <SecondaryButton text="Discard" onClick={handleCancle} />
-          </div>
-          <div className="w-[30%] md:w-[31%] lg:w-[32%] h-[50%] h-[50%] md:h-[52%] lg:h-[54%]  flex items-center justify-center ">
-            <PrimaryButton text="save" onClick={handleConfirm} />
-          </div>
-        </div>
-
+        <div className="w-[75%] h-[15%] flex items-center justify-end gap-1">
+  <div className="w-[30%] md:w-[27%] lg:w-[28%] xl:w-[25%]  h-[50%] h-[50%] md:h-[52%] lg:h-[54%] flex items-center justify-center">
+    <SecondaryButton text="Discard" onClick={handleCancle} />
+  </div>
+  <div className="w-[30%] md:w-[27%] lg:w-[28%] xl:w-[25%] h-[50%] h-[50%] md:h-[52%] lg:h-[54%] flex items-center justify-center">
+    <PrimaryButton text="Save" onClick={handleConfirm} />
+  </div>
+</div>
       </div>
     </div>
   );

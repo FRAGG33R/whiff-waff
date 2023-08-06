@@ -5,14 +5,14 @@ import { Request } from "express";
 
 const tagUserSwagger = 'users'
 const userEndPoint = 'users'
-const meEndPoint = 'profile'
+const profileEndPoint = 'profile'
 @ApiTags(tagUserSwagger)
 @Controller(userEndPoint)
 export class UsersController {
 
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Get(meEndPoint)
+    @Get(profileEndPoint)
     getUniqueUser(@Req() req: Request) {
         return (req.user);
     }

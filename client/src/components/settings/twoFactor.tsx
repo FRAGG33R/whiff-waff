@@ -6,9 +6,8 @@ import UserInput from "../ui/inputs/userInput";
 import { useState } from "react";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
-import Qrcode from './Qrcode'
+import Qrcode from "./Qrcode";
 const TwoFactor = () => {
-
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
   function generateRandomCode() {
@@ -29,7 +28,7 @@ const TwoFactor = () => {
     } else {
       setError(true);
     }
-  }
+  };
   return (
     <div className="w-[96%]  md:w-[95%] h-[96%]   flex items-start  justify-start flex-col gap-4 md:gap-6 ">
       <div className="w-[99%] h-[8%] flex items-center justify-start flex-row gap-1 space-y-2 space-y-auto">
@@ -59,37 +58,37 @@ const TwoFactor = () => {
             <Qrcode code={randomCode} />
           </div>
         </div>
-        <div className=" w-[90%] h-[10%] flex items-center justify-center">
+        <div className=" w-[90%] h-[10%] flex items-start justify-center">
           <div className="w-[60%] h-[60%] font-poppins text-[0.7rem]  sm:text-[0.7rem]  md:text-[0.8rem] lg:text-[0.9rem] xl:text-[1rem] text-center ">
             Enter code from your two-factor authentication app
           </div>
         </div>
-        <div className="w-[96%] h-[25%] flex flex-col items-center justify-center gap-4 ms:gap-8 ">
-        <div className="w-[96%] h-[30%]  flex flex-col items-center justify-center ">
-        <div>
-          <UserInput
-            placeholder="*****"
-            type="password"
-            label="code"
-            lableColor="#303267"
-            width="xl"
-            regExp={/^\d{6}$/}
-            isError={error}
-            isDisabled={false}
-            value={code}
-            setError={setError}
-            setValue={setCode}
-          />
-        </div>
-      </div>
-      <div className="w-[90%] h-[30%] flex flex-row items-start justify-center gap-1 md:gap-3  ">
-        <div className="w-[30%] h-[50%] flex items-center justify-center ">
-          <SecondaryButton text='cancel' onClick={handleCancle} />
-        </div>
-        <div className="w-[30%] h-[50%] flex items-center justify-center ">
-          <PrimaryButton text='confirm' onClick={handleConfirm} />
-        </div>
-      </div>
+        <div className="w-full h-[25%]   sm:w-[96%] md:w-[80%] lg:w-[96%] xl:w-[96%] flex flex-col items-center justify-center gap-4 ms:gap-8">
+          <div className="w-auto h-[30%] md:w-[80%] xl:w-[60%]  flex flex-col items-center justify-center">
+            <div>
+              <UserInput
+                placeholder="*****"
+                type="password"
+                label="code"
+                lableColor="#303267"
+                width="code"
+                regExp={/^\d{6}$/}
+                isError={error}
+                isDisabled={false}
+                value={code}
+                setError={setError}
+                setValue={setCode}
+              />
+            </div>
+          </div>
+          <div className="w-full md:w-[80%] xl:w-[60%] flex flex-row justify-center space-x-2 xl:space-x-5 sm:space-x-2 gap-4 md:gap-3">
+            <div className="w-auto sm:w-auto ">
+              <SecondaryButton text="cancel" onClick={handleCancle} />
+            </div>
+            <div className="w-auto sm:w-auto ">
+              <PrimaryButton text="confirm" onClick={handleConfirm} />
+            </div>
+          </div>
         </div>
       </div>
     </div>

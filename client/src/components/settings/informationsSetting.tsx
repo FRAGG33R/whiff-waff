@@ -56,15 +56,15 @@ const InformationsSetting = () => {
     console.log(file);
   };
   return (
-    <div className="w-[96%]  md:w-[95%] h-[98%]  flex items-start  justify-start flex-col gap-4 md:gap-6">
-      <div className=" w-[99%] h-[8%] flex items-center justify-start flex-row gap-1 space-y-2 space-y-auto">
+    <div className="w-[96%]  md:w-[95%] 2xl:w-full 3xl:w-full  xl:w-full lg:w-full  h-[98%]  flex items-start  justify-start flex-col gap-4 md:gap-6  ">
+      <div className=" w-full h-[8%] flex items-center justify-start flex-row  space-y-1 md:space-y-1  xl:space-y-2 space-y-auto 3xl:-space-x-5 2xl:-space-x-3">
         <Image
           src={InformationIcons}
           alt="TwoFactorIcon"
-          className="w-[8%] h-[80%] md:w-auto md:h-auto"
+          className=" w-[6%] h-[99%] md:w-[6%] md:h-[90%] lg:w-[7%] lg:h-[90%] xl:w-[8%] xl:h-[60%] 2xl:w-[8%] 2xl:h-[60%] 3xl:w-[8%] 3xl:h-[60%] flex 3xl:items-start"
           width={10}
         />
-        <div className=" w-[50%] h-[80%] md:w-auto md:h-auto flex items-end justify-start  font-teko font-semibold sm:text-xl md:text-xl lg:text-3xl xl:text-4xl">
+        <div className=" w-[50%] h-[80%]  md:h-auto md:w-auto  flex items-center justify-start  font-teko font-semibold  md:text-xl lg:text-3xl xl:text-4xl">
           INFORMATION
         </div>
       </div>
@@ -77,8 +77,10 @@ const InformationsSetting = () => {
           </div>
         </div>
         <div className="w-full h-[68%]  flex items-center justify-start flex-col gap-2 md:gap-4 ">
-          <div className="w-[17rem]  h-[21%] md:w-[19rem] lg:w-[29rem] xl:w-[35rem]  2xl:w-[40rem] 3xl:w-[48rem]  flex flex-row items-center justify-center gap-5
-             md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14 ">
+          <div
+            className="w-[17rem]  h-[21%] md:w-[19rem] lg:w-[29rem] xl:w-[35rem]  2xl:w-[40rem] 3xl:w-[48rem]  flex flex-row items-center justify-center gap-5
+             md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14 "
+          >
             <div className="w-auto sm:w-auto  ">
               <div>
                 <UserInput
@@ -140,7 +142,7 @@ const InformationsSetting = () => {
                 lableColor="#293665"
                 width="2xl"
                 regExp={/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/}
-                isError={userError}
+                isError={emailError}
                 isDisabled={false}
                 value={email}
                 setError={setEmailError}
@@ -148,7 +150,7 @@ const InformationsSetting = () => {
               />
             </div>
           </div>
-          <div className="w-[17rem] h-[21%] md:w-[19rem] lg:w-[29rem] xl:w-[35rem]  2xl:w-[40rem] 3xl:w-[48rem]  flex flex-row justify-end items-center    gap-4 md:gap-4">
+          <div className="w-[17rem]  h-[21%] sm:w-[13rem] md:w-[19rem] lg:w-[29rem] xl:w-[35rem]  2xl:w-[40rem] 3xl:w-[48rem]  flex flex-row justify-end items-center   gap-4 md:gap-4">
             <div className="w-auto sm:w-auto  ">
               <SecondaryButton text="Discard" onClick={handleCancle} />
             </div>
@@ -163,4 +165,3 @@ const InformationsSetting = () => {
 };
 
 export default InformationsSetting;
-

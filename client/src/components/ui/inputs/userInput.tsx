@@ -28,7 +28,7 @@ const UserInput: React.FC<InputProps> = ({
         className={`flex items-center  text-PastelGrey justify-center absolute min-w-1 px-3 h-5  sm:h-4 md:h-5 -top-3 left-4 font-poppins text-sm md:text-md`}
         style={{ backgroundColor: lableColor }}
       >
-        <label>{label}</label>
+        <label className="sm:text-[0.6rem] md:text-[0.8rem]">  {label}</label>
       </div>
       <input
         type={type}
@@ -37,7 +37,7 @@ const UserInput: React.FC<InputProps> = ({
         onChange={handleChange}
         onBlur={handleBlur}
         value={value}
-        className={`bg-transparent rounded-full font-poppins text-md placeholder-PastelGrey placeholder-left pl-8 border-2 border-Mercury
+        className={`bg-transparent rounded-full font-poppins sm:text-[0.6rem] md:text-[1rem] placeholder-PastelGrey  placeholder-left pl-8 border-2 border-Mercury
          focus:outline-none
         ${isError ? "border-red-500 " : "focus:border-GreenishYellow"}
         ${
@@ -50,11 +50,11 @@ const UserInput: React.FC<InputProps> = ({
             : width === "xl"
             ? "w-40 sm:w-52 md:w-52 lg:w-72 md:h-12 h-10 text-sm md:text-md"
             : width === "sml"
-            ? "w-[8rem] md:w-[8.5rem] lg:w-[13.5rem] xl:w-[16.5rem] 2xl:w-[18.5rem] 3xl:w-[22.3rem]  h-12   lg:h-12 text-sm md:text-md"
+            ? "w-[8rem] sm:w-[6rem] md:w-[8.5rem] lg:w-[13.5rem] xl:w-[16.5rem] 2xl:w-[18.5rem] 3xl:w-[22.3rem]  h-12  md:h-10 sm:h-10 lg:h-12 text-sm md:text-md"
             : width === "2xl"
-            ? "w-[17rem]  md:w-[19rem] lg:w-[29rem] xl:w-[35rem] 2xl:w-[40rem] 3xl:w-[48rem] h-12 "
+            ? "w-[17rem]  sm:w-[13rem] md:w-[19rem] lg:w-[29rem] xl:w-[35rem] 2xl:w-[40rem] 3xl:w-[48rem] h-12  md:h-10 sm:h-10 lg:h-12 text-sm md:text-md"
             : width === "code"
-            ? "w-[18rem]  sm:w-[18rem] md:w-[15rem] lg:w-[18rem] xl:w-[18rem]  md:h-12 h-10 text-sm md:text-md"
+            ? "w-[18rem]  sm:w-[13rem] md:w-[15rem] lg:w-[18rem] xl:w-[18rem]  md:h-12 h-10 text-sm md:text-md"
             : ""
         }`}
       ></input>

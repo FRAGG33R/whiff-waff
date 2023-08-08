@@ -6,27 +6,26 @@ interface QRCodeProps {
 }
 
 const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
-  const [qrSize, setQRSize] = useState(120);
+  const [qrSize, setQRSize] = useState(180);
 
-  useEffect(() => {
-    function updateQRCodeSize() {
-      const screenWidth = window.innerWidth;
-      if (screenWidth >= 1248)
-        setQRSize(200); 
+  const updateQRCodeSize = () => {
+    const screenWidth = window.innerWidth;
+    if (screenWidth >= 1248)
+        setQRSize(250); 
       else if (screenWidth >= 992) { 
-        setQRSize(180); 
+        setQRSize(200); 
       } else if (screenWidth >= 768) { 
-        setQRSize(150);
+        setQRSize(170);
       } else { 
         setQRSize(140); 
       }
-    }
+  };
 
-    window.addEventListener("load", updateQRCodeSize);
+  useEffect(() => {
+    updateQRCodeSize(); 
     window.addEventListener("resize", updateQRCodeSize);
 
     return () => {
-      window.removeEventListener("load", updateQRCodeSize);
       window.removeEventListener("resize", updateQRCodeSize);
     };
   }, []);
@@ -35,7 +34,7 @@ const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
     <div
       style={{
         maxWidth: "300%",
-        backgroundColor: "#f2f2f2",
+        backgroundColor: "#ffffff",
         borderRadius: "10px",
         padding: "30px",
         display: "inline-block"

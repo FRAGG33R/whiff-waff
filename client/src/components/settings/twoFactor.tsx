@@ -1,6 +1,5 @@
 import React from "react";
 import TowFactorIcon from "../../../public/twoFactorIcon.svg";
-import CodeQr from "../../../public/codeQR.svg";
 import Image from "next/image";
 import UserInput from "../ui/inputs/userInput";
 import { useState } from "react";
@@ -10,20 +9,22 @@ import Qrcode from "./Qrcode";
 const TwoFactor = () => {
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
+  const randomCode = useState(generateRandomCode())[0];
+
   function generateRandomCode() {
     const min = 100000;
     const max = 999999;
     const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
     return randomNumber.toString();
   }
-  const randomCode = generateRandomCode();
+
   const handleCancle = () => {
     setCode("");
     setError(false);
   };
 
   const handleConfirm = () => {
-    if (code.match(/^[0-9]{6}$/)) {
+    if (code === randomCode && code.match(/^[0-9]{6}$/)) {
       console.log("code is valid");
     } else {
       setError(true);

@@ -30,14 +30,14 @@ export class AuthService {
 		dto.twoFactorAuth = false;
 		dto.verfiedEmail = false;
 		dto.avatar = "default";//TODO add image to database
-			const salt: string = await bcrytpt.genSalt(values.SALT_ROUNDS);
-			dto.password = await bcrytpt.hash(dto.password, salt);
-			const userInfos = await this.userService.createUser(dto);
-			const email_jwt = await this.signToken(userInfos, this.config.get(env.JWT_EMAIL_SECRET),
-				this.config.get(env.TOKEN_EMAIL_EXPIRATION_TIME));
-			const fullName = `${dto.firstName} ${dto.lastName}`;
-			await this.sendEmail(dto.email, this.config.get(env.EMAIL_SUBJECT), email_jwt, fullName);
-			return new SuccessResponse(HttpStatus.CREATED, messages.SUCESSFULL_MSG);
+		const salt: string = await bcrytpt.genSalt(values.SALT_ROUNDS);
+		dto.password = await bcrytpt.hash(dto.password, salt);
+		const userInfos = await this.userService.createUser(dto);
+		const email_jwt = await this.signToken(userInfos, this.config.get(env.JWT_EMAIL_SECRET),
+			this.config.get(env.TOKEN_EMAIL_EXPIRATION_TIME));
+		const fullName = `${dto.firstName} ${dto.lastName}`;
+		await this.sendEmail(dto.email, this.config.get(env.EMAIL_SUBJECT), email_jwt, fullName);
+		return new SuccessResponse(HttpStatus.CREATED, messages.SUCESSFULL_MSG);
 	}
 
 	async signToken(user: any, secretKey: string, expire: string): Promise<string> {
@@ -50,7 +50,7 @@ export class AuthService {
 		if (user) {
 			const expectedPassword = await bcrytpt.compare(password, user.password)
 			if (expectedPassword) {
-				const token = await this.signToken({ email: user.email }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
+				const token = await this.signToken({ id: user.id, email: user.email }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
 				const fullName = `${user.firstName} ${user.lastName}`;
 				if (user.verfiedEmail == false) {
 					this.sendEmail(user.email, this.config.get(env.EMAIL_SUBJECT), token, fullName);

@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
+import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { User } from "@prisma/client";
 import { SignUpDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
@@ -8,6 +8,8 @@ import * as values from "src/shared/constants/constants.values"
 import * as ErrorCode from '../shared/constants/constants.code-error';
 import * as  CodeMessages from 'src/shared/constants/constants.messages';
 import * as variables from 'src/shared/constants/constants.name-variables'
+import { Http2ServerResponse } from "http2";
+import { SuccessResponse } from "src/shared/responses/responses.sucess-response";
 
 const authService = 'UserService';
 @Injectable()
@@ -50,12 +52,15 @@ export class UsersService {
 					throw new ForbiddenException(field + CodeMessages.P2002_MSG)
 				}
 			}
-			else if (error instanceof PrismaClientInitializationError)
+			else if (error instanceof PrismaClientInitializationError) {
+				this.logger.error(error.message);
 				throw new InternalServerErrorException();
-				else {
-					this.logger.error(error.messages)
-					throw new InternalServerErrorException();
 			}
+			else {
+				this.logger.error(error.messages)
+				throw new InternalServerErrorException();
+			}
+			console.log(error);
 		}
 	}
 
@@ -91,70 +96,74 @@ export class UsersService {
 		}
 	}
 
-	async getUserData(userName: string): Promise<any> {
-		const { id, ...userData } = await this.prismaService.user.findUnique({
-			select: {
-				id: true,
-				userName: true,
-				firstName: true,
-				lastName: true,
-				avatar: true,
-				stat: {
-					select: {
-						wins: true,
-						loses: true,
-						level: true,
-						rank: true
-					}
-				},
-				achievements: {
-					select: {
-						level: true,
-						achievement: {
-							select: {
-								name: true,
-								description: true
+	async getUserData(userName: string, page: number): Promise<any> {
+		try {
+			const { id, ...userData } = await this.prismaService.user.findUnique({
+				select: {
+					id: true,
+					userName: true,
+					firstName: true,
+					lastName: true,
+					avatar: true,
+					stat: {
+						select: {
+							wins: true,
+							loses: true,
+							level: true,
+							rank: true
+						}
+					},
+					achievements: {
+						select: {
+							level: true,
+							achievement: {
+								select: {
+									name: true,
+									description: true
+								}
 							}
 						}
 					}
+				},
+				where: {
+					userName: userName
 				}
-			},
-			where: {
-				userName: userName
-			}
-		});
-
-		const historyGame = await this.prismaService.gameHistory.findMany({
-			select: {	
-				game: {
-					select :{
-						playerOne: {
-							select: 
-							{
-								firstName: true,
-								lastName: true,
-								avatar: true
-							}
-						},
-						playerTwo: {
-							select: 
-							{
-								firstName: true,
-								lastName: true,
-								avatar: true
+			});
+			const historyGame = await this.prismaService.gameHistory.findMany({
+				select: {
+					game: {
+						select: {
+							playerOne: {
+								select:
+								{
+									firstName: true,
+									lastName: true,
+									avatar: true
+								}
+							},
+							playerTwo: {
+								select:
+								{
+									firstName: true,
+									lastName: true,
+									avatar: true
+								}
 							}
 						}
-					}
+					},
+					scoreLeft: true,
+					scoreRight: true
 				},
-				scoreLeft: true,
-				scoreRight: true
-			},
-			where: {
-				OR: [{ leftUserId: id }, { RightUserId: id }],
-				accepted: true
-			}
-		});
-		console.log(historyGame);
-		return (historyGame)
+				where: {
+					OR: [{ leftUserId: id }, { RightUserId: id }],
+					accepted: true
+				},
+				skip: page * 5,
+				take: 5
+			});
+			return ({ userData, historyGame })
+		} catch (error) {
+			throw new NotFoundException("user was not found");
+		}
 	}
 }

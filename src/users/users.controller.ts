@@ -14,10 +14,12 @@ export class UsersController {
 	constructor(private userService: UsersService) { }
 
 	@ApiBearerAuth()
-	// @UseGuards(AuthGuard('jwt'))
+	@UseGuards(AuthGuard('jwt'))
 	@Get(profileEndPoint)
-	async getUniqueUser(@Req() req: Request, @Res({passthrough: true}) res: Response) {
-		return await this.userService.getUserData('kfaouzi');
-		// return (req.user);
+	async getUniqueUser(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+
+		const userName = req.query.user || req.user["userName"];
+		const page = Number(req.query.page) || 0;
+		return this.userService.getUserData(userName, page);
 	}
 }

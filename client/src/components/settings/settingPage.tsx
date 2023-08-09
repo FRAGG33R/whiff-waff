@@ -12,7 +12,7 @@ const SettingPage = () => {
       
         </div>
         <div className="h-[90%] md:h[92%]   flex flex-col md:flex-row  gap-4 md:gap-10 overflow-auto md:overflow-hidden">
-          <div className="flex items-center justify-center h-full  md:w-[60%] w-full lg:w-[60%]  bg-CarbonGrey bg-opacity-10  rounded-xl">
+          <div className="flex items-center justify-center h-full md:w-[60%] w-full lg:w-[60%]  bg-CarbonGrey bg-opacity-10  rounded-xl ">
             <InformationsSetting />
           </div>
           <div className=" flex items-center justify-center  h-full  md:w-[40%] w-full  lg-w-[40%] bg-CarbonGrey bg-opacity-10  rounded-xl">

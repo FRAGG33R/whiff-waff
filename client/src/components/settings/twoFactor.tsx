@@ -65,13 +65,13 @@ const TwoFactor = () => {
           </div>
         </div>
         <div className="w-full h-[25%]    md:w-[80%] lg:w-[96%] xl:w-[96%] flex flex-col items-center justify-center gap-4 ms:gap-8">
-          <div className="w-auto h-[30%] md:w-[80%] xl:w-[60%]  flex flex-col items-center justify-center">
+          <div className="w-auto h-[30%]  md:w-[80%] xl:w-[60%]  flex flex-col items-center justify-center">
             <div>
               <UserInput
                 placeholder="*****"
                 type="password"
                 label="code"
-                lableColor="#303267"
+                lableColor="sm:bg-[#2c3569] md:bg-[#322f65] lg:bg-[#322f65] xl:bg-[#322f65] 2xl:bg-[#322f65] 3xl:bg-[#322f65]"
                 width="code"
                 regExp={/^\d{6}$/}
                 isError={error}

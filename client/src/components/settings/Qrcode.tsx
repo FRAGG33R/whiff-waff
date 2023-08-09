@@ -46,3 +46,4 @@ const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
 };
 
 export default QRCodeGenerator;
+

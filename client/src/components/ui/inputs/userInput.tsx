@@ -25,10 +25,9 @@ const UserInput: React.FC<InputProps> = ({
   return (
     <div className="relative w-full">
       <div
-        className={`flex items-center  text-PastelGrey justify-center absolute min-w-1 px-3 h-5  sm:h-4 md:h-5 -top-3 left-4 font-poppins text-sm md:text-md`}
-        style={{ backgroundColor: lableColor }}
+        className={`flex items-center  text-PastelGrey justify-center absolute min-w-1 px-3 h-5  sm:h-4 md:h-5 -top-3  left-4 font-poppins text-sm md:text-md ${lableColor}`}
       >
-        <label className="sm:text-[0.6rem] md:text-[0.8rem]">  {label}</label>
+        <label className="sm:text-[0.6rem] md:text-[0.8rem]  ">  {label}</label>
       </div>
       <input
         type={type}
@@ -37,7 +36,7 @@ const UserInput: React.FC<InputProps> = ({
         onChange={handleChange}
         onBlur={handleBlur}
         value={value}
-        className={`bg-transparent rounded-full font-poppins sm:text-[0.6rem] md:text-[1rem] placeholder-PastelGrey  placeholder-left pl-8 border-2 border-Mercury
+        className={`bg-transparent rounded-full font-poppins sm:text-[0.6rem] md:text-[1rem] placeholder-PastelGrey  placeholder-left pl-8 sm:pl-4 border-2 border-Mercury
          focus:outline-none
         ${isError ? "border-red-500 " : "focus:border-GreenishYellow"}
         ${

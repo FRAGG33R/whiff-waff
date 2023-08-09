@@ -166,7 +166,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
             isError={error}
             setError={setError}
             isDisabled={false}
-            lableColor="#222222"
+            lableColor="bg-[#222222]"
             regExp={
               props.Mode === "signin"
                 ? signinArray[step].RegExp

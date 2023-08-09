@@ -87,7 +87,7 @@ const InformationsSetting = () => {
                   placeholder="first name"
                   type="text"
                   label="First Name"
-                  lableColor="#27335c"
+                  lableColor="sm:bg-[#283662] md:bg-[#27345d] lg:bg-[#27345d] xl:bg-[#27345d] 2xl:bg-[#27345d] 3xl:bg-[#27345d]"
                   width="sml"
                   regExp={/^.{3,}$/}
                   isError={firstError}
@@ -104,7 +104,7 @@ const InformationsSetting = () => {
                   placeholder="last name"
                   type="text"
                   label="Last Name"
-                  lableColor="#283563"
+                  lableColor="sm:bg-[#29396a] md:bg-[#283765] lg:bg-[#283765] xl:bg-[#283765] 2xl:bg-[#283765] 3xl:bg-[#283765]"
                   width="sml"
                   regExp={/^.{3,}$/}
                   isError={lastError}
@@ -122,7 +122,7 @@ const InformationsSetting = () => {
                 placeholder="username"
                 type="text"
                 label="Username"
-                lableColor="#293665"
+                lableColor="sm:bg-[#293868] md:bg-[#283662] lg:bg-[#283662] xl:bg-[#283662] 2xl:bg-[#283662] 3xl:bg-[#283662]"
                 width="2xl"
                 regExp={/^[a-zA-Z0-9_.]{3,16}$/}
                 isError={userError}
@@ -139,7 +139,7 @@ const InformationsSetting = () => {
                 placeholder="Houssam@gmail.com"
                 type="email"
                 label="Email"
-                lableColor="#293665"
+                lableColor="sm:bg-[#29376a] md:bg-[#293867] lg:bg-[#293867] xl:bg-[#293867] 2xl:bg-[#293867] 3xl:bg-[#293867]"
                 width="2xl"
                 regExp={/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/}
                 isError={emailError}

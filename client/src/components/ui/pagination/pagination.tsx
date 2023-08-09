@@ -25,7 +25,6 @@ export function Pagination(props: {
   const next = () => {
     if (props.active === max) return;
 
-    // Update the start page if needed
     if (props.active === endPage && endPage < max) {
       setStartPage(startPage + 1);
     }

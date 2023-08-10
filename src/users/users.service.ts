@@ -78,23 +78,50 @@ export class UsersService {
 		}
 	}
 
-	async findOneUserById(id: string): Promise<User> {
+	async findUserById(id: string): Promise<any> {
 		try {
 			const user = await this.prismaService.user.findUnique({
+				select: {
+					id: true,
+					userName: true,
+					firstName: true,
+					lastName: true,
+					avatar: true,
+					email: true,
+					stat: {
+						select: {
+							wins: true,
+							loses: true,
+							level: true,
+							rank: true
+						}
+					},
+					achievements: {
+						select: {
+							level: true,
+							achievement: {
+								select: {
+									name: true,
+									description: true
+								}
+							}
+						}
+					}
+				},
 				where: {
 					id: id
 				}
 			})
 			if (!user)
 				throw new ForbiddenException(CodeMessages.CREDENTIALS_INCORRECT_MSG);
-			return (delete user.password, user);
+			return (user);
 		} catch (error) {
 			if (error instanceof PrismaClientInitializationError)
 				throw new InternalServerErrorException();
 		}
 	}
 
-	async getUserDataByIdOrUserName(idOrUserName: string): Promise<any> {
+	async findUserByUsername(userName: string): Promise<any> {
 		try {
 			const userData = await this.prismaService.user.findUnique({
 				select: {
@@ -125,18 +152,14 @@ export class UsersService {
 					}
 				},
 				where: {
-					id: idOrUserName,
-					userName: idOrUserName
+					userName: userName	
 				}
 			});
 			return userData;
-
-
 		} catch (error) {
 			throw new NotFoundException("user was not found");
 		}
 	}
-
 
 	async getHistoryGame(idUser: string, page: number): Promise<any> {
 		const historyGame = await this.prismaService.gameHistory.findMany({

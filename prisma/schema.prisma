@@ -2,228 +2,228 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id                   String            @id @default(uuid())
-  userName             String            @unique @map("user_name")
-  firstName            String            @map("first_name")
-  lastName             String            @map("last_name")
-  avatar               String
-  email                String            @unique
-  password             String?           @map("password_hash")
-  twoFactorAuth        Boolean           @map("two_factor_auth")
-  verfiedEmail         Boolean           @map("verfied_email")
-  status               PlayerStatus
-  stat                 Stats?
-  sentNotification     Notification[]    @relation("sendNotfication")
-  receivedNotification Notification[]    @relation("receiveNotification")
-  senderFriendship     Friendship[]      @relation("sendFriendship")
-  receiverFriendship   Friendship[]      @relation("receiveFriendship")
-  oneLeftPlay          Play[]            @relation("left")
-  onRightPlay          Play[]            @relation("right")
-  sender               Chat[]            @relation("sender")
-  receiver             Chat[]            @relation("receiver")
-  achievements         haveAchievement[]
-  chatrooms            Join[]
+    id                   String            @id @default(uuid())
+    userName             String            @unique @map("user_name")
+    firstName            String            @map("first_name")
+    lastName             String            @map("last_name")
+    avatar               String
+    email                String            @unique
+    password             String?           @map("password_hash")
+    twoFactorAuth        Boolean           @map("two_factor_auth")
+    verfiedEmail         Boolean           @map("verfied_email")
+    status               PlayerStatus
+    stat                 Stats?
+    sentNotification     Notification[]    @relation("sendNotfication")
+    receivedNotification Notification[]    @relation("receiveNotification")
+    senderFriendship     Friendship[]      @relation("sendFriendship")
+    receiverFriendship   Friendship[]      @relation("receiveFriendship")
+    oneLeftPlay          Play[]            @relation("left")
+    onRightPlay          Play[]            @relation("right")
+    sender               Chat[]            @relation("sender")
+    receiver             Chat[]            @relation("receiver")
+    achievements         haveAchievement[]
+    chatrooms            Join[]
 
-  @@map("user")
+    @@map("user")
 }
 
 model Chat {
-  senderId   String    @map("sender_id")
-  receiverId String    @map("received_id")
-  messageId  String    @map("message_id")
-  sender     User      @relation("sender", fields: [senderId], references: [id])
-  receiver   User      @relation("receiver", fields: [receiverId], references: [id])
-  message    Message[]
+    senderId   String    @map("sender_id")
+    receiverId String    @map("received_id")
+    messageId  String    @map("message_id")
+    sender     User      @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+    receiver   User      @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+    message    Message[]
 
-  @@id([senderId, receiverId])
-  @@map("chat")
+    @@id([senderId, receiverId])
+    @@map("chat")
 }
 
 model RoomChat {
-  id           String       @id @default(uuid())
-  passwordHash String?      @map("password_hash")
-  passwordSalt String?      @map("password_salt")
-  type         ChatRoomType
-  joins        Join[]
+    id           String       @id @default(uuid())
+    passwordHash String?      @map("password_hash")
+    passwordSalt String?      @map("password_salt")
+    type         ChatRoomType
+    joins        Join[]
 
-  @@map("room_chat")
+    @@map("room_chat")
 }
 
 model Join {
-  roomChatId String     @map("room_chat_id")
-  userId     String     @map("user_id")
-  statut     UserStatus
-  messages   Message[]
-  roomChat   RoomChat   @relation(fields: [roomChatId], references: [id])
-  user       User       @relation(fields: [userId], references: [id])
+    roomChatId String     @map("room_chat_id")
+    userId     String     @map("user_id")
+    statut     UserStatus
+    messages   Message[]
+    roomChat   RoomChat   @relation(fields: [roomChatId], references: [id], onDelete: Cascade)
+    user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([userId, roomChatId])
-  @@map("join")
+    @@id([userId, roomChatId])
+    @@map("join")
 }
 
 model Message {
-  id         String @id @default(uuid())
-  message    String
-  senderId   String @map("sender_id")
-  receiverId String @map("received_id")
-  roomChatId String @map("room_chat_id")
-  chat       Chat   @relation(fields: [senderId, receiverId], references: [senderId, receiverId])
-  roomSender Join?  @relation(fields: [roomChatId, senderId], references: [roomChatId, userId])
+    id         String @id @default(uuid())
+    message    String
+    senderId   String @map("sender_id")
+    receiverId String @map("received_id")
+    roomChatId String @map("room_chat_id")
+    chat       Chat   @relation(fields: [senderId, receiverId], references: [senderId, receiverId], onDelete: Cascade)
+    roomSender Join?  @relation(fields: [roomChatId, senderId], references: [roomChatId, userId], onDelete: Cascade)
 
-  @@map("message")
+    @@map("message")
 }
 
 model Play {
-  rightUserId String        @map("right_user_id")
-  leftUserId  String        @map("left_user_id")
-  gameMode    Mode          @map("game_mode")
-  gameMap     Map           @map("game_map")
-  playerOne   User          @relation("left", fields: [leftUserId], references: [id])
-  playerTwo   User          @relation("right", fields: [rightUserId], references: [id])
-  gameHistory GameHistory[]
+    rightUserId String        @map("right_user_id")
+    leftUserId  String        @map("left_user_id")
+    gameMode    Mode          @map("game_mode")
+    gameMap     Map           @map("game_map")
+    playerOne   User          @relation("left", fields: [leftUserId], references: [id], onDelete: Cascade)
+    playerTwo   User          @relation("right", fields: [rightUserId], references: [id], onDelete: Cascade)
+    gameHistory GameHistory[]
 
-  @@id([leftUserId, rightUserId])
-  @@map("play")
+    @@id([leftUserId, rightUserId])
+    @@map("play")
 }
 
 model GameHistory {
-  id          String  @id @default(uuid())
-  leftUserId  String  @map("left_user_id")
-  RightUserId String  @map("right_user_id")
-  scoreLeft   Int     @map("score_left")
-  scoreRight  Int     @map("score_right")
-  accepted    Boolean
-  game        Play    @relation(fields: [leftUserId, RightUserId], references: [leftUserId, rightUserId])
+    id          String  @id @default(uuid())
+    leftUserId  String  @map("left_user_id")
+    RightUserId String  @map("right_user_id")
+    scoreLeft   Int     @map("score_left")
+    scoreRight  Int     @map("score_right")
+    accepted    Boolean
+    game        Play    @relation(fields: [leftUserId, RightUserId], references: [leftUserId, rightUserId], onDelete: Cascade)
 
-  @@map("game_history")
+    @@map("game_history")
 }
 
 model Stats {
-  id     String @id @default(uuid())
-  wins   Int
-  loses  Int
-  level  Float
-  rank   Rank
-  userId String @unique @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+    id     String @id @default(uuid())
+    wins   Int
+    loses  Int
+    level  Float
+    rank   Rank
+    userId String @unique @map("user_id")
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("stats")
+    @@map("stats")
 }
 
 model Achievement {
-  id              String            @id @default(uuid())
-  name            String
-  description     String
-  haveAchievement haveAchievement[]
+    id              String            @id @default(uuid())
+    name            String
+    description     String
+    haveAchievement haveAchievement[]
 
-  @@map("achievement")
+    @@map("achievement")
 }
 
 model haveAchievement {
-  achievementId String      @map("achievement_id")
-  userId        String      @map("user_id")
-  level         Float
-  achievement   Achievement @relation(fields: [achievementId], references: [id])
-  user          User        @relation(fields: [userId], references: [id])
+    achievementId String      @map("achievement_id")
+    userId        String      @map("user_id")
+    level         Float
+    achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+    user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@id([achievementId, userId])
-  @@map("have_achievement")
+    @@id([achievementId, userId])
+    @@map("have_achievement")
 }
 
 model Notification {
-  id         String           @id @default(uuid())
-  type       NotificationType
-  senderId   String           @map("sender_id")
-  receiverId String           @map("receiver_id")
-  sender     User             @relation("sendNotfication", fields: [senderId], references: [id])
-  receiver   User             @relation("receiveNotification", fields: [receiverId], references: [id])
+    id         String           @id @default(uuid())
+    type       NotificationType
+    senderId   String           @map("sender_id")
+    receiverId String           @map("receiver_id")
+    sender     User             @relation("sendNotfication", fields: [senderId], references: [id], onDelete: Cascade)
+    receiver   User             @relation("receiveNotification", fields: [receiverId], references: [id], onDelete: Cascade)
 
-  @@map("notification")
+    @@map("notification")
 }
 
 model Friendship {
-  receivedId String           @map("received_id")
-  senderId   String           @map("sender_id")
-  status     FriendshipStatus
-  sender     User             @relation("sendFriendship", fields: [senderId], references: [id])
-  receiver   User             @relation("receiveFriendship", fields: [receivedId], references: [id])
+    receivedId String           @map("received_id")
+    senderId   String           @map("sender_id")
+    status     FriendshipStatus
+    sender     User             @relation("sendFriendship", fields: [senderId], references: [id], onDelete: Cascade)
+    receiver   User             @relation("receiveFriendship", fields: [receivedId], references: [id], onDelete: Cascade)
 
-  @@id([senderId, receivedId])
-  @@map("friendship")
+    @@id([senderId, receivedId])
+    @@map("friendship")
 }
 
 enum Mode {
-  CHALLENGE
-  TIME
+    CHALLENGE
+    TIME
 
-  @@map("mode")
+    @@map("mode")
 }
 
 enum Map {
-  BASIC
-  INTERMEDIATE
-  ADVANCED
+    BASIC
+    INTERMEDIATE
+    ADVANCED
 
-  @@map("map")
+    @@map("map")
 }
 
 enum NotificationType {
-  FRIENDSHIP
-  GAME
-  ACHIEVEMENT
-  MESSAGE
+    FRIENDSHIP
+    GAME
+    ACHIEVEMENT
+    MESSAGE
 
-  @@map("notification_type")
+    @@map("notification_type")
 }
 
 enum FriendshipStatus {
-  PENDING
-  ACCEPTED
-  REFUSED
-  BLOCKED
-  EXPIRED
+    PENDING
+    ACCEPTED
+    REFUSED
+    BLOCKED
+    EXPIRED
 
-  @@map("friendship_status")
+    @@map("friendship_status")
 }
 
 enum Rank {
-  ROOKIE
-  CHALLENGER
-  EXPERT
-  LEGEND
+    ROOKIE
+    CHALLENGER
+    EXPERT
+    LEGEND
 
-  @@map("rank")
+    @@map("rank")
 }
 
 enum PlayerStatus {
-  ONLINE
-  OFFLINE
-  IN_GAME
+    ONLINE
+    OFFLINE
+    IN_GAME
 
-  @@map("status_player")
+    @@map("status_player")
 }
 
 enum ChatRoomType {
-  PRIVATE
-  PUBLIC
-  PROTECTED
+    PRIVATE
+    PUBLIC
+    PROTECTED
 
-  @@map("chat_room_type")
+    @@map("chat_room_type")
 }
 
 enum UserStatus {
-  ADMIN
-  BANNED
-  MUTED
+    ADMIN
+    BANNED
+    MUTED
 
-  @@map("user_status")
+    @@map("user_status")
 }

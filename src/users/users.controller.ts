@@ -1,12 +1,15 @@
-import { Controller, Get, HttpException, HttpStatus, Req, UseGuards, Res } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiBearerAuth, ApiHeader, ApiTags } from "@nestjs/swagger";
-import { Request, Response } from "express";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { Request } from "express";
 import { UsersService } from "./users.service";
+import { SignUpDto, UpdateCatDto } from "src/dto";
 
 const tagUserSwagger = 'users'
 const userEndPoint = 'users'
-const profileEndPoint = 'profile'
+const profileEndPoint = 'profile/:userName'
+const historyGame = 'historyGame/:userId'
+const settings = 'settings'
 @ApiTags(tagUserSwagger)
 @Controller(userEndPoint)
 export class UsersController {
@@ -16,10 +19,22 @@ export class UsersController {
 	@ApiBearerAuth()
 	@UseGuards(AuthGuard('jwt'))
 	@Get(profileEndPoint)
-	async getUniqueUser(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+	async getUniqueUser(@Req() req: Request) {
+		const userName = req.params.userName || req.user["userName"];
+		return this.userService.getUserData(userName);
+	}
 
-		const userName = req.query.user || req.user["userName"];
+	@UseGuards(AuthGuard('jwt'))
+	@Get(historyGame)
+	async getHistoryGames(@Req() req: Request) {
+		const idUser = req.params.userId || req.user["id"];
 		const page = Number(req.query.page) || 0;
-		return this.userService.getUserData(userName, page);
+		return this.userService.getHistoryGame(idUser, page);
+	}
+
+	// @UseGuards(AuthGuard('jwt'))
+	@Patch(settings)
+	async updateUserdata(@Body() dto: UpdateCatDto) {
+		return this.userService.upDateUserdata(dto);
 	}
 }

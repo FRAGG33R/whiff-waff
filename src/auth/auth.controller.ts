@@ -35,7 +35,7 @@ export class AuthController {
         return (req.user);
     }
 
-    @UseGuards(AuthGuard('42'))
+    @UseGuards(AuthGuard('42'))//TODO use the code of 42
     @Get(signin42AuthEndPoint)
     async signFortyTwoIn(@Req() req: { user: SignUpDto }, @Res() res: Response) {
         const generatedName = `${values.PREFIX_USERNAME}${uuidv4().slice(0, 8)}`;
@@ -51,7 +51,7 @@ export class AuthController {
 
     @Get(verifiedAuthEndPoint)
     async verfyEmail(@Req() req: Request, @Res() res: Response) {//TODO html injection
-        const loginUrl = await this.authService.verfyEmail(req.params.token);
+        const loginUrl = await this.authService.verfyEmail(req.params.token);//TODO reject email
         res.redirect((loginUrl).toString());
     }
 }

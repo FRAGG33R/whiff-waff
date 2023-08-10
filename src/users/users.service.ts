@@ -1,6 +1,6 @@
 import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { User } from "@prisma/client";
-import { SignUpDto } from "src/dto";
+import { SignUpDto, UpdateCatDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AchievementService } from "src/achievements/achievements.service";
 import { PrismaClientInitializationError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -96,15 +96,16 @@ export class UsersService {
 		}
 	}
 
-	async getUserData(userName: string, page: number): Promise<any> {
+	async getUserData(userName: string): Promise<any> {
 		try {
-			const { id, ...userData } = await this.prismaService.user.findUnique({
+			const userData = await this.prismaService.user.findUnique({
 				select: {
 					id: true,
 					userName: true,
 					firstName: true,
 					lastName: true,
 					avatar: true,
+					email: true,
 					stat: {
 						select: {
 							wins: true,
@@ -129,41 +130,52 @@ export class UsersService {
 					userName: userName
 				}
 			});
-			const historyGame = await this.prismaService.gameHistory.findMany({
-				select: {
-					game: {
-						select: {
-							playerOne: {
-								select:
-								{
-									firstName: true,
-									lastName: true,
-									avatar: true
-								}
-							},
-							playerTwo: {
-								select:
-								{
-									firstName: true,
-									lastName: true,
-									avatar: true
-								}
-							}
-						}
-					},
-					scoreLeft: true,
-					scoreRight: true
-				},
-				where: {
-					OR: [{ leftUserId: id }, { RightUserId: id }],
-					accepted: true
-				},
-				skip: page * 5,
-				take: 5
-			});
-			return ({ userData, historyGame })
+			return userData;
 		} catch (error) {
 			throw new NotFoundException("user was not found");
 		}
+	}
+
+
+	async getHistoryGame(idUser: string, page: number): Promise<any> {
+		const historyGame = await this.prismaService.gameHistory.findMany({
+			select: {
+				game: {
+					select: {
+						playerOne: {
+							select:
+							{
+								firstName: true,
+								lastName: true,
+								avatar: true,
+							}
+						},
+						playerTwo: {
+							select:
+							{
+								firstName: true,
+								lastName: true,
+								avatar: true
+							}
+						}
+					}
+				},
+				scoreLeft: true,
+				scoreRight: true
+			},
+			where: {
+				OR: [{ leftUserId: idUser }, { RightUserId: idUser }],
+				accepted: true
+			},
+			skip: page * 5,
+			take: 5
+		});
+		return historyGame;
+	}
+
+	async upDateUserdata(dto: UpdateCatDto): Promise<SuccessResponse> {
+		const data = dto;
+		console.log(data.email);
+		return (null);
 	}
 }

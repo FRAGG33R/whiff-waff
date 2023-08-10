@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { Exclude } from "class-transformer";
-import { IsEmail, IsNotEmpty, Matches, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, Matches, MinLength } from "class-validator";
 import * as values from 'src/shared/constants/constants.values'
 
 
@@ -42,3 +42,5 @@ export class SignUpDto {
 	@Exclude()
 	verfiedEmail: boolean;
 }
+
+export class UpdateCatDto extends PartialType(SignUpDto) { }

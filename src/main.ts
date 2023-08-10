@@ -41,6 +41,7 @@ async function bootstrap() {
 				url: `${paths.PROTOCOL}${os.hostname}${paths.SEPARATOR}${port}`
 			},
 		});
+		logger.log(`${paths.PROTOCOL}${os.hostname}${paths.SEPARATOR}${port}/${prefixRoute}`);
 		await app.listen(port);
 	} catch (error) {
 		logger.error(error.messages);

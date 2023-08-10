@@ -7,6 +7,7 @@ import { SignUpDto, UpdateCatDto } from "src/dto";
 
 const tagUserSwagger = 'users'
 const userEndPoint = 'users'
+const meEndPoint = 'me'
 const profileEndPoint = 'profile/:userName'
 const historyGame = 'historyGame/:userId'
 const settings = 'settings'
@@ -18,10 +19,16 @@ export class UsersController {
 
 	@ApiBearerAuth()
 	@UseGuards(AuthGuard('jwt'))
+	@Get(meEndPoint)
+	async getUser(@Req() req: Request) {
+		return this.userService.getUserDataByIdOrUserName((req.user as any).id);
+	}
+
+	@ApiBearerAuth()
+	@UseGuards(AuthGuard('jwt'))
 	@Get(profileEndPoint)
 	async getUniqueUser(@Req() req: Request) {
-		const userName = req.params.userName || req.user["userName"];
-		return this.userService.getUserData(userName);
+		return this.userService.getUserDataByIdOrUserName(req.params.userName);
 	}
 
 	@UseGuards(AuthGuard('jwt'))
@@ -32,9 +39,9 @@ export class UsersController {
 		return this.userService.getHistoryGame(idUser, page);
 	}
 
-	// @UseGuards(AuthGuard('jwt'))
+	@UseGuards(AuthGuard('jwt'))
 	@Patch(settings)
-	async updateUserdata(@Body() dto: UpdateCatDto) {
-		return this.userService.upDateUserdata(dto);
+	async updateUserdata(@Body() dto: UpdateCatDto, @Req() req: Request) {
+		return this.userService.upDateUserdata((req.user as any).id, dto);
 	}
 }

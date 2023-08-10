@@ -8,8 +8,6 @@ import * as values from "src/shared/constants/constants.values"
 import * as ErrorCode from '../shared/constants/constants.code-error';
 import * as  CodeMessages from 'src/shared/constants/constants.messages';
 import * as variables from 'src/shared/constants/constants.name-variables'
-import { Http2ServerResponse } from "http2";
-import { SuccessResponse } from "src/shared/responses/responses.sucess-response";
 
 const authService = 'UserService';
 @Injectable()
@@ -96,7 +94,7 @@ export class UsersService {
 		}
 	}
 
-	async getUserData(userName: string): Promise<any> {
+	async getUserDataByIdOrUserName(idOrUserName: string): Promise<any> {
 		try {
 			const userData = await this.prismaService.user.findUnique({
 				select: {
@@ -127,10 +125,13 @@ export class UsersService {
 					}
 				},
 				where: {
-					userName: userName
+					id: idOrUserName,
+					userName: idOrUserName
 				}
 			});
 			return userData;
+
+
 		} catch (error) {
 			throw new NotFoundException("user was not found");
 		}
@@ -173,9 +174,24 @@ export class UsersService {
 		return historyGame;
 	}
 
-	async upDateUserdata(dto: UpdateCatDto): Promise<SuccessResponse> {
-		const data = dto;
-		console.log(data.email);
-		return (null);
+	async upDateUserdata(id: string, dto: UpdateCatDto): Promise<any> {
+		try {
+			const newUser = await this.prismaService.user.update({
+				where: {
+					id: id
+				},
+				data: {
+					avatar: dto.avatar,
+					firstName: dto.firstName,
+					lastName: dto.lastName,
+					userName: dto.userName,
+				}
+			})
+			return newUser;
+		} catch (error) {
+			console.log(error);
+		}
+		throw new ForbiddenException();
 	}
 }
+

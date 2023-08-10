@@ -86,7 +86,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   ];
 
   const signIn = async () => {
-   router.push("http://e3r10p14.1337.ma:3000/api/v1/auth/signin/42/");
+   router.push("http://e1r13p2.1337.ma:3000/api/v1/auth/signin/42/");
   };
   const handleNext = async () => {
     if (
@@ -128,7 +128,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
             password,
           }
         try {
-          const res = await axios.post(`http://e3r10p14.1337.ma:3000/api/v1/auth/${props.Mode}/`, req);
+          const res = await axios.post(`http://e1r13p2.1337.ma:3000/api/v1/auth/${props.Mode}/`, req);
           console.log(res);
           console.log(res.data);
           const token = res.data.token;

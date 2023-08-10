@@ -10,16 +10,21 @@ const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
 
   const updateQRCodeSize = () => {
     const screenWidth = window.innerWidth;
-    if (screenWidth >= 1248)
-        setQRSize(250); 
-      else if (screenWidth >= 992) { 
-        setQRSize(200); 
-      } else if (screenWidth >= 768) { 
-        setQRSize(170);
-      } else { 
-        setQRSize(140); 
-      }
-  };
+
+    if (screenWidth >= 1536) {
+        setQRSize(300); // breakpoint: 2xl or higher
+    } else if (screenWidth >= 1280) {
+        setQRSize(300); // breakpoint: xl
+    } else if (screenWidth >= 1024) {
+        setQRSize(260); // breakpoint: lg
+    } else if (screenWidth >= 768) {
+        setQRSize(250); // breakpoint: md
+    } else if (screenWidth >= 640) {
+        setQRSize(200); // breakpoint: sm
+    } else {
+        setQRSize(100); // width less than sm
+    }
+};
 
   useEffect(() => {
     updateQRCodeSize(); 

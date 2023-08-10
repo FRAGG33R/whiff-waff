@@ -30,14 +30,10 @@ module.exports = withMT({
         PastelGrey: "#CDCBCB",
         DarkGrey: "#222222",
       },
-      screens: {
-        'sm': '280px',
-        'md': '768px',
-        'lg': '1024px',
-        'xl': '1280px',
-        '2xl': '1536px',
-        '3xl': '1920px'
-      },
+    },
+    screens: {
+      // 'sm': {'min': '280px', 'max': '768px'},
+      '3xl': '1920px',
     },
   },
   plugins: [],

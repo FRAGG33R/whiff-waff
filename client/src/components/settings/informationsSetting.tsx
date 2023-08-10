@@ -74,7 +74,7 @@ const InformationsSetting = () => {
   };
   return (
     <div className="w-[96%]  md:w-[95%] 2xl:w-full 3xl:w-full  xl:w-full lg:w-full   h-full flex items-start  justify-center flex-col gap-4 md:gap-6  ">
-      <div className=" w-[80%] h-[50px] flex items-center justify-start flex-row space-y-1 sm:space-y-2 md:space-y-3 lg:space-y-2  xl:space-y-2 space-x-1 sm:space-x-1 lg:space-x-2 xl:space-x-2 3xl:-space-x-3 2xl:-space-x-2 ">
+      <div className=" w-[80%] h-[50px] flex items-center justify-start flex-row space-y-1 sm:space-y-2 md:space-y-3 lg:space-y-2  xl:space-y-2 space-x-1 sm:space-x-1 lg:space-x-2 xl:space-x-2  2xl:-space-x-2 ">
         <Image
           src={InformationIcons}
           alt="InformationIcons"
@@ -84,7 +84,7 @@ const InformationsSetting = () => {
           INFORMATION
         </div>
       </div>
-      <div className=" w-full h-[100px] sm:h-[130px] md:h-[160px] lg:h-[240px] xl:h-[240px] 2xl:h-[240px] 3xl:h-[240px] flex items-center justify-center">
+      <div className=" w-full h-[100px] sm:h-[130px] md:h-[160px] lg:h-[240px] xl:h-[240px] 2xl:h-[240px]  flex items-center justify-center">
         <div className="relative w-1/2">
           <div className="absolute inset-0 flex items-center justify-center">
             <ImageUpload onImageUpload={handleImageUpload} />

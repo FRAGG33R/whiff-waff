@@ -31,35 +31,35 @@ const TwoFactor = () => {
     }
   };
   return (
-    <div className="w-[96%]  md:w-[95%]   h-full flex items-center  justify-center   flex-col gap-4 md:gap-6  ">
-      <div className="w-full h-[80px] md:h-[90px] sm:h-[80px] lg:h-[100px] flex items-center justify-center flex-row  space-y-1 sm:space-y-2 md:space-y-2 lg:space-y-1 xl:space-y-1 space-x-1 sm:space-x-1 lg:space-x-2 xl:space-x-2 3xl:space-x-2 2xl:space-x-2">
+    <div className="w-[96%]  md:w-[95%]   h-full flex items-center   justify-center    flex-col gap-4 md:gap-6  ">
+      <div className="w-full h-full  flex items-center justify-center flex-row  space-y-1 sm:space-y-2 md:space-y-2 lg:space-y-1 xl:space-y-1 space-x-1 sm:space-x-1 lg:space-x-2 xl:space-x-2  2xl:space-x-2">
         <Image
           src={TowFactorIcon}
           alt="TwoFactorIcon"
-          className="w-[30px] h-[30px] lg:w-[40px] lg:h-[40px]"
+          className="w-[30px] h-full"
         />
-        <div className="w-full  flex items-center justify-start font-teko font-semibold text-xl sm:text-2xl md:text-2xl lg:text-[1.5rem] xl:text-[1.7rem] 2xl:text-3xl 3xl:text-4xl">
+        <div className="w-full  flex items-center justify-start font-teko font-semibold text-xl sm:text-2xl md:text-2xl lg:text-[1.5rem] xl:text-[1.7rem] 2xl:text-3xl ">
           TWO-FACTOR AUTHENTICATION
         </div>
       </div>
-      <div className="w-full h-[100px] sm:h-[100px]  md:h-[120px]  lg:h-[250px]  flex flex-col items-center justify-center ">
-        <div className="w-full h-full  flex justify-center items-center font-poppins text-[0.8rem] xl:text-xl sm:text-[1rem] md:text-2xl lg:text-[1.1rem] 2xl:text-[1.6rem] 3xl:text-[2rem] text-center font-bold ">
+      <div className="w-full h-full  flex flex-col items-center justify-center ">
+        <div className="w-full h-full  flex justify-center items-center font-poppins text-[0.8rem] xl:text-xl sm:text-[1rem] md:text-2xl lg:text-[1.1rem] 2xl:text-[1.6rem]  text-center font-bold ">
           Set up two-factor authentication
         </div>
-        <div className="w-full h-full  flex justify-center  items-start text-[0.6rem] sm:text-[0.8rem] md:text-lg lg:text-md text-center font-poppins 3xl:text-[1.2rem] font-thin">
+        <div className="w-full h-full  flex justify-center  items-start text-[0.6rem] sm:text-[0.8rem] md:text-lg lg:text-md text-center font-poppins  font-thin">
           Scan this QR code with your Google Authenticator App
         </div>
       </div>
-      <div className=" w-full h-[200px] sm:h-[300px]  md:h-[400px]  lg:h-[500px]  flex items-center justify-center flex-col gap-2 ">
-        <div className="w-full sm:h-[300px] md:h-[500px] lg:h-[1000px]   flex items-center justify-center">
+      <div className=" w-full h-full flex items-center justify-center flex-col gap-2 ">
+        <div className="w-full h-full  flex items-center justify-center">
           <Qrcode code={randomCode} />
         </div>
-        <div className="w-[55%] sm:h-[100px] lg:h-[500px]  font-poppins text-[0.7rem]   md:text-[0.8rem] sm:text-[0.7rem] lg:text-[1rem] xl:text-[1rem] 3xl:text-[1.3rem] text-center ">
+        <div className="w-[55%] h-fullfont-poppins text-[0.7rem]   md:text-[0.8rem] sm:text-[0.7rem] lg:text-[1rem] xl:text-[1rem]  text-center ">
           Enter code from your two-factor authentication app
         </div>
       </div>
-      <div className="w-full lg:h-[500px] sm:h-[100px]  flex items-center justify-center flex-col gap-4">
-        <div className="w-[12rem] sm:w-[13rem] lg:h-[200px] md:w-[15rem] xl:w-[60%]  flex flex-col items-center justify-center">
+      <div className="w-full h-full flex items-center justify-center flex-col gap-4">
+        <div className="w-[12rem] sm:w-[13rem] h-full flex flex-col items-center justify-center">
           <div>
             <UserInput
               placeholder="*****"

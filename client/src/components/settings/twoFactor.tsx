@@ -32,13 +32,13 @@ const TwoFactor = () => {
   };
   return (
     <div className="w-[96%]  md:w-[95%]   h-full flex items-center   justify-center    flex-col gap-4 md:gap-6  ">
-      <div className="w-full h-full  flex items-center justify-center flex-row  space-y-1 sm:space-y-2 md:space-y-2 lg:space-y-1 xl:space-y-1 space-x-1 sm:space-x-1 lg:space-x-2 xl:space-x-2  2xl:space-x-2">
+     <div className="w-full h-[7%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
         <Image
           src={TowFactorIcon}
-          alt="TwoFactorIcon"
-          className="w-[30px] h-full"
+          alt="two factor icon"
+          className="w-7 md:w-10"
         />
-        <div className="w-full  flex items-center justify-start font-teko font-semibold text-xl sm:text-2xl md:text-2xl lg:text-[1.5rem] xl:text-[1.7rem] 2xl:text-3xl ">
+        <div className="font-semibold font-teko text-2xl md:text-[1.9rem] tracking-wide text-Mercury md:pt-2">
           TWO-FACTOR AUTHENTICATION
         </div>
       </div>

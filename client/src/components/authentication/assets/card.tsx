@@ -9,8 +9,10 @@ import { KeyboardEvent } from "react";
 import { api } from "@/components/axios/instance";
 import { useEffect } from "react";
 import ValidationAlert from "@/components/ui/alerts/validationAlert";
+import axios from "axios";
 
-export default function Card(props: { Mode: "signin" | "signup" }) {
+export default function Card(props: { Mode: "signin" | "signup" })
+{
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastNam] = useState("");
   const [username, setUsername] = useState("");
@@ -155,8 +157,10 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
         try {
           setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
-          const { statusCode, token, message } = res.data;
+          const {  token, statusCode } = res.data;
           localStorage.setItem("token", token);
+		  console.log(token);
+		  const __ = await axios.post('http://localhost:3000/api/saveToken', {token})
           if (statusCode === 201) {
             setNeedsVerification((prev) => !prev);
             setTimeout(() => {
@@ -168,7 +172,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           }
         } catch (error: any) {
           if (error.response && error.response.data) {
-            const { statusCode, message } = (error as any).response.data;
+            const { message } = (error as any).response.data;
             setError(true);
             setErrorMessage(message);
           }

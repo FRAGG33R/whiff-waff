@@ -34,7 +34,7 @@ export default function NavBar() {
           </div>
         </div>
         <div className="h-full w-[20%] lg:w-[15%] xl:w-[10%] flex flex-row gap-1 xl:gap-6 ">
-          <MessageDropDown
+          {/* <MessageDropDown
             notifications={[
               {
                 avatar: "https://i.imgur.com/1Qwk9rX.png",
@@ -79,7 +79,7 @@ export default function NavBar() {
               },
             ]}
             content={4}
-          />
+          /> */}
         </div>
         <div className="w-32 lg:w-[28%] xl:w-[23%] flex items-center justify-end ">
           <div className="w-full h-full flex items-center justify-end space-x-4">

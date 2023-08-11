@@ -73,7 +73,7 @@ const InformationsSetting = () => {
     console.log(file);
   };
   return (
-    <div className="w-[96%]  md:w-[95%] 2xl:w-full 3xl:w-full  xl:w-full lg:w-full   h-full flex items-start  justify-center flex-col gap-4 md:gap-6  ">
+    <div className="w-full h-full flex flex-col gap-4 md:gap-6  ">
      <div className="w-full h-[7%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
         <Image
           src={InformationIcons}
@@ -91,9 +91,10 @@ const InformationsSetting = () => {
           </div>
         </div>
       </div>
+      
       <div className=" w-full h-full flex items-center  justify-center flex-col  gap-4 md:gap-6 ">
         <div
-          className="w-full h-[21%] flex flex-row items-center justify-center gap-5
+          className="w-full h-[17%] flex flex-row items-center justify-center gap-5
              md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14 "
         >
           <div>
@@ -128,7 +129,7 @@ const InformationsSetting = () => {
             />
           </div>
         </div>
-        <div className=" w-full h-[21%] flex items-center justify-center ">
+        <div className=" w-full h-[17%] flex items-center justify-center ">
           <div>
             <UserInput
               placeholder={username}
@@ -145,7 +146,7 @@ const InformationsSetting = () => {
             />
           </div>
         </div>
-        <div className=" w-full h-[21%] flex items-center justify-center ">
+        <div className=" w-full h-[17%] flex items-center justify-center ">
           <div>
             <UserInput
               placeholder={email}
@@ -162,7 +163,7 @@ const InformationsSetting = () => {
             />
           </div>
         </div>
-        <div className="w-[13rem]  h-[21%]  sm:w-[22rem]   md:w-[530px] lg:w-[26rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[52rem]  flex flex-row justify-end items-center   gap-4 md:gap-4">
+        <div className="w-[13rem]  h-[18%]  sm:w-[22rem]   md:w-[22rem] lg:w-[26rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[48rem]  flex flex-row justify-end items-center   gap-4 md:gap-4">
           <div className="w-auto sm:w-auto  ">
             <SecondaryButton text="Discard" onClick={handleCancle} />
           </div>

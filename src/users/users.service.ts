@@ -8,6 +8,7 @@ import * as values from "src/shared/constants/constants.values"
 import * as ErrorCode from '../shared/constants/constants.code-error';
 import * as  CodeMessages from 'src/shared/constants/constants.messages';
 import * as variables from 'src/shared/constants/constants.name-variables'
+import { log } from "console";
 
 const authService = 'UserService';
 @Injectable()
@@ -152,7 +153,7 @@ export class UsersService {
 					}
 				},
 				where: {
-					userName: userName	
+					userName: userName
 				}
 			});
 			return userData;

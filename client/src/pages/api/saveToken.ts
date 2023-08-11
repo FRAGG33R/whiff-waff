@@ -1,25 +1,28 @@
-
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSessionApiRoute } from "iron-session/next";
 
 export default withIronSessionApiRoute(
-	async function saveToken(req : NextApiRequest, res : NextApiResponse) {
-	  const { token } = req.body;
-	  console.log('body : ', req.body);
-	  (req.session as any).token = {
-		token
-	  };
-	  await req.session.save();
-	  res.send({ ok: true });
-	},
+  async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method === "DELETE")
 	{
-	  cookieName: "token",
-	  password: "aissamaissamaissamaissamaissamaissamaissamaissamaissamaissamaissam",
-	  cookieOptions: {
-		secure: process.env.NODE_ENV === "production",
-	  },
-	},
-  );
-
-
-  
+	  req.session.destroy();
+	  res.send({ok : true});
+    }
+	else if (req.method === "POST") {
+      const { token } = req.body;
+      (req.session as any).token = {
+        token,
+      };
+      await req.session.save();
+      res.send({ ok: true });
+    }
+  },
+  {
+    cookieName: "token",
+    password:
+      "$Kv4v3r6t8b7x5fd2a9c73baa7495d8268b048dc791c301621da7129s3C9g1#2qweIokLKJXx",
+    cookieOptions: {
+      secure: process.env.ENV === "production",
+    },
+  }
+);

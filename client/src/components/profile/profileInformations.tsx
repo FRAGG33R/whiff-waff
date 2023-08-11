@@ -5,10 +5,14 @@ import { matchStatistics } from "@/types/matchStatistics";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import LevelBar from "../ui/progressBar/levelBar";
+import { userContext } from "@/context/context";
+import { useContext, useEffect } from "react";
 
 export default function ProfileInformations() {
   const router = useRouter();
-
+  const userData = useContext(userContext);
+  console.log(userData);
+  
   return (
     <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
       <div className="w-full h-[80%] flex flex-col md:flex-row items-center xl:space-x-8">

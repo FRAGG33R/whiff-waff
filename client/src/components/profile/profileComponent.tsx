@@ -5,15 +5,9 @@ import AchievementComponent from "./achievementComponents";
 import MatchComponents from "./matchHistoryComponent";
 import ProfileInformations from "./profileInformations";
 import RankComponent from "./rankComponent";
-import { withIronSessionSsr } from "iron-session/next";
-import { GetServerSideProps } from 'next';
 
 export default function ProfileComponent()
 {
-
-	useEffect(() => {
-		// console.log('useEffect token', token);
-	}, [])
 
   return (
     <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
@@ -46,16 +40,3 @@ export default function ProfileComponent()
     </div>
   );
 }
-
-
-// export async function getServerSideProps()
-// {
-// 		console.log('hello');
-// 		// const token = (req.session as any).token;
-// 		// console.log('token from backend : ', token);
-// 		return {
-// 			props: {
-// 			//   token: (req.session as any).token,
-// 			},
-// 		};
-// }

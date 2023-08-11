@@ -11,10 +11,24 @@ import Logout from "../../../../public/🦆 iconLogout_.svg";
 import Image from "next/image";
 import { useState } from "react";
 import { itemVariants } from   "@/types/framerVariants";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 const ProfileDropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
-   const LogOut = () => {};
+  const router = useRouter();
+
+  const LogOut = async () => {
+		localStorage.removeItem('token');
+		try {
+			const res = await axios.delete('http://localhost:3000/api/saveToken');
+			router.push('/login');
+		}
+		catch(err){
+			console.log('Couldn\'t distroy user session');
+		}
+	};
+
   return (
     <motion.nav
       initial={false}
@@ -87,12 +101,11 @@ const ProfileDropDown = () => {
         </motion.li>
         <motion.li variants={itemVariants}>
           <hr className="my-2 border-GreenishYellow " />
-          <MenuItem className="flex flex-row -space-y-1 space-x-1 gap-2  h-9">
+          <MenuItem onClick={LogOut} className="flex flex-row -space-y-1 space-x-1 gap-2 h-9">
             <Image src={Logout} alt="logout" width={18} />
             <Typography
               variant="body2"
               className="font-teko text-xl text-Mercury "
-              onClick={LogOut}
             >
               Log Out
             </Typography>

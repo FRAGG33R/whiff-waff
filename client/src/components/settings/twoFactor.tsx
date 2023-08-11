@@ -6,6 +6,7 @@ import { useState } from "react";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import Qrcode from "./Qrcode";
+import axios from "axios";
 const TwoFactor = () => {
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
@@ -23,11 +24,28 @@ const TwoFactor = () => {
     setError(false);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
+    let result = false; 
+  
     if (code === randomCode && code.match(/^[0-9]{6}$/)) {
-      console.log("code is valid");
-    } else {
-      setError(true);
+      result = true;
+    }
+  
+    try {
+      const jwtToken = localStorage.getItem("token");
+      const response = await axios.patch(
+        "http://e1r12p4.1337.ma:3000/api/v1/settings/", 
+        { result }, 
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+  
+      console.log("POST request successful:", response.data);
+    } catch (error) {
+      console.error("Error sending POST request:", error);
     }
   };
   return (

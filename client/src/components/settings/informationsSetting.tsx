@@ -17,7 +17,7 @@ const InformationsSetting = () => {
   const [lastError, setLastError] = useState(false);
   const [userError, setUserError] = useState(false);
   const [emailError, setEmailError] = useState(false);
-  const [data, setData] = useState(null);
+  const [imageURL, setImageURL] = useState(""); 
   const handleCancle = () => {
     setFirstName("");
     setEmail("");
@@ -78,6 +78,7 @@ const InformationsSetting = () => {
         setLastNam(userData.lastName);
         setUsername(userData.userName);
         setEmail(userData.email);
+        setImageURL(userData.imageURL); 
       } catch (error) {
         console.log("error in fetch data");
       }
@@ -113,8 +114,27 @@ const InformationsSetting = () => {
     }
   };
 
-  const handleImageUpload = (file: File) => {
-    console.log(file);
+  const handleImageUpload = async (file: File) => {
+    try {
+      const jwtToken = localStorage.getItem("token"); 
+      const formData = new FormData();
+      formData.append("image", file);
+  
+      const response = await axios.post(
+        "http://e1r12p4.1337.ma:3001/api/v1/",
+        formData, 
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      console.log("Image uploaded successfully:", response.data);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
   };
   return (
     <div className="w-full h-full flex flex-col gap-4 md:gap-6  ">

@@ -32,16 +32,22 @@ const InformationsSetting = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const jwtToken = localStorage.getItem("token");
         const response = await axios.get(
-          "http://e1r13p2.1337.ma:3000/api/v1/users/profil/"
+          "http://e1r12p4.1337.ma:3001/api/v1/users/me/"
+          ,{
+             headers:{
+              Authorization: `Bearer ${jwtToken}`,            
+            }
+          }
         );
         const userData = response.data;
         setFirstName(userData.firstName);
         setLastNam(userData.lastName);
-        setUsername(userData.username);
+        setUsername(userData.userName);
         setEmail(userData.email);
       } catch (error) {
-        console.log("l9lawi");
+        console.log("error in fetch data");
       }
     };
 
@@ -52,20 +58,26 @@ const InformationsSetting = () => {
     if (!lastName.match(/^.{3,}$/)) setLastError(true);
     if (!username.match(/^[a-zA-Z0-9_.]{3,16}$/)) setUserError(true);
     else console.log("code is valid");
+    const jwtToken = localStorage.getItem("token");
     const res = {
       firstName,
       lastName,
       username,
     };
     try {
-      const req = await axios.post(
-        `http://e1r13p2.1337.ma:3000/api/v1/users/settings/`,
-        res
+      const req = await axios.patch(
+        `http://e1r12p4.1337.ma:3001/api/v1/users/settings/`,
+        res,
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
       );
       console.log(req);
       console.log(req.data);
     } catch (error) {
-      console.log("zob");
+      console.log("error in patch request");
     }
   };
 
@@ -80,7 +92,7 @@ const InformationsSetting = () => {
           alt="information icon"
           className="w-7 md:w-10"
         />
-        <div className="font-semibold font-teko text-2xl md:text-[1.9rem] tracking-wide text-Mercury md:pt-2">
+        <div className="font-semibold font-teko text-xl md:text-[1.9rem] 3xl:text-[2.5rem] tracking-wide text-Mercury md:pt-2">
           INFORMATIONS
         </div>
       </div>
@@ -163,7 +175,7 @@ const InformationsSetting = () => {
             />
           </div>
         </div>
-        <div className="w-[13rem]  h-[18%]  sm:w-[22rem]   md:w-[22rem] lg:w-[26rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[48rem]  flex flex-row justify-end items-center   gap-4 md:gap-4">
+        <div className="w-[13rem]  h-[18%]  sm:w-[22rem]   md:w-[22rem] lg:w-[26rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[54rem]  flex flex-row justify-end items-center   gap-4 md:gap-4">
           <div className="w-auto sm:w-auto  ">
             <SecondaryButton text="Discard" onClick={handleCancle} />
           </div>

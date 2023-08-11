@@ -53,15 +53,15 @@ const TwoFactor = () => {
         </div>
         <div className="w-full h-[80%] flex flex-col items-center justify-start gap-3">
           <Qrcode code={randomCode} />
-          <div className="w-full h-[60%] flex flex-col justify-start items-center gap-2 md:gap-4">
+          <div className="w-full h-[60%] flex flex-col  justify-start items-center gap-2 md:gap-4">
             <div className="  w-[12rem] sm:w-[13rem]   md:w-[15rem] lg:w-[18rem] xl:w-[22rem] h-[20%]  flex font-poppins text-[0.7rem]   md:text-[0.8rem] sm:text-[0.7rem] lg:text-[1rem] xl:text-[1.3rem]  text-center">
               Enter code from your two-factor authentication app
             </div>
-            <div className=" w-[12rem] sm:w-[13rem]   md:w-[15rem] xl:w-[60%] h-[60%] md:h-[70%] flex flex-col items-center justify-center gap-2 md:gap-4">
-              <div className="w-[12rem] sm:w-[13rem] h-full flex flex-col items-center justify-center">
-                <div>
+            <div className="w-[12rem] sm:w-[13rem]   md:w-[15rem] xl:w-[60%] h-[60%] md:h-[70%] flex flex-col items-center justify-center gap-2 md:gap-4">
+              <div className="w-[12rem] sm:w-[13rem] md:w-[15rem] lg:w-[18rem] xl:w-[18rem]   h-full flex flex-col items-center justify-center">
+                <div className="">
                   <UserInput
-                    placeholder="------"
+                    placeholder="﹡﹡﹡﹡﹡﹡"
                     type="password"
                     label="code"
                     lableColor="bg-[#2c3569] sm:bg-[#2c3569] md:bg-[#2f3268] lg:bg-[#322f65] xl:bg-[#322f65] 2xl:bg-[#322f65] 3xl:bg-[#322f65]"

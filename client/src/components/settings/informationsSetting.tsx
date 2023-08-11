@@ -28,17 +28,49 @@ const InformationsSetting = () => {
     setLastError(false);
     setUserError(false);
   };
+  const inputFields = [
+    {
+      id: "firstName",
+      placeholder: firstName,
+      type: "text",
+      label: "First Name",
+      lableColor:
+        "bg-[#263358] sm:bg-[#263257] md:bg-[#27335d] lg:bg-[#27345d] xl:bg-[#27345d] 2xl:bg-[#27345d] 3xl:bg-[#27345d]",
+      width: "sml",
+      regExp: /^.{3,}$/,
+      isError: firstError,
+      isDisabled: false,
+      value: firstName,
+      setError: setFirstError,
+      setValue: setFirstName,
+    },
+    {
+      id: "lastName",
+      placeholder: lastName,
+      type: "text",
+      label: "Last Name",
+      lableColor:
+        "bg-[#27355e] sm:bg-[#293667] md:bg-[#283765] lg:bg-[#283765] xl:bg-[#283765] 2xl:bg-[#283765] 3xl:bg-[#283765]",
+      width: "sml",
+      regExp: /^.{3,}$/,
+      isError: lastError,
+      isDisabled: false,
+      value: lastName,
+      setError: setLastError,
+      setValue: setLastNam,
+    },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const jwtToken = localStorage.getItem("token");
         const response = await axios.get(
-          "http://e1r12p4.1337.ma:3001/api/v1/users/me/"
-          ,{
-             headers:{
-              Authorization: `Bearer ${jwtToken}`,            
-            }
+          "http://e1r12p4.1337.ma:3000/api/v1/users/me/",
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
           }
         );
         const userData = response.data;
@@ -62,11 +94,11 @@ const InformationsSetting = () => {
     const res = {
       firstName,
       lastName,
-      username,
+      userName: username,
     };
     try {
       const req = await axios.patch(
-        `http://e1r12p4.1337.ma:3001/api/v1/users/settings/`,
+        `http://e1r12p4.1337.ma:3000/api/v1/users/settings/`,
         res,
         {
           headers: {
@@ -86,7 +118,7 @@ const InformationsSetting = () => {
   };
   return (
     <div className="w-full h-full flex flex-col gap-4 md:gap-6  ">
-     <div className="w-full h-[7%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
+      <div className="w-full h-[7%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
         <Image
           src={InformationIcons}
           alt="information icon"
@@ -96,52 +128,23 @@ const InformationsSetting = () => {
           INFORMATIONS
         </div>
       </div>
-      <div className=" w-full h-[100px] sm:h-[130px] md:h-[160px] lg:h-[240px] xl:h-[240px] 2xl:h-[240px]  flex items-center justify-center">
+      <div className=" w-full h-[100px] sm:h-[130px] md:h-[160px] lg:h-[240px] xl:h-[240px] 2xl:h-[240px]  flex items-center justify-center py-8 pl-2">
         <div className="relative w-1/2">
           <div className="absolute inset-0 flex items-center justify-center">
             <ImageUpload onImageUpload={handleImageUpload} />
           </div>
         </div>
       </div>
-      
-      <div className=" w-full h-full flex items-center  justify-center flex-col  gap-4 md:gap-6 ">
-        <div
-          className="w-full h-[17%] flex flex-row items-center justify-center gap-5
-             md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14 "
-        >
-          <div>
-            <UserInput
-              placeholder={firstName}
-              type="text"
-              label="First Name"
-              lableColor="bg-[#263358] sm:bg-[#263257] md:bg-[#27335d] lg:bg-[#27345d] xl:bg-[#27345d] 2xl:bg-[#27345d] 3xl:bg-[#27345d]"
-              width="sml"
-              regExp={/^.{3,}$/}
-              isError={firstError}
-              isDisabled={false}
-              value={firstName}
-              setError={setFirstError}
-              setValue={setFirstName}
-            />
-          </div>
 
-          <div>
-            <UserInput
-              placeholder={lastName}
-              type="text"
-              label="Last Name"
-              lableColor="bg-[#27355e] sm:bg-[#293667] md:bg-[#283765] lg:bg-[#283765] xl:bg-[#283765] 2xl:bg-[#283765] 3xl:bg-[#283765]"
-              width="sml"
-              regExp={/^.{3,}$/}
-              isError={lastError}
-              isDisabled={false}
-              value={lastName}
-              setError={setLastError}
-              setValue={setLastNam}
-            />
-          </div>
+      <div className="w-full h-full flex items-center justify-center flex-col gap-4 md:gap-6">
+        <div className="w-full h-[17%] flex flex-row items-center justify-center gap-5 md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14">
+          {inputFields.map((input) => (
+            <div key={input.id}>
+              <UserInput {...input} />
+            </div>
+          ))}
         </div>
-        <div className=" w-full h-[17%] flex items-center justify-center ">
+         <div className=" w-full h-[17%] flex items-center justify-center ">
           <div>
             <UserInput
               placeholder={username}

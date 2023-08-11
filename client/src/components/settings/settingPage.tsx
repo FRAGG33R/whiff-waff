@@ -11,8 +11,8 @@ const SettingPage = () => {
         <div className="h-[45px] border  md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
           NavBar
         </div>
-        <div className="w-full xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] overflow-y-scroll overflow-x-hidden xl:overflow-y-auto space-y-2 xl:space-y-10">
-          <div className="w-full h-[1250px] sm:h-[1400px] md:h-[1355px] lg:h-[1800px] xl:h-[1300px] flex flex-col xl:flex-row gap-2 xl:gap-10 ">
+        <div className="w-full xl:h-[91%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10">
+          <div className="w-full h-[1450px] sm:h-[1400px] md:h-[1340px] lg:h-[1800px] xl:h-[1305px] flex flex-col xl:flex-row gap-2 xl:gap-10 ">
             <div className="w-full xl:w-[60%] h-full  bg-CarbonGrey bg-opacity-10  rounded-xl ">
               <InformationsSetting />
             </div>

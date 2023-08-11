@@ -8,7 +8,7 @@ const UserInput: React.FC<InputProps> = ({
   placeholder,
   isDisabled = false,
   type = "text",
-  lableColor = "black",
+  lableColor = "#FF0000",
   width = "sm",
   regExp,
   value,
@@ -38,8 +38,8 @@ const UserInput: React.FC<InputProps> = ({
         onChange={handleChange}
         onBlur={handleBlur}
         value={value}
-        className={`bg-transparent rounded-full  sm:text-[0.9rem]   text-PastelGrey placeholder-left pl-4 sm:pl-6 md:pl-6 border-2 border-Mercury text-bottom font-poppins
-         focus:outline-none
+        className={`bg-transparent rounded-full  sm:text-[0.9rem]   text-PastelGrey pl-4 sm:pl-6 md:pl-6 border-2 border-Mercury text-bottom font-poppins
+         focus:outline-none flex justify-center items-center
         ${isError ? "border-red-500 " : "focus:border-GreenishYellow"}
         ${
           width === "sm"
@@ -51,11 +51,11 @@ const UserInput: React.FC<InputProps> = ({
             : width === "xl"
             ? "w-40 sm:w-52 md:w-52 lg:w-72 md:h-12 h-10 text-sm md:text-md"
             : width === "sml"
-            ? "w-[6rem] sm:w-[10.5rem] smd:w-[8rem]  md:w-[10rem] lg:w-[11.5rem] xl:w-[14rem] 2xl:w-[15.5rem] 3xl:w-[25.5rem]  h-9  md:h-10 sm:h-10 lg:h-14  xl:h-14 3xl:h-16  text-sm sm:text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-2xl 3xl:text-2xl"
+            ? "w-[6rem] sm:w-[10.5rem] smd:w-[8rem]  md:w-[10rem] lg:w-[11.5rem] xl:w-[14rem] 2xl:w-[15.5rem] 3xl:w-[25.5rem]  h-7  md:h-10 sm:h-10 lg:h-14  xl:h-14 3xl:h-16  text-[0.7rem] sm:text-lg md:text-md lg:text-xl xl:text-2xl 2xl:text-2xl 3xl:text-2xl"
             : width === "2xl"
-            ? "w-[13rem]  sm:w-[22rem]  md:w-[22rem] lg:w-[26rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[54rem] h-9 md:h-10 sm:h-10 lg:h-14 xl:h-14 3xl:h-16 text-sm sm:text-lg md:text-xl lg:text-2xl xl:text-2xl 2xl:text-2xl 3xl:text-2xl"
+            ? "w-[13rem]  sm:w-[22rem]  md:w-[22rem] lg:w-[26rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[54rem] h-9 md:h-10 sm:h-10 lg:h-14 xl:h-14 3xl:h-16 text-sm sm:text-lg md:text-md lg:text-xl xl:text-2xl 2xl:text-2xl 3xl:text-2xl"
             : width === "code"
-            ? "w-[12rem]  sm:w-[13rem]  md:w-[15rem] lg:w-[18rem] xl:w-[18rem]  md:h-12 h-10 3xl:h-14 text-5xl sm:text-5xl md:text-5xl lg:text-7xl xl:text-7xl 2xl:text-7xl 3xl:text-7xl "
+            ? "w-[12rem]  sm:w-[13rem]  md:w-[15rem] lg:w-[18rem] xl:w-[18rem]  md:h-12 h-10 3xl:h-14  placeholder:sm:text-[1.7rem] sm:text-5xl placeholder:lg:text-[2.3rem] lg:text-2xl   "
             : ""
         }`}
       ></input>

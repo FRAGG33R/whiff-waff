@@ -1,4 +1,4 @@
-import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { User } from "@prisma/client";
 import { SignUpDto, UpdateCatDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
@@ -213,7 +213,11 @@ export class UsersService {
 			})
 			return newUser;
 		} catch (error) {
-			console.log(error);
+			if (error instanceof PrismaClientKnownRequestError) {
+				if (error.code === ErrorCode.DUPLICATE_ENTRY_ERROR_CODE) {
+					throw new ForbiddenException(dto.userName + CodeMessages.P2002_MSG)
+				}
+			}
 		}
 		throw new ForbiddenException();
 	}

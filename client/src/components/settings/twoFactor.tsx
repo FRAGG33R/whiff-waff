@@ -7,6 +7,7 @@ import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import Qrcode from "./Qrcode";
 import axios from "axios";
+import { KeyboardEvent } from "react";
 const TwoFactor = () => {
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
@@ -24,25 +25,30 @@ const TwoFactor = () => {
     setError(false);
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleConfirm();
+    }
+  };
   const handleConfirm = async () => {
-    let result = false; 
-  
+    let result = false;
+
     if (code === randomCode && code.match(/^[0-9]{6}$/)) {
       result = true;
     }
-  
+
     try {
       const jwtToken = localStorage.getItem("token");
       const response = await axios.patch(
-        "http://e1r12p4.1337.ma:3000/api/v1/settings/", 
-        { result }, 
+        "http://e1r12p4.1337.ma:3000/api/v1/settings/",
+        { result },
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
-  
+
       console.log("POST request successful:", response.data);
     } catch (error) {
       console.error("Error sending POST request:", error);
@@ -79,8 +85,9 @@ const TwoFactor = () => {
               <div className="w-[12rem] sm:w-[13rem] md:w-[15rem] lg:w-[18rem] xl:w-[18rem]   h-full flex flex-col items-center justify-center">
                 <div className="">
                   <UserInput
+                    handleKeyDown={handleKeyDown}
                     placeholder="﹡﹡﹡﹡﹡﹡"
-                    type="password"
+                    type="text"
                     label="code"
                     lableColor="bg-[#2c3569] sm:bg-[#2c3569] md:bg-[#2f3268] lg:bg-[#322f65] xl:bg-[#322f65] 2xl:bg-[#322f65] 3xl:bg-[#322f65]"
                     width="code"
@@ -91,6 +98,11 @@ const TwoFactor = () => {
                     setError={setError}
                     setValue={setCode}
                   />
+                  {error === true && (
+                    <p className="text-md  text-red-500   flex items-center justify-center  font-poppins ">
+                      Invalide code
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="w-[12rem] sm:w-[13rem]   md:w-[15rem] xl:w-[60%] h-full flex flex-row justify-center space-x-2 md:space-x-2 xl:space-x-5 sm:space-x-8 gap-4 md:gap-3">
@@ -110,4 +122,3 @@ const TwoFactor = () => {
 };
 
 export default TwoFactor;
-

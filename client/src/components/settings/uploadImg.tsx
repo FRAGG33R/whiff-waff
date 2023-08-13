@@ -1,39 +1,24 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
 import { IconUpload } from '@tabler/icons-react';
 import { ImageUploadProps } from "../../types/uploadType";
 
 
 const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file && file.type.startsWith('image/')) {
       setSelectedFile(file);
       onImageUpload(file);
-      uploadFile(file);
     } else {
       console.error('Invalid file format. Please select an image file.');
     }
   }, [onImageUpload]);
 
-  const uploadFile = async (file: File) => {
-    const formData = new FormData();
-    formData.append('image', file);
 
-    try {
-      const response = await axios.post('', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      console.log('Image uploaded successfully!');
-      console.log(response.data);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-    }
-  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
@@ -50,6 +35,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
         <p>{selectedFile.name}</p>
       ) : (
         <IconUpload />
+      )}
+      {uploadError && (
+        <p className="text-red-500">{uploadError}</p>
       )}
     </div>
   );

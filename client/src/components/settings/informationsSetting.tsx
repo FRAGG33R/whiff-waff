@@ -6,6 +6,7 @@ import SecondaryButton from "../ui/buttons/secondaryButton";
 import UserInput from "../ui/inputs/userInput";
 import { useState } from "react";
 import ImageUpload from "./uploadImg";
+import { KeyboardEvent } from "react";
 
 import axios from "axios";
 const InformationsSetting = () => {
@@ -17,14 +18,27 @@ const InformationsSetting = () => {
   const [lastError, setLastError] = useState(false);
   const [userError, setUserError] = useState(false);
   const [emailError, setEmailError] = useState(false);
-  const [imageURL, setImageURL] = useState(""); 
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [avatarImage, setAvatarImage] = useState<File | null>(null);
+
+
+  let jwtToken: string | null = null;
+
+  if (typeof window !== "undefined") {
+    jwtToken = localStorage.getItem("token");
+  }
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleConfirm();
+    }
+  };
   const handleCancle = () => {
     setFirstName("");
-    setEmail("");
     setLastNam("");
     setUsername("");
     setFirstError(false);
-    setEmailError(false);
     setLastError(false);
     setUserError(false);
   };
@@ -43,6 +57,7 @@ const InformationsSetting = () => {
       value: firstName,
       setError: setFirstError,
       setValue: setFirstName,
+      errorMessage: "Invalid First Name",
     },
     {
       id: "lastName",
@@ -58,15 +73,15 @@ const InformationsSetting = () => {
       value: lastName,
       setError: setLastError,
       setValue: setLastNam,
+      errorMessage: "Invalid Last Name",
     },
   ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const jwtToken = localStorage.getItem("token");
         const response = await axios.get(
-          "http://e1r12p4.1337.ma:3000/api/v1/users/me/",
+          "http://e1r12p4.1337.ma:3001/api/v1/users/me/",
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -78,7 +93,8 @@ const InformationsSetting = () => {
         setLastNam(userData.lastName);
         setUsername(userData.userName);
         setEmail(userData.email);
-        setImageURL(userData.imageURL); 
+        setAvatarImage(userData.avatar);
+        // console.log(userData.avatar);
       } catch (error) {
         console.log("error in fetch data");
       }
@@ -87,19 +103,33 @@ const InformationsSetting = () => {
     fetchData();
   }, []);
   const handleConfirm = async () => {
-    if (!firstName.match(/^.{3,}$/)) setFirstError(true);
-    if (!lastName.match(/^.{3,}$/)) setLastError(true);
-    if (!username.match(/^[a-zA-Z0-9_.]{3,16}$/)) setUserError(true);
-    else console.log("code is valid");
-    const jwtToken = localStorage.getItem("token");
-    const res = {
-      firstName,
-      lastName,
-      userName: username,
+    if (!firstName.match(/^.{3,}$/)) {
+      setFirstError(true);
+      return;
+    }
+
+    if (!lastName.match(/^.{3,}$/)) {
+      setLastError(true);
+      return;
+    }
+    if (!username.match(/^[a-zA-Z0-9_.]{3,16}$/)) {
+      setUserError(true);
+      return;
+    } else console.log("code is valid");
+
+    const formData = new FormData();
+  
+    if (avatarImage) {
+      formData.append('avatar', avatarImage);
+    }
+    const res ={
+      firstName:firstName,
+      lastName:lastName,
+      userName:username,
     };
     try {
       const req = await axios.patch(
-        `http://e1r12p4.1337.ma:3000/api/v1/users/settings/`,
+        "http://e1r12p4.1337.ma:3001/api/v1/users/settings/",
         res,
         {
           headers: {
@@ -114,28 +144,11 @@ const InformationsSetting = () => {
     }
   };
 
-  const handleImageUpload = async (file: File) => {
-    try {
-      const jwtToken = localStorage.getItem("token"); 
-      const formData = new FormData();
-      formData.append("image", file);
-  
-      const response = await axios.post(
-        "http://e1r12p4.1337.ma:3001/api/v1/",
-        formData, 
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-  
-      console.log("Image uploaded successfully:", response.data);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
+  const handleImageUpload = (file: File) => {
+    setAvatarImage(file);
   };
+
+ 
   return (
     <div className="w-full h-full flex flex-col gap-4 md:gap-6  ">
       <div className="w-full h-[7%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
@@ -152,6 +165,7 @@ const InformationsSetting = () => {
         <div className="relative w-1/2">
           <div className="absolute inset-0 flex items-center justify-center">
             <ImageUpload onImageUpload={handleImageUpload} />
+            {/* <img src="path_to_image/avatarImage.jpg" alt="Avatar Image"/> */}
           </div>
         </div>
       </div>
@@ -160,13 +174,19 @@ const InformationsSetting = () => {
         <div className="w-full h-[17%] flex flex-row items-center justify-center gap-5 md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14">
           {inputFields.map((input) => (
             <div key={input.id}>
-              <UserInput {...input} />
+              <UserInput handleKeyDown={handleKeyDown} {...input} />
+              {(input.isError )  && (
+                <p className="text-md text-red-500 flex items-center justify-center font-poppins ">
+                  {input.errorMessage}
+                </p>
+              )}
             </div>
           ))}
         </div>
-         <div className=" w-full h-[17%] flex items-center justify-center ">
+        <div className=" w-full h-[17%] flex items-center justify-center ">
           <div>
             <UserInput
+              handleKeyDown={handleKeyDown}
               placeholder={username}
               type="text"
               label="Username"
@@ -179,11 +199,17 @@ const InformationsSetting = () => {
               setError={setUserError}
               setValue={setUsername}
             />
+            {userError === true && (
+              <p className="text-md  text-red-500   flex items-center justify-center  font-poppins ">
+                Invalide username
+              </p>
+            )}
           </div>
         </div>
         <div className=" w-full h-[17%] flex items-center justify-center ">
           <div>
             <UserInput
+              handleKeyDown={handleKeyDown}
               placeholder={email}
               type="email"
               label="Email"
@@ -198,7 +224,7 @@ const InformationsSetting = () => {
             />
           </div>
         </div>
-        <div className="w-[13rem]  h-[18%]  sm:w-[22rem]   md:w-[22rem] lg:w-[26rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[54rem]  flex flex-row justify-end items-center   gap-4 md:gap-4">
+        <div className="w-[13rem]  h-[18%]  sm:w-[22rem]   md:w-[22rem] lg:w-[31rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[54rem]  flex flex-row justify-end items-center   gap-4 md:gap-4">
           <div className="w-auto sm:w-auto  ">
             <SecondaryButton text="Discard" onClick={handleCancle} />
           </div>

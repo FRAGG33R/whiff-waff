@@ -1,3 +1,5 @@
+import React from "react";
+
 export interface searchInputProps {
     placeholder: string;
     onSearch: (value: string) => void;
@@ -14,5 +16,6 @@ export interface InputProps {
 	value: string;
 	setValue  : (value: string) => void;
 	setError  : (value: boolean) => void;
+    handleKeyDown: (event:React.KeyboardEvent<HTMLInputElement>) => void;
 	regExp    : RegExp;
 }

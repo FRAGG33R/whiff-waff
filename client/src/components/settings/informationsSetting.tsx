@@ -156,15 +156,15 @@ const InformationsSetting = () => {
         </div>
       </div>
 
-      <div className="w-full h-full flex items-center justify-center flex-col gap-4 md:gap-6">
-        <div className="w-full h-[17%] flex flex-row items-center justify-center gap-5 md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14">
+      <div className="w-full h-full flex items-center justify-center flex-col gap-2 md:gap-6 ">
+        <div className="w-full h-[14%] md:h-[17%] flex flex-row items-center justify-center gap-5 md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14">
           {inputFields.map((input) => (
             <div key={input.id}>
               <UserInput {...input} />
             </div>
           ))}
         </div>
-         <div className=" w-full h-[17%] flex items-center justify-center ">
+         <div className=" w-full h-[14%] md:h-[17%] flex items-center justify-center ">
           <div>
             <UserInput
               placeholder={username}
@@ -181,7 +181,7 @@ const InformationsSetting = () => {
             />
           </div>
         </div>
-        <div className=" w-full h-[17%] flex items-center justify-center ">
+        <div className=" w-full h-[14%] md:h-[17%] flex items-center justify-center ">
           <div>
             <UserInput
               placeholder={email}
@@ -198,7 +198,7 @@ const InformationsSetting = () => {
             />
           </div>
         </div>
-        <div className="w-[13rem]  h-[18%]  sm:w-[22rem]   md:w-[22rem] lg:w-[26rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[54rem]  flex flex-row justify-end items-center   gap-4 md:gap-4">
+        <div className="w-[13rem]  h-[18%]  sm:w-[22rem]   md:w-[22rem] lg:w-[31.3rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[54rem]  flex flex-row justify-end items-center   gap-4 md:gap-4">
           <div className="w-auto sm:w-auto  ">
             <SecondaryButton text="Discard" onClick={handleCancle} />
           </div>

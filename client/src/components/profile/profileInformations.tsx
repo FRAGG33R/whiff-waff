@@ -6,7 +6,7 @@ import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import LevelBar from "../ui/progressBar/levelBar";
 import { userContext } from "@/context/context";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 
 export default function ProfileInformations() {
   const router = useRouter();

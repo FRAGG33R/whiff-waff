@@ -4,19 +4,23 @@ import { withIronSessionSsr } from "iron-session/next";
 import { api } from "@/components/axios/instance";
 import { createContext, useContext, useEffect } from "react";
 import { userContext } from "@/context/context";
+import { userAtom } from "@/context/context";
+
+import {
+	RecoilRoot,
+	atom,
+	selector,
+	useRecoilState,
+	useRecoilValue,
+  } from 'recoil';
 
 export default function Profile(props: any) {
-
-  useEffect(() => {
-    // console.log("state : ", state);.
-	console.log(props.data);
-  }, []);
-
+	const [user, setUser] = useRecoilState(userAtom);
+	setUser(props.data)
+	console.log('recoil', user);
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-      <userContext.Provider value={props.data}>
         <ProfileComponent />
-      </userContext.Provider>
     </div>
   );
 }

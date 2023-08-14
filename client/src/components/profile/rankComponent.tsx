@@ -1,4 +1,3 @@
-import { IconBadges } from '@tabler/icons-react';
 import Image from 'next/image';
 import rank from '../../../public/rank.svg';
 import Grandmaster from '../../../public/grandmaster__.svg';
@@ -12,7 +11,7 @@ export default function RankComponent()
 				<div className='font-semibold font-teko text-2xl md:text-3xl tracking-wide text-Mercury'>RANK</div>
 			</div>
 			<div className="w-full h-[85%] flex items-center justify-center py-4">
-				<Image src={Grandmaster} alt="grandmaster icon" className='w-[330px] lg:w-[500px]  pb-12'/>
+				<Image src={Grandmaster} alt="grandmaster icon" className='w-[330px] lg:w-[500px] pb-12'/>
 			</div>
 		</div>
 	)

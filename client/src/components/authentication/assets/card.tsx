@@ -92,6 +92,7 @@ export default function Card(props: { Mode: "signin" | "signup" })
       errorMessage: "Invalid password",
     },
   ];
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleNext();
@@ -102,12 +103,14 @@ export default function Card(props: { Mode: "signin" | "signup" })
     router.push("http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42/");
   };
 
+
   const handlePrevious = () => {
     if (step > 0) {
       setStep((prev) => prev - 1);
       setError(false);
     }
   };
+
   const handleNext = async () => {
     if (
       step <
@@ -170,7 +173,8 @@ export default function Card(props: { Mode: "signin" | "signup" })
           } else if (statusCode == 200) {
             router.push("/profile/hkadsf");
           }
-        } catch (error: any) {
+        } catch (error: any)
+		{
           if (error.response && error.response.data) {
             const { message } = (error as any).response.data;
             setError(true);
@@ -181,8 +185,8 @@ export default function Card(props: { Mode: "signin" | "signup" })
         setError(true);
         setErrorMessage(
           props.Mode === "signin"
-            ? signinArray[step].errorMessage
-            : signupArray[step].errorMessage
+        	? signinArray[step].errorMessage
+        	: signupArray[step].errorMessage
         );
       }
     }
@@ -190,9 +194,9 @@ export default function Card(props: { Mode: "signin" | "signup" })
   useEffect(() => {
     console.log(router.query.validation);
     const { validation } = router.query;
-    console.log(typeof validation);
 
-    if (validation == "true") {
+    if (validation == "true")
+	{
       setIsValid(true);
       setNeedsVerification(true);
       setTimeout(() => {

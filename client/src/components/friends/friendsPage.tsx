@@ -1,4 +1,5 @@
 import React from "react";
+import TabSwitch from "./toggleFriend";
 
 const FriendsPage = () => {
   return (
@@ -10,8 +11,8 @@ const FriendsPage = () => {
         <div className="h-[45px] border  md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
           NavBar
         </div>
-        <div className="w-full xl:h-[91%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10">
-          
+        <div className="w-full xl:h-[91%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10 flex items-start justify-start ">
+          <TabSwitch/>
         </div>
       </div>
     </div>

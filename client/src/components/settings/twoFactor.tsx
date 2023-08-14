@@ -40,7 +40,7 @@ const TwoFactor = () => {
     try {
       const jwtToken = localStorage.getItem("token");
       const response = await axios.patch(
-        "http://e1r12p4.1337.ma:3000/api/v1/settings/",
+        "http://34.125.165.80/api/v1/settings/",
         { result },
         {
           headers: {

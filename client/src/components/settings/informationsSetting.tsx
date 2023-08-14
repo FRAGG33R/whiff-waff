@@ -81,7 +81,7 @@ const InformationsSetting = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://e1r12p4.1337.ma:3001/api/v1/users/me/",
+          "http://34.125.165.80/api/v1/users/me/",
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -129,7 +129,7 @@ const InformationsSetting = () => {
     };
     try {
       const req = await axios.patch(
-        "http://e1r12p4.1337.ma:3001/api/v1/users/settings/",
+        "http://34.125.165.80/api/v1/users/settings/",
         res,
         {
           headers: {

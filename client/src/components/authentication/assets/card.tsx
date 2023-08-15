@@ -196,11 +196,12 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       setNeedsVerification(true);
       setTimeout(() => {
         setNeedsVerification(false);
+        setIsValid(false);
       }, 2000);
-    }
+    } else setIsValid(false);
   }, [router.query]);
   return (
-    <div className="min-h-1 min-w-1 z-10 px-6 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
+    <div className="min-h-1 min-w-1 z-10 px-2 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
       <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
         <Image src={Logo} alt="Logo" className="" />
         <div className="text-2xl md:text-3xl font-teko font-bold">
@@ -252,25 +253,26 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           )}
         </div>
         <div
-          className={`w-full h-full flex flex-row space-x-2 items-center justify-center`}
+          className={`w-full h-full flex flex-row space-x-2 items-center ${
+            step > 0 ? "justify-between" : "justify-center"
+          }`}
         >
           {step > 0 && <AuthButton text="Previous" onClick={handlePrevious} />}
           <AuthButton text="Next" onClick={handleNext} />
         </div>
       </div>
-
-      {needsVerification && !isValid && (
+      {isValid ? (
+        <ValidationAlert
+          bigText="Account verified successfully,"
+          smallText="You can now login."
+        />
+      ) : (
         <ValidationAlert
           bigText="Account created successfully,"
           smallText="Please check your email to verify your account."
         />
       )}
-      {needsVerification && isValid && (
-        <ValidationAlert
-          bigText="Account verified successfully,"
-          smallText="You can now login."
-        />
-      )}
+
       {props.Mode === "signin" && (
         <div className="w-full h-full flex items-center justify-center space-y-2 md:space-y-6 flex-col">
           <div className="w-full min-h-1 flex items-center justify-center">

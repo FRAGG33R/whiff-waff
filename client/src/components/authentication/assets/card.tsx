@@ -9,7 +9,7 @@ import { KeyboardEvent } from "react";
 import { api, localApi } from "@/components/axios/instance";
 import { useEffect } from "react";
 import ValidationAlert from "@/components/ui/alerts/validationAlert";
-import axios from "axios";
+import { parseJwt } from "@/lib/parseJwt";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
@@ -170,7 +170,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
               router.push("/login");
             }, 2000);
           } else if (statusCode == 200) {
-            router.push("/profile/adsf");
+            router.push(`/profile/${parseJwt(token).userName}`);
           }
         } catch (error: any) {
           if (error.response && error.response.data) {
@@ -189,6 +189,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       }
     }
   };
+
   useEffect(() => {
     const { validation } = router.query;
     if (validation == "true") {
@@ -198,7 +199,16 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
         setNeedsVerification(false);
         setIsValid(false);
       }, 2000);
-    } else setIsValid(false);
+
+    } else if (validation == 'false'){
+		setIsValid(false);
+      setNeedsVerification(true);
+      setTimeout(() => {
+        setNeedsVerification(false);
+      }, 2000);
+	}
+	else
+		setNeedsVerification(false);
   }, [router.query]);
   return (
     <div className="min-h-1 min-w-1 z-10 px-2 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
@@ -261,18 +271,18 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           <AuthButton text="Next" onClick={handleNext} />
         </div>
       </div>
-      {isValid ? (
+      {(isValid && needsVerification) && (
         <ValidationAlert
           bigText="Account verified successfully,"
           smallText="You can now login."
         />
-      ) : (
+      )}
+	  {(!isValid && needsVerification) && (
         <ValidationAlert
           bigText="Account created successfully,"
           smallText="Please check your email to verify your account."
         />
       )}
-
       {props.Mode === "signin" && (
         <div className="w-full h-full flex items-center justify-center space-y-2 md:space-y-6 flex-col">
           <div className="w-full min-h-1 flex items-center justify-center">

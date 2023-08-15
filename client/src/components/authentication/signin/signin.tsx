@@ -1,7 +1,5 @@
 'use client'
-import { useEffect } from "react";
 import Card from "../assets/card";
-import { useRouter } from "next/router";
 
 export default function SignInComponent()
 {

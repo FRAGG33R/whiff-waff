@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import userType from "@/types/userType";
 import { useRecoilState } from "recoil";
 import { userAtom } from "@/context/RecoilAtoms";
+import { localApi } from "@/components/axios/instance";
 
 const ProfileDropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +23,7 @@ const ProfileDropDown = () => {
   const LogOut = async () => {
     localStorage.removeItem("token");
     try {
-      const res = await axios.delete("http://localhost:3000/api/saveToken");
+      const res = await localApi.delete("/saveToken");
       router.push("/login");
     } catch (err) {
       console.log("Couldn't distroy user session");

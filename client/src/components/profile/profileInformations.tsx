@@ -1,17 +1,18 @@
 import Image from "next/image";
-import { IconSettings } from "@tabler/icons-react";
-import { useRouter } from "next/router";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import LevelBar from "../ui/progressBar/levelBar";
-import { userAtom } from "@/context/RecoilAtoms";
-import { useState } from "react";
-import { useRecoilState } from "recoil";
 import userType from "@/types/userType";
 import totalWins from "../../../public/totalWins.svg";
 import totalMatches from "../../../public/totalMatches.svg";
 import totalLoses from "../../../public/totalLoses.svg";
 import matchStatistics from "@/types/matchStatistics";
+import HexaGon from "./hexagon";
+import { IconSettings } from "@tabler/icons-react";
+import { useRouter } from "next/router";
+import { userAtom } from "@/context/RecoilAtoms";
+import { useState } from "react";
+import { useRecoilState } from "recoil";
 
 export default function ProfileInformations() {
   const router = useRouter();
@@ -29,15 +30,7 @@ export default function ProfileInformations() {
       <div className="w-full h-[80%] flex flex-col md:flex-row items-center xl:space-x-8">
         <div className="h-[70%] md:h-full max-w-[180px] w-[180px] md:w-[27%] xl:w-[25%] md:-space-y-5 xl:space-y-0 flex flex-col">
           <div className="w-full h-[80%] flex items-center justify-center py-8 pl-2">
-            <div className="mask mask-hexagon-2 flex items-center justify-center bg-DeepRose w-[280px] lg:w-[480px] h-32 lg:h-48 rotate-90">
-              <div className="mask mask-hexagon-2 w-[92%] h-[92%] bg-white text-black flex items-center justify-center">
-                <img
-                  alt="profile picture"
-                  className="bg-DeepRose w-[130px] lg:w-[200px] -rotate-90"
-                  src={userData.avatar}
-                />
-              </div>
-            </div>
+            <HexaGon avatar={userData.avatar} />
           </div>
           <button
             onClick={() => {
@@ -77,8 +70,7 @@ export default function ProfileInformations() {
             key={index}
             className={`h-full xl:w-1/5 flex items-center justify-center xl:space-x-8 flex-col lg:flex-row font-normal tracking-wide font-teko  ${
               index === 0 ? "pl-4" : null
-            }`}
-          >
+            }`}>
             <Image
               src={item.avatar}
               alt="total matches"

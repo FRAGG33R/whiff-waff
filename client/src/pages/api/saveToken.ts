@@ -1,20 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { withIronSessionApiRoute } from "iron-session/next";
+import { NextResponse } from "next/server";
 
 export default withIronSessionApiRoute(
   async function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method === "DELETE")
-	{
-	  req.session.destroy();
-	  res.send({ok : true});
-    }
-	else if (req.method === "POST") {
-      const { token } = req.body;
-      (req.session as any).token = {
-        token,
-      };
-      await req.session.save();
+    
+	try {
+      if (req.method === "DELETE") {
+        req.session.destroy();
+      } else if (req.method === "POST") {
+        const { token } = req.body;
+        (req.session as any).token = {
+          token,
+        };
+        await req.session.save();
+      }
       res.send({ ok: true });
+    } catch (error) {
+      console.log("saveToken Error : ", error);
     }
   },
   {

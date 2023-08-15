@@ -5,10 +5,10 @@ import { useRecoilState } from 'recoil';
 import ProfileComponent from "@/components/profile/profileComponent";
 import "../../app/globals.css";
 
-export default function Profile(props: any) {
+export default function Profile(props : any) {
 	const [user, setUser] = useRecoilState(userAtom);
 	setUser(props.data)
-	
+
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
         <ProfileComponent />
@@ -31,11 +31,10 @@ export const getServerSideProps = withIronSessionSsr(
     } catch (error)
 	{
 	return {
-		// redirect: {
-		//   destination: '/login',
-		//   permanent: false,
-		// },
-		props : {data  : null}
+		redirect: {
+		  destination: '/login',
+		  permanent: false,
+		},
 	  };
     }
   },

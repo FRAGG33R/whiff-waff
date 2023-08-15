@@ -6,13 +6,12 @@ import AuthButton from "@/components/ui/buttons/authButton";
 import IntraButton from "@/components/ui/buttons/intraButton";
 import { useRouter } from "next/router";
 import { KeyboardEvent } from "react";
-import { api } from "@/components/axios/instance";
+import { api, localApi } from "@/components/axios/instance";
 import { useEffect } from "react";
 import ValidationAlert from "@/components/ui/alerts/validationAlert";
 import axios from "axios";
 
-export default function Card(props: { Mode: "signin" | "signup" })
-{
+export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastNam] = useState("");
   const [username, setUsername] = useState("");
@@ -100,9 +99,10 @@ export default function Card(props: { Mode: "signin" | "signup" })
   };
 
   const signIn = async () => {
-    router.push("http://e3r10p16.1337.ma:3000/api/v1/auth/signin/42/");
+    router.push(
+      "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-82573d757bf7f76ec64fd426f2b6956cca48fda1f72cb2028a189dedcc8715f0&redirect_uri=http%3A%2F%2Fe3r10p12.1337.ma%3A3000%2Fintra_callback&response_type=code"
+    );
   };
-
 
   const handlePrevious = () => {
     if (step > 0) {
@@ -160,10 +160,9 @@ export default function Card(props: { Mode: "signin" | "signup" })
         try {
           setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
-          const {  token, statusCode } = res.data;
+          const { token, statusCode } = res.data;
           localStorage.setItem("token", token);
-		  console.log(token);
-		  const __ = await axios.post('http://localhost:3000/api/saveToken', {token})
+          await localApi.post("/saveToken", { token }); //storing the token after the user validate the email only
           if (statusCode === 201) {
             setNeedsVerification((prev) => !prev);
             setTimeout(() => {
@@ -171,10 +170,9 @@ export default function Card(props: { Mode: "signin" | "signup" })
               router.push("/login");
             }, 2000);
           } else if (statusCode == 200) {
-            router.push("/profile/hkadsf");
+            router.push("/profile/adsf");
           }
-        } catch (error: any)
-		{
+        } catch (error: any) {
           if (error.response && error.response.data) {
             const { message } = (error as any).response.data;
             setError(true);
@@ -185,18 +183,15 @@ export default function Card(props: { Mode: "signin" | "signup" })
         setError(true);
         setErrorMessage(
           props.Mode === "signin"
-        	? signinArray[step].errorMessage
-        	: signupArray[step].errorMessage
+            ? signinArray[step].errorMessage
+            : signupArray[step].errorMessage
         );
       }
     }
   };
   useEffect(() => {
-    console.log(router.query.validation);
     const { validation } = router.query;
-
-    if (validation == "true")
-	{
+    if (validation == "true") {
       setIsValid(true);
       setNeedsVerification(true);
       setTimeout(() => {
@@ -284,12 +279,7 @@ export default function Card(props: { Mode: "signin" | "signup" })
               Staff or student
             </div>
           </div>
-          <IntraButton
-            text="Login with Intra"
-            onClick={() => {
-              signIn();
-            }}
-          />
+          <IntraButton text="Login with Intra" onClick={signIn} />
         </div>
       )}
     </div>

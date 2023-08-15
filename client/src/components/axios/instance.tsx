@@ -1,6 +1,9 @@
 import axios from "axios";
 
 export const api = axios.create({
-	  baseURL: "http://e1r12p4.1337.ma:3000/api/v1/",
-	//   withCredentials: true,
+	  baseURL: "http://e3r10p16.1337.ma:3001/api/v1/",
+});
+
+export const localApi = axios.create({
+	  baseURL: "http://e3r10p12.1337.ma:3000/api",
 });

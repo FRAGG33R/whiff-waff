@@ -1,13 +1,12 @@
 import { useState } from "react";
 import LevelIcon from "../../../public/level.svg";
-import Expert from "../../../public/expert.svg";
 import Online from "../../../public/online.svg";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import router from "next/router";
 import Image from "next/image";
 
-export default function FriendGame() {
+export default function FriendGame({ friends }: { friends: any }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleChallenge = () => {
@@ -19,12 +18,6 @@ export default function FriendGame() {
   };
 
   const handleBlock = () => {};
-  const [friend] = useState({
-    firstUserName: "Houssam",
-    level: 5,
-    rank: "Challenger",
-    status: "Online",
-  });
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -38,10 +31,10 @@ export default function FriendGame() {
         <div className="h-full w-2/3 flex flex-row items-center  md:space-x-4 space-x-2 2xl:gap-10 ">
           <div
             className="sm:w-1/3 w-12   md:w-16  lg:w-20 h-14  md:h-16 flex  tooltip "
-            data-tip={`${friend.firstUserName}  ${friend.level}`}
+            data-tip={`${friends.userName}  ${friends.level}`}
           >
             <img
-              src="https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1587&q=80"
+              src={friends.image}
               alt="profile picture"
               className="sm:w-12 w-16 md:w-16 h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
             />
@@ -49,7 +42,7 @@ export default function FriendGame() {
           <div
             className={`sm:w-0  lg:w-1/5  font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[2.5rem] lg:block hidden tracking-wide text-Mercury `}
           >
-            {friend.firstUserName}
+            {friends.userName}
           </div>
           <div className="sm:w-0  lg:w-1/5 flex-row space-x-5 2xl:space-y-3 xl:space-y-2 flex">
             <Image
@@ -63,11 +56,16 @@ export default function FriendGame() {
               Lvl
             </span>
             <span className="font-normal font-teko text-[2.5vw] xl:text-[1.8rem] 2xl:text-[2rem]  lg:block hidden tracking-wide text-Mercury   ">
-              {friend.level}
+              {friends.level}
             </span>
           </div>
           <div className="sm:w-1/3 w-12  lg:w-1/5 flex  h-full ">
-            <Image src={Expert} alt="expert icon" width={80} height={70} />
+            <Image
+              src={friends.rankSvg}
+              alt="expert icon"
+              width={80}
+              height={70}
+            />
           </div>
           <div className="sm:w-1/3 w-12 lg:w-1/5  flex   flex-row space-x-2 ">
             <Image
@@ -78,7 +76,7 @@ export default function FriendGame() {
               className="lg:block hidden "
             />
             <span className="font-medium font-teko text-[1.2rem] xl:text-[1rem] 2xl:text-[1.5rem]  text-center tracking-wide text-[#00FF00]  ">
-              {friend.status}
+              {friends.status}
             </span>
           </div>
         </div>

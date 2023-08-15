@@ -2,16 +2,14 @@ import { useState } from "react";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 
-const Requestepage = () => {
+const Requestepage = ({ req }: { req: any }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [friend] = useState({
-        firstUserName: "Houssam",
-      });
-      const handleAccept = () => {};
-      const handleRefuse= () => {};
-      const handleDropdownToggle = () => {
-        setIsDropdownOpen(!isDropdownOpen);
-      };
+
+  const handleAccept = () => {};
+  const handleRefuse = () => {};
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   return (
     <div
       className={`w-[95%] h-16 md:h-20 flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%]
@@ -19,12 +17,9 @@ const Requestepage = () => {
     >
       <div className="w-[95%] md:w-[98%] h-full flex flex-row items-center justify-center ">
         <div className="h-full w-1/2 flex flex-row items-center  md:space-x-4 space-x-2 2xl:gap-10 ">
-          <div
-            className=" w-12 lg:w-20 h-14  md:h-16 flex  tooltip border"
-            data-tip={`${friend.firstUserName}  `}
-          >
+          <div className=" w-12 lg:w-20 h-14  md:h-16 flex   ">
             <img
-              src="https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1587&q=80"
+              src={req.image}
               alt="profile picture"
               className="sm:w-12 w-16 md:w-16 h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
             />
@@ -32,9 +27,8 @@ const Requestepage = () => {
           <div
             className={`w-1/3  font-normal font-teko text-[1.3rem] xl:text-[1.4rem] 2xl:text-[2.5rem]  tracking-wide text-Mercury `}
           >
-            {friend.firstUserName}
+            {req.userName}
           </div>
-          
         </div>
 
         <div className="h-full w-1/2 flex flex-row justify-end space-x-2 lg:space-x-4">
@@ -75,11 +69,11 @@ const Requestepage = () => {
             </ul>
           )}
 
-          <div/>
+          <div />
         </div>
-        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Requestepage
+export default Requestepage;

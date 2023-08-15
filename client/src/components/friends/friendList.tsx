@@ -54,7 +54,7 @@ const friendList = () => {
     {
       userName: "Aissam",
       level: 5,
-      status: "Online",
+      status: "Offline",
       image:
         "https://cdn.intra.42.fr/users/5d05347ef84ba22771ba3bcf84804482/abarchil.jpg",
       rankSvg: Chanllenger,
@@ -62,7 +62,7 @@ const friendList = () => {
     {
       userName: "Yakoub",
       level: 4,
-      status: "Online",
+      status: "InGame",
       image:
         "https://cdn.intra.42.fr/users/be24997028ca0ec07a15af6975840eb6/yakhoudr.jpg",
       rankSvg: Legend,

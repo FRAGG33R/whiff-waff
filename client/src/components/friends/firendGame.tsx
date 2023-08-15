@@ -1,6 +1,8 @@
 import { useState } from "react";
 import LevelIcon from "../../../public/level.svg";
 import Online from "../../../public/online.svg";
+import Offline from "../../../public/Offline.svg";
+import InGame from "../../../public/InGame.svg";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import router from "next/router";
@@ -67,15 +69,15 @@ export default function FriendGame({ friends }: { friends: any }) {
               height={70}
             />
           </div>
-          <div className="sm:w-1/3 w-12 lg:w-1/5  flex   flex-row space-x-2 ">
-            <Image
-              src={Online}
-              alt="online"
-              width={20}
-              height={20}
-              className="lg:block hidden "
-            />
-            <span className="font-medium font-teko text-[1.2rem] xl:text-[1rem] 2xl:text-[1.5rem]  text-center tracking-wide text-[#00FF00]  ">
+          <div className="sm:w-1/3 w-12 lg:w-1/5  flex   flex-row space-x-2 space-y-1">
+            {friends.status === "Online" ? (
+              <Image src={Online} alt="online" width={20} height={20} className="lg:block hidden " />
+            ) : friends.status === "Offline" ? (
+              <Image src={Offline} alt="offline" width={20} height={20} className="lg:block hidden " />
+            ) : (
+              <Image src={InGame} alt="InGame" width={20} height={20} className="lg:block hidden " />
+            )}
+            <span className={`font-medium font-teko text-[1.2rem] xl:text-[1rem] 2xl:text-[1.5rem]  text-center tracking-wide ${friends.status === "Online" ? "text-[#00FF00]" : friends.status === "Offline" ? "text-[#80848E]" : "text-[#FF4F8B]"} `}>
               {friends.status}
             </span>
           </div>

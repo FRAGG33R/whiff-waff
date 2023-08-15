@@ -17,6 +17,7 @@ const friendsComponent = () => {
           <FriendGame  />
           <FriendGame  />
           <FriendGame />
+          <FriendGame  />
           <Pagination max={60} active={active} setActive={setActive}/>
 
         </div>

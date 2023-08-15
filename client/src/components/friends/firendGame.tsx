@@ -1,47 +1,141 @@
 import { useState } from "react";
-import LevelIcon from "../../../public/level.svg"
-
+import LevelIcon from "../../../public/level.svg";
+import Expert from "../../../public/expert.svg";
+import Online from "../../../public/online.svg";
+import PrimaryButton from "../ui/buttons/primaryButton";
+import SecondaryButton from "../ui/buttons/secondaryButton";
+import router from "next/router";
 import Image from "next/image";
 
-export default function MatchComponent() {
+export default function FriendGame() {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleChallenge = () => {
+    router.push("/game");
+  };
+
+  const handleMessage = () => {
+    router.push("/chat");
+  };
+
+  const handleBlock = () => {};
   const [friend] = useState({
-    firstUserName: "HOUSSAM",
+    firstUserName: "Houssam",
     level: 5,
     rank: "Challenger",
     status: "Online",
   });
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   return (
     <div
       className={`w-[95%] h-16 md:h-20 flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%]
      `}
     >
-      <div className="w-[95%] md:w-[98%] h-full flex flex-row items-center justify-center border">
-        <div className="h-full w-1/2 flex flex-row items-center  md:space-x-4 space-x-2 2xl:space-x-10  border">
+      <div className="w-[95%] md:w-[98%] h-full flex flex-row items-center justify-center ">
+        <div className="h-full w-2/3 flex flex-row items-center  md:space-x-4 space-x-2 2xl:gap-10 ">
           <div
-            className="w-14 md:w-16 h-14  md:h-16 flex items-center justify-center tooltip"
-            data-tip={friend.firstUserName}
+            className="sm:w-1/3 w-12   md:w-16  lg:w-20 h-14  md:h-16 flex  tooltip "
+            data-tip={`${friend.firstUserName}  ${friend.level}`}
           >
             <img
               src="https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1587&q=80"
               alt="profile picture"
-              className="w-12 md:w-16 h-12 md:h-16 rounded-[12px] md:rounded-[20px] "
+              className="sm:w-12 w-16 md:w-16 h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
             />
           </div>
           <div
-            className={`font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[2.3rem] text-center md:block hidden tracking-wide text-Mercury`}
+            className={`sm:w-0  lg:w-1/5  font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[2.5rem] lg:block hidden tracking-wide text-Mercury `}
           >
             {friend.firstUserName}
           </div>
-          <div className="flex flex-row space-x-3 space-y-3" > 
-                <Image src={LevelIcon} alt="level icon"  />
-                <span className="font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[2.3rem]  md:block hidden tracking-wide text-Mercury ">Lvl {friend.level}</span>
-                {/* <span className="text-Mercury text-[1.4rem] font-bold ">{friend.level}</span> */}
+          <div className="sm:w-0  lg:w-1/5 flex-row space-x-5 2xl:space-y-3 xl:space-y-2 flex">
+            <Image
+              src={LevelIcon}
+              alt="level icon"
+              className="lg:block hidden "
+              width={30}
+              height={20}
+            />
+            <span className="font-normal font-teko text-[2.5vw] xl:text-[1.8rem] 2xl:text-[2rem]  xl:block hidden tracking-wide text-Mercury   ">
+              Lvl
+            </span>
+            <span className="font-normal font-teko text-[2.5vw] xl:text-[1.8rem] 2xl:text-[2rem]  lg:block hidden tracking-wide text-Mercury   ">
+              {friend.level}
+            </span>
+          </div>
+          <div className="sm:w-1/3 w-12  lg:w-1/5 flex  h-full ">
+            <Image src={Expert} alt="expert icon" width={80} height={70} />
+          </div>
+          <div className="sm:w-1/3 w-12 lg:w-1/5  flex   flex-row space-x-2 ">
+            <Image
+              src={Online}
+              alt="online"
+              width={20}
+              height={20}
+              className="lg:block hidden "
+            />
+            <span className="font-medium font-teko text-[1.2rem] xl:text-[1rem] 2xl:text-[1.5rem]  text-center tracking-wide text-[#00FF00]  ">
+              {friend.status}
+            </span>
+          </div>
+        </div>
+
+        <div className="h-full w-1/2 flex flex-row justify-end space-x-2 lg:space-x-4">
+          <div className="w-[20%] h-full  items-center justify-center hidden md:flex">
+            <PrimaryButton text="Challenge" onClick={handleChallenge} />
+          </div>
+          <div className="w-[20%] h-full  items-center justify-center hidden md:flex">
+            <SecondaryButton text="Block" onClick={handleBlock} />
+          </div>
+          <div className="w-[20%] h-full  items-center justify-center hidden md:flex">
+            <SecondaryButton text="Message" onClick={handleMessage} />
           </div>
 
+          <div className="w-[60%] h-full flex items-center justify-center md:hidden">
+            <button className="text-[#CBFC01]" onClick={handleDropdownToggle}>
+              &#9660;
+            </button>
+          </div>
+          {isDropdownOpen && (
+            <ul className="menu-dropdown-show w-full h-24  bg-HokiCl   rounded-xl flex flex-col  ">
+              <li>
+                <a>
+                  <button
+                    className="font-teko text-lg text-Mercury h-8 w-full hover:bg-DeepRose hover:rounded-md"
+                    onClick={handleChallenge}
+                  >
+                    Challenge
+                  </button>
+                </a>
+              </li>
+              <li>
+                <a>
+                  {" "}
+                  <button
+                    className="font-teko text-lg text-Mercury h-8 w-full hover:bg-DeepRose hover:rounded-md"
+                    onClick={handleBlock}
+                  >
+                    Block
+                  </button>
+                </a>
+              </li>
+              <li>
+                <a>
+                  <button
+                    className="font-teko text-lg text-Mercury h-8 w-full hover:bg-DeepRose hover:rounded-md"
+                    onClick={handleMessage}
+                  >
+                    Message
+                  </button>
+                </a>
+              </li>
+            </ul>
+          )}
         </div>
-        <div className="h-full w-1/2 flex flex-row items-center  md:space-x-4 space-x-2 2xl:space-x-6  border"></div>
       </div>
-      
     </div>
   );
 }

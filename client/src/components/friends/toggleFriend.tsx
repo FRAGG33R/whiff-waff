@@ -13,14 +13,14 @@ const TabSwitch = () => {
     <div className="flex items-start justify-start h-[1320px] w-full flex-col space-y-4">
         <div className="w-full h-[10%]  space-x-4 flex flex-row items-center justify-start">
           <div
-            className={`flex items-center justify-center rounded-md w-[200px]  h-[90%] text-[2.5rem] font-teko text-[#6C7FA7]
+            className={`flex items-center justify-center rounded-md w-[200px]  h-[90%] text-xl md:text-2xl lg:text-[2.5rem] font-teko text-[#6C7FA7]
             tab-link ${activeTab === 1 ? "tab-link-active" : ""}`}
             onClick={() => handleTabClick(1)}
           >
             Friends
           </div>
           <div
-            className={`  flex items-center justify-center rounded-md   w-[300px] h-[90%] text-[2.5rem] font-teko text-[#6C7FA7] 
+            className={`  flex items-center justify-center rounded-md   w-[300px] h-[90%] text-xl md:text-2xl lg:text-[2.5rem] font-teko text-[#6C7FA7] 
             tab-link ${activeTab === 2 ? "tab-link-active" : ""}`}
             onClick={() => handleTabClick(2)}
           >

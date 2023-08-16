@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards, Get, Req, Res } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get, Req, Res, HttpCode, HttpStatus, Logger } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from 'src/dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,39 +19,44 @@ const verifiedAuthEndPoint = 'verified/:token'
 @ApiTags(tagAuthenticationSwagger)
 @Controller(AuthControllerEndPoint)
 export class AuthController {
-    constructor(private readonly authService: AuthService,
-        private readonly local: LocalStrategy,
-        private readonly prisma: PrismaService,
-    ) { };
+	logger = new Logger('authController');
+	constructor(private readonly authService: AuthService,
+		private readonly local: LocalStrategy,
+		private readonly prisma: PrismaService,
+	) { };
 
-    @Post(signupAuthEndPoint)
-    async signUp(@Body() dto: SignUpDto) {
-        return (await this.authService.singUp(dto));
-    }
+	@Post(signupAuthEndPoint)
+	async signUp(@Body() dto: SignUpDto) {
+		return (await this.authService.singUp(dto));
+	}
 
-    @UseGuards(AuthGuard('local'))
-    @Post(signinAuthEndPoint)
-    signIn(@Req() req: Request) {
-        return (req.user);
-    }
+	@UseGuards(AuthGuard('local'))
+	@Post(signinAuthEndPoint)
+	signIn(@Req() req: Request) {
+		return (req.user);
+	}
 
-    @UseGuards(AuthGuard('42'))//TODO use the code of 42
-    @Get(signin42AuthEndPoint)
-    async signFortyTwoIn(@Req() req: { user: SignUpDto }, @Res() res: Response) {
-        const generatedName = `${values.PREFIX_USERNAME}${uuidv4().slice(0, 8)}`;
-        const dto: SignUpDto = {
-            userName: generatedName, firstName: req.user.firstName, lastName: req.user.lastName,
-            email: req.user.email, password: values.DEFAULT_PASSWORD_42_USER, avatar: req.user.avatar,
-            twoFactorAuth: false, status: values.PlayerStatus.INACTIVE, verfiedEmail: false
-        };
-        const token = await this.authService.insertIntraUser(dto);
-        res.cookie(values.NAME_KEY_KOOKIE_TOKEN, token);
-        res.redirect(path.REDIRECTION_ENDPOINT);
-    }
+	@UseGuards(AuthGuard('42'))
+	@Get(signin42AuthEndPoint)
+	@HttpCode(HttpStatus.CREATED)
+	async signFortyTwoIn(@Req() req: { user: SignUpDto }, @Res() res: Response) {
+		try {
+			const generatedName = `${values.PREFIX_USERNAME}${uuidv4().slice(0, 8)}`;
+			const dto: SignUpDto = {
+				userName: generatedName, firstName: req.user.firstName, lastName: req.user.lastName,
+				email: req.user.email, password: values.DEFAULT_PASSWORD_42_USER, avatar: req.user.avatar,
+				twoFactorAuth: false, status: values.PlayerStatus.INACTIVE, verfiedEmail: false
+			};
+			const token = await this.authService.insertIntraUser(dto);
+			res.send({ token: token });
+		} catch (error) {
+			this.logger.error(error);
+		}
+	}
 
-    @Get(verifiedAuthEndPoint)
-    async verfyEmail(@Req() req: Request, @Res() res: Response) {//TODO html injection
-        const loginUrl = await this.authService.verfyEmail(req.params.token);//TODO reject email
-        res.redirect((loginUrl).toString());
-    }
+	@Get(verifiedAuthEndPoint)
+	async verfyEmail(@Req() req: Request, @Res() res: Response) {//TODO html injection
+		const loginUrl = await this.authService.verfyEmail(req.params.token);//TODO reject email
+		res.redirect((loginUrl).toString());
+	}
 }

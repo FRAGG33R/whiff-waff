@@ -43,4 +43,4 @@ export class SignUpDto {
 	verfiedEmail: boolean;
 }
 
-export class UpdateCatDto extends PartialType(SignUpDto) { }
+export class UpdateUserDto extends PartialType(SignUpDto) { }

@@ -3,7 +3,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { UsersService } from "./users.service";
-import { SignUpDto, UpdateCatDto } from "src/dto";
+import { SignUpDto, UpdateUserDto } from "src/dto";
 
 const tagUserSwagger = 'users'
 const userEndPoint = 'users'
@@ -11,6 +11,19 @@ const meEndPoint = 'me'
 const profileEndPoint = 'profile/:userName'
 const historyGame = 'historyGame/:userId'
 const settings = 'settings'
+
+
+
+
+
+
+
+
+
+
+
+
+
 @ApiTags(tagUserSwagger)
 @Controller(userEndPoint)
 export class UsersController {
@@ -41,8 +54,11 @@ export class UsersController {
 
 	@UseGuards(AuthGuard('jwt'))
 	@Patch(settings)
-	async updateUserdata(@Body() dto: UpdateCatDto, @Req() req: Request) {
-		return this.userService.upDateUserdata((req.user as any).id, dto);
+	async updateUserdata(@Body() dto: UpdateUserDto, @Req() req: Request) {
+
+
+		// return this.userService.upDateUserdata((req.user as any).id, dto);
+		return ('updated');
 	}
 	//TODO refactor success and responses and errors
 }

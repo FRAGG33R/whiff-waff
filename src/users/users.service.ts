@@ -1,6 +1,6 @@
-import { BadRequestException, ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { ForbiddenException,Injectable, InternalServerErrorException, Logger, NotFoundException} from "@nestjs/common";
 import { User } from "@prisma/client";
-import { SignUpDto, UpdateCatDto } from "src/dto";
+import { SignUpDto, UpdateUserDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AchievementService } from "src/achievements/achievements.service";
 import { PrismaClientInitializationError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -8,7 +8,6 @@ import * as values from "src/shared/constants/constants.values"
 import * as ErrorCode from '../shared/constants/constants.code-error';
 import * as  CodeMessages from 'src/shared/constants/constants.messages';
 import * as variables from 'src/shared/constants/constants.name-variables'
-import { log } from "console";
 
 const authService = 'UserService';
 @Injectable()
@@ -198,7 +197,7 @@ export class UsersService {
 		return historyGame;
 	}
 
-	async upDateUserdata(id: string, dto: UpdateCatDto): Promise<any> {
+	async upDateUserdata(id: string, dto: UpdateUserDto): Promise<any> {
 		try {
 			const newUser = await this.prismaService.user.update({
 				where: {

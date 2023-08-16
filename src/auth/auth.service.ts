@@ -50,7 +50,7 @@ export class AuthService {
 		if (user) {
 			const expectedPassword = await bcrytpt.compare(password, user.password)
 			if (expectedPassword) {
-				const token = await this.signToken({ id: user.id, email: user.email }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
+				const token = await this.signToken({ id: user.id, email: user.email, user: user.userName }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
 				const fullName = `${user.firstName} ${user.lastName}`;
 				if (user.verfiedEmail == false) {
 					this.sendEmail(user.email, this.config.get(env.EMAIL_SUBJECT), token, fullName);
@@ -109,7 +109,7 @@ export class AuthService {
 			if (!existsUser) {
 				existsUser = await this.userService.createUser(dto);
 			}
-			const token = await this.signToken(existsUser, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
+			const token = await this.signToken({ id: existsUser.id, email: existsUser.email, userName: existsUser.email }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
 			return (token);
 		} catch (error) {
 			throw new InternalServerErrorException();

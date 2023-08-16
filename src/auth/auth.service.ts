@@ -28,8 +28,8 @@ export class AuthService {
 	async singUp(dto: SignUpDto): Promise<SuccessResponse> {
 		dto.status = values.PlayerStatus.INACTIVE;
 		dto.twoFactorAuth = false;
-		dto.verfiedEmail = false;
-		dto.avatar = "default";//TODO add image to database
+		dto.verfiedEmail = true;
+		dto.avatar = "https://storage.googleapis.com/whiff-waff/default.png";
 		const salt: string = await bcrytpt.genSalt(values.SALT_ROUNDS);
 		dto.password = await bcrytpt.hash(dto.password, salt);
 		const userInfos = await this.userService.createUser(dto);

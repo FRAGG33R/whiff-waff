@@ -5,6 +5,6 @@ import { atom } from "recoil";
 export const userContext = createContext<userType | undefined>(undefined);
 
 export const userAtom = atom({
-	key: 'userData',
+	key: `userData-${Math.random()}`,
 	default: {},
   });

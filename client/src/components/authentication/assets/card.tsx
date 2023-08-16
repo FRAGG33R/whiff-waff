@@ -162,15 +162,21 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           const res = await api.post(`auth/${props.Mode}/`, req);
           const { token, statusCode } = res.data;
           localStorage.setItem("token", token);
-          await localApi.post("/saveToken", { token }); //storing the token after the user validate the email only
-          if (statusCode === 201) {
+		  console.log('TOKEN', token);
+	
+          const r = await localApi.post("/saveToken", { token }); //storing the token after the user validate the email only
+		  console.log('saved\n', r);
+		  if (statusCode === 201) {
             setNeedsVerification((prev) => !prev);
             setTimeout(() => {
               setNeedsVerification(false);
               router.push("/login");
             }, 2000);
-          } else if (statusCode == 200) {
-            router.push(`/profile/${parseJwt(token).userName}`);
+          } else if (statusCode == 200)
+		  {
+			console.log('loged');
+			console.log('-', parseJwt(token).user);
+            router.push(`/profile/${parseJwt(token).user}`);
           }
         } catch (error: any) {
           if (error.response && error.response.data) {

@@ -5,9 +5,11 @@ import { useRecoilState } from 'recoil';
 import ProfileComponent from "@/components/profile/profileComponent";
 import "../../app/globals.css";
 
-export default function Profile(props : any) {
+export default function Profile(props : any)
+{
 	const [user, setUser] = useRecoilState(userAtom);
-	setUser(props.data)
+	console.log(props.data);
+	setUser(props.data);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
@@ -18,25 +20,30 @@ export default function Profile(props : any) {
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req } : any) {
-    try {
+	  try {
+		console.log('Session : ', req.session);
+
       const token = await req.session.token.token;
+	  console.log('r', token);
+	  
       const res = await api.get("/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+	  console.log(res);
       return {
         props: { data: res.data },
       };
     } catch (error)
 	{
-	return {
-		redirect: {
-		  destination: '/login',
-		  permanent: false,
-		},
-	  };
-    }
+		return {
+			redirect: {
+			destination: '/login',
+			permanent: false,
+			},
+		};
+		}
   },
   {
     cookieName: "token",

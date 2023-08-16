@@ -8,17 +8,25 @@ export default withIronSessionApiRoute(
 	try {
       if (req.method === "DELETE") {
         req.session.destroy();
+		res.send({ ok: true });
       } else if (req.method === "POST") {
+
         const { token } = req.body;
-        (req.session as any).token = {
+        console.log('save this :',token);
+		
+		(req.session as any).token = {
           token,
         };
+		console.log((req.session as any).token)
         await req.session.save();
+		console.log('saved successfuly !');
+		res.send({ ok: true });
       }
-      res.send({ ok: true });
     } catch (error) {
       console.log("saveToken Error : ", error);
     }
+	res.send({ ok: true });
+
   },
   {
     cookieName: "token",

@@ -11,7 +11,6 @@ export default function IntraCallback() {
   const intraAuth = async () => {
     try {
       const authRes = await api.get(`/auth/signin/42?code=${code}`);
-      console.log(authRes.status);
       if (authRes.status === 201) {
         localStorage.setItem("token", authRes.data.token);
         await localApi.post("/saveToken", { token: authRes.data.token });

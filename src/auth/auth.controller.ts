@@ -7,8 +7,9 @@ import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as values from 'src/shared/constants/constants.values'
-import * as path from 'src/shared/constants/constants.paths'
 import { v4 as uuidv4 } from 'uuid';
+import { LocalGuard } from './guards/guards.localGuard';
+import { FourtyTwoGuad } from './guards/guards.fourtyTwoGuard';
 
 const tagAuthenticationSwagger = 'authentication'
 const AuthControllerEndPoint = 'auth'
@@ -16,6 +17,7 @@ const signupAuthEndPoint = 'signup'
 const signinAuthEndPoint = 'signin'
 const signin42AuthEndPoint = 'signin/42'
 const verifiedAuthEndPoint = 'verified/:token'
+
 @ApiTags(tagAuthenticationSwagger)
 @Controller(AuthControllerEndPoint)
 export class AuthController {
@@ -30,13 +32,13 @@ export class AuthController {
 		return (await this.authService.singUp(dto));
 	}
 
-	@UseGuards(AuthGuard('local'))
+	@UseGuards(LocalGuard)
 	@Post(signinAuthEndPoint)
 	signIn(@Req() req: Request) {
 		return (req.user);
 	}
 
-	@UseGuards(AuthGuard('42'))
+	@UseGuards(FourtyTwoGuad)
 	@Get(signin42AuthEndPoint)
 	@HttpCode(HttpStatus.CREATED)
 	async signFortyTwoIn(@Req() req: { user: SignUpDto }, @Res() res: Response) {
@@ -50,7 +52,7 @@ export class AuthController {
 			const token = await this.authService.insertIntraUser(dto);
 			res.send({ token: token });
 		} catch (error) {
-			this.logger.error(error);
+			this.logger.error('error', error);//TODO check unspected errors
 		}
 	}
 

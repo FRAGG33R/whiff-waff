@@ -11,3 +11,4 @@ export const SUCESSFULL_MSG = 'User Added sucessfully';
 export const TITLE_DOCS = "whiff-waff"
 export const DESCRITPION_DOCS = "simple description"
 export const REQUIRED_VALIDATION_EMAIL = 'Email validation required'
+export const CLOUD_FAIL_MESSAGE = '`Unable to upload image, something went wrong`'

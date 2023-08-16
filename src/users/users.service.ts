@@ -199,7 +199,7 @@ export class UsersService {
 
 	async upDateUserdata(id: string, dto: UpdateUserDto): Promise<any> {
 		try {
-			const newUser = await this.prismaService.user.update({
+			const {verfiedEmail, twoFactorAuth, password, ...newUser} = await this.prismaService.user.update({
 				where: {
 					id: id
 				},

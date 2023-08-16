@@ -29,7 +29,7 @@ export class AuthService {
 		dto.status = values.PlayerStatus.INACTIVE;
 		dto.twoFactorAuth = false;
 		dto.verfiedEmail = true;
-		dto.avatar = "https://storage.googleapis.com/whiff-waff/default.png";
+		dto.avatar = path.DEFAULT_USER_AVATAR;
 		const salt: string = await bcrytpt.genSalt(values.SALT_ROUNDS);
 		dto.password = await bcrytpt.hash(dto.password, salt);
 		const userInfos = await this.userService.createUser(dto);

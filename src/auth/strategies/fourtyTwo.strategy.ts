@@ -4,6 +4,8 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-42";
 import * as path from 'src/shared/constants/constants.paths'
 
+
+
 @Injectable()
 export class FourtyTwoStrategy extends PassportStrategy(Strategy, '42') {
     constructor(private readonly config: ConfigService) {
@@ -25,7 +27,7 @@ export class FourtyTwoStrategy extends PassportStrategy(Strategy, '42') {
             }
             return (user);
         } catch (error) {
-            console.log('error : ', error);
+            console.log('error : ', error);//TODO check unspected errors
         }
     }
 }

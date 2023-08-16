@@ -19,7 +19,6 @@ const InformationsSetting = () => {
   const [userError, setUserError] = useState(false);
   const [emailError, setEmailError] = useState(false);
 
-  const [errorMessage, setErrorMessage] = useState("");
   const [avatarImage, setAvatarImage] = useState<File | null>(null);
 
 
@@ -34,7 +33,7 @@ const InformationsSetting = () => {
       handleConfirm();
     }
   };
-  const handleCancle = () => {
+  const handleCancle = () => {                                      
     setFirstName("");
     setLastNam("");
     setUsername("");
@@ -45,7 +44,7 @@ const InformationsSetting = () => {
   const inputFields = [
     {
       id: "firstName",
-      placeholder: firstName,
+      placeholder: "First Name",
       type: "text",
       label: "First Name",
       lableColor:
@@ -61,7 +60,7 @@ const InformationsSetting = () => {
     },
     {
       id: "lastName",
-      placeholder: lastName,
+      placeholder: "Last Name",
       type: "text",
       label: "Last Name",
       lableColor:
@@ -115,21 +114,20 @@ const InformationsSetting = () => {
       setUserError(true);
       return;
     } else console.log("code is valid");
-
     const formData = new FormData();
+
+  formData.append('firstName', firstName);
+  formData.append('lastName', lastName);
+  formData.append('userName', username);
+
+  if (avatarImage) {
+    formData.append('avatar', avatarImage);
+  }
   
-    if (avatarImage) {
-      formData.append('avatar', avatarImage);
-    }
-    const res ={
-      firstName:firstName,
-      lastName:lastName,
-      userName:username,
-    };
     try {
       const req = await axios.patch(
         "http://e3r10p16.1337.ma:3001/api/v1/users/settings/",
-        res,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -186,7 +184,7 @@ const InformationsSetting = () => {
           <div>
             <UserInput
               handleKeyDown={handleKeyDown}
-              placeholder={username}
+              placeholder="Username"
               type="text"
               label="Username"
               lableColor=" bg-[#27355f] sm:bg-[#26345d] md:bg-[#283662] lg:bg-[#283662] xl:bg-[#283662] 2xl:bg-[#283662] 3xl:bg-[#283662]"

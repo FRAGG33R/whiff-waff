@@ -81,7 +81,7 @@ const InformationsSetting = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://34.125.165.80/api/v1/users/me/",
+          "http://e3r10p16.1337.ma:3001/api/v1/users/me/",
           {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
@@ -94,7 +94,6 @@ const InformationsSetting = () => {
         setUsername(userData.userName);
         setEmail(userData.email);
         setAvatarImage(userData.avatar);
-        // console.log(userData.avatar);
       } catch (error) {
         console.log("error in fetch data");
       }
@@ -129,7 +128,7 @@ const InformationsSetting = () => {
     };
     try {
       const req = await axios.patch(
-        "http://34.125.165.80/api/v1/users/settings/",
+        "http://e3r10p16.1337.ma:3001/api/v1/users/settings/",
         res,
         {
           headers: {
@@ -165,7 +164,7 @@ const InformationsSetting = () => {
         <div className="relative w-1/2">
           <div className="absolute inset-0 flex items-center justify-center">
             <ImageUpload onImageUpload={handleImageUpload} />
-            {/* <img src="path_to_image/avatarImage.jpg" alt="Avatar Image"/> */}
+            {/* <img src={avatarImage} alt="Avatar Image"/> */}
           </div>
         </div>
       </div>

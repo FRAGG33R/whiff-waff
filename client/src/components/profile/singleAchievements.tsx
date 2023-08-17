@@ -1,9 +1,9 @@
 import Image from "next/image";
-
 import { achievementsAvatars } from "@/types/achievements";
 import AchievementsProgressBar from "../ui/progressBar/achievementsProgressBar";
 
 export default function SingleAchievements(props : {title : string, description : string, index : number, level : number }) {
+
   return (
     <div key={props.index} className="w-[95%] h-16 md:h-24 flex flex-row items-start justify-center rounded-[12px] md:rounded-[20px] bg-[#0F0F0F]/[32%]">
       <div className="min-w-1 h-full flex items-center justify-start overflow-hidden">

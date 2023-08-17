@@ -44,7 +44,7 @@ export function Pagination(props: {
   };
 
   return (
-    <div className="flex items-center md:gap-4 pt-10 md:pt-0 2xl:pt-12 ">
+    <div className="flex items-center md:gap-4 md:pt-6">
       <button
         className="flex items-center md:gap-2 text-white px-2 md:px-4 py-1 md:py-2 rounded-md hover:bg-GreenishYellow hover:text-black"
         onClick={prev}

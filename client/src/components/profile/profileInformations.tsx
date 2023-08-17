@@ -48,12 +48,12 @@ export default function ProfileInformations() {
             </div>
           </button>
         </div>
-        <div className="h-[30%] md:h-full w-[75%] flex flex-col">
+        <div className="h-[30%] md:h-full w-[90%] md:w-[75%] flex flex-col">
           <div className="h-full md:h-[70%] max-w-44 flex flex-col space-y-1 md:space-y-2">
             <div className="w-full h-full flex items-end md:justify-start justify-center font-normal md:font-semibold font-teko text-3xl xl:text-4xl 2xl:text-5xl text-Mercury tracking-wider">
               {userState.userName}
             </div>
-            <div className="w-full h-full flex flex-row items-center md:justify-start justify-clenter space-x-2 2xl:space-x-6">
+            <div className="w-full h-full flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
               <SecondaryButton text="Connect" onClick={() => {}} />
               <SecondaryButton text="Message" onClick={() => {}} />
               <PrimaryButton text="Challenge" onClick={() => {}} />

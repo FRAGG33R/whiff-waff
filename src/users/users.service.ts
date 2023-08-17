@@ -1,4 +1,4 @@
-import { ForbiddenException,Injectable, InternalServerErrorException, Logger, NotFoundException} from "@nestjs/common";
+import { ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { User } from "@prisma/client";
 import { SignUpDto, UpdateUserDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
@@ -58,7 +58,7 @@ export class UsersService {
 				this.logger.error(error.messages)
 				throw new InternalServerErrorException();
 			}
-			console.log(error);
+			console.log(error);//TODO refactor	
 		}
 	}
 
@@ -107,38 +107,6 @@ export class UsersService {
 							}
 						}
 					},
-					oneLeftPlay: {
-						select: {
-							gameHistory : {
-								select : {
-									leftUserId: true,
-									RightUserId: true,
-									scoreLeft: true,
-									scoreRight: true,
-								},
-								where: {
-									accepted: true
-								},
-								take: 5
-							}
-						}
-					},
-					onRightPlay: {
-						select: {
-							gameHistory : {
-								select : {
-									leftUserId: true,
-									RightUserId: true,
-									scoreLeft: true,
-									scoreRight: true,
-								},
-								where: {
-									accepted: true
-								},
-								take: 5
-							}
-						}
-					}
 				},
 				where: {
 					id: id
@@ -146,7 +114,8 @@ export class UsersService {
 			})
 			if (!user)
 				throw new ForbiddenException(CodeMessages.CREDENTIALS_INCORRECT_MSG);
-			return (user);
+			const firstGames = await this.getHistoryGame(id, 0, 5);
+			return firstGames;
 		} catch (error) {
 			if (error instanceof PrismaClientInitializationError)
 				throw new InternalServerErrorException();
@@ -196,26 +165,6 @@ export class UsersService {
 	async getHistoryGame(idUser: string, page: number, elementsNumer: number): Promise<any> {
 		const historyGame = await this.prismaService.gameHistory.findMany({
 			select: {
-				game: {
-					select: {
-						playerOne: {
-							select:
-							{
-								firstName: true,
-								lastName: true,
-								avatar: true,
-							}
-						},
-						playerTwo: {
-							select:
-							{
-								firstName: true,
-								lastName: true,
-								avatar: true
-							}
-						}
-					}
-				},
 				scoreLeft: true,
 				scoreRight: true
 			},
@@ -223,15 +172,15 @@ export class UsersService {
 				OR: [{ leftUserId: idUser }, { RightUserId: idUser }],
 				accepted: true
 			},
-			skip: page * elementsNumer,
-			take: elementsNumer
+			// skip: page * elementsNumer,
+			// take: elementsNumer
 		});
 		return historyGame;
 	}
 
 	async upDateUserdata(id: string, dto: UpdateUserDto): Promise<any> {
 		try {
-			const {verfiedEmail, twoFactorAuth, password, ...newUser} = await this.prismaService.user.update({
+			const { verfiedEmail, twoFactorAuth, password, ...newUser } = await this.prismaService.user.update({
 				where: {
 					id: id
 				},

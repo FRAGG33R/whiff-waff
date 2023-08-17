@@ -26,7 +26,10 @@ export class UsersController {
 	@Get(meEndPoint)
 	async getUser(@Req() req: Request) {
 		const elementsNumer = Number(req.query.elementsNumer) || 0;
-		return this.userService.findUserById((req.user as any).id, elementsNumer);
+		// const test = await this.userService.findUserById((req.user as any).id, elementsNumer);
+		const test = await this.userService.getHistoryGame((req.user as any).id, 0, 5);
+		console.log(test);
+		return (test);
 	}
 
 	@ApiBearerAuth()
@@ -49,16 +52,16 @@ export class UsersController {
 	@Patch(settings)
 	@UseInterceptors(FileInterceptor('avatar', {
 		fileFilter: (req, file, cb) => {
-		  if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
-			cb(null, true);
-		  } else {
-			cb(new BadRequestException('Invalid file type'), false);
-		  }
+			if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+				cb(null, true);
+			} else {
+				cb(new BadRequestException('Invalid file type'), false);
+			}
 		},
 		limits: {
-		  fileSize: 472 * 472,
+			fileSize: 472 * 472,
 		},
-	  }))
+	}))
 	async updateUserdata(@Body() dto: UpdateUserDto, @Req() req: Request, @UploadedFile() avatar: Express.Multer.File) {
 		if (avatar) {
 			const avatarUrl = await this.storageService.uploadImage(avatar);

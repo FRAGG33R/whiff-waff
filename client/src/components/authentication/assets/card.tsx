@@ -160,6 +160,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
         try {
           setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
+		  console.log('helo');
+		  
           const { token, statusCode } = res.data;
           localStorage.setItem("token", token);
 		  console.log('TOKEN', token);

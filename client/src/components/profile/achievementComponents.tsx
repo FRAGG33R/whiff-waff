@@ -1,8 +1,13 @@
 import Image from "next/image";
 import AchievementsIcon from "../../../public/achievementsIcon.svg";
+import { useRecoilState } from "recoil";
+import { userAtom } from "@/context/RecoilAtoms";
 import SingleAchievements from "./singleAchievements";
 
 export default function AchievementComponent() {
+	const [user, setUser] = useRecoilState(userAtom) as any;
+	console.log(user.achievements);
+
   return (
     <div className="w-full h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
       <div className="w-full h-[7%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
@@ -16,11 +21,13 @@ export default function AchievementComponent() {
         </div>
       </div>
       <div className="w-full h-[90%] md:h-[95%] flex flex-col items-center space-y-4">
-		<SingleAchievements />
-		<SingleAchievements />
-		<SingleAchievements />
-		<SingleAchievements />
-		<SingleAchievements />
+		{/* <SingleAchievements />
+			<SingleAchievements />
+			<SingleAchievements />
+  			<SingleAchievements />*/}
+		{user.achievements.map((item : any, index : any) => (
+			<SingleAchievements index={index} title={item.achievement.name} description={item.achievement.description}/>
+		))}
 	  </div>
     </div>
   );

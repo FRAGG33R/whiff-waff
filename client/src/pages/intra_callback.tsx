@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import "../app/globals.css";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { api, localApi } from "@/components/axios/instance";
 import { parseJwt } from "@/lib/parseJwt";
+import "../app/globals.css";
 
 export default function IntraCallback() {
   const router = useRouter();

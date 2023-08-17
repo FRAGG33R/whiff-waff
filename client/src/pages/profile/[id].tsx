@@ -4,11 +4,11 @@ import { userAtom } from "@/context/RecoilAtoms";
 import { useRecoilState } from 'recoil';
 import ProfileComponent from "@/components/profile/profileComponent";
 import "../../app/globals.css";
+import { useEffect } from "react";
 
 export default function Profile(props : any)
 {
 	const [user, setUser] = useRecoilState(userAtom);
-	console.log(props.data);
 	setUser(props.data);
 
   return (
@@ -24,14 +24,14 @@ export const getServerSideProps = withIronSessionSsr(
 		console.log('Session : ', req.session);
 
       const token = await req.session.token.token;
-	  console.log('r', token);
+	//   console.log('r', token);
 	  
       const res = await api.get("/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-	  console.log(res);
+	//   console.log(res);
       return {
         props: { data: res.data },
       };

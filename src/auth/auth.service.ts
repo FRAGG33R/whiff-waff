@@ -115,6 +115,4 @@ export class AuthService {
 			throw new InternalServerErrorException();
 		}
 	}
-
-
 }

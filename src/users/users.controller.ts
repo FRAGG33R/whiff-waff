@@ -25,7 +25,8 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Get(meEndPoint)
 	async getUser(@Req() req: Request) {
-		return this.userService.findUserById((req.user as any).id);
+		const elementsNumer = Number(req.query.elementsNumer) || 0;
+		return this.userService.findUserById((req.user as any).id, elementsNumer);
 	}
 
 	@ApiBearerAuth()
@@ -40,7 +41,8 @@ export class UsersController {
 	async getHistoryGames(@Req() req: Request) {
 		const idUser = req.params.userId || req.user["id"];
 		const page = Number(req.query.page) || 0;
-		return this.userService.getHistoryGame(idUser, page);
+		const elementsNumer = Number(req.query.elementsNumer) || 0;
+		return this.userService.getHistoryGame(idUser, page, elementsNumer);
 	}
 
 	@UseGuards(JwtGuard)

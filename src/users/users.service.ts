@@ -78,7 +78,7 @@ export class UsersService {
 		}
 	}
 
-	async findUserById(id: string): Promise<any> {
+	async findUserById(id: string, elementsNumer: number): Promise<any> {
 		try {
 			const user = await this.prismaService.user.findUnique({
 				select: {
@@ -106,11 +106,43 @@ export class UsersService {
 								}
 							}
 						}
+					},
+					oneLeftPlay: {
+						select: {
+							gameHistory : {
+								select : {
+									leftUserId: true,
+									RightUserId: true,
+									scoreLeft: true,
+									scoreRight: true,
+								},
+								where: {
+									accepted: true
+								},
+								take: 5
+							}
+						}
+					},
+					onRightPlay: {
+						select: {
+							gameHistory : {
+								select : {
+									leftUserId: true,
+									RightUserId: true,
+									scoreLeft: true,
+									scoreRight: true,
+								},
+								where: {
+									accepted: true
+								},
+								take: 5
+							}
+						}
 					}
 				},
 				where: {
 					id: id
-				}
+				},
 			})
 			if (!user)
 				throw new ForbiddenException(CodeMessages.CREDENTIALS_INCORRECT_MSG);
@@ -153,7 +185,7 @@ export class UsersService {
 				},
 				where: {
 					userName: userName
-				}
+				},
 			});
 			return userData;
 		} catch (error) {
@@ -161,7 +193,7 @@ export class UsersService {
 		}
 	}
 
-	async getHistoryGame(idUser: string, page: number): Promise<any> {
+	async getHistoryGame(idUser: string, page: number, elementsNumer: number): Promise<any> {
 		const historyGame = await this.prismaService.gameHistory.findMany({
 			select: {
 				game: {
@@ -191,8 +223,8 @@ export class UsersService {
 				OR: [{ leftUserId: idUser }, { RightUserId: idUser }],
 				accepted: true
 			},
-			skip: page * 5,
-			take: 5
+			skip: page * elementsNumer,
+			take: elementsNumer
 		});
 		return historyGame;
 	}

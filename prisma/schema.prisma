@@ -200,7 +200,7 @@ enum Rank {
     CHALLENGER
     EXPERT
     LEGEND
-	GRANDMASTER
+	GRANDMASTER		
     @@map("rank")
 }
 

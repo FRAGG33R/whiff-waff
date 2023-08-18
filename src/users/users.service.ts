@@ -8,11 +8,13 @@ import * as values from "src/shared/constants/constants.values"
 import * as ErrorCode from '../shared/constants/constants.code-error';
 import * as  CodeMessages from 'src/shared/constants/constants.messages';
 import * as variables from 'src/shared/constants/constants.name-variables'
+import { BucketStorageService } from "src/bucket/bucket.storage-service";
+import * as path from "src/shared/constants/constants.paths";
 
 const authService = 'UserService';
 @Injectable()
 export class UsersService {
-	constructor(private readonly prismaService: PrismaService, private readonly achievementService: AchievementService) { }
+	constructor(private readonly prismaService: PrismaService, private readonly achievementService: AchievementService, private storageService: BucketStorageService) { }
 	logger = new Logger(authService);
 	async createUser(dto: SignUpDto): Promise<User> {
 		try {
@@ -86,6 +88,7 @@ export class UsersService {
 					userName: true,
 					firstName: true,
 					lastName: true,
+					email: true,
 					avatar: true,
 					stat: {
 						select: {
@@ -198,8 +201,23 @@ export class UsersService {
 		return (historyGame)
 	}
 
-	async upDateUserdata(id: string, dto: UpdateUserDto): Promise<any> {
+	async upDateUserdata(id: string, dto: UpdateUserDto, avatarFile: Express.Multer.File): Promise<any> {
 		try {
+			const { avatar, userName } = await this.prismaService.user.findUnique({
+				select: {
+					userName: true,
+					avatar: true
+				},
+				where: {
+					id: id
+				}
+			})
+			if (avatarFile) {
+				this.storageService.deleteImage(userName + avatar.slice(avatar.lastIndexOf('.')));
+				const fileName: string = (dto.userName || userName) + "." + avatarFile.mimetype.split('/')[1];
+				const avatarUrl = await this.storageService.uploadImage(avatarFile, fileName);
+				dto.avatar = avatarUrl;
+			}
 			const { verfiedEmail, twoFactorAuth, password, ...newUser } = await this.prismaService.user.update({
 				where: {
 					id: id
@@ -211,6 +229,7 @@ export class UsersService {
 					userName: dto.userName,
 				}
 			})
+
 			return newUser;
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {

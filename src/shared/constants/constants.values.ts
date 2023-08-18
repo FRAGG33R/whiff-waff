@@ -12,6 +12,6 @@ export enum PlayerStatus {
   }
 
 export const SALT_ROUNDS = 10
-export const TRIGRRED_EVENT = 'finish'
+export const BUCKET_TRIGRRED_EVENT = 'finish'
 export const ERROR_TRIGRRED_EVENT = 'error'
 export const UNDER_SCORE = '_'

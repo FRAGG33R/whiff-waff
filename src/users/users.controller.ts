@@ -20,7 +20,7 @@ const friends = 'friends'
 @Controller(userEndPoint)
 export class UsersController {
 
-	constructor(private userService: UsersService, private storageService: BucketStorageService) { }
+	constructor(private userService: UsersService) { }
 
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
@@ -29,7 +29,7 @@ export class UsersController {
 		const elementsNumer = Number(req.query.elementsNumer) || 5;//TODO hardcode
 		const user = await this.userService.findUserById((req.user as any).id);
 		const historyGame = await this.userService.getHistoryGame((req.user as any).id, 0, elementsNumer);//TODO hardcode
-		return ({user, historyGame});
+		return ({ user, historyGame });
 	}
 
 	@ApiBearerAuth()
@@ -56,27 +56,20 @@ export class UsersController {
 			if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
 				cb(null, true);
 			} else {
-				cb(new BadRequestException('Invalid file type'), false);
+				cb(new BadRequestException('Invalid file type'), false);//TODO hard code
 			}
-		},
-		limits: {
-			fileSize: 472 * 472,
-		},
+		}
 	}))
 	async updateUserdata(@Body() dto: UpdateUserDto, @Req() req: Request, @UploadedFile() avatar: Express.Multer.File) {
-		if (avatar) {
-			const avatarUrl = await this.storageService.uploadImage(avatar);
-			dto.avatar = avatarUrl;
-		}
-		return this.userService.upDateUserdata((req.user as any).id, dto);
+		return this.userService.upDateUserdata((req.user as any).id, dto, avatar);
 	}
-	
-	
+
+
 	@UseGuards(JwtGuard)
 	@Get(friends)
 	async getFriends(@Req() req: Request) {
 		const friends = await this.userService.getFriends((req.user as any).id);
-		return(friends)
+		return (friends)
 	}
 	//TODO refactor success and responses and errors
 }

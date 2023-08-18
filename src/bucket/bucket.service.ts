@@ -22,23 +22,30 @@ export class BucketService extends BucketStorageService {
 		this.bucket = this.storage.bucket(this.config.get(env.BUCKET_NAME));
 	}
 
-	uploadImage(file: Express.Multer.File): Promise<string> {
-		return new Promise((resolve, reject) => {
-			const { originalname, buffer } = file
-			const blob = this.bucket.file(originalname.replace(/ /g, values.UNDER_SCORE))
-			const blobStream = blob.createWriteStream({
-				resumable: false
-			})
-			blobStream.on(values.TRIGRRED_EVENT, () => {
-				const publicUrl: string = util.format(
-					`${path.GOOGLE_CLOUD_BASE_URL}${this.bucket.name}/${blob.name}`
-					)
+	uploadImage(file: Express.Multer.File, fileName: string): Promise<string> {
+		try {
+			return new Promise((resolve, reject) => {
+				const { buffer } = file;
+				const blob = this.bucket.file(fileName)
+				const blobStream = blob.createWriteStream({
+					resumable: false
+				})
+				blobStream.on(values.BUCKET_TRIGRRED_EVENT, () => {
+					const publicUrl: string = util.format(
+						`${path.GOOGLE_CLOUD_BASE_URL}${this.bucket.name}/${blob.name}`)
 					resolve(publicUrl)
 				})
-				.on(values.ERROR_TRIGRRED_EVENT, () => {
-					reject(messages.CLOUD_FAIL_MESSAGE)
-				})
-				.end(buffer)
-		});
+					.on(values.ERROR_TRIGRRED_EVENT, () => {
+						reject(messages.CLOUD_FAIL_MESSAGE)
+					})
+					.end(buffer)
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	deleteImage(file: string) {
+		const test = this.bucket.file(file).delete({ ignoreNotFound: true });
 	}
 }

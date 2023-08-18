@@ -14,6 +14,7 @@ const meEndPoint = 'me'
 const profileEndPoint = 'profile/:userName'
 const historyGame = 'historyGame/:userId'
 const settings = 'settings'
+const friends = 'friends'
 
 @ApiTags(tagUserSwagger)
 @Controller(userEndPoint)
@@ -25,11 +26,10 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Get(meEndPoint)
 	async getUser(@Req() req: Request) {
-		const elementsNumer = Number(req.query.elementsNumer) || 0;
-		// const test = await this.userService.findUserById((req.user as any).id, elementsNumer);
-		const test = await this.userService.getHistoryGame((req.user as any).id, 0, 5);
-		console.log(test);
-		return (test);
+		const elementsNumer = Number(req.query.elementsNumer) || 5;//TODO hardcode
+		const user = await this.userService.findUserById((req.user as any).id);
+		const historyGame = await this.userService.getHistoryGame((req.user as any).id, 0, elementsNumer);//TODO hardcode
+		return ({user, historyGame});
 	}
 
 	@ApiBearerAuth()
@@ -42,10 +42,11 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Get(historyGame)
 	async getHistoryGames(@Req() req: Request) {
-		const idUser = req.params.userId || req.user["id"];
-		const page = Number(req.query.page) || 0;
-		const elementsNumer = Number(req.query.elementsNumer) || 0;
-		return this.userService.getHistoryGame(idUser, page, elementsNumer);
+		const idUser = req.params.userId;
+		const page = Number(req.query.page) || 0;//TODO refactor
+		const elementsNumer = Number(req.query.elementsNumer) || 5;//TODO refactor
+		const historyGame = await this.userService.getHistoryGame(idUser, page, elementsNumer);
+		return historyGame;
 	}
 
 	@UseGuards(JwtGuard)
@@ -68,6 +69,14 @@ export class UsersController {
 			dto.avatar = avatarUrl;
 		}
 		return this.userService.upDateUserdata((req.user as any).id, dto);
+	}
+	
+	
+	@UseGuards(JwtGuard)
+	@Get(friends)
+	async getFriends(@Req() req: Request) {
+		const friends = await this.userService.getFriends((req.user as any).id);
+		return(friends)
 	}
 	//TODO refactor success and responses and errors
 }

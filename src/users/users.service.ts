@@ -78,7 +78,7 @@ export class UsersService {
 		}
 	}
 
-	async findUserById(id: string, elementsNumer: number): Promise<any> {
+	async findUserById(id: string): Promise<any> {
 		try {
 			const user = await this.prismaService.user.findUnique({
 				select: {
@@ -87,7 +87,6 @@ export class UsersService {
 					firstName: true,
 					lastName: true,
 					avatar: true,
-					email: true,
 					stat: {
 						select: {
 							wins: true,
@@ -106,16 +105,15 @@ export class UsersService {
 								}
 							}
 						}
-					},
+					}
 				},
 				where: {
-					id: id
-				},
-			})
+					id: id,
+				}
+			});
 			if (!user)
 				throw new ForbiddenException(CodeMessages.CREDENTIALS_INCORRECT_MSG);
-			const firstGames = await this.getHistoryGame(id, 0, 5);
-			return firstGames;
+			return user;
 		} catch (error) {
 			if (error instanceof PrismaClientInitializationError)
 				throw new InternalServerErrorException();
@@ -124,7 +122,7 @@ export class UsersService {
 
 	async findUserByUsername(userName: string): Promise<any> {
 		try {
-			const userData = await this.prismaService.user.findUnique({
+			const user = await this.prismaService.user.findUnique({
 				select: {
 					id: true,
 					userName: true,
@@ -156,7 +154,7 @@ export class UsersService {
 					userName: userName
 				},
 			});
-			return userData;
+			return user;
 		} catch (error) {
 			throw new NotFoundException("user was not found");
 		}
@@ -165,6 +163,28 @@ export class UsersService {
 	async getHistoryGame(idUser: string, page: number, elementsNumer: number): Promise<any> {
 		const historyGame = await this.prismaService.gameHistory.findMany({
 			select: {
+				game: {
+					select: {
+						playerOne: {
+							select:
+							{
+								firstName: true,
+								lastName: true,
+								avatar: true
+							}
+						},
+						playerTwo: {
+							select:
+							{
+								firstName: true,
+								lastName: true,
+								avatar: true
+							}
+						}
+					}
+				},
+				leftUserId: true,
+				RightUserId: true,
 				scoreLeft: true,
 				scoreRight: true
 			},
@@ -172,10 +192,10 @@ export class UsersService {
 				OR: [{ leftUserId: idUser }, { RightUserId: idUser }],
 				accepted: true
 			},
-			// skip: page * elementsNumer,
-			// take: elementsNumer
+			skip: page * elementsNumer,
+			take: elementsNumer
 		});
-		return historyGame;
+		return (historyGame)
 	}
 
 	async upDateUserdata(id: string, dto: UpdateUserDto): Promise<any> {
@@ -201,5 +221,56 @@ export class UsersService {
 		}
 		throw new ForbiddenException();
 	}
+
+	async getFriends(id: string): Promise<any> {
+		try {
+			const friends = await this.prismaService.friendship.findMany({
+				select: {
+					receiver: {
+						select: {
+							id: true,
+							avatar: true,
+							userName: true,
+							stat: {
+								select: {
+									level: true,
+									rank: true
+								}
+							}
+						}
+					},
+					sender: {
+						select: {
+							id: true,
+							avatar: true,
+							userName: true,
+							stat: {
+								select: {
+									level: true,
+									rank: true
+								}
+							}
+						}
+					},
+					status: true,
+				},
+				where: {
+					AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { OR: [{ status: "PENDING" }, { status: "ACCEPTED" }] }], //TODO hardcode
+				}
+			})
+			return friends;
+		} catch (error) {
+			console.log(error);
+
+		}
+	}
 }
+
+
+
+
+
+
+
+
 

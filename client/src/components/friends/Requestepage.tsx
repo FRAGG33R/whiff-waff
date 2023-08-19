@@ -1,8 +1,9 @@
 import { useState } from "react";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
+import { FriendsProps, User, UserFriend } from "../../types/userFriendType";
 
-const Requestepage = ({ req }: { req: any }) => {
+const Requestepage = ({ req }: { req: User }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleAccept = () => {};
@@ -19,7 +20,7 @@ const Requestepage = ({ req }: { req: any }) => {
         <div className="h-full w-1/2 flex flex-row items-center  md:space-x-4 space-x-2 2xl:gap-10 ">
           <div className=" w-12 lg:w-20 h-14  md:h-16 flex   ">
             <img
-              src={req.image}
+              src={req.avatar}
               alt="profile picture"
               className="sm:w-12 w-16 md:w-16 h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
             />

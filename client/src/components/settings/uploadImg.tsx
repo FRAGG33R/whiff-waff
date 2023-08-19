@@ -9,22 +9,20 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
-      const file = acceptedFiles[0];
-      if (file && file.type.startsWith("image/")) {
-        setSelectedFile(file);
-        onImageUpload(file);
-        setShowModal(true);
-      } else {
-        const errorMessage = "Invalid file format. Please select an image file.";
-        console.error(errorMessage);
-        setUploadError(errorMessage);
-        setShowModal(true);
-      }
-    },
-    [onImageUpload]
-  );
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file && file.type.startsWith("image/") && file.size <= 4 * 1024 * 1024) {
+      setSelectedFile(file);
+      onImageUpload(file);
+      setShowModal(true);
+    } else {
+      const errorMessage =
+        "Invalid file format or size. Please select an image file (max size: 4MB).";
+      console.error(errorMessage);
+      setUploadError(errorMessage);
+      setShowModal(true);
+    }
+  }, [onImageUpload]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 

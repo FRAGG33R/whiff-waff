@@ -7,21 +7,38 @@ import UserInput from "../ui/inputs/userInput";
 import { useState } from "react";
 import ImageUpload from "./uploadImg";
 import { KeyboardEvent } from "react";
+import router from "next/router";
+
 
 import axios from "axios";
+import {  useRecoilState} from "recoil";
+import { userDataAtom} from "../../atom/atomStateuser";
+import { userType } from "./../../types/userType";
+
 const InformationsSetting = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastNam] = useState("");
-  const [username, setUsername] = useState("");
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [firstError, setFirstError] = useState(false);
   const [lastError, setLastError] = useState(false);
   const [userError, setUserError] = useState(false);
   const [emailError, setEmailError] = useState(false);
 
-  const [avatarImage, setAvatarImage] = useState<File | null>(null);
+  const [avatarImage, setAvatarImage] = useState<File | string>("");
+  const [userData, setUserData] = useState<any>(null);
+  const [user, setUser] = useRecoilState(userDataAtom);
+  const [userState, setUserState] = useState<userType>(user as userType);
 
-
+  useEffect(() => {
+    setAvatarImage(userState.avatar);
+    setFirstName(userState.firstName);
+    setLastNam(userState.lastName);
+    setUserName(userState.userName);
+    setEmail(userState.email);
+    setUserData(userState);  
+  },[] );
+  console.log("userState: ", userState);
   let jwtToken: string | null = null;
 
   if (typeof window !== "undefined") {
@@ -36,7 +53,7 @@ const InformationsSetting = () => {
   const handleCancle = () => {                                      
     setFirstName("");
     setLastNam("");
-    setUsername("");
+    setUserName("");
     setFirstError(false);
     setLastError(false);
     setUserError(false);
@@ -53,7 +70,7 @@ const InformationsSetting = () => {
       regExp: /^.{3,}$/,
       isError: firstError,
       isDisabled: false,
-      value: firstName,
+      value:firstName ,
       setError: setFirstError,
       setValue: setFirstName,
       errorMessage: "Invalid First Name",
@@ -76,57 +93,48 @@ const InformationsSetting = () => {
     },
   ];
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://e3r10p16.1337.ma:3001/api/v1/users/me/",
-          {
-            headers: {
-              Authorization: `Bearer ${jwtToken}`,
-            },
-          }
-        );
-        const userData = response.data;
-        setFirstName(userData.firstName);
-        setLastNam(userData.lastName);
-        setUsername(userData.userName);
-        setEmail(userData.email);
-        setAvatarImage(userData.avatar);
-      } catch (error) {
-        console.log("error in fetch data");
-      }
-    };
 
-    fetchData();
-  }, []);
   const handleConfirm = async () => {
     if (!firstName.match(/^.{3,}$/)) {
       setFirstError(true);
       return;
     }
-
+  
     if (!lastName.match(/^.{3,}$/)) {
       setLastError(true);
       return;
     }
-    if (!username.match(/^[a-zA-Z0-9_.]{3,16}$/)) {
+    
+    if (!userName.match(/^[a-zA-Z0-9_.]{3,16}$/)) {
       setUserError(true);
       return;
-    } else console.log("code is valid");
+    }
+  
     const formData = new FormData();
 
-  formData.append('firstName', firstName);
-  formData.append('lastName', lastName);
-  formData.append('userName', username);
-
-  if (avatarImage) {
-    formData.append('avatar', avatarImage);
-  }
+    if (firstName !== userData.firstName) {
+      formData.append("firstName", firstName);
+    }
+  
+    if (lastName !== userData.lastName) {
+      formData.append("lastName", lastName);
+    }
+  
+    if (userName !== userData.userName) {
+      formData.append("userName", userName);
+    }
+  
+    if (avatarImage) {
+      if (avatarImage !== userData.avatar){
+        console.log("avatarImage: ", avatarImage);
+        console.log("userData.avatar: ", userData.avatar);
+        formData.append("avatar", avatarImage);
+      }
+    }
   
     try {
       const req = await axios.patch(
-        "http://e3r10p16.1337.ma:3001/api/v1/users/settings/",
+        " http://34.173.232.127/api/v1/users/settings/",
         formData,
         {
           headers: {
@@ -136,13 +144,14 @@ const InformationsSetting = () => {
       );
       console.log(req);
       console.log(req.data);
+      router.push("/friends");
     } catch (error) {
-      console.log("error in patch request");
+      console.log(error);
     }
   };
-
   const handleImageUpload = (file: File) => {
     setAvatarImage(file);
+    
   };
 
  
@@ -192,9 +201,9 @@ const InformationsSetting = () => {
               regExp={/^[a-zA-Z0-9_.]{3,16}$/}
               isError={userError}
               isDisabled={false}
-              value={username}
+              value={userName}
               setError={setUserError}
-              setValue={setUsername}
+              setValue={setUserName}
             />
             {userError === true && (
               <p className="text-md  text-red-500   flex items-center justify-center  font-poppins ">
@@ -207,7 +216,7 @@ const InformationsSetting = () => {
           <div>
             <UserInput
               handleKeyDown={handleKeyDown}
-              placeholder={email}
+              placeholder="email@gmail.com"
               type="email"
               label="Email"
               lableColor="bg-[#27345f] sm:bg-[#273461] md:bg-[#293867] lg:bg-[#293867] xl:bg-[#293867] 2xl:bg-[#293867] 3xl:bg-[#293867]"
@@ -215,7 +224,7 @@ const InformationsSetting = () => {
               regExp={/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/}
               isError={emailError}
               isDisabled={true}
-              value={email}
+              value={userState.email}
               setError={setEmailError}
               setValue={setEmail}
             />
@@ -235,3 +244,5 @@ const InformationsSetting = () => {
 };
 
 export default InformationsSetting;
+
+

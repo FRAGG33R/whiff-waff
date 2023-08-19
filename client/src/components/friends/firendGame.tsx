@@ -7,8 +7,14 @@ import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import router from "next/router";
 import Image from "next/image";
+import Expert from "../../../public/expert.svg";
+import GrandMaster from "../../../public/grandMaster.svg";
+import Legend from "../../../public/LEGEND.svg";
+import Rookie from "../../../public/Rookie.svg";
+import Chanllenger from "../../../public/Challenger.svg";
+import { FriendsProps, User, UserFriend } from "../../types/userFriendType";
 
-export default function FriendGame({ friends }: { friends: any }) {
+export default function FriendGame({ friends }: { friends: User }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleChallenge = () => {
@@ -33,10 +39,10 @@ export default function FriendGame({ friends }: { friends: any }) {
         <div className="h-full w-2/3 flex flex-row items-center  md:space-x-4 space-x-2 2xl:gap-10 ">
           <div
             className="sm:w-1/3 w-12   md:w-16  lg:w-20 h-14  md:h-16 flex  tooltip "
-            data-tip={`${friends.userName}  ${friends.level}`}
+            data-tip={`${friends.userName}  ${friends.stat.level}`}
           >
             <img
-              src={friends.image}
+              src={friends.avatar}
               alt="profile picture"
               className="sm:w-12 w-16 md:w-16 h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
             />
@@ -58,19 +64,43 @@ export default function FriendGame({ friends }: { friends: any }) {
               Lvl
             </span>
             <span className="font-normal font-teko text-[2.5vw] xl:text-[1.8rem] 2xl:text-[2rem]  lg:block hidden tracking-wide text-Mercury   ">
-              {friends.level}
+              {friends.stat.level}
             </span>
           </div>
           <div className="sm:w-1/3 w-12  lg:w-1/5 flex  h-full ">
-            <Image
-              src={friends.rankSvg}
+            {friends.stat.rank === "Rookie" ? (
+
+              <Image
+                src={Rookie}
+                alt="expert icon"
+                width={80}
+                height={70}
+              />
+            ): friends.stat.rank === "Expert" ? (<Image
+              src={Expert}
               alt="expert icon"
               width={80}
               height={70}
-            />
+            />): friends.stat.rank === "GrandMaster" ? (<Image
+              src={GrandMaster}
+              alt="expert icon"
+              width={80}
+              height={70}
+            />): friends.stat.rank === "Legend" ? (<Image
+              src={Legend}
+              alt="expert icon"
+              width={80}
+              height={70}
+            />):  (<Image
+              src={Chanllenger}
+              alt="expert icon"
+              width={80}
+              height={70}
+            />)
+          }
           </div>
           <div className="sm:w-1/3 w-12 lg:w-1/5  flex   flex-row space-x-2 space-y-1">
-            {friends.status === "Online" ? (
+            {/* {friends.status === "Online" ? (
               <Image src={Online} alt="online" width={20} height={20} className="lg:block hidden " />
             ) : friends.status === "Offline" ? (
               <Image src={Offline} alt="offline" width={20} height={20} className="lg:block hidden " />
@@ -79,7 +109,7 @@ export default function FriendGame({ friends }: { friends: any }) {
             )}
             <span className={`font-medium font-teko text-[1.2rem] xl:text-[1rem] 2xl:text-[1.5rem]  text-center tracking-wide ${friends.status === "Online" ? "text-[#00FF00]" : friends.status === "Offline" ? "text-[#80848E]" : "text-[#FF4F8B]"} `}>
               {friends.status}
-            </span>
+            </span> */}
           </div>
         </div>
 

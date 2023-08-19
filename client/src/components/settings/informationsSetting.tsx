@@ -38,7 +38,8 @@ const InformationsSetting = () => {
     setEmail(userState.email);
     setUserData(userState);  
   },[] );
-  console.log("userState: ", userState);
+  
+  
   let jwtToken: string | null = null;
 
   if (typeof window !== "undefined") {

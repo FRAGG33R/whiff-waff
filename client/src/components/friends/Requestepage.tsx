@@ -2,12 +2,57 @@ import { useState } from "react";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import { FriendsProps, User, UserFriend } from "../../types/userFriendType";
+import axios from "axios";
 
 const Requestepage = ({ req }: { req: User }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleAccept = () => {};
-  const handleRefuse = () => {};
+
+  let jwtToken: string | null = null;
+
+  if (typeof window !== "undefined") {
+    jwtToken = localStorage.getItem("token");
+  }
+  const  handleAccept = async() => {
+    try{
+
+      const res = await axios.post(
+        "http:///api/v1/friends/accept/",
+        {
+          friendId: req.id,
+          accepted: true,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+    }
+      catch (error) {
+        console.log(error);
+      }
+  };
+  const handleRefuse = async() => {
+    try{
+
+      const res = await axios.post(
+        "http:///api/v1/friends/accept/",
+        {
+          friendId: req.id,
+          accepted: false,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+    }
+      catch (error) {
+        console.log(error);
+      }
+  };
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };

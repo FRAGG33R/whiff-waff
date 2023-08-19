@@ -11,7 +11,7 @@ const GamePage = () => {
         NavBar
       </div>
       <div className="w-full xl:h-[93%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10 flex flex-col items-start justify-start border ">
-        <div className='w-full h-[120px] xl:h-[180px]  flex  items-center justify-center flex-row gap-2 border'>
+        <div className='w-full h-[90px] xl:h-[90px]  flex  items-center justify-center flex-row gap-2 border'>
                 <ScoreGame/>
         </div>
         <div className='w-full h-[1200px] border'>

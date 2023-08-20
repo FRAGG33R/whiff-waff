@@ -171,23 +171,19 @@ export class UsersService {
 						playerOne: {
 							select:
 							{
-								firstName: true,
-								lastName: true,
-								avatar: true
+								avatar: true,
+								userName: true
 							}
 						},
 						playerTwo: {
 							select:
 							{
-								firstName: true,
-								lastName: true,
-								avatar: true
+								avatar: true,
+								userName: true
 							}
 						}
 					}
 				},
-				leftUserId: true,
-				RightUserId: true,
 				scoreLeft: true,
 				scoreRight: true
 			},

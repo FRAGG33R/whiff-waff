@@ -36,7 +36,10 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Get(profileEndPoint)
 	async getUniqueUser(@Req() req: Request) {
-		return this.userService.findUserByUsername(req.params.userName);
+		const elementsNumer = Number(req.query.elementsNumer) || 5;
+		const user = await this.userService.findUserByUsername(req.params.userName);
+		const historyGame = await this.userService.getHistoryGame((req.user as any).id, 0, elementsNumer);
+		return ({ user, historyGame });
 	}
 
 	@UseGuards(JwtGuard)

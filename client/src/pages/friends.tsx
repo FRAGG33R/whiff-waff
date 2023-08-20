@@ -1,24 +1,23 @@
 import "../app/globals.css";
 
 import FriendsPage from "@/components/friends/friendsPage";
-import { useRouter } from "next/router";
 import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
 import React, { use, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { friendDataAtom } from "../atom/atomStateFriend";
-import { userDataAtom } from "../atom/atomStateuser";
-import { userType } from "./../types/userType";
-import { FriendsProps, User, UserFriend } from "./../types/userFriendType";
-import { useState } from "react";
-import jwt_decode from "jwt-decode";
-import {parseJwt} from "../lib/jwtToken";
- 
+import { pandingDataAtom } from "../atom/atomStatePanding";
+import { UserFriend } from "./../types/userFriendType";
+import { parseJwtSsr } from "@/lib/jwtTokenSsr";
+
+
 export default function Friends(props: UserFriend) {
   const [userDataFriend, setUserDataFriend] = useRecoilState(friendDataAtom);
-  const [userDataPanding, setUserDataPanding] = useRecoilState(friendDataAtom);
-  setUserDataFriend(props.firstData);
-  setUserDataPanding(props.secondData);
+  const [userDataPanding, setUserDataPanding] = useRecoilState(pandingDataAtom);
+  setUserDataFriend(props.secondData);
+  setUserDataPanding(props.firstData);
+
+
 
 
 
@@ -29,15 +28,20 @@ export default function Friends(props: UserFriend) {
   );
 }
 
+
 export const getServerSideProps = withIronSessionSsr(
+  
   async function getServerSideProps({ req }: any) {
     try {
       const token = await req.session.token.token;
-      console.log("token: ", token);
-      const userId = parseJwt(token).user_id;
+      console.log("req.session.token.token: ", req.session.token.token);
+      const userId = parseJwtSsr(token).id;
+      
+ 
+      
 
       const res = await axios.get(
-        " http://34.173.232.127/api/v1/users/friends",
+        "  http://34.173.232.127/api/v1/users/friends",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -45,26 +49,26 @@ export const getServerSideProps = withIronSessionSsr(
         }
       );
 
-      const filteredDataPanding = res.data.filter((friend: any) => {
-        return friend.sender.id === userId;
-      }).map((friend: any) => {
-        return {
-          sender: friend.sender,
-          status: friend.status === "panding",
-        };
-      });
-      const filteredDataAccepted = res.data.filter((friend: any) => {
-        return friend.sender.id === userId;
-      }).map((friend: any) => {
-        return {
-          sender: friend.sender,
-          status: friend.status === "accepted",
-        };
-      });
+      const pending = res.data.filter((friends:any) => friends.status === "PENDING");
+
+      const accepted = res.data.filter((friends:any) => friends.status === "ACCEPTED");
+      
+   
+      const filteredPending = pending
+        .filter(
+          (friend:any) => friend.receiver.id === userId
+        )
+        .map((friends:any) => friends.sender);
+
+      const filteredAccepted = accepted
+        .filter(
+          (friends:any) => friends.receiver.id === userId
+        )
+        .map((friends:any) => friends.sender);
       return {
         props: {
-          firstData: filteredDataAccepted,
-          seconedData: filteredDataPanding,
+          firstData: filteredPending,
+          secondData: filteredAccepted,
         },
       };
     } catch (error) {

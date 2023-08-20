@@ -145,10 +145,10 @@ const InformationsSetting = () => {
       );
       console.log(req);
       console.log(req.data);
-      router.push("/friends");
     } catch (error) {
       console.log(error);
     }
+    router.push("/friends");
   };
   const handleImageUpload = (file: File) => {
     setAvatarImage(file);

@@ -12,7 +12,7 @@ import GrandMaster from "../../../public/grandMaster.svg";
 import Legend from "../../../public/LEGEND.svg";
 import Rookie from "../../../public/Rookie.svg";
 import Chanllenger from "../../../public/Challenger.svg";
-import { FriendsProps, User, UserFriend } from "../../types/userFriendType";
+import { FriendsProps, User, UserData, UserFriend } from "../../types/userFriendType";
 
 export default function FriendGame({ friends }: { friends: User }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

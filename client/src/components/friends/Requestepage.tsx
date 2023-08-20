@@ -4,7 +4,7 @@ import SecondaryButton from "../ui/buttons/secondaryButton";
 import { FriendsProps, User, UserFriend } from "../../types/userFriendType";
 import axios from "axios";
 
-const Requestepage = ({ req }: { req: User }) => {
+const RequestePage = ({ req }: { req: User }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 
@@ -122,4 +122,4 @@ const Requestepage = ({ req }: { req: User }) => {
   );
 };
 
-export default Requestepage;
+export default RequestePage;

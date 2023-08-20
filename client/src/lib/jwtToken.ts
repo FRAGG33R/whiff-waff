@@ -1,3 +1,5 @@
+
+
 export function parseJwt(token : string) {
     if (!token) { return; }
     const base64Url = token.split('.')[1];

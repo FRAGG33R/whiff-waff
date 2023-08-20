@@ -7,6 +7,7 @@ import IntraButton from "@/components/ui/buttons/intraButton";
 import { useRouter } from "next/router";
 import { KeyboardEvent } from "react";
 import axios from "axios";
+import { parseJwt } from "@/lib/jwtToken";
  
 export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
@@ -139,6 +140,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           const token = res.data.token;
           console.log(token);
           localStorage.setItem("token", token);
+          console.log("token parser: ", parseJwt(token).user );
           const r = await axios.post("http://localhost:3000/api/handleToken", { token });
           console.log(r);
           router.push("/settings");

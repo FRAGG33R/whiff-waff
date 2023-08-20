@@ -5,8 +5,9 @@ import { useRecoilState } from 'recoil';
 import ProfileComponent from "@/components/profile/profileComponent";
 import "../../app/globals.css";
 import { useEffect } from "react";
+import userType from "@/types/userType";
 
-export default function Profile(props : any)
+export default function Profile(props : {data  : userType})
 {
 	const [user, setUser] = useRecoilState(userAtom);
 	setUser(props.data);
@@ -19,19 +20,18 @@ export default function Profile(props : any)
 }
 
 export const getServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req } : any) {
+  async function getServerSideProps({ req, params } : any) {
 	  try {
 		console.log('Session : ', req.session);
+		const token = await req.session.token.token;
+		const { id } = params;
 
-      const token = await req.session.token.token;
-	//   console.log('r', token);
-	  
-      const res = await api.get("/users/me", {
+      const res = await api.get(`/users/profile/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-	//   console.log(res);
+	  console.log(res.data);
       return {
         props: { data: res.data },
       };

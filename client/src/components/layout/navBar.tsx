@@ -9,11 +9,17 @@ import ProfileDropDown from "../ui/dropDowns/profilDropDown";
 import { useRecoilState } from "recoil";
 import { userAtom } from "@/context/RecoilAtoms";
 import userType from "@/types/userType";
+import { parseJwt } from "@/lib/parseJwt";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useRecoilState(userAtom);
+  const [user,setUser] = useRecoilState(userAtom);
 
+  if(typeof window !== 'undefined')
+  {
+	  const { userName } = parseJwt(localStorage.getItem('token')!);
+	  console.log(userName);
+}
   return (
     <div className="w-full h-full flex flex-col">
       <div className="w-full h-full flex flex-row justify-between md:gap-4 space-x-1 md:space-x-0">

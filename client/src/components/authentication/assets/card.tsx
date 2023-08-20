@@ -12,6 +12,7 @@ import ValidationAlert from "@/components/ui/alerts/validationAlert";
 import { parseJwt } from "@/lib/parseJwt";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastNam] = useState("");
   const [username, setUsername] = useState("");
@@ -294,7 +295,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       {props.Mode === "signin" && (
         <div className="w-full h-full flex items-center justify-center space-y-2 md:space-y-6 flex-col">
           <div className="w-full min-h-1 flex items-center justify-center">
-            <div className="absolute w-72 md:w-96 border-b-2 border-white"></div>
+            <div className="absolute w-60 md:w-96 border-b-2 border-white"></div>
             <div className="relative  z-10  min-w-1 text-center md:text-2xl text-xl text-white font-teko bg-DarkGrey px-4">
               Staff or student
             </div>

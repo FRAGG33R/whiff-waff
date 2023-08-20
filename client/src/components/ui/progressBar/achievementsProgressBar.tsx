@@ -11,7 +11,7 @@ const AchievementsProgressBar: React.FC<AchievementProps> = ({
           className="bg-GreenishYellow h-3 md:h-2 lg:h-3 rounded-full"
         ></div>
       </div>
-      <div className="text-GreenishYellow pt-[1px] font-medium">{achievmentprogress}%</div>
+      <div className="text-GreenishYellow pt-[3.5px] md:pt-[1px] font-medium text-sm md:text-lg ">{achievmentprogress}%</div>
     </div>
   );
 };

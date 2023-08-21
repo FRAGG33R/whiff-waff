@@ -10,7 +10,8 @@ import userType from "@/types/userType";
 export default function Profile(props : {data  : userType})
 {
 	const [user, setUser] = useRecoilState(userAtom);
-	setUser(props.data);
+	setUser((props.data as any).user);
+	console.log('user data - ', props.data);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">

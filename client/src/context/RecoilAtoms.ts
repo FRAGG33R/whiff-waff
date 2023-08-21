@@ -8,3 +8,10 @@ export const userAtom = atom({
 	key: `userData-${Math.random()}`,
 	default: {},
   });
+
+export const matchHistory = createContext<userType | undefined>(undefined);
+
+export const matchHistoryAtom = atom({
+	key: `matchHistory`,
+	default: {},
+  });

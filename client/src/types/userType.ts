@@ -23,3 +23,19 @@ export default interface userType {
   stat: userStatisticsType;
   achievements: userAchievementsType[];
 }
+
+interface playerType {
+	avatar : string;
+	userName : string;
+}
+
+interface gameType {
+	playerOne : playerType,
+	playerTwo : playerType,
+}
+
+export default interface matchHistoryType {
+	game  : gameType, 
+	scroreLeft : number,
+	scoreRight : number
+}

@@ -161,14 +161,10 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
         try {
           setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
-		  console.log('helo');
-		  
           const { token, statusCode } = res.data;
           localStorage.setItem("token", token);
-		  console.log('TOKEN', token);
 	
           const r = await localApi.post("/saveToken", { token }); //storing the token after the user validate the email only
-		  console.log('saved\n', r);
 		  if (statusCode === 201) {
             setNeedsVerification((prev) => !prev);
             setTimeout(() => {
@@ -178,7 +174,6 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           } else if (statusCode == 200)
 		  {
 			console.log('loged');
-			console.log('-', parseJwt(token).user);
             router.push(`/profile/${parseJwt(token).user}`);
           }
         } catch (error: any) {

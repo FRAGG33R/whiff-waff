@@ -1,6 +1,6 @@
 import { BadRequestException, Body, Controller, Get, Patch, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "src/dto";
@@ -22,6 +22,10 @@ export class UsersController {
 
 	constructor(private userService: UsersService) { }
 
+	@ApiQuery({
+		name: 'elementsNumer',
+		description: 'The authorization code received from the provider',
+	})
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Get(meEndPoint)
@@ -32,6 +36,14 @@ export class UsersController {
 		return ({ user, historyGame });
 	}
 
+	@ApiQuery({
+		name: 'elementsNumer',
+		description: 'The authorization code received from the provider',
+	})
+	@ApiParam({
+		name: 'userName',
+		description: 'The userName of the required user',
+	})
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Get(profileEndPoint)
@@ -42,6 +54,19 @@ export class UsersController {
 		return ({ user, historyGame });
 	}
 
+	@ApiQuery({
+		name: 'page',
+		description: 'The authorization code received from the provider',
+	})
+	@ApiQuery({
+		name: 'elementsNumer',
+		description: 'The authorization code received from the provider',
+	})
+	@ApiParam({
+		name: 'userId',
+		description: 'The id of the required user',
+	})
+	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Get(historyGame)
 	async getHistoryGames(@Req() req: Request) {
@@ -52,6 +77,12 @@ export class UsersController {
 		return historyGame;
 	}
 
+	@ApiConsumes('multipart/form-data')
+	@ApiBody({
+	  description: 'User data',
+	  type: UpdateUserDto,
+	})
+	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Patch(settings)
 	@UseInterceptors(FileInterceptor('avatar', {
@@ -66,8 +97,8 @@ export class UsersController {
 	async updateUserdata(@Body() dto: UpdateUserDto, @Req() req: Request, @UploadedFile() avatar: Express.Multer.File) {
 		return this.userService.upDateUserdata((req.user as any).id, dto, avatar);
 	}
-
-
+	
+	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Get(friends)
 	async getFriends(@Req() req: Request) {

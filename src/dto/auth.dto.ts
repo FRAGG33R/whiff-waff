@@ -6,29 +6,30 @@ import * as values from 'src/shared/constants/constants.values'
 
 export class SignUpDto {
 
+	@ApiProperty({ example: 'JohnDoe' })
 	@Matches(/^.{3,}/, { message: 'Invalid lastName format' })
-	@ApiProperty()
 	@IsNotEmpty()
 	userName: string;
 
-	@Matches(/^.{3,}/, { message: 'Invalid lastName format' })
+	@ApiProperty({ example: 'John' })
 	@ApiProperty()
+	@Matches(/^.{3,}/, { message: 'Invalid lastName format' })
 	@IsNotEmpty()
 	firstName: string;
 
+	@ApiProperty({ example: 'Doe' })
 	@Matches(/^.{3,}/, { message: 'Invalid lastName format' })
-	@ApiProperty()
 	@IsNotEmpty()
 	lastName: string;
 
+	@ApiProperty({ example: 'john@gmail.com' })
 	@Matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, { message: 'Invalid email format' })
-	@ApiProperty()
 	@IsEmail()
 	@IsNotEmpty()
 	email: string;
 
+	@ApiProperty({ example: 'john123doe' })
 	@Matches(/^.{6,}$/, { message: 'Invalid password format' })
-	@ApiProperty()
 	@MinLength(6)
 	@IsNotEmpty()
 	password: string;
@@ -43,4 +44,27 @@ export class SignUpDto {
 	verfiedEmail: boolean;
 }
 
-export class UpdateUserDto extends PartialType(SignUpDto) { }
+
+export class SignInDto {
+	@ApiProperty({ example: 'john@gmail.com' })
+	@Matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, { message: 'Invalid email format' })
+	@IsEmail()
+	@IsNotEmpty()
+	email: string;
+
+	@ApiProperty({ example: 'john123doe' })
+	@Matches(/^.{6,}$/, { message: 'Invalid password format' })
+	@MinLength(6)
+	@IsNotEmpty()
+	password: string;
+}
+
+export class UpdateUserDto extends PartialType(SignUpDto) {
+	@ApiProperty({
+		type: 'string',
+		format: 'binary',
+		description: 'The avatar image file',
+		required: false,
+	})
+	avatar: any;
+}

@@ -13,6 +13,7 @@ export default function MatchComponent(props: matchComponentType) {
 //   });
   return (
     <div
+	  key={props.key}
       className={`w-[95%] h-16 md:h-24 flex items-center justify-center rounded-[12px] md:rounded-[20px] ${
         props.Mode === "Win" ? "bg-GreenishYellow" : "bg-[#0F0F0F]/[32%]"
       }`}

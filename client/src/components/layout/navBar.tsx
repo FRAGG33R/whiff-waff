@@ -44,7 +44,7 @@ export default function NavBar() {
             {`Level ${Math.floor((user as userType).stat.level)}`}
           </div>
         </div>
-        <div className="h-full w-[20%] lg:w-[15%] xl:w-[10%] flex flex-row gap-1 xl:gap-6">
+        <div className="h-full w-[20%] lg:w-[15%] xl:w-[10%] flex flex-row gap-1 xl:gap-6 ">
           <MessageDropDown
             notifications={[
               {

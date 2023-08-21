@@ -8,7 +8,7 @@ import Image from "next/image";
 import ProfileDropDown from "../ui/dropDowns/profilDropDown";
 import { useRecoilState } from "recoil";
 import { userAtom } from "@/context/RecoilAtoms";
-import userType from "@/types/userType";
+import {userType} from "@/types/userType";
 import { parseJwt } from "@/lib/parseJwt";
 
 export default function NavBar() {
@@ -16,8 +16,9 @@ export default function NavBar() {
   const [user,setUser] = useRecoilState(userAtom);
 
   if (typeof window !== 'undefined') {
-	  const { userName } = parseJwt(localStorage.getItem('token')!);
-	  console.log(userName);
+	  const res = parseJwt(localStorage.getItem('token')!);
+	  const { user } = res;
+	  console.log('nav bar : ', user);
 	}
 
   return (
@@ -43,7 +44,7 @@ export default function NavBar() {
             {`Level ${Math.floor((user as userType).stat.level)}`}
           </div>
         </div>
-        <div className="h-full w-[20%] lg:w-[15%] xl:w-[10%] flex flex-row gap-1 xl:gap-6 ">
+        <div className="h-full w-[20%] lg:w-[15%] xl:w-[10%] flex flex-row gap-1 xl:gap-6">
           <MessageDropDown
             notifications={[
               {

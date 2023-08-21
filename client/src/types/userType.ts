@@ -13,7 +13,7 @@ export interface userAchievementsType {
   };
 }
 
-export default interface userType {
+export  interface userType {
   id: string;
   userName: string;
   firstName: string;
@@ -34,8 +34,8 @@ interface gameType {
 	playerTwo : playerType,
 }
 
-export default interface matchHistoryType {
+export  interface matchHistoryType {
 	game  : gameType, 
-	scroreLeft : number,
+	scoreLeft : number,
 	scoreRight : number
 }

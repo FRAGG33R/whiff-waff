@@ -1,17 +1,19 @@
 import { withIronSessionSsr } from "iron-session/next";
 import { api } from "@/components/axios/instance";
-import { userAtom } from "@/context/RecoilAtoms";
+import { matchHistoryAtom, userAtom } from "@/context/RecoilAtoms";
 import { useRecoilState } from 'recoil';
 import ProfileComponent from "@/components/profile/profileComponent";
+import { userType } from "@/types/userType";
 import "../../app/globals.css";
-import { useEffect } from "react";
-import userType from "@/types/userType";
 
 export default function Profile(props : {data  : userType})
 {
 	const [user, setUser] = useRecoilState(userAtom);
+	const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
 	setUser((props.data as any).user);
+	setMatchHistory((props.data as any).historyGame);
 	console.log('user data - ', props.data);
+	console.log('match history -',(props.data as any).historyGame);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
@@ -36,15 +38,14 @@ export const getServerSideProps = withIronSessionSsr(
       return {
         props: { data: res.data },
       };
-    } catch (error)
-	{
+    } catch (error) {
 		return {
 			redirect: {
 			destination: '/login',
 			permanent: false,
 			},
 		};
-		}
+	}
   },
   {
     cookieName: "token",

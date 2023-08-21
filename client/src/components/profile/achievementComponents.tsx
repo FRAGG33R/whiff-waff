@@ -20,7 +20,7 @@ export default function AchievementComponent() {
         </div>
       </div>
       <div className="w-full h-[90%] md:h-[95%] flex flex-col items-center space-y-4">
-		{user.achievements.map((item : any, index : any) => (
+		{user.achievements.map((item : any, index : number) => (
 			<SingleAchievements index={index} title={item.achievement.name} description={item.achievement.description} level={item.level}/>
 		))}
 	  </div>

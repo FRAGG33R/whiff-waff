@@ -63,7 +63,8 @@ const RequestePage = ({ req }: { req: User }) => {
     >
       <div className="w-[95%] md:w-[98%] h-full flex flex-row items-center justify-center ">
         <div className="h-full w-1/2 flex flex-row items-center  md:space-x-4 space-x-2 2xl:gap-10 ">
-          <div className=" w-12 lg:w-20 h-14  md:h-16 flex   ">
+          <div className=" w-12 lg:w-20 h-14  md:h-16 flex   tooltip"
+          data-tip={`${req.userName}  `}>
             <img
               src={req.avatar}
               alt="profile picture"
@@ -71,7 +72,7 @@ const RequestePage = ({ req }: { req: User }) => {
             />
           </div>
           <div
-            className={`w-1/3  font-normal font-teko text-[1.3rem] xl:text-[1.4rem] 2xl:text-[2.5rem]  tracking-wide text-Mercury `}
+            className={`w-1/3  font-normal font-teko text-[1.3rem] xl:text-[1.4rem] 2xl:text-[2.5rem]  tracking-wide text-Mercury sm:block hidden`}
           >
             {req.userName}
           </div>

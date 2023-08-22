@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Patch, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpStatus, Patch, Req, UnauthorizedException, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
@@ -50,7 +50,9 @@ export class UsersController {
 	async getUniqueUser(@Req() req: Request) {
 		const elementsNumer = Number(req.query.elementsNumer) || 5;
 		const user = await this.userService.findUserByUsername(req.params.userName);
-		const historyGame = await this.userService.getHistoryGame((req.user as any).id, 0, elementsNumer);
+		if (!user)
+			throw {status: HttpStatus.NOT_FOUND, message: "user not found"};
+		const historyGame = await this.userService.getHistoryGame(user.id, 0, elementsNumer);
 		return ({ user, historyGame });
 	}
 

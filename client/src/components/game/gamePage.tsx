@@ -16,16 +16,15 @@ const GamePage = () => {
         NavBar
       </div>
       <div className="w-[99%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10 flex flex-col items-start justify-start  ">
-        <div className='w-full h-[140px]  flex  items-center justify-center flex-row gap-2 2xl:bg-blue-gray-600'>
+        <div className='w-full h-[140px]  2xl:flex  items-center justify-center flex-row gap-2 xl:block hidden'>
                 <ScoreGame/>
         </div>
-        <div className='w-full 2xl:h-[1200px]  flex flex-col 2xl:flex-row gap-8 '>
-        <div className="w-full 2xl:w-[70%] 2xl:h-full xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl "
+        <div className='w-full 2xl:h-[1200px]  flex flex-col 2xl:flex-row gap-8 border'>
+        <div className="w-full 2xl:w-[70%] 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl "
         ref={divRef}>
              <GameComponent/>
             </div>
-            <div className="w-full 2xl:w-[30%] 2xl:h-full xl:h-[9
-              00px]  bg-CarbonGrey bg-opacity-10  rounded-xl ">
+            <div className="w-full 2xl:w-[30%] 2xl:h-full xl:h-[900px] lg:h-[900px] md:h-[900px] h-[900px]  bg-CarbonGrey bg-opacity-10  rounded-xl ">
               <Option/>
             </div>
         </div>

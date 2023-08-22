@@ -24,7 +24,7 @@ export class UsersController {
 
 	@ApiQuery({
 		name: 'elementsNumer',
-		description: 'The authorization code received from the provider',
+		description: 'The amount of elements',
 	})
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
@@ -38,11 +38,11 @@ export class UsersController {
 
 	@ApiQuery({
 		name: 'elementsNumer',
-		description: 'The authorization code received from the provider',
+		description: 'The amount of elements',
 	})
 	@ApiParam({
 		name: 'userName',
-		description: 'The userName of the required user',
+		description: 'The required user\'s username',
 	})
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
@@ -51,18 +51,18 @@ export class UsersController {
 		const elementsNumer = Number(req.query.elementsNumer) || 5;
 		const user = await this.userService.findUserByUsername(req.params.userName);
 		if (!user)
-			throw {status: HttpStatus.NOT_FOUND, message: "user not found"};
+			throw { status: HttpStatus.NOT_FOUND, message: "user not found" };
 		const historyGame = await this.userService.getHistoryGame(user.id, 0, elementsNumer);
 		return ({ user, historyGame });
 	}
 
 	@ApiQuery({
 		name: 'page',
-		description: 'The authorization code received from the provider',
+		description: 'The number of page',
 	})
 	@ApiQuery({
 		name: 'elementsNumer',
-		description: 'The authorization code received from the provider',
+		description: 'The amount of elements',
 	})
 	@ApiParam({
 		name: 'userId',
@@ -81,8 +81,8 @@ export class UsersController {
 
 	@ApiConsumes('multipart/form-data')
 	@ApiBody({
-	  description: 'User data',
-	  type: UpdateUserDto,
+		description: 'User data',
+		type: UpdateUserDto,
 	})
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
@@ -99,7 +99,7 @@ export class UsersController {
 	async updateUserdata(@Body() dto: UpdateUserDto, @Req() req: Request, @UploadedFile() avatar: Express.Multer.File) {
 		return this.userService.upDateUserdata((req.user as any).id, dto, avatar);
 	}
-	
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Get(friends)
@@ -107,5 +107,7 @@ export class UsersController {
 		const friends = await this.userService.getFriends((req.user as any).id);
 		return (friends)
 	}
+
+
 	//TODO refactor success and responses and errors
 }

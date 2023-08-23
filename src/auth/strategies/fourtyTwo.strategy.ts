@@ -1,13 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-42";
 import * as path from 'src/shared/constants/constants.paths'
 
 
-
+const fourtyTwoStrategy = 'FourtyTwoStrategy'
 @Injectable()
 export class FourtyTwoStrategy extends PassportStrategy(Strategy, '42') {
+	logger = new Logger(fourtyTwoStrategy);
     constructor(private readonly config: ConfigService) {
         super({
             clientID: config.get('API42_CLIENT_ID'),
@@ -27,7 +28,7 @@ export class FourtyTwoStrategy extends PassportStrategy(Strategy, '42') {
             }
             return (user);
         } catch (error) {
-            console.log('error : ', error);//TODO check unspected errors
+            this.logger.error(error.message); 
         }
     }
 }

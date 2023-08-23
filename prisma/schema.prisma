@@ -160,7 +160,7 @@ model Friendship {
     @@id([senderId, receivedId])
     @@map("friendship")
 }
-
+	
 enum Mode {
     CHALLENGE
     TIME

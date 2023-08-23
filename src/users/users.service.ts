@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { User } from "@prisma/client";
+import { Friendship, FriendshipStatus, Prisma, User } from "@prisma/client";
 import { SignUpDto, UpdateUserDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AchievementService } from "src/achievements/achievements.service";
@@ -9,13 +9,15 @@ import * as ErrorCode from '../shared/constants/constants.code-error';
 import * as  CodeMessages from 'src/shared/constants/constants.messages';
 import * as variables from 'src/shared/constants/constants.name-variables'
 import { BucketStorageService } from "src/bucket/bucket.storage-service";
-import * as path from "src/shared/constants/constants.paths";
-
-const authService = 'UserService';
+import * as message from 'src/shared/constants/constants.messages'
+const userService = 'userService';
 @Injectable()
 export class UsersService {
-	constructor(private readonly prismaService: PrismaService, private readonly achievementService: AchievementService, private storageService: BucketStorageService) { }
-	logger = new Logger(authService);
+	logger = new Logger(userService);
+	constructor(private readonly prismaService: PrismaService,
+		private readonly achievementService: AchievementService,
+		private readonly storageService: BucketStorageService,
+	) { }
 	async createUser(dto: SignUpDto): Promise<User> {
 		try {
 			const userInfos: User = await this.prismaService.user.create({
@@ -60,7 +62,7 @@ export class UsersService {
 				this.logger.error(error.messages)
 				throw new InternalServerErrorException();
 			}
-			console.log(error);//TODO refactor	
+			this.logger.error(error.message);
 		}
 	}
 
@@ -123,7 +125,7 @@ export class UsersService {
 		}
 	}
 
-	async findUserByUsername(userName: string): Promise<any> {
+	async findUserByUsername(userName: string, loggedUserId: string): Promise<any> {
 		try {
 			const user = await this.prismaService.user.findUnique({
 				select: {
@@ -151,50 +153,66 @@ export class UsersService {
 								}
 							}
 						}
+					},
+					receiverFriendship: {
+						select: {
+							status: true,
+						},
+						where: {
+							senderId: loggedUserId
+						},
 					}
 				},
 				where: {
 					userName: userName
 				},
 			});
+			if (!user)
+				throw new NotFoundException(message.USER_NOT_FOUND);
 			return user;
 		} catch (error) {
-			throw new NotFoundException("user was not found");
+			throw new NotFoundException(message.USER_NOT_FOUND);
 		}
 	}
 
 	async getHistoryGame(idUser: string, page: number, elementsNumer: number): Promise<any> {
-		const historyGame = await this.prismaService.gameHistory.findMany({
-			select: {
-				game: {
-					select: {
-						playerOne: {
-							select:
-							{
-								avatar: true,
-								userName: true
-							}
-						},
-						playerTwo: {
-							select:
-							{
-								avatar: true,
-								userName: true
+		try {
+			const historyGame = await this.prismaService.gameHistory.findMany({
+				select: {
+					game: {
+						select: {
+							playerOne: {
+								select:
+								{
+									avatar: true,
+									userName: true
+								}
+							},
+							playerTwo: {
+								select:
+								{
+									avatar: true,
+									userName: true
+								}
 							}
 						}
-					}
+					},
+					scoreLeft: true,
+					scoreRight: true
 				},
-				scoreLeft: true,
-				scoreRight: true
-			},
-			where: {
-				OR: [{ leftUserId: idUser }, { RightUserId: idUser }],
-				accepted: true
-			},
-			skip: page * elementsNumer,
-			take: elementsNumer
-		});
-		return (historyGame)
+				where: {
+					OR: [{ leftUserId: idUser }, { RightUserId: idUser }],
+					accepted: true
+				},
+				skip: page * elementsNumer,
+				take: elementsNumer
+			});
+			if (!historyGame)
+				throw new NotFoundException(message.USER_NOT_FOUND);
+			return (historyGame)
+		} catch (error) {
+
+		}
 	}
 
 	async upDateUserdata(id: string, dto: UpdateUserDto, avatarFile: Express.Multer.File): Promise<any> {
@@ -270,13 +288,13 @@ export class UsersService {
 					status: true,
 				},
 				where: {
-					AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { OR: [{ status: "PENDING" }, { status: "ACCEPTED" }] }], //TODO hardcode
+					AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { OR: [{ status: FriendshipStatus.PENDING }, { status: FriendshipStatus.ACCEPTED }] }],
 				}
 			})
 			return friends;
 		} catch (error) {
-			console.log(error);
-
+			this.logger.error(error.message);
+			throw error
 		}
 	}
 }

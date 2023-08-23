@@ -59,12 +59,4 @@ export class SignInDto {
 	password: string;
 }
 
-export class UpdateUserDto extends PartialType(SignUpDto) {
-	@ApiProperty({
-		type: 'string',
-		format: 'binary',
-		description: 'The avatar image file',
-		required: false,
-	})
-	avatar: any;
-}
+export class UpdateUserDto extends PartialType(SignUpDto) { }

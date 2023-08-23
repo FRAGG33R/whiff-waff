@@ -3,7 +3,7 @@ import { SignUpDto } from 'src/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { SuccessResponse } from 'src/shared/responses/responses.sucess-response';
+import { Response } from 'src/shared/responses/responses.sucess-response';
 import { ConfigService } from '@nestjs/config';
 import { MailerService } from '@nestjs-modules/mailer';
 import emailVlidationContent from '../shared/constants/constants.emailValidation'
@@ -25,7 +25,7 @@ export class AuthService {
 		private readonly mailerService: MailerService,
 		private readonly config: ConfigService) { }
 
-	async singUp(dto: SignUpDto): Promise<SuccessResponse> {
+	async singUp(dto: SignUpDto): Promise<Response> {
 		dto.status = values.PlayerStatus.INACTIVE;
 		dto.twoFactorAuth = false;
 		dto.verfiedEmail = true;
@@ -37,7 +37,7 @@ export class AuthService {
 			this.config.get(env.TOKEN_EMAIL_EXPIRATION_TIME));
 		const fullName = `${dto.firstName} ${dto.lastName}`;
 		await this.sendEmail(dto.email, this.config.get(env.EMAIL_SUBJECT), email_jwt, fullName);
-		return new SuccessResponse(HttpStatus.CREATED, messages.SUCESSFULL_MSG);
+		return new Response(HttpStatus.CREATED, messages.SUCESSFULL_MSG);
 	}
 
 	async signToken(user: any, secretKey: string, expire: string): Promise<string> {

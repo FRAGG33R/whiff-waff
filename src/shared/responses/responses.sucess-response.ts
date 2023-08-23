@@ -1,3 +1,3 @@
-export class SuccessResponse {
-    constructor(public statusCode: number, public message: string) { }
+export class Response {
+    constructor(public statusCode: number, public response: any, ...params: undefined[]) { }
 }

@@ -17,15 +17,6 @@ const signinAuthEndPoint = 'signin'
 const signin42AuthEndPoint = 'signin/42'
 const verifiedAuthEndPoint = 'verified/:token'
 
-// import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-
-// export const User = createParamDecorator(
-//   (data: unknown, ctx: ExecutionContext) => {
-//     const request = ctx.switchToHttp().getRequest();
-//     return request.user;
-//   },
-// );//TODO extract just the user from request 
-
 @ApiTags(tagAuthenticationSwagger)
 @Controller(AuthControllerEndPoint)
 export class AuthController {
@@ -64,7 +55,7 @@ export class AuthController {
 			const token = await this.authService.insertIntraUser(dto);
 			res.send({ token: token });
 		} catch (error) {
-			this.logger.error('error', error);//TODO check unspected errors
+			this.logger.error(error.message)
 		}
 	}
 

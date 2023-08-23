@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { Friendship, FriendshipStatus, Prisma, User } from "@prisma/client";
+import { Friendship, FriendshipStatus, Prisma, Rank, User } from "@prisma/client";
 import { SignUpDto, UpdateUserDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AchievementService } from "src/achievements/achievements.service";
@@ -11,6 +11,32 @@ import * as variables from 'src/shared/constants/constants.name-variables'
 import { BucketStorageService } from "src/bucket/bucket.storage-service";
 import * as message from 'src/shared/constants/constants.messages'
 const userService = 'userService';
+
+type DistinctUserId = {
+	id: string;
+	userName: string;
+	firstName: string;
+	lastName: string;
+	avatar: string;
+	email: string;
+	stat: {
+		wins: boolean;
+		loses: boolean;
+		level: number;
+		rank: Rank;
+	};
+	achievements: {
+		level: boolean;
+		achievement: {
+			name: string;
+			description: string;
+		};
+	};
+	receiverFriendship: {
+		status: FriendshipStatus;
+	}[];
+};
+
 @Injectable()
 export class UsersService {
 	logger = new Logger(userService);

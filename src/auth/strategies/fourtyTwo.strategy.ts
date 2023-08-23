@@ -4,6 +4,13 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-42";
 import * as path from 'src/shared/constants/constants.paths'
 
+type Profile = {
+	userName: string,
+	firstName: string,
+	lastName: string,
+	email: string,
+	avatar: string
+}
 
 const fourtyTwoStrategy = 'FourtyTwoStrategy'
 @Injectable()
@@ -17,9 +24,9 @@ export class FourtyTwoStrategy extends PassportStrategy(Strategy, '42') {
         });
     }
 
-    async validate(accessToken: string, refreshToken: string, profile: any): Promise<any> {
+    async validate(accessToken: string, refreshToken: string, profile: any): Promise<Profile> {
         try {
-            const user = {
+            const user: Profile = {
                 userName: profile._json.login,
                 firstName: profile._json.first_name,
                 lastName: profile._json.last_name,

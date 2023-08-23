@@ -46,6 +46,7 @@ async function bootstrap() {
 	} catch (error) {
 		logger.error(error.messages);
 	}
+	//TODO change any type
 }
 
 bootstrap();

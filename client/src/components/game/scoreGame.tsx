@@ -57,18 +57,18 @@ const ScoreGame = () => {
 
       </div>
       <div className="w-[15%]  h-24   flex items-center justify-center gap-2 3xl:space-x-10 ">
-      <div className="w-24  h-24   flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%]">
+      <div className="w-24  h-16 2xl:h-20 3xl:h-24   flex items-center justify-center rounded-xl 2xl:rounded-[20px]  bg-[#0F0F0F]/[32%]">
         <span className="font-normal font-teko text-4xl  tracking-wide text-Mercury   ">
               {Game.level}
             </span>
         </div>
-        <div className="w-20 h-20  flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%]">
+        <div className="w-20 h-14 2xl:h-16 3xl:h-20  flex items-center justify-center rounded-xl 2xl:rounded-[20px]  bg-[#0F0F0F]/[32%]">
         <span className="font-normal font-teko text-[2.5vw] xl:text-[1rem] 2xl:text-[2rem]   tracking-wide text-GreenishYellow   ">
              VS
             </span>
         </div>
-        <div className="w-24 h-24  flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%]">
-        <span className="font-normal font-teko text-4xl   tracking-wide text-Mercury   ">
+        <div className="w-24  h-16 2xl:h-20 3xl:h-24   flex items-center justify-center rounded-xl 2xl:rounded-[20px]  bg-[#0F0F0F]/[32%]">
+        <span className="font-normal font-teko text-2xl 2xl:text-4xl   tracking-wide text-Mercury   ">
               {Game.level1}
             </span>
         </div> 

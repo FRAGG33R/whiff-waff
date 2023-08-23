@@ -1,12 +1,13 @@
 import React, { use, useRef, useState } from "react";
 import ScoreGame from "./scoreGame";
 import Option from "./option";
-import GameComponent from "./gameComponent";
+import GamePing from './gameComponent'
 import LevelIcon from "../../../public/level.svg";
 import Challenger from "../../..//public/challenger.svg";
+import PingPongTable from "./Rectangle";
 import Image from "next/image";
 
-const GamePage = () => {
+const GamePage: React.FC = () => {
   const [Game] = useState({
     userName: "Houssam",
     userName1: "Aissam",
@@ -20,7 +21,7 @@ const GamePage = () => {
   return (
     <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row overflow-y-hidden">
       <div className="h-full border  min-w-[40px] w-[30px] md:w-[100px]">
-        SideBar
+        
       </div>
       <div className="h-full  w-[82%] md:w-[90%] xl:w-[95%] space-y-2 md:space-y-8 ">
         <div className="h-[45px] border  md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
@@ -77,10 +78,9 @@ const GamePage = () => {
                 </div>
               </div>
               <div
-                className=" 2xl:w-full 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl xl:bg-blue-gray-400"
-                ref={divRef}
+                className=" 2xl:w-full 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl"
               >
-                <GameComponent />
+                <GamePing />
               </div>
               <div className="w-full lg:h-[130px] h-[130px] md:h-[130px] xl:hidden flex items-center justify-end  gap-4 ">
                 <div className="w-[20%] md:w-[15%] lg:w-[20%] lg:h-[100px] h-[100px] md:h-[100px]  flex items-center justify-center gap-2 ">

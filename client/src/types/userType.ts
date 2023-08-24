@@ -39,3 +39,9 @@ export  interface matchHistoryType {
 	scoreLeft : number,
 	scoreRight : number
 }
+
+export interface loggedUserType {
+	avatar : string,
+	userName : string,
+	level : Number
+}

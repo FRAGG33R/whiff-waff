@@ -1,57 +1,64 @@
 import { withIronSessionSsr } from "iron-session/next";
 import { api } from "@/components/axios/instance";
-import { matchHistoryAtom, userAtom } from "@/context/RecoilAtoms";
-import { useRecoilState } from 'recoil';
+import {
+  loggedUserAtom,
+  matchHistoryAtom,
+  userAtom,
+} from "@/context/RecoilAtoms";
+import { useRecoilState } from "recoil";
 import ProfileComponent from "@/components/profile/profileComponent";
 import { userType } from "@/types/userType";
 import "../../app/globals.css";
 
-export default function Profile(props : {data  : userType})
-{
-	const [user, setUser] = useRecoilState(userAtom);
-	const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
-	setUser((props.data as any).user);
-	setMatchHistory((props.data as any).historyGame);
-	console.log('user data - ', props.data);
-	console.log('match history -',(props.data as any).historyGame);
+export default function Profile(props: { data: userType }) {
+  const [user, setUser] = useRecoilState(userAtom);
+  const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  
+	
+  setUser((props.data as any).response.user);
+  setMatchHistory((props.data as any).response.historyGame);
+  setLoggedUser((props.data as any).response.loggedUser);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-        <ProfileComponent />
+      <ProfileComponent />
     </div>
   );
 }
 
 export const getServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req, params } : any) {
-	  try {
-		console.log('Session : ', req.session);
-		const token = await req.session.token.token;
-		const { id } = params;
+  async function getServerSideProps({ req, params }: any) {
+    try {
+      console.log("Session : ", req.session);
+      const token = await req.session.token.token;
+      const { id } = params;
 
       const res = await api.get(`/users/profile/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-	  	console.log('----------------------------------------------');
-		
+	  console.log(res.data);
       return {
-		  props: { data: res.data },
-		};
-    } catch (error : any) {
-		console.log('************************************');
-		
-		console.log(error.data);
-		// const {message , status} = res.data;
-		// console.log(message. status);
+        props: { data: res.data },
+      };
+    } catch (error: any) {
+      if (error.response.status == 404)
+        return {
+          redirect: {
+            destination: "/404",
+            permanent: false,
+          },
+        };
+	  else
 		return {
 			redirect: {
-			destination: '/login',
+			destination: "/login",
 			permanent: false,
 			},
 		};
-	}
+    }
   },
   {
     cookieName: "token",

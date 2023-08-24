@@ -4,17 +4,21 @@ import Image from "next/image";
 import MatchComponent from "./matchComponent";
 import { Pagination } from "../ui/pagination/pagination";
 import { useRecoilState } from "recoil";
-import { matchHistoryAtom, userAtom } from "@/context/RecoilAtoms";
-import { matchHistoryType, userType } from "@/types/userType";
+import {
+  loggedUserAtom,
+  matchHistoryAtom,
+  userAtom,
+} from "@/context/RecoilAtoms";
+import { loggedUserType, matchHistoryType, userType } from "@/types/userType";
 import { api } from "../axios/instance";
-import { IconBallFootballOff } from '@tabler/icons-react';
-
+import { IconBallFootballOff } from "@tabler/icons-react";
 
 export default function MatchComponents() {
   const [activePage, setActivePage] = useState(1);
   const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [user, setUser] = useRecoilState(userAtom);
-
+  
   const fetchMatchHistoryPage = async () => {
     console.log("-> ", (user as userType).userName);
     console.log("->", activePage);
@@ -22,9 +26,12 @@ export default function MatchComponents() {
     try {
       const token = localStorage.getItem("token");
       console.log(token);
+
       if (!token) return;
       const res = await api.get(
-        `/users/historyGame/${(user as userType).userName}?page=${activePage}`,
+        `/users/historyGame/${
+          (user as userType).id
+        }?page=${activePage}?elementsNumer=5`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -32,6 +39,7 @@ export default function MatchComponents() {
         }
       );
       console.log(res.data);
+	  setMatchHistory(res.data);
     } catch (error) {}
   };
   useEffect(() => {
@@ -58,7 +66,16 @@ export default function MatchComponents() {
               return (
                 <MatchComponent
                   key={index}
-                  Mode={item.scoreLeft < item.scoreRight ? "Lose" : "Win"}
+                  Mode={
+                    (loggedUser as loggedUserType).userName ===
+                    (user as userType).userName
+                      ? item.scoreLeft < item.scoreRight
+                        ? "Lose"
+                        : "Win"
+                      : item.scoreLeft > item.scoreRight
+                      ? "Lose"
+                      : "Win"
+                  }
                   firstUserName={
                     item.scoreLeft < item.scoreRight
                       ? item.game.playerTwo.userName
@@ -94,12 +111,15 @@ export default function MatchComponents() {
             })}
           </div>
         ) : (
-          <div className="w-full h-full flex items-center justify-center flex-row space-x-2 md:space-x-6">
-			<IconBallFootballOff className="w-8 md:w-12 h-8 md:h-12"/>
-			<div className="font-bold font-teko text-xl md:text-3xl pt-2"> No match history found</div>
+          <div className="w-full h-[400px] flex items-center justify-center flex-row space-x-2 md:space-x-6">
+            <IconBallFootballOff className="w-8 md:w-12 h-8 md:h-12" />
+            <div className="font-semibold font-teko text-xl md:text-3xl pt-2">
+              {" "}
+              No match history found
+            </div>
           </div>
         )}
-        {matchHistory.length > 0 &&
+        {matchHistory.length > 0 && (
           <div className="w-full h-full py-2 flex items-center justify-center ">
             <Pagination
               max={60}
@@ -107,7 +127,7 @@ export default function MatchComponents() {
               setActive={setActivePage}
             />
           </div>
-        }
+        )}
       </div>
     </div>
   );

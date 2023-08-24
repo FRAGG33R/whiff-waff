@@ -7,7 +7,7 @@ import RankComponent from "./rankComponent";
 
 export default function ProfileComponent()
 {
-
+	
   return (
     <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
       <div className="h-full min-w-[60px] w-[60px] md:w-[100px]">

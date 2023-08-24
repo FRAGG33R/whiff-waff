@@ -78,7 +78,7 @@ const GamePage: React.FC = () => {
                 </div>
               </div>
               <div
-                className=" 2xl:w-full 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl"
+                className="w-full 2xl:w-full 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl"
               >
                 <GamePing />
               </div>

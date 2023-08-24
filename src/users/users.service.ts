@@ -80,12 +80,8 @@ export class UsersService {
 					throw new ForbiddenException(field + CodeMessages.P2002_MSG)
 				}
 			}
-			else if (error instanceof PrismaClientInitializationError) {
-				this.logger.error(error.message);
-				throw new InternalServerErrorException();
-			}
 			else {
-				this.logger.error(error.messages)
+				this.logger.error(error.message);
 				throw new InternalServerErrorException();
 			}
 			this.logger.error(error.message);
@@ -231,7 +227,7 @@ export class UsersService {
 					accepted: true
 				},
 				skip: page * elementsNumer,
-				take: elementsNumer
+				take: elementsNumer,
 			});
 			if (!historyGame)
 				throw new NotFoundException(message.USER_NOT_FOUND);

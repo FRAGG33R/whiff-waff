@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe, 	 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import * as vamNames from 'src/shared/constants/constants.name-variables'
@@ -47,6 +47,7 @@ async function bootstrap() {
 		logger.error(error.messages);
 	}
 	//TODO change any type
+	//TODO send the total number of games
 }
 
 bootstrap();

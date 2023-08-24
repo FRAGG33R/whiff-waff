@@ -3,7 +3,6 @@ import { Exclude } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsOptional, Matches, MinLength } from "class-validator";
 import * as values from 'src/shared/constants/constants.values'
 
-
 export class SignUpDto {
 
 	@ApiProperty({ example: 'JohnDoe' })
@@ -43,8 +42,6 @@ export class SignUpDto {
 	@Exclude()
 	verfiedEmail: boolean;
 }
-
-
 export class SignInDto {
 	@ApiProperty({ example: 'john@gmail.com' })
 	@Matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, { message: 'Invalid email format' })
@@ -58,5 +55,3 @@ export class SignInDto {
 	@IsNotEmpty()
 	password: string;
 }
-
-export class UpdateUserDto extends PartialType(SignUpDto) { }

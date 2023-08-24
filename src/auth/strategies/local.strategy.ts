@@ -15,8 +15,6 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 		if (!user) {
 			throw new ForbiddenException('Incorrect email or password')
 		}
-		if (user.status == 469)
-			return (user);
 		return (user);
 	}
 }

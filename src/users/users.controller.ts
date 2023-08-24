@@ -1,8 +1,8 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Patch, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpStatus, Patch, Req, UploadedFile, UseGuards, UseInterceptors, ValidationPipe } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { UsersService } from "./users.service";
-import { UpdateUserDto } from "src/dto";
+import { UpdateFriendshipDto, UpdateUserDto } from "src/dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { JwtGuard } from "src/auth/guards/guards.jwtGuard";
 import { Response } from 'src/shared/responses/responses.sucess-response'
@@ -118,7 +118,9 @@ export class UsersController {
 		return (friends)
 	}
 
-	// @Patch('friendResponse')
-	// async  
+	@Patch('friendResponse')
+	async updateFriendshipStatus(@Body() data: UpdateFriendshipDto): Promise<any> {
+		return data
+	}
 
 }

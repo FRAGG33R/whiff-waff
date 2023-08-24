@@ -9,8 +9,8 @@ export const SUCESSFULL_MSG = 'User Added sucessfully';
 
 
 export const TITLE_DOCS = "whiff-waff"
-export const DESCRITPION_DOCS = "simple description"
+export const DESCRITPION_DOCS = "classic ping pong game"
 export const REQUIRED_VALIDATION_EMAIL = 'Email validation required'
 export const CLOUD_FAIL_MESSAGE = '`Unable to upload image`'
-export const USER_NOT_FOUND = 'user was not found'
+export const USER_NOT_FOUND = 'user not found'
 export const FILE_TYPE = 'Invalid file type'

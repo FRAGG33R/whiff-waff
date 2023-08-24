@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { SignInDto, SignUpDto } from 'src/dto';
 import { LocalStrategy } from './strategies/local.strategy';
 import { Request, Response } from 'express';
-import {  ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as values from 'src/shared/constants/constants.values'
 import { v4 as uuidv4 } from 'uuid';
@@ -17,10 +17,16 @@ const signinAuthEndPoint = 'signin'
 const signin42AuthEndPoint = 'signin/42'
 const verifiedAuthEndPoint = 'verified/:token'
 
+const authController = 'authController';
+const fourtyTwoCode = 'code'
+const token = 'token'
+
+const fourtyTwoCodeDescription = 'The authorization code received from the provider';
+const tokenDescription = 'The verification token received via email'
 @ApiTags(tagAuthenticationSwagger)
 @Controller(AuthControllerEndPoint)
 export class AuthController {
-	logger = new Logger('authController');
+	logger = new Logger(authController);
 	constructor(private readonly authService: AuthService,
 		private readonly local: LocalStrategy,
 		private readonly prisma: PrismaService,
@@ -30,7 +36,7 @@ export class AuthController {
 	async signUp(@Body() dto: SignUpDto) {
 		return (await this.authService.singUp(dto));
 	}
-	
+
 	@UseGuards(LocalGuard)
 	@Post(signinAuthEndPoint)
 	signIn(@Body() dto: SignInDto, @Req() req: Request) {
@@ -38,8 +44,8 @@ export class AuthController {
 	}
 
 	@ApiQuery({
-		name: 'code',
-		description: 'The authorization code received from the provider',
+		name: fourtyTwoCode,
+		description: fourtyTwoCodeDescription,
 	})
 	@UseGuards(FourtyTwoGuad)
 	@Get(signin42AuthEndPoint)
@@ -60,9 +66,9 @@ export class AuthController {
 	}
 
 	@ApiParam({
-		name: 'token',
-		description: 'The verification token received via email',
-	  })
+		name: token,
+		description: tokenDescription,
+	})
 	@Get(verifiedAuthEndPoint)
 	async verfyEmail(@Req() req: Request, @Res() res: Response) {//TODO html injection
 		const loginUrl = await this.authService.verfyEmail(req.params.token);//TODO reject email

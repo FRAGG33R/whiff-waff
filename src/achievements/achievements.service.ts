@@ -11,7 +11,7 @@ export interface AchievementData {
 export class AchievementService {
 
     constructor(private readonly prismaService: PrismaService) { }
-
+	//TODO protect achievement 
     async createAchievement(achivements: AchievementData[]) {
         for (let i: number = 0; i < achivements.length; i++)
             await this.prismaService.achievement.create({

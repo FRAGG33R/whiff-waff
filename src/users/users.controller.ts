@@ -61,10 +61,10 @@ export class UsersController {
 	@Get(profileEndPoint)
 	async getUniqueUser(@Req() req: Request) {
 		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_GAMES;
-		const loggedIser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
+		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const user = await this.userService.findUserByUsername(req.params.userName, (req as any).user.id);
 		const historyGame = await this.userService.getHistoryGame(user.id, values.NUMBER_OF_FIRST_PAGE, elementsNumer);
-		return new Response(HttpStatus.OK, { loggedIser, user, historyGame, elementsNumber: historyGame.length });
+		return new Response(HttpStatus.OK, { loggedUser, user, historyGame, elementsNumber: historyGame.length });
 	}
 
 	@ApiQuery({
@@ -117,4 +117,8 @@ export class UsersController {
 		const friends = await this.userService.getFriends((req.user as any).id);
 		return (friends)
 	}
+
+	// @Patch('friendResponse')
+	// async  
+
 }

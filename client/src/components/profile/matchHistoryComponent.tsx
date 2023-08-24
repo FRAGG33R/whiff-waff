@@ -16,32 +16,38 @@ import { IconBallFootballOff } from "@tabler/icons-react";
 export default function MatchComponents() {
   const [activePage, setActivePage] = useState(1);
   const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
+  const [displayedMatchHistory, setDisplayedHistory] = useState(matchHistory);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [user, setUser] = useRecoilState(userAtom);
-  
+
   const fetchMatchHistoryPage = async () => {
     console.log("-> ", (user as userType).userName);
     console.log("->", activePage);
+    console.log("-> historyLenght", matchHistory.length);
 
+	console.log('-> pageNumber', Math.ceil(matchHistory.length / 5));
     try {
       const token = localStorage.getItem("token");
-      console.log(token);
-
       if (!token) return;
       const res = await api.get(
         `/users/historyGame/${
           (user as userType).id
-        }?page=${activePage}?elementsNumer=5`,
+        }?page=${activePage - 1}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(res.data);
-	  setMatchHistory(res.data);
-    } catch (error) {}
+		console.log('matchHistory before  : ', matchHistory);
+		console.log("matchHistory after : ", res.data);
+	  	setMatchHistory(res.data);
+		setDisplayedHistory(res.data);
+    } catch (error) {
+
+	}
   };
+
   useEffect(() => {
     console.log(activePage);
     fetchMatchHistoryPage();
@@ -60,9 +66,9 @@ export default function MatchComponents() {
         </div>
       </div>
       <div className="w-full h-[90%] md:h-[95%] flex flex-col items-center justify-start ">
-        {matchHistory.length > 0 ? (
+        {displayedMatchHistory.length > 0 ? (
           <div className="w-full min-h-1 flex items-center justify-center flex-col space-y-4">
-            {matchHistory.map((item: matchHistoryType, index) => {
+            {displayedMatchHistory.map((item: matchHistoryType, index) => {
               return (
                 <MatchComponent
                   key={index}
@@ -122,7 +128,7 @@ export default function MatchComponents() {
         {matchHistory.length > 0 && (
           <div className="w-full h-full py-2 flex items-center justify-center ">
             <Pagination
-              max={60}
+              max={Math.round(matchHistory.length / 5)}
               active={activePage}
               setActive={setActivePage}
             />

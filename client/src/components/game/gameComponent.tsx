@@ -1,32 +1,34 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PingPongTable from './pingPong';
+import { cookies } from 'next/dist/client/components/headers';
+
+let tableInstance: PingPongTable | null = null;
 
 const GameComponent: React.FC = () => {
+  const [wSize, setwSize] = useState<number[]>([0, 0]);
   const myref = useRef<HTMLDivElement>(null);
-  let tableInstance: PingPongTable | undefined;
   useEffect(() => {
-    const initializeTable = () => {
-      tableInstance = new PingPongTable(myref.current!);
-      console.log(tableInstance);
-    };
-    initializeTable();
+   
+    function handleResize() {
+      setwSize([window.innerWidth, window.innerHeight]);
+    }
+    window.addEventListener("resize", handleResize)
     return () => {
       if (tableInstance) {
-        destroyInstance(tableInstance);
-        console.log("destroyed");
-        
+        tableInstance.stopRendering();
+        tableInstance = null;
       }
-
     };
   }, []);
 
-  const destroyInstance = (instance: PingPongTable) => {
-    if (instance) {
-      instance.stopRendering();
-      // instance.changeSize();
+  useEffect(() => {
+    if (tableInstance != null){
+      console.log("**** destroyed");
+      tableInstance.stopRendering();
     }
-
-  };
+    tableInstance = new PingPongTable(myref.current!);
+    console.log("**%^&*^&*", tableInstance);
+  }, [wSize]);
 
   return <div className='flex items-center justify-center w-full h-full rounded-lg' ref={myref}>
    </div>;

@@ -160,7 +160,7 @@ model Friendship {
     @@id([senderId, receivedId])
     @@map("friendship")
 }
-	
+
 enum Mode {
     CHALLENGE
     TIME
@@ -200,7 +200,8 @@ enum Rank {
     CHALLENGER
     EXPERT
     LEGEND
-	GRANDMASTER		
+    GRANDMASTER
+
     @@map("rank")
 }
 

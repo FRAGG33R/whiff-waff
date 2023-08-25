@@ -63,8 +63,8 @@ export class UsersController {
 		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_GAMES;
 		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const user = await this.userService.findUserByUsername(req.params.userName, (req as any).user.id);
-		const historyGame = await this.userService.getHistoryGame(user.id, values.NUMBER_OF_FIRST_PAGE, elementsNumer);
-		return new Response(HttpStatus.OK, { loggedUser, user, historyGame, elementsNumber: historyGame.length });
+		const gamesData = await this.userService.getHistoryGame(user.id, values.NUMBER_OF_FIRST_PAGE, elementsNumer);
+		return new Response(HttpStatus.OK, { loggedUser, user, gamesData });
 	}
 
 	@ApiQuery({

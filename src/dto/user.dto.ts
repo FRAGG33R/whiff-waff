@@ -4,10 +4,11 @@ import { IsNotEmpty, Matches } from "class-validator";
 
 export class UpdateUserDto extends PartialType(SignUpDto) { }
 
-enum Status {
+export enum Status {
 	ACCEPTED,
 	REFUSED,
 	BLOCKED,
+	IN_PROGRESS
 }
 
 export class UpdateFriendshipDto {

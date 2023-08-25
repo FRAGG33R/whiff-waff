@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { Friendship, FriendshipStatus, Prisma, Rank, User } from "@prisma/client";
-import { SignUpDto, UpdateUserDto } from "src/dto";
+import { SignUpDto, UpdateUserDto, Status } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AchievementService } from "src/achievements/achievements.service";
 import { PrismaClientInitializationError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -10,6 +10,7 @@ import * as  CodeMessages from 'src/shared/constants/constants.messages';
 import * as variables from 'src/shared/constants/constants.name-variables'
 import { BucketStorageService } from "src/bucket/bucket.storage-service";
 import * as message from 'src/shared/constants/constants.messages'
+
 const userService = 'userService';
 
 type DistinctUserId = {
@@ -149,7 +150,7 @@ export class UsersService {
 
 	async findUserByUsername(userName: string, loggedUserId: string): Promise<any> {
 		try {
-			const user = await this.prismaService.user.findUnique({
+			let { receiverFriendship, ...user } = await this.prismaService.user.findUnique({
 				select: {
 					id: true,
 					userName: true,
@@ -191,6 +192,9 @@ export class UsersService {
 			});
 			if (!user)
 				throw new NotFoundException(message.USER_NOT_FOUND);
+			const status = receiverFriendship.length > 0 ?
+				receiverFriendship[0].status : Status.IN_PROGRESS;
+			(user as any).status = status;
 			return user;
 		} catch (error) {
 			throw new NotFoundException(message.USER_NOT_FOUND);
@@ -231,7 +235,15 @@ export class UsersService {
 			});
 			if (!historyGame)
 				throw new NotFoundException(message.USER_NOT_FOUND);
-			return (historyGame)
+			const gamesNumber = await this.prismaService.gameHistory.count({
+				where: {
+					OR: [{ leftUserId: idUser }, { RightUserId: idUser }],
+					accepted: true
+				},
+			})
+			let gamesData: { historyGame: any, gamesNumber: any } = { historyGame, gamesNumber };
+			(gamesData as any).elementsNumber = historyGame.length
+			return (gamesData)
 		} catch (error) {
 
 		}

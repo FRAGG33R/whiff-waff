@@ -48,6 +48,8 @@ async function bootstrap() {
 	}
 	//TODO change any type
 	//TODO send the total number of games
+	//TODO manage when await 
+	//TODO requests a page that is beyond the available range
 }
 
 bootstrap();

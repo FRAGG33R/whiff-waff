@@ -290,21 +290,8 @@ export class UsersService {
 	}
 
 	private async getPendingFriends(id: string, page: number, elementsNumer: number): Promise<any> {
-		const pendingFriends = await this.prismaService.friendship.findMany({
+		const pendingFriends = this.prismaService.friendship.findMany({
 			select: {
-				receiver: {
-					select: {
-						id: true,
-						avatar: true,
-						userName: true,
-						stat: {
-							select: {
-								level: true,
-								rank: true
-							}
-						},
-					},
-				},
 				sender: {
 					select: {
 						id: true,
@@ -321,7 +308,7 @@ export class UsersService {
 				status: true,
 			},
 			where: {
-				AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { status: FriendshipStatus.PENDING }],
+				AND: [{ receivedId: id }, { status: FriendshipStatus.PENDING }],
 			},
 			skip: page * elementsNumer,
 			take: elementsNumer,
@@ -330,7 +317,7 @@ export class UsersService {
 	}
 
 	private async getAcceptedFriends(id: string, page: number, elementsNumer: number): Promise<any> {
-		const acceptedFriends = await this.prismaService.friendship.findMany({
+		const acceptedFriends = this.prismaService.friendship.findMany({
 			select: {
 				receiver: {
 					select: {
@@ -371,11 +358,11 @@ export class UsersService {
 
 	async getFriends(id: string, page: number, elementsNumer: number): Promise<any> {
 		try {
-			const pendingFriends = this.getPendingFriends(id, page, elementsNumer);
-			const acceptedFriends = this.getAcceptedFriends(id, page, elementsNumer);
+			const pendingFriends = await this.getPendingFriends(id, page, elementsNumer);
+			const acceptedFriends = await this.getAcceptedFriends(id, page, elementsNumer);
 			const pendingNumber = await this.prismaService.friendship.count({
 				where: {
-					AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { status: FriendshipStatus.PENDING }],
+					AND: [{ receivedId: id }, { status: FriendshipStatus.PENDING }],
 				}
 			})
 			const acceptedNumber = await this.prismaService.friendship.count({
@@ -391,12 +378,3 @@ export class UsersService {
 		}
 	}
 }
-
-
-
-
-
-
-
-
-

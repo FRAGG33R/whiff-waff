@@ -16,16 +16,19 @@ import { IconBallFootballOff } from "@tabler/icons-react";
 export default function MatchComponents() {
   const [activePage, setActivePage] = useState(1);
   const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
-  const [displayedMatchHistory, setDisplayedHistory] = useState(matchHistory);
+  const [displayedMatchHistory, setDisplayedHistory] = useState(matchHistory.historyGame);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [user, setUser] = useRecoilState(userAtom);
+  console.log('--> ', matchHistory.historyGame);
+  
+  
 
   const fetchMatchHistoryPage = async () => {
+
     console.log("-> ", (user as userType).userName);
     console.log("->", activePage);
-    console.log("-> historyLenght", matchHistory.length);
 
-	console.log('-> pageNumber', Math.ceil(matchHistory.length / 5));
+
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -39,11 +42,9 @@ export default function MatchComponents() {
           },
         }
       );
-		console.log('matchHistory before  : ', matchHistory);
-		console.log("matchHistory after : ", res.data);
-	  	setMatchHistory(res.data);
-		setDisplayedHistory(res.data);
-    } catch (error) {
+		setMatchHistory(res.data.historyGame);
+		setDisplayedHistory(res.data.historyGame);
+	} catch (error) {
 
 	}
   };
@@ -125,10 +126,10 @@ export default function MatchComponents() {
             </div>
           </div>
         )}
-        {matchHistory.length > 0 && (
+        {matchHistory.historyGame.length > 0 && (
           <div className="w-full h-full py-2 flex items-center justify-center ">
             <Pagination
-              max={Math.round(matchHistory.length / 5)}
+              max={Math.ceil(( matchHistory as any).gamesNumber / 5)}
               active={activePage}
               setActive={setActivePage}
             />

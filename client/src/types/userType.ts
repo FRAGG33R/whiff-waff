@@ -34,12 +34,17 @@ interface gameType {
 	playerTwo : playerType,
 }
 
-export  interface matchHistoryType {
+export  interface singleMatchType {
 	game  : gameType, 
 	scoreLeft : number,
 	scoreRight : number
 }
 
+export interface  matchHistoryType {
+	historyGame : singleMatchType[],
+	gamesNumber : number,
+	elementsNumber : number
+}
 export interface loggedUserType {
 	avatar : string,
 	userName : string,

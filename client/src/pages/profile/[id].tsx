@@ -14,11 +14,11 @@ export default function Profile(props: { data: userType }) {
   const [user, setUser] = useRecoilState(userAtom);
   const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
-  
-	
-  setUser((props.data as any).response.user);
-  setMatchHistory((props.data as any).response.historyGame);
-  setLoggedUser((props.data as any).response.loggedUser);
+
+  console.log((props.data as any).gamesData);
+  setUser((props.data as any).user);
+  setMatchHistory((props.data as any).gamesData);
+  setLoggedUser((props.data as any).loggedUser);
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
@@ -39,9 +39,8 @@ export const getServerSideProps = withIronSessionSsr(
           Authorization: `Bearer ${token}`,
         },
       });
-	  console.log(res.data);
       return {
-        props: { data: res.data },
+        props: { data: res.data.response },
       };
     } catch (error: any) {
       if (error.response.status == 404)

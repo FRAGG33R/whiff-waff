@@ -10,7 +10,7 @@ export function Pagination(props: {
   const [max, setMax] = useState(props.max);
   const [startPage, setStartPage] = useState(1);
   const endPage = Math.min(startPage + 4, max);
-
+  
   const getItemProps = (index: number) =>
     ({
       className:
@@ -54,7 +54,7 @@ export function Pagination(props: {
         <div className="md:block hidden">Previous</div>
       </button>
       <div className="flex items-center md:gap-2">
-        {Array.from({ length: 5 }, (_, index) => {
+        {Array.from({ length: props.max }, (_, index) => {
           const pageNumber = startPage + index;
           return (
             <IconButton key={pageNumber} {...getItemProps(pageNumber)}>

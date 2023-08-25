@@ -114,7 +114,9 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Get(friends)
 	async getFriends(@Req() req: Request) {
-		const friends = await this.userService.getFriends((req.user as any).id);
+		const page = Number(req.query.page) || values.NUMBER_OF_FIRST_PAGE;
+		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_GAMES;
+		const friends = await this.userService.getFriends((req.user as any).id, page, elementsNumer);
 		return (friends)
 	}
 

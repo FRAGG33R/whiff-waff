@@ -289,43 +289,102 @@ export class UsersService {
 		throw new ForbiddenException();
 	}
 
-	async getFriends(id: string): Promise<any> {
-		try {
-			const friends = await this.prismaService.friendship.findMany({
-				select: {
-					receiver: {
-						select: {
-							id: true,
-							avatar: true,
-							userName: true,
-							stat: {
-								select: {
-									level: true,
-									rank: true
-								}
+	private async getPendingFriends(id: string, page: number, elementsNumer: number): Promise<any> {
+		const pendingFriends = await this.prismaService.friendship.findMany({
+			select: {
+				receiver: {
+					select: {
+						id: true,
+						avatar: true,
+						userName: true,
+						stat: {
+							select: {
+								level: true,
+								rank: true
 							}
-						}
+						},
 					},
-					sender: {
-						select: {
-							id: true,
-							avatar: true,
-							userName: true,
-							stat: {
-								select: {
-									level: true,
-									rank: true
-								}
-							}
-						}
-					},
-					status: true,
 				},
+				sender: {
+					select: {
+						id: true,
+						avatar: true,
+						userName: true,
+						stat: {
+							select: {
+								level: true,
+								rank: true
+							}
+						}
+					},
+				},
+				status: true,
+			},
+			where: {
+				AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { status: FriendshipStatus.PENDING }],
+			},
+			skip: page * elementsNumer,
+			take: elementsNumer,
+		})
+		return pendingFriends;
+	}
+
+	private async getAcceptedFriends(id: string, page: number, elementsNumer: number): Promise<any> {
+		const acceptedFriends = await this.prismaService.friendship.findMany({
+			select: {
+				receiver: {
+					select: {
+						id: true,
+						avatar: true,
+						userName: true,
+						stat: {
+							select: {
+								level: true,
+								rank: true
+							}
+						},
+					},
+				},
+				sender: {
+					select: {
+						id: true,
+						avatar: true,
+						userName: true,
+						stat: {
+							select: {
+								level: true,
+								rank: true
+							}
+						}
+					},
+				},
+				status: true,
+			},
+			where: {
+				AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { status: FriendshipStatus.ACCEPTED }],
+			},
+			skip: page * elementsNumer,
+			take: elementsNumer,
+		})
+		return acceptedFriends;
+	}
+
+	async getFriends(id: string, page: number, elementsNumer: number): Promise<any> {
+		try {
+			const pendingFriends = this.getPendingFriends(id, page, elementsNumer);
+			const acceptedFriends = this.getAcceptedFriends(id, page, elementsNumer);
+			const pendingNumber = await this.prismaService.friendship.count({
 				where: {
-					AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { OR: [{ status: FriendshipStatus.PENDING }, { status: FriendshipStatus.ACCEPTED }] }],
+					AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { status: FriendshipStatus.PENDING }],
 				}
 			})
-			return friends;
+			const acceptedNumber = await this.prismaService.friendship.count({
+				where: {
+					AND: [{ OR: [{ receivedId: id }, { senderId: id }] }, { status: FriendshipStatus.ACCEPTED }],
+				}
+			})
+			let friendsData: { pendingFriends: any, acceptedFriends: any, pendingNumber: any, acceptedNumber: any } = { pendingFriends, acceptedFriends, pendingNumber, acceptedNumber }
+			return friendsData;//TODO add protection
 		} catch (error) {
 			this.logger.error(error.message);
 			throw error

@@ -10,7 +10,6 @@ export enum Status {
 	BLOCKED,
 	IN_PROGRESS
 }
-
 export class UpdateFriendshipDto {
 	@IsNotEmpty()
 	id: string;

@@ -16,11 +16,11 @@ const RequestePage = ({ req }: { req: User }) => {
   const  handleAccept = async() => {
     try{
 
-      const res = await axios.post(
-        "http:///api/v1/friends/accept/",
+      const res = await axios.patch(
+        "http://34.173.232.127/api/v1/users/friendshipResponse",
         {
-          friendId: req.id,
-          accepted: true,
+          id: req.id,
+          statut: "ACCEPTED",
         },
         {
           headers: {
@@ -36,11 +36,11 @@ const RequestePage = ({ req }: { req: User }) => {
   const handleRefuse = async() => {
     try{
 
-      const res = await axios.post(
-        "http:///api/v1/friends/accept/",
+      const res = await axios.patch(
+        "http://34.173.232.127/api/v1/users/friendshipResponse",
         {
-          friendId: req.id,
-          accepted: false,
+          id: req.id,
+          statut: "REFUSED",
         },
         {
           headers: {

@@ -13,10 +13,15 @@ import Legend from "../../../public/LEGEND.svg";
 import Rookie from "../../../public/Rookie.svg";
 import Chanllenger from "../../../public/Challenger.svg";
 import { FriendsProps, User, UserData, UserFriend } from "../../types/userFriendType";
+import axios from "axios";
 
 export default function FriendGame({ friends }: { friends: User }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  let jwtToken: string | null = null;
 
+  if (typeof window !== "undefined") {
+    jwtToken = localStorage.getItem("token");
+  }
   const handleChallenge = () => {
     router.push("/game");
   };
@@ -24,8 +29,27 @@ export default function FriendGame({ friends }: { friends: User }) {
   const handleMessage = () => {
     router.push("/chat");
   };
+  const  handleBlock = async() => {
+    try{
 
-  const handleBlock = () => {};
+      const res = await axios.patch(
+        "http://34.173.232.127/api/v1/users/friendshipResponse",
+        {
+          id: friends.id,
+          statut: "BLOCKED",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+    }
+      catch (error) {
+        console.log(error);
+      }
+  };
+
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);

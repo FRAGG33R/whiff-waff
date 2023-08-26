@@ -9,7 +9,8 @@ import { userDataAtom} from "../atom/atomStateuser";
 export default function Settings(props: any) {
   
   const [userData, setUserData] = useRecoilState(userDataAtom);
-	setUserData(props.data.user);
+	setUserData(props.data.response.user);
+  console.log("props: ", props);
   console.log("userData: ", userData);
 
   return (

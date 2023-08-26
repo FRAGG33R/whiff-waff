@@ -14,6 +14,7 @@ import { parseJwtSsr } from "@/lib/jwtTokenSsr";
 export default function Friends(props: UserFriend) {
   const [userDataFriend, setUserDataFriend] = useRecoilState(friendDataAtom);
   const [userDataPanding, setUserDataPanding] = useRecoilState(pandingDataAtom);
+  console.log("props: ", props);
   setUserDataFriend(props.secondData);
   setUserDataPanding(props.firstData);
 
@@ -49,9 +50,9 @@ export const getServerSideProps = withIronSessionSsr(
         }
       );
 
-      const pending = res.data.filter((friends:any) => friends.status === "PENDING");
+      const pending = res.data.acceptedFriends;
 
-      const accepted = res.data.filter((friends:any) => friends.status === "ACCEPTED");
+      const accepted = res.data.pendingFriends;
       
    
       const filteredPending = pending

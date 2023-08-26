@@ -28,7 +28,7 @@ const InformationsSetting = () => {
   const [avatarImage, setAvatarImage] = useState<File | string>("");
   const [userData, setUserData] = useState<any>(null);
   const [user, setUser] = useRecoilState(userDataAtom);
-  const [userState, setUserState] = useState<userType>(user as userType);
+  const [userState, setUserState] = useState<userType>(user as userType)
 
   useEffect(() => {
     setAvatarImage(userState.avatar);
@@ -225,7 +225,7 @@ const InformationsSetting = () => {
               regExp={/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/}
               isError={emailError}
               isDisabled={true}
-              value={userState.email}
+              value={email}
               setError={setEmailError}
               setValue={setEmail}
             />

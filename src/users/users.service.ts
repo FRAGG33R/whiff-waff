@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { Friendship, FriendshipStatus, Prisma, Rank, User } from "@prisma/client";
-import { SignUpDto, UpdateUserDto, Status } from "src/dto";
+import { SignUpDto, UpdateUserDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AchievementService } from "src/achievements/achievements.service";
 import { PrismaClientInitializationError, PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
@@ -12,32 +12,6 @@ import { BucketStorageService } from "src/bucket/bucket.storage-service";
 import * as message from 'src/shared/constants/constants.messages'
 
 const userService = 'userService';
-
-type DistinctUserId = {
-	id: string;
-	userName: string;
-	firstName: string;
-	lastName: string;
-	avatar: string;
-	email: string;
-	stat: {
-		wins: boolean;
-		loses: boolean;
-		level: number;
-		rank: Rank;
-	};
-	achievements: {
-		level: boolean;
-		achievement: {
-			name: string;
-			description: string;
-		};
-	};
-	receiverFriendship: {
-		status: FriendshipStatus;
-	}[];
-};
-
 @Injectable()
 export class UsersService {
 	logger = new Logger(userService);
@@ -193,7 +167,7 @@ export class UsersService {
 			if (!user)
 				throw new NotFoundException(message.USER_NOT_FOUND);
 			const status = receiverFriendship.length > 0 ?
-				receiverFriendship[0].status : Status.IN_PROGRESS;
+				receiverFriendship[0].status : FriendshipStatus.PENDING;
 			(user as any).status = status;
 			return user;
 		} catch (error) {
@@ -356,6 +330,47 @@ export class UsersService {
 		return acceptedFriends;
 	}
 
+	private async getAcceptedFriendById(loggedUserId: string, RequestSenderId: string): Promise<any> {
+		const acceptedFriends = this.prismaService.friendship.findUnique({
+			select: {
+				receiver: {
+					select: {
+						id: true,
+						avatar: true,
+						userName: true,
+						stat: {
+							select: {
+								level: true,
+								rank: true
+							}
+						},
+					},
+				},
+				sender: {
+					select: {
+						id: true,
+						avatar: true,
+						userName: true,
+						stat: {
+							select: {
+								level: true,
+								rank: true
+							}
+						}
+					},
+				},
+				status: true,
+			},
+			where: {
+				senderId_receivedId: {
+					receivedId: loggedUserId,
+					senderId: RequestSenderId
+				}
+			},
+		})
+		return acceptedFriends;
+	}
+
 	async getFriends(id: string, page: number, elementsNumer: number): Promise<any> {
 		try {
 			const pendingFriends = await this.getPendingFriends(id, page, elementsNumer);
@@ -375,6 +390,62 @@ export class UsersService {
 		} catch (error) {
 			this.logger.error(error.message);
 			throw error
+		}
+	}
+
+	async SendFriendshipRequest(idSender: string, receivedId: string): Promise<any> {
+		try {
+			const data = await this.prismaService.friendship.create({
+				data: {
+					senderId: idSender,
+					receivedId: receivedId,
+					status: FriendshipStatus.PENDING
+				}
+			})
+			return data;
+		} catch (error) {
+			if (error instanceof PrismaClientKnownRequestError) {
+				if (error.code === ErrorCode.DUPLICATE_ENTRY_ERROR_CODE)
+					throw new NotFoundException(message.ERROR_INVITATON)
+				if (error.code === ErrorCode.FOREIGN_KEY_CONSTRAINT_CODE)
+					throw new NotFoundException(message.UNEXISTING_ID)
+			}
+
+		}
+	}
+
+	async updateFriendshipStatus(loggedUserId: string, RequestSenderId: string, status: FriendshipStatus): Promise<any> {
+		try {
+			var data: any;
+			if (status == FriendshipStatus.REFUSED) {
+				data = await this.prismaService.friendship.delete({
+					where: {
+						senderId_receivedId: {
+							receivedId: loggedUserId,
+							senderId: RequestSenderId
+						}
+					},
+				})
+			}
+			else {
+				data = await this.prismaService.friendship.update({
+					data: {
+						status: status
+					},
+					where: {
+						senderId_receivedId: {
+							receivedId: loggedUserId,
+							senderId: RequestSenderId
+						}
+					},
+				});
+				if (status == FriendshipStatus.ACCEPTED)
+					data = await this.getAcceptedFriendById(loggedUserId, RequestSenderId);
+			}
+			return data;
+		} catch (error) {
+			if (error instanceof PrismaClientKnownRequestError)
+				throw new NotFoundException(message.ERROR_SENT_INVITATON)
 		}
 	}
 }

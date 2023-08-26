@@ -1,8 +1,8 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Patch, Req, UploadedFile, UseGuards, UseInterceptors, ValidationPipe } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpStatus, Patch, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request } from "express";
 import { UsersService } from "./users.service";
-import { UpdateFriendshipDto, UpdateUserDto } from "src/dto";
+import { UpdateFriendshipDto, UpdateUserDto, SendFriendshipDto } from "src/dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { JwtGuard } from "src/auth/guards/guards.jwtGuard";
 import { Response } from 'src/shared/responses/responses.sucess-response'
@@ -17,7 +17,8 @@ const profileEndPoint = 'profile/:userName'
 const historyGame = 'historyGame/:userId'
 const settings = 'settings'
 const friends = 'friends'
-
+const friendshipResponse = 'friendshipResponse'
+const sendFriendship = 'sendFriendship'
 const numberOfGamesParam = 'elementsNumer'
 const userNamePraram = 'userName'
 const pageParam = 'page'
@@ -119,10 +120,21 @@ export class UsersController {
 		const friends = await this.userService.getFriends((req.user as any).id, page, elementsNumer);
 		return (friends)
 	}
-
-	@Patch('friendResponse')
-	async updateFriendshipStatus(@Body() data: UpdateFriendshipDto): Promise<any> {
-		return data
+	
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Patch(sendFriendship)
+	async sendFriendshipRequest(@Body() dto: SendFriendshipDto, @Req() req: Request) {
+		await this.userService.SendFriendshipRequest((req as any).user.id, dto.id);
+		return new Response(HttpStatus.OK, messages.SENDED_INVITATON)
 	}
+	
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Patch(friendshipResponse)
+	async updateFriendshipStatus(@Body() data: UpdateFriendshipDto, @Req() req: Request): Promise<any> {
+		return await this.userService.updateFriendshipStatus((req as any).user.id, data.id, data.status)
+	}
+
 
 }

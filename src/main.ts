@@ -47,8 +47,7 @@ async function bootstrap() {
 		logger.error(error.messages);
 	}
 	//TODO change any type
-	//TODO send the total number of games
-	//TODO manage when await 
+	//TODO manage await 
 	//TODO requests a page that is beyond the available range
 }
 

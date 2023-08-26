@@ -11,8 +11,14 @@ export default function ChatComponent() {
         <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
           <NavBar />
         </div>
-        <div className="w-full xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] overflow-y-scroll overflow-x-hidden lg:overflow-y-auto space-y-2 xl:space-y-10 bg-red-400">
-			<div className="h-full min-w-[200px] max-w-[400px] w-1/3 bg-blue-300"></div>
+        <div className="w-full xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] flex flex-row space-x-2 md:space-x-10 overflow-y-scroll overflow-x-hidden lg:overflow-y-auto">
+			<div className="h-full min-w-[200px] max-w-[400px] w-1/3 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]"></div>
+			<div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
+				<div className="w-full h-24 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]"></div>
+				<div className="w-full flex-1 flex itmes-center justify-center py-10 px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+						<div className="w-full h-full "></div>
+				</div>
+			</div>
 		</div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import chat from "../../public/chat.svg";
 export const navigation = [
   { name: "profile", icon: profile },
   { name: "game", icon: racket },
-  { name: "chat", icon: chat },
+  { name: "chat/111", icon: chat },
   { name: "friends", icon: friends },
   { name: "settings", icon: settings },
 ];

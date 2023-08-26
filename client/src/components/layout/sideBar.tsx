@@ -15,7 +15,7 @@ export default function SideBar() {
         <div className="lg:w-full w-1/2 h-full flex flex-col items-center space-y-12 md:space-y-14">
 			{navigation.map((item, index) => (
 				<button key={index} onClick={() => router.push(`/${item.name}`)}>
-					<Image className="w-6 md:w-8 h-6 md:h-8 text-red-300" src={item.icon} alt={`${item.name} icon`} />
+					<Image className="w-6 md:w-8 h-6 md:h-8 text-red-300" src={item.icon} alt="icon" />
 				</button>
 			))}
         </div>

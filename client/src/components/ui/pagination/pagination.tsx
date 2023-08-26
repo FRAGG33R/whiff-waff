@@ -25,21 +25,15 @@ export function Pagination(props: {
   const next = () => {
     if (props.active === max) return;
 
-    if (props.active === endPage && endPage < max) {
+    if (props.active === endPage && endPage < max)
       setStartPage(startPage + 1);
-    }
-
     props.setActive(props.active + 1);
   };
 
   const prev = () => {
     if (props.active === 1) return;
-
-    // Update the start page if needed
-    if (props.active === startPage && startPage > 1) {
+    if (props.active === startPage && startPage > 1)
       setStartPage(startPage - 1);
-    }
-
     props.setActive(props.active - 1);
   };
 
@@ -49,7 +43,7 @@ export function Pagination(props: {
         className="flex items-center md:gap-2 text-white px-2 md:px-4 py-1 md:py-2 rounded-md hover:bg-GreenishYellow hover:text-black"
         onClick={prev}
         disabled={props.active === 1}
-      >
+	>
         <ArrowLeftIcon strokeWidth={2} className="h-6 md:h-4 w-4" />
         <div className="md:block hidden">Previous</div>
       </button>

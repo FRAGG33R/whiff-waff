@@ -9,25 +9,21 @@ import {
   matchHistoryAtom,
   userAtom,
 } from "@/context/RecoilAtoms";
-import { loggedUserType, matchHistoryType, userType } from "@/types/userType";
+import { loggedUserType, singleMatchType, userType } from "@/types/userType";
 import { api } from "../axios/instance";
 import { IconBallFootballOff } from "@tabler/icons-react";
 
 export default function MatchComponents() {
   const [activePage, setActivePage] = useState(1);
   const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
-  const [displayedMatchHistory, setDisplayedHistory] = useState(matchHistory.historyGame);
+  const [displayedMatchHistory, setDisplayedHistory] = useState((matchHistory as any).historyGame);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [user, setUser] = useRecoilState(userAtom);
-  console.log('--> ', matchHistory.historyGame);
-  
-  
+  console.log('--> ', (matchHistory as any).historyGame);
 
   const fetchMatchHistoryPage = async () => {
-
     console.log("-> ", (user as userType).userName);
     console.log("->", activePage);
-
 
     try {
       const token = localStorage.getItem("token");
@@ -68,8 +64,8 @@ export default function MatchComponents() {
       </div>
       <div className="w-full h-[90%] md:h-[95%] flex flex-col items-center justify-start ">
         {displayedMatchHistory.length > 0 ? (
-          <div className="w-full min-h-1 flex items-center justify-center flex-col space-y-4">
-            {displayedMatchHistory.map((item: matchHistoryType, index) => {
+          <div className="w-full h-full flex items-center justify-start flex-col space-y-4">
+            {displayedMatchHistory.map((item: singleMatchType, index : number) => {
               return (
                 <MatchComponent
                   key={index}
@@ -126,8 +122,8 @@ export default function MatchComponents() {
             </div>
           </div>
         )}
-        {matchHistory.historyGame.length > 0 && (
-          <div className="w-full h-full py-2 flex items-center justify-center ">
+        {(matchHistory as any).historyGame.length > 0 && (
+          <div className="w-full h-16 md:h-24 py-2 flex items-center justify-center ">
             <Pagination
               max={Math.ceil(( matchHistory as any).gamesNumber / 5)}
               active={activePage}

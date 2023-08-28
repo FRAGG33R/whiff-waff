@@ -15,7 +15,7 @@ import Chanllenger from "../../../public/Challenger.svg";
 import { FriendsProps, User, UserData, UserFriend } from "../../types/userFriendType";
 import axios from "axios";
 
-export default function FriendGame({ friends }: { friends: User }) {
+export default function FriendGame({ friends, refetch }: { friends: User, refetch:Function }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   let jwtToken: string | null = null;
 
@@ -35,14 +35,17 @@ export default function FriendGame({ friends }: { friends: User }) {
       const res = await axios.patch(
         "http://34.173.232.127/api/v1/users/friendshipResponse",
         {
-          id: friends.id,
-          statut: "BLOCKED",
+          id:friends.id,
+          status: "BLOCKED"
         },
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
+      ).then(() => {
+        refetch();
+      }
       );
     }
       catch (error) {
@@ -72,11 +75,11 @@ export default function FriendGame({ friends }: { friends: User }) {
             />
           </div>
           <div
-            className={`sm:w-0  lg:w-1/5  font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[2rem] 3xl:text-[2.5rem] lg:block hidden tracking-wide text-Mercury border `}
+            className={`sm:w-0  lg:w-1/5  font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[2rem] 3xl:text-[2.5rem] lg:block hidden tracking-wide text-Mercury `}
           >
             {friends.userName}
           </div>
-          <div className="sm:w-0  lg:w-1/5 flex-row space-x-5 2xl:space-y-3 xl:space-y-2 flex border xl:bg-red-300">
+          <div className="sm:w-0  lg:w-1/5 flex-row space-x-5 2xl:space-y-3 xl:space-y-2 flex ">
             <Image
               src={LevelIcon}
               alt="level icon"

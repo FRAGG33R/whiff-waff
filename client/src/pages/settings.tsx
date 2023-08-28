@@ -4,14 +4,14 @@ import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
 import {   useRecoilState } from "recoil";
 import { userDataAtom} from "../atom/atomStateuser";
+import { userType } from "@/types/userType";
 
 
-export default function Settings(props: any) {
+export default function Settings(props:{data:any}) {
   
   const [userData, setUserData] = useRecoilState(userDataAtom);
-	setUserData(props.data.response.user);
-  console.log("props: ", props);
-  console.log("userData: ", userData);
+	setTimeout(()=> setUserData(props.data.response.user), 0);
+  console.log("props.data: ", props.data.response.user);
 
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
@@ -37,7 +37,7 @@ export const getServerSideProps = withIronSessionSsr(
       });
       console.log("res: ", res.data);
       return {
-        props: { data: res.data },
+        props: { data: res.data},
       };
     } catch (error) {
       console.log(error);

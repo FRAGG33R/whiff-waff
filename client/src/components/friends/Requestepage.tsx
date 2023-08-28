@@ -4,7 +4,7 @@ import SecondaryButton from "../ui/buttons/secondaryButton";
 import { FriendsProps, User, UserFriend } from "../../types/userFriendType";
 import axios from "axios";
 
-const RequestePage = ({ req }: { req: User }) => {
+const RequestePage = ({ req, refetch }: { req: User, refetch:Function }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 
@@ -19,14 +19,18 @@ const RequestePage = ({ req }: { req: User }) => {
       const res = await axios.patch(
         "http://34.173.232.127/api/v1/users/friendshipResponse",
         {
-          id: req.id,
-          statut: "ACCEPTED",
+          id:req.id,
+          status: "ACCEPTED"
         },
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
+      )
+      .then(() => {
+        refetch();
+      }
       );
     }
       catch (error) {
@@ -39,14 +43,17 @@ const RequestePage = ({ req }: { req: User }) => {
       const res = await axios.patch(
         "http://34.173.232.127/api/v1/users/friendshipResponse",
         {
-          id: req.id,
-          statut: "REFUSED",
+          id:req.id,
+          status: "REFUSED"
         },
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
+      ).then(() => {
+        refetch();
+      }
       );
     }
       catch (error) {

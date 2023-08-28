@@ -29,6 +29,7 @@ const InformationsSetting = () => {
   const [userData, setUserData] = useState<any>(null);
   const [user, setUser] = useRecoilState(userDataAtom);
   const [userState, setUserState] = useState<userType>(user as userType)
+  console.log("userState: ", userState);
 
   useEffect(() => {
     setAvatarImage(userState.avatar);

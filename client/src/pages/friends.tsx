@@ -7,17 +7,20 @@ import React, { use, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { friendDataAtom } from "../atom/atomStateFriend";
 import { pandingDataAtom } from "../atom/atomStatePanding";
-import { UserFriend } from "./../types/userFriendType";
+import { User, UserFriend } from "./../types/userFriendType";
 import { parseJwtSsr } from "@/lib/jwtTokenSsr";
 
 
 export default function Friends(props: UserFriend) {
   const [userDataFriend, setUserDataFriend] = useRecoilState(friendDataAtom);
   const [userDataPanding, setUserDataPanding] = useRecoilState(pandingDataAtom);
-  console.log("props: ", props);
+
+//  setTimeout(() => {
+//     setUserDataFriend(props.secondData );
+//     setUserDataPanding(props.firstData );
+//   }, 0); 
   setUserDataFriend(props.secondData);
   setUserDataPanding(props.firstData);
-
 
 
 
@@ -50,22 +53,19 @@ export const getServerSideProps = withIronSessionSsr(
         }
       );
 
-      const pending = res.data.acceptedFriends;
-
-      const accepted = res.data.pendingFriends;
-      
-   
-      const filteredPending = pending
-        .filter(
-          (friend:any) => friend.receiver.id === userId
-        )
-        .map((friends:any) => friends.sender);
-
+      const accepted = res.data.acceptedFriends;
+      const pending = res.data.pendingFriends;
       const filteredAccepted = accepted
         .filter(
           (friends:any) => friends.receiver.id === userId
         )
         .map((friends:any) => friends.sender);
+        const filteredPending = pending.map(({ sender, status }:any) => ({
+          id: sender.id,
+          userName: sender.userName,
+          avatar: sender.avatar,
+          stat: sender.stat
+        }));
       return {
         props: {
           firstData: filteredPending,

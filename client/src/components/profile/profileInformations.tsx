@@ -2,7 +2,7 @@ import Image from "next/image";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import LevelBar from "../ui/progressBar/levelBar";
-import userType from "@/types/userType";
+import { loggedUserType, userType } from "@/types/userType";
 import totalWins from "../../../public/totalWins.svg";
 import totalMatches from "../../../public/totalMatches.svg";
 import totalLoses from "../../../public/totalLoses.svg";
@@ -10,20 +10,53 @@ import matchStatistics from "@/types/matchStatistics";
 import HexaGon from "./hexagon";
 import { IconSettings } from "@tabler/icons-react";
 import { useRouter } from "next/router";
-import { userAtom } from "@/context/RecoilAtoms";
+import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
+import { api } from "../axios/instance";
 
 export default function ProfileInformations() {
   const router = useRouter();
   const [user, setUser] = useRecoilState(userAtom);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [userState, setUserState] = useState<userType>(user as userType);
 
   const matchStatistics: matchStatistics[] = [
-    { title: "Total Matches", value: Number(userState.stat.wins) + Number(userState.stat.loses) , avatar: totalMatches },
+    {
+      title: "Total Matches",
+      value: Number(userState.stat.wins) + Number(userState.stat.loses),
+      avatar: totalMatches,
+    },
     { title: "Total Wins", value: userState.stat.wins, avatar: totalWins },
     { title: "Total Loses", value: userState.stat.loses, avatar: totalLoses },
   ];
+  const handleConnect = async () => {
+    const token = localStorage.getItem("token");
+    console.log("token => ", token);
+    console.log("id => ", (user as userType).id);
+    if (!token) router.push("/login");
+    try {
+      const res = await api.patch(
+        "/users/sendFriendship",
+        { id: (user as userType).id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("response : ", res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMessage =  () => {
+	router.push(`/chat/${userState.userName}`)
+  };
+  const handleChallenge = () => {
+	router.push(`/game/${userState.userName}`)
+  }
 
   return (
     <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
@@ -54,12 +87,23 @@ export default function ProfileInformations() {
               {userState.userName}
             </div>
             <div className="w-full h-full flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
-              <SecondaryButton text="Connect" onClick={() => {}} />
-              <SecondaryButton text="Message" onClick={() => {}} />
-              <PrimaryButton text="Challenge" onClick={() => {}} />
+              {userState.userName != (loggedUser as loggedUserType).userName ? (
+                <>
+                  <SecondaryButton text="Connect" onClick={handleConnect} />
+                  <SecondaryButton text="Message" onClick={handleMessage} />
+                  <PrimaryButton text="Challenge" onClick={handleChallenge} />
+                </>
+              ) : (
+                <div className="text-md md:text-2xl text-[#6C7FA7] font-medium">
+                  Hey dude 👋 How are you ?
+                </div>
+              )}
             </div>
             <div className="w-full md:w-10/12 2xl:w-11/12 h-12 py-2 md:h-full flex items-center justify-center">
-              <LevelBar level={Math.floor(userState.stat.level)} progress={Number((userState.stat.level % 1).toFixed(2)) * 100} />
+              <LevelBar
+                level={Math.floor(userState.stat.level)}
+                progress={Number((userState.stat.level % 1).toFixed(2)) * 100}
+              />
             </div>
           </div>
         </div>
@@ -70,7 +114,8 @@ export default function ProfileInformations() {
             key={index}
             className={`h-full xl:w-1/5 flex items-center justify-center xl:space-x-8 flex-col lg:flex-row font-normal tracking-wide font-teko  ${
               index === 0 ? "pl-4" : null
-            }`}>
+            }`}
+          >
             <Image
               src={item.avatar}
               alt="total matches"

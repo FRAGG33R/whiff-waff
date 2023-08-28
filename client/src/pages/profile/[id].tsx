@@ -39,6 +39,8 @@ export const getServerSideProps = withIronSessionSsr(
           Authorization: `Bearer ${token}`,
         },
       });
+	  console.log('data : ', res.data.response.user );
+	  
       return {
         props: { data: res.data.response },
       };

@@ -22,6 +22,7 @@ export  interface userType {
   email: string;
   stat: userStatisticsType;
   achievements: userAchievementsType[];
+  status : string;
 }
 
 interface playerType {

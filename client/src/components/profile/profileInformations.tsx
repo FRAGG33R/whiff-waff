@@ -14,6 +14,7 @@ import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
 import { useState } from "react";
 import { useRecoilState } from "recoil";
 import { api } from "../axios/instance";
+import PendingButton from "../ui/buttons/pendingButton";
 
 export default function ProfileInformations() {
   const router = useRouter();
@@ -51,13 +52,33 @@ export default function ProfileInformations() {
     }
   };
 
-  const handleMessage =  () => {
-	router.push(`/chat/${userState.userName}`)
+  const handleMessage = () => {
+    router.push(`/chat/${userState.userName}`)
   };
   const handleChallenge = () => {
-	router.push(`/game/${userState.userName}`)
-  }
+    router.push(`/game/${userState.userName}`);
+  };
+  const handleBlock = async () => {
+	const token = localStorage.getItem("token");
+    console.log("token => ", token);
+    console.log("id => ", (user as userType).id);
 
+    if (!token) router.push("/login");
+    try {
+      const res = await api.patch(
+        "/users/friendshipResponse",
+        { id: (user as userType).id, status : 'BLOCKED' },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("response : ", res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
       <div className="w-full h-[80%] flex flex-col md:flex-row items-center xl:space-x-8">
@@ -89,7 +110,14 @@ export default function ProfileInformations() {
             <div className="w-full h-full flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
               {userState.userName != (loggedUser as loggedUserType).userName ? (
                 <>
-                  <SecondaryButton text="Connect" onClick={handleConnect} />
+                  {userState.status === "PENDING" ? (
+                    <PendingButton text="Pending" onClick={handleConnect} />
+                  ) : userState.status === 'ACCEPTED' ? (
+                    <SecondaryButton text="Block" onClick={handleBlock} />
+				  ) :(
+                    <SecondaryButton text="Connect" onClick={handleConnect} />
+
+				  )}
                   <SecondaryButton text="Message" onClick={handleMessage} />
                   <PrimaryButton text="Challenge" onClick={handleChallenge} />
                 </>

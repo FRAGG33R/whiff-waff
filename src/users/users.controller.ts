@@ -117,7 +117,7 @@ export class UsersController {
 	@Get(friends)
 	async getFriends(@Req() req: Request) {
 		const page = Number(req.query.page) || values.NUMBER_OF_FIRST_PAGE;
-		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_GAMES;
+		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_FRIENDS;
 		const friends = await this.userService.getFriends((req.user as any).id, page, elementsNumer);
 		return (friends)
 	}
@@ -127,7 +127,6 @@ export class UsersController {
 	@Post(sendFriendship)
 	async sendFriendshipRequest(@Body() dto: SendFriendshipDto, @Req() req: Request) {
 		await this.userService.SendFriendshipRequest((req as any).user.id, dto.id);
-		console.log('finished');
 		return new ResponseInfo(HttpStatus.OK, messages.SENDED_INVITATON)
 	}
 
@@ -139,6 +138,4 @@ export class UsersController {
 		res.send(user);
 		await this.userService.deleteFriendshipTuple((req as any).user.id, data.id);
 	}
-
-
 }

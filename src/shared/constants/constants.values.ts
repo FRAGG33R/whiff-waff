@@ -17,4 +17,5 @@ export const ERROR_TRIGRRED_EVENT = 'error'
 export const UNDER_SCORE = '_'
 
 export const NUMBER_OF_GAMES = 5;
+export const NUMBER_OF_FRIENDS = 7;
 export const NUMBER_OF_FIRST_PAGE = 0;

@@ -41,7 +41,7 @@ export class BucketService extends BucketStorageService {
 					.end(buffer)
 			});
 		} catch (error) {
-			console.log(error);
+			console.log(error);//remove this
 		}
 	}
 

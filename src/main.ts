@@ -46,6 +46,8 @@ async function bootstrap() {
 	} catch (error) {
 		logger.error(error.messages);
 	}
+	// console.log(paths.API42_CALLBACKURL);
+	
 	//TODO change any type
 	//TODO manage await 
 	//TODO requests a page that is beyond the available range

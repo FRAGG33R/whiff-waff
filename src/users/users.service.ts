@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { ForbiddenException, HttpException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { Friendship, FriendshipStatus, Prisma, Rank, User } from "@prisma/client";
 import { SignUpDto, UpdateUserDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
@@ -393,11 +393,26 @@ export class UsersService {
 		}
 	}
 
-	async SendFriendshipRequest(idSender: string, receivedId: string): Promise<any> {
+	async SendFriendshipRequest(senderId: string, receivedId: string): Promise<any> {
 		try {
+			const existingUser = await this.prismaService.friendship.findMany({
+				where: {
+					OR: [
+						{
+							AND: [{ receivedId: receivedId }, { senderId: senderId }]
+						},
+						{
+							AND: [{ receivedId: senderId }, { senderId: receivedId }]
+						}
+					]
+				},
+			})
+			for (let i = 0; i < existingUser.length; i++)
+				if (existingUser[i].status == FriendshipStatus.BLOCKED)
+					throw message.INVITAION_TO_BLOCKED_USER
 			const data = await this.prismaService.friendship.create({
 				data: {
-					senderId: idSender,
+					senderId: senderId,
 					receivedId: receivedId,
 					status: FriendshipStatus.PENDING
 				}
@@ -406,11 +421,33 @@ export class UsersService {
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
 				if (error.code === ErrorCode.DUPLICATE_ENTRY_ERROR_CODE)
-					throw new NotFoundException(message.ERROR_INVITATON)
+					throw new HttpException(message.ERROR_INVITATON, HttpStatus.CONFLICT)
 				if (error.code === ErrorCode.FOREIGN_KEY_CONSTRAINT_CODE)
 					throw new NotFoundException(message.UNEXISTING_ID)
 			}
+			throw new ForbiddenException(error);
+		}
+	}
 
+
+	async deleteFriendshipTuple(loggedUserId: string, RequestSenderId: string): Promise<any> {
+		const existData = this.prismaService.friendship.findUnique({
+			where: {
+				senderId_receivedId: {
+					receivedId: RequestSenderId,
+					senderId: loggedUserId
+				}
+			}
+		})
+		if (existData) {
+			await this.prismaService.friendship.delete({
+				where: {
+					senderId_receivedId: {
+						receivedId: RequestSenderId,
+						senderId: loggedUserId
+					}
+				},
+			})
 		}
 	}
 

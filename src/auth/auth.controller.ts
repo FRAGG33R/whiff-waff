@@ -47,6 +47,7 @@ export class AuthController {
 		name: fourtyTwoCode,
 		description: fourtyTwoCodeDescription,
 	})
+
 	@UseGuards(FourtyTwoGuad)
 	@Get(signin42AuthEndPoint)
 	@HttpCode(HttpStatus.CREATED)
@@ -64,7 +65,7 @@ export class AuthController {
 			this.logger.error(error.message)
 		}
 	}
-
+	
 	@ApiParam({
 		name: token,
 		description: tokenDescription,

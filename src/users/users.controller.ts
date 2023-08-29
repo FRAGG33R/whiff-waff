@@ -1,13 +1,14 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Patch, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpStatus, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { UsersService } from "./users.service";
 import { UpdateFriendshipDto, UpdateUserDto, SendFriendshipDto } from "src/dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { JwtGuard } from "src/auth/guards/guards.jwtGuard";
-import { Response } from 'src/shared/responses/responses.sucess-response'
+import { ResponseInfo } from 'src/shared/responses/responses.sucess-response'
 import * as values from 'src/shared/constants/constants.values'
 import * as  messages from 'src/shared/constants/constants.messages';
+import { PassThrough } from "stream";
 
 const fileName = 'avatar'
 const tagUserSwagger = 'users'
@@ -46,7 +47,7 @@ export class UsersController {
 		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_GAMES;
 		const user = req.user;
 		const historyGame = await this.userService.getHistoryGame((user as any).id, values.NUMBER_OF_FIRST_PAGE, elementsNumer);
-		return new Response(HttpStatus.OK, { user, historyGame, elementsNumber: historyGame.length });
+		return new ResponseInfo(HttpStatus.OK, { user, historyGame, elementsNumber: historyGame.length });
 	}
 
 	@ApiBearerAuth()
@@ -65,7 +66,7 @@ export class UsersController {
 		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const user = await this.userService.findUserByUsername(req.params.userName, (req as any).user.id);
 		const gamesData = await this.userService.getHistoryGame(user.id, values.NUMBER_OF_FIRST_PAGE, elementsNumer);
-		return new Response(HttpStatus.OK, { loggedUser, user, gamesData });
+		return new ResponseInfo(HttpStatus.OK, { loggedUser, user, gamesData });
 	}
 
 	@ApiQuery({
@@ -120,20 +121,23 @@ export class UsersController {
 		const friends = await this.userService.getFriends((req.user as any).id, page, elementsNumer);
 		return (friends)
 	}
-	
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
-	@Patch(sendFriendship)
+	@Post(sendFriendship)
 	async sendFriendshipRequest(@Body() dto: SendFriendshipDto, @Req() req: Request) {
 		await this.userService.SendFriendshipRequest((req as any).user.id, dto.id);
-		return new Response(HttpStatus.OK, messages.SENDED_INVITATON)
+		console.log('finished');
+		return new ResponseInfo(HttpStatus.OK, messages.SENDED_INVITATON)
 	}
-	
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Patch(friendshipResponse)
-	async updateFriendshipStatus(@Body() data: UpdateFriendshipDto, @Req() req: Request): Promise<any> {
-		return await this.userService.updateFriendshipStatus((req as any).user.id, data.id, data.status)
+	async updateFriendshipStatus(@Body() data: UpdateFriendshipDto, @Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<any> {
+		const user = await this.userService.updateFriendshipStatus((req as any).user.id, data.id, data.status)
+		res.send(user);
+		await this.userService.deleteFriendshipTuple((req as any).user.id, data.id);
 	}
 
 

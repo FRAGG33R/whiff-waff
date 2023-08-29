@@ -35,7 +35,7 @@ export class FourtyTwoStrategy extends PassportStrategy(Strategy, '42') {
             }
             return (user);
         } catch (error) {
-            this.logger.error(error.message); 
+            this.logger.error(error.message);
         }
     }
 }

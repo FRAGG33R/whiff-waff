@@ -3,7 +3,6 @@
  */
 export const P2002_MSG  = ' already exist'
 export const P1001_MSG = 'Can not reach database server'
-export const ACHIEVEMENT_MSG  = 'field already in use : '
 export const CREDENTIALS_INCORRECT_MSG  = 'Incorrect email or password'
 export const SUCESSFULL_MSG = 'User Added sucessfully';
 export const SENDED_INVITATON = 'The invitation has been successfully sent'
@@ -17,3 +16,5 @@ export const FILE_TYPE = 'Invalid file type'
 export const ERROR_INVITATON = 'The invitation has already been sent'
 export const ERROR_SENT_INVITATON = 'There were no requests for friendship found'
 export const UNEXISTING_ID = 'The provided ID did not correspond to any existing user'
+
+export const INVITAION_TO_BLOCKED_USER = 'user has been blocked.'

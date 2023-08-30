@@ -53,14 +53,13 @@ const friendsComponent = () => {
     }
   };
   useEffect(() => {
-    console.log("active: ", active);
     fetchFriendData();
   
   }, [active, refresh]);
   return (
     <div className="w-full h-[90%] flex items-center rounded-[12px] md:rounded-[20px]  ">
-      <div className="w-full h-full  flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-center space-y-10">
-      <div className="w-full h-full flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-center space-y-10">
+      <div className="w-full h-full  flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-center space-y-10 " >
+      <div className="w-full h-[80%] flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-start space-y-10 ">
       {friendState.length === 0 ? (
       <div className="flex items-center justify-center">
        <IconFriendsOff className="w-8 md:w-16 h-8 md:h-16"/>

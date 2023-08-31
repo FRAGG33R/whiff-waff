@@ -10,6 +10,8 @@ class PingPongTable {
   private tableBorderRight: any;
   private tableBorderTop: any;
   private tableBorderBottom: any;
+  private ballShadow: any;
+  private ballShadow1: any;
   private obstacle1: any ;
   private obstacle2: any;
   private obstacle3: any;
@@ -17,53 +19,75 @@ class PingPongTable {
   private obstacle5: any;
   private obstacle6: any;
 
-  constructor(element: HTMLElement, tableOption: string) {
+  constructor(element: HTMLElement, tableOption: string, UrlTable: string) {
     this.element = element;
     this.engine = Matter.Engine.create({gravity: {x: 0, y: 0}});
     let width = element.getBoundingClientRect().width;
     let height = element.getBoundingClientRect().height;
     const tableBorderThickness = 15;
-    
+    this.render = Matter.Render.create({
+      element: this.element,
+      engine: this.engine,
+      options: {
+        width: width,
+        height: height,
+        wireframes: false,
+        background: "#E4E5E7"
+      },
+    });
+
+    Matter.Render.run(this.render);
+    this.render.canvas.style.backgroundSize = "cover";
+    this.render.canvas.style.position = "absolute";
     if (tableOption === 'Beginner') {
-      this.initializeElements(width, height, tableBorderThickness, "#3C6A8E", "#ADE6FE");
+      this.initializeElements(width, height, tableBorderThickness, "#E4E5E7", "#6C7FA7", "#CBFC01");
     } else if (tableOption === 'Intermediate') {
-      this.initializeElements(width, height, tableBorderThickness, "#9D4958", "#ECAAB4");
+      this.initializeElements(width, height, tableBorderThickness, "#351F60", "#6C7FA7", "#D2386D");
     } else if (tableOption === 'Advanced') {
-      this.initializeElements(width, height, tableBorderThickness, "#9D550A", "#F7C954");
+      this.initializeElements(width, height, tableBorderThickness, "#D2386D", "#351F60", "#E4E5E7");
     } else {
       throw new Error('Invalid table option');
     }
     
-    
+  
     
     this.playerMoveControls();
     
     Matter.Engine.run(this.engine);
     
-    Matter.Render.run(this.render);
 
     Matter.Render.lookAt(this.render, {
       min: { x: 0, y: 0 },
       max: { x: this.render.options.width, y: this.render.options.height },
     });
-    Matter.Body.applyForce(this.ball, {x: width/2, y: height / 2}, {x: 0.2, y: 1.6})
+    Matter.Body.applyForce(this.ball, {x: width/2, y: height / 2}, {x: 0.5, y: 1.5})
   }
 
   private playerMoveControls(): void {
     document.addEventListener("mousemove", (event) => {
       const mouseX = event.clientX;
-  
-      Matter.Body.setPosition(this.player2, { x: mouseX, y: this.player2.position.y });
+      const tableWidth = this.element.getBoundingClientRect().width - 16 ;
+      const player1HalfWidth = (this.player1.bounds.max.x - this.player1.bounds.min.x) / 2;
+      const minPlayer1X = 16 + player1HalfWidth;
+      const maxPlayer1X = tableWidth - player1HalfWidth;
+      const clampedX = Math.min(Math.max(mouseX, minPlayer1X), maxPlayer1X);
+      Matter.Body.setPosition(this.player1, { x: clampedX, y: this.player1.position.y });
     });
   
     document.addEventListener("keydown", (event) => {
       const key = event.key;
       const playerSpeed = 200; 
+      const tableWidth = this.element.getBoundingClientRect().width - 16;
+      const player2HalfWidth = (this.player2.bounds.max.x - this.player2.bounds.min.x) / 2;
+      const minPlayer2X = 16 + player2HalfWidth;
+      const maxPlayer2X = tableWidth - player2HalfWidth;
   
-      if (key === "ArrowLeft" && this.player1) {
-        Matter.Body.setPosition(this.player1, { x: this.player1.position.x - playerSpeed, y: this.player1.position.y });
-      } else if (key === "ArrowRight" && this.player1) {
-        Matter.Body.setPosition(this.player1, { x: this.player1.position.x + playerSpeed, y: this.player1.position.y });
+      if (key === "ArrowLeft" && this.player2) {
+        const newPos = Math.max(this.player2.position.x - playerSpeed, minPlayer2X);
+        Matter.Body.setPosition(this.player2, { x: newPos, y: this.player2.position.y });
+      } else if (key === "ArrowRight" && this.player2) {
+        const newPos = Math.min(this.player2.position.x + playerSpeed, maxPlayer2X);
+        Matter.Body.setPosition(this.player2, { x: newPos, y: this.player2.position.y });
       }
     });
   }
@@ -75,20 +99,8 @@ class PingPongTable {
     this.render.canvas.remove();
     console.log("stop rendering")                                                                                                       
   }
-
-  private initializeElements(width: number, height: number, tableBorderThickness: number, PlayersColor: string, tableColor: string): void {
-    this.render = Matter.Render.create({
-      element: this.element,
-      engine: this.engine,
-      options: {
-        width: width,
-        height: height,
-        background: tableColor,
-        wireframes: false,
-        
-      },
-    });
-  
+  private initializeElements(width: number, height: number, tableBorderThickness: number, PlayersColor: string, tableColor: string, ballColor: string): void {
+ 
     this.tableBorderTop = Bodies.rectangle(
       width / 2,
       tableBorderThickness / 2,
@@ -168,28 +180,72 @@ class PingPongTable {
         chamfer: { radius: 10 },
       }
     );
-  
- 
+
     this.ball = Bodies.circle(width / 2, height / 2, 15, {
       density: 0.1,
       inertia: Infinity,
       friction: 0,
       frictionAir: 0,
       render: {
-        fillStyle: PlayersColor,
+        fillStyle: ballColor,
         strokeStyle: "#ffffff",
       },
       restitution: 1,
     });
-  
+    const ballShadowRender = {
+      fillStyle: PlayersColor,
+      opacity: 0.5,
+      strokeStyle: PlayersColor, 
+      lineWidth: 0.5, 
+      blur: 8,
+     
+    };
+    
+    this.ballShadow = Matter.Bodies.circle(
+      this.ball.position.x,
+      this.ball.position.y,
+      this.ball.circleRadius,
+      {
+        isStatic: true,
+        isSensor: true,
+        render: ballShadowRender,
+        label: 'ballShadow',
+      }
+    );
 
-  
-    if (tableColor === "#F7C954") {
+
+    Matter.World.add(this.engine.world, [this.ballShadow]);
+
+
+
+    Matter.Events.on(this.engine, 'beforeUpdate', () => {
+      if (this.ball && this.ball.position) {
+        Matter.Body.setPosition(this.ballShadow, { x: this.ball.position.x, y: this.ball.position.y });
+      }
+    });
+
+    
+
+    if (tableColor === "#351F60") {
+      this.render.canvas.style.background = tableColor;
       this.obstacle1 = Bodies.rectangle(
         tableBorderThickness / 2,
         height / 2 + 300,
-        300,
-        100,
+        width * 0.3,
+        height * 0.1,
+        {
+          isStatic: true,
+          render: {
+            fillStyle: PlayersColor,
+          },
+          chamfer: { radius: 20 },
+        }
+      );
+      this.obstacle2 = Bodies.rectangle(
+        tableBorderThickness / 2,
+        height / 2 - 300,
+        width * 0.2,
+        height * 0.05,
         {
           isStatic: true,
           render: {
@@ -199,37 +255,24 @@ class PingPongTable {
         }
       );
       this.obstacle3 = Bodies.rectangle(
-        tableBorderThickness / 2,
+        width - tableBorderThickness / 2,
         height / 2 - 300,
-        350,
-        50,
+        width * 0.2,
+        height * 0.1,
         {
           isStatic: true,
           render: {
             fillStyle: PlayersColor,
           },
-          chamfer: { radius: 20 },
+          chamfer: { radius: 50 },
         }
       );
+    
       this.obstacle4 = Bodies.rectangle(
         width - tableBorderThickness / 2,
-        height / 2 - 300,
-        200,
-        100,
-        {
-          isStatic: true,
-          render: {
-            fillStyle: PlayersColor,
-          },
-          chamfer: { radius: 50 },
-        }
-      );
-
-      this.obstacle2 = Bodies.rectangle(
-        width - tableBorderThickness / 2,
         height / 2 + 300,
-        400,
-        200,
+        width * 0.1,
+        height * 0.2,
         {
           isStatic: true,
           render: {
@@ -238,16 +281,17 @@ class PingPongTable {
           chamfer: { radius: 50 },
         }
       );
-  
+    
       Matter.World.add(this.engine.world, [this.obstacle1, this.obstacle2, this.obstacle3, this.obstacle4]);
     }
-
-    if (tableColor === "#ECAAB4"){
+    
+    if (tableColor === "#6C7FA7") {
+      this.render.canvas.style.background = tableColor;
       this.obstacle5 = Bodies.rectangle(
         tableBorderThickness / 2,
         height / 2 - 200,
-        450,
-        100,
+        width * 0.1,
+        height * 0.1,
         {
           isStatic: true,
           render: {
@@ -259,8 +303,8 @@ class PingPongTable {
       this.obstacle6 = Bodies.rectangle(
         width - tableBorderThickness / 2,
         height / 2 + 100,
-        500,
-        100,
+        width * 0.1,
+        height * 0.2,
         {
           isStatic: true,
           render: {
@@ -269,10 +313,9 @@ class PingPongTable {
           chamfer: { radius: 20 },
         }
       );
-
+    
       Matter.World.add(this.engine.world, [this.obstacle5, this.obstacle6]);
     }
-  
     Matter.World.add(this.engine.world, [
       this.player1,
       this.player2,

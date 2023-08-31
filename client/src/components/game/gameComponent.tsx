@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PingPongTable from './pingPong';
+import BeginnerUrl from '../../../public/Group 4609.jpg'
 
 interface GameProps {
   map: string;
@@ -10,6 +11,8 @@ let tableInstance: PingPongTable | null = null;
 const GameComponent: React.FC<GameProps> = ({ map , mode })=> {
   const [wSize, setwSize] = useState<number[]>([0, 0]);
   const myref = useRef<HTMLDivElement>(null);
+
+  const backgroundImageUrl = "../../../public/Group 4609.jpg";
   useEffect(() => {
    
     function handleResize() {
@@ -30,11 +33,12 @@ const GameComponent: React.FC<GameProps> = ({ map , mode })=> {
       tableInstance.stopRendering();
     }
     console.log("map", map);
-    tableInstance = new PingPongTable(myref.current!, map);
+    tableInstance = new PingPongTable(myref.current!, map, backgroundImageUrl);
     console.log("**%^&*^&*", tableInstance);
   }, [wSize]);
 
-  return <div className='flex items-center justify-center w-full h-full rounded-lg' ref={myref}>
+  return <div 
+  className='flex items-center justify-center w-full h-full rounded-lg' ref={myref}>
    </div>;
 };
 

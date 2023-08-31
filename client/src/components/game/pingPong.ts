@@ -1,5 +1,4 @@
 import Matter, { Engine, Render, World, Bodies , Pair} from 'matter-js';
-import BallPng from  "../../../public/png.png"
 class PingPongTable {
   private engine: any;
   private render: any;
@@ -86,6 +85,7 @@ class PingPongTable {
         height: height,
         background: tableColor,
         wireframes: false,
+        
       },
     });
   

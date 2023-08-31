@@ -8,6 +8,14 @@ import PingPongTable from "./Rectangle";
 import Image from "next/image";
 
 const GamePage: React.FC = () => {
+  
+  const [selectedMap, setSelectedMap] = useState<string>("");
+  const [selectedMode, setSelectedMode] = useState<string>("");
+
+  const handlePlay = (map: string, mode: string) => {
+    setSelectedMap(map);
+    setSelectedMode(mode);
+  };
   const [Game] = useState({
     userName: "Houssam",
     userName1: "Aissam",
@@ -80,7 +88,9 @@ const GamePage: React.FC = () => {
               <div
                 className="w-full 2xl:w-full 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl"
               >
-                <GamePing />
+                {selectedMap && selectedMode && (
+        <GamePing map={selectedMap} mode={selectedMode} />
+      )}
               </div>
               <div className="w-full lg:h-[130px] h-[130px] md:h-[130px] xl:hidden flex items-center justify-end  gap-4 ">
                 <div className="w-[20%] md:w-[15%] lg:w-[20%] lg:h-[100px] h-[100px] md:h-[100px]  flex items-center justify-center gap-2 ">
@@ -130,7 +140,7 @@ const GamePage: React.FC = () => {
             </div>
 
             <div className="w-full 2xl:w-[30%] 2xl:h-full xl:h-[900px] lg:h-[900px] md:h-[900px] h-[900px]  bg-CarbonGrey bg-opacity-10  rounded-xl ">
-              <Option />
+            <Option onPlay={handlePlay} />
             </div>
           </div>
         </div>

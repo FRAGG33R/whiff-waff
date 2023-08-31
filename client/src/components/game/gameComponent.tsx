@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PingPongTable from './pingPong';
-import { cookies } from 'next/dist/client/components/headers';
 
+interface GameProps {
+  map: string;
+  mode: string;
+}
 let tableInstance: PingPongTable | null = null;
 
-const GameComponent: React.FC = () => {
+const GameComponent: React.FC<GameProps> = ({ map , mode })=> {
   const [wSize, setwSize] = useState<number[]>([0, 0]);
   const myref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -26,7 +29,8 @@ const GameComponent: React.FC = () => {
       console.log("**** destroyed");
       tableInstance.stopRendering();
     }
-    tableInstance = new PingPongTable(myref.current!, "Advanced");
+    console.log("map", map);
+    tableInstance = new PingPongTable(myref.current!, map);
     console.log("**%^&*^&*", tableInstance);
   }, [wSize]);
 

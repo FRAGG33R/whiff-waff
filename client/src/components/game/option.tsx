@@ -7,7 +7,11 @@ import Defi from "./../../../public/Defi.svg";
 import PrimaryButton from "../../components/ui/buttons/primaryButton";
 import Image from "next/image";
 import { useState } from "react";
-const Option = () => {
+
+interface OptionProps {
+  onPlay: (map: string, mode: string) => void;
+}
+const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
   const [beginner, setBeginner] = useState(false);
   const [inrermediare, setInrermediare] = useState(false);
   const [advenced, setAdvenced] = useState(false);
@@ -38,8 +42,24 @@ const Option = () => {
     setBeginner(false);
   };
   const handlePlay = () => {
-    if ((beginner || inrermediare || advenced) && (time || defi)) {
-      console.log("Playing game with selected map and mode");
+    let selectedMap: string | undefined;
+    if (beginner) {
+      selectedMap = "Beginner";
+    } else if (inrermediare) {
+      selectedMap = "Intermediate";
+    } else if (advenced) {
+      selectedMap = "Advanced";
+    }
+  
+    let selectedMode: string | undefined;
+    if (time) {
+      selectedMode = "Time";
+    } else if (defi) {
+      selectedMode = "Defi";
+    }
+  
+    if (selectedMap && selectedMode) {
+      onPlay(selectedMap, selectedMode);
     } else {
       console.log("Select a map and a mode to play");
     }

@@ -26,7 +26,7 @@ const GameComponent: React.FC = () => {
       console.log("**** destroyed");
       tableInstance.stopRendering();
     }
-    tableInstance = new PingPongTable(myref.current!);
+    tableInstance = new PingPongTable(myref.current!, "Advanced");
     console.log("**%^&*^&*", tableInstance);
   }, [wSize]);
 

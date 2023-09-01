@@ -5,7 +5,9 @@ import { useState } from "react";
 import AuthButton from "@/components/ui/buttons/authButton";
 import IntraButton from "@/components/ui/buttons/intraButton";
 import { useRouter } from "next/router";
+import { KeyboardEvent } from "react";
 import axios from "axios";
+import { parseJwt } from "@/lib/jwtToken";
  
 export default function Card(props: { Mode: "signin" | "signup" }) {
   const [firstName, setFirstName] = useState("");
@@ -85,8 +87,13 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
     },
   ];
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleNext();
+    }
+  };
   const signIn = async () => {
-   router.push("http://e3r10p14.1337.ma:3000/api/v1/auth/signin/42/");
+   router.push(" http://34.173.232.127/api/v1/auth/signin/42/");
   };
   const handleNext = async () => {
     if (
@@ -128,12 +135,15 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
             password,
           }
         try {
-          const res = await axios.post(`http://e3r10p14.1337.ma:3000/api/v1/auth/${props.Mode}/`, req);
+          const res = await axios.post(` http://34.173.232.127/api/v1/auth/${props.Mode}/`, req);
           console.log(res);
-          console.log(res.data);
           const token = res.data.token;
+          console.log(token);
           localStorage.setItem("token", token);
-          router.push("/profil");
+          console.log("token parser: ", parseJwt(token).user );
+          const r = await axios.post("http://localhost:3000/api/handleToken", { token });
+          console.log(r);
+          router.push("/settings");
         }
         catch (error) {
           console.log(error);
@@ -153,6 +163,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
       <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-6">
         <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-2">
           <UserInput
+          handleKeyDown={handleKeyDown}
             label={
               props.Mode === "signin"
                 ? signinArray[step].label
@@ -166,7 +177,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
             isError={error}
             setError={setError}
             isDisabled={false}
-            lableColor="#222222"
+            lableColor="bg-[#222222]"
             regExp={
               props.Mode === "signin"
                 ? signinArray[step].RegExp

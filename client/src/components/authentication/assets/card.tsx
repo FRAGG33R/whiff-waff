@@ -136,7 +136,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           }
         try {
           const res = await axios.post(` http://34.173.232.127/api/v1/auth/${props.Mode}/`, req);
-          console.log(res);
+          console.log("res:",res);
           const token = res.data.token;
           console.log(token);
           localStorage.setItem("token", token);
@@ -146,7 +146,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           router.push("/settings");
         }
         catch (error) {
-          console.log(error);
+          console.log("error: " ,error);
         }
       }
     }

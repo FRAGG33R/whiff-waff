@@ -13,16 +13,11 @@ import axios from "axios";
 import { IconFriendsOff } from "@tabler/icons-react";
 const friendsComponent = () => {
   const [active, setActive] = useState(1);
-
   const [friendData, setFriendData] = useRecoilState(friendDataAtom);
   const [friendState, setFriendState] = useState<User[]>(friendData as User[]);
   const [user, setUser] = useRecoilState(userDataAtom);
   const [userState, setUserState] = useState<userType>(user as userType);
-  const [refresh, setRefresh] = useState<number>(0);
 
-  const refetch = () => {
-    setRefresh(refresh + 1);
-  };
 
   useEffect(() => {
       setFriendState(friendData as User[]);
@@ -54,8 +49,7 @@ const friendsComponent = () => {
   };
   useEffect(() => {
     fetchFriendData();
-  
-  }, [active, refresh]);
+  }, [active]);
   return (
     <div className="w-full h-[90%] flex items-center rounded-[12px] md:rounded-[20px]  ">
       <div className="w-full h-full  flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-center space-y-10 " >
@@ -66,7 +60,7 @@ const friendsComponent = () => {
       </div>
     ) : (Array.isArray(friendState) &&
        friendState.map((request, index) => (
-        <FriendGame friends={request} key={index} refetch={refetch} />
+        <FriendGame friends={request} key={index} AcceptedFriends={friendState} setAcceptedFriends={setFriendState} />
       )))}
     </div>
 

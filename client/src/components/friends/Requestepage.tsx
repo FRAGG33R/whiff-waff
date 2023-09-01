@@ -4,9 +4,9 @@ import SecondaryButton from "../ui/buttons/secondaryButton";
 import { FriendsProps, User, UserFriend } from "../../types/userFriendType";
 import axios from "axios";
 
-const RequestePage = ({ req, refetch }: { req: User, refetch:Function }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+const RequestePage = ({ req, pendingFriends, setPendingFriends }: { req: User, pendingFriends : User[],  setPendingFriends : Function }) => {
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   let jwtToken: string | null = null;
 
@@ -14,9 +14,10 @@ const RequestePage = ({ req, refetch }: { req: User, refetch:Function }) => {
     jwtToken = localStorage.getItem("token");
   }
   const  handleAccept = async() => {
-    try{
+    try {
+      setPendingFriends(pendingFriends.filter((friend:User) => friend.id !== req.id));
 
-      const res = await axios.patch(
+      const res = await axios.patch (
         "http://34.173.232.127/api/v1/users/friendshipResponse",
         {
           id:req.id,
@@ -28,18 +29,15 @@ const RequestePage = ({ req, refetch }: { req: User, refetch:Function }) => {
           },
         }
       )
-      .then(() => {
-        refetch();
-      }
-      );
     }
       catch (error) {
         console.log(error);
       }
   };
+
   const handleRefuse = async() => {
     try{
-
+      setPendingFriends(pendingFriends.filter((friend:User) => friend.id !== req.id));
       const res = await axios.patch(
         "http://34.173.232.127/api/v1/users/friendshipResponse",
         {
@@ -51,9 +49,6 @@ const RequestePage = ({ req, refetch }: { req: User, refetch:Function }) => {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
-      ).then(() => {
-        refetch();
-      }
       );
     }
       catch (error) {
@@ -105,7 +100,7 @@ const RequestePage = ({ req, refetch }: { req: User, refetch:Function }) => {
                     className="font-teko text-lg text-Mercury h-10 w-full hover:bg-DeepRose hover:rounded-md"
                     onClick={handleAccept}
                   >
-                    Challenge
+                    Accepted
                   </button>
                 </a>
               </li>
@@ -116,13 +111,12 @@ const RequestePage = ({ req, refetch }: { req: User, refetch:Function }) => {
                     className="font-teko text-lg text-Mercury h-10 w-full hover:bg-DeepRose hover:rounded-md"
                     onClick={handleRefuse}
                   >
-                    Block
+                    Refuse
                   </button>
                 </a>
               </li>
             </ul>
           )}
-
           <div />
         </div>
       </div>

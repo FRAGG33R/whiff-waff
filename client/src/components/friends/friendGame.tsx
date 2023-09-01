@@ -15,7 +15,7 @@ import Chanllenger from "../../../public/Challenger.svg";
 import { FriendsProps, User, UserData, UserFriend } from "../../types/userFriendType";
 import axios from "axios";
 
-export default function FriendGame({ friends, refetch }: { friends: User, refetch:Function }) {
+export default function FriendGame({ friends, AcceptedFriends, setAcceptedFriends }: { friends: User, AcceptedFriends: User[], setAcceptedFriends: Function}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   let jwtToken: string | null = null;
 
@@ -23,7 +23,7 @@ export default function FriendGame({ friends, refetch }: { friends: User, refetc
     jwtToken = localStorage.getItem("token");
   }
   const handleChallenge = () => {
-    router.push("/game");
+    router.push(`/game/${friends.userName}`);
   };
 
   const handleMessage = () => {
@@ -31,7 +31,7 @@ export default function FriendGame({ friends, refetch }: { friends: User, refetc
   };
   const  handleBlock = async() => {
     try{
-
+      setAcceptedFriends(AcceptedFriends.filter((friend:User) => friend.id !== friends.id));
       const res = await axios.patch(
         "http://34.173.232.127/api/v1/users/friendshipResponse",
         {
@@ -43,9 +43,6 @@ export default function FriendGame({ friends, refetch }: { friends: User, refetc
             Authorization: `Bearer ${jwtToken}`,
           },
         }
-      ).then(() => {
-        refetch();
-      }
       );
     }
       catch (error) {

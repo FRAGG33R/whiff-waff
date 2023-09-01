@@ -1,7 +1,7 @@
 import React from "react";
 import TowFactorIcon from "../../../public/twoFactorIcon.svg";
 import Image from "next/image";
-import UserInput from "../ui/inputs/userInput";
+import UserInput from "../ui/inputs/settingsInputs";
 import { useState } from "react";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";

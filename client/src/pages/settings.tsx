@@ -5,13 +5,16 @@ import { withIronSessionSsr } from "iron-session/next";
 import {   useRecoilState } from "recoil";
 import { userDataAtom} from "../atom/atomStateuser";
 import { userType } from "@/types/userType";
+import { api } from "@/components/axios/instance";
+import { useEffect } from "react";
 
 
 export default function Settings(props:{data:any}) {
+
   
   const [userData, setUserData] = useRecoilState(userDataAtom);
-	setTimeout(()=> setUserData(props.data.response.user), 0);
-  console.log("props.data: ", props.data.response.user);
+    setUserData(props.data.response.user);
+
 
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
@@ -24,13 +27,12 @@ export default function Settings(props:{data:any}) {
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }: any) {
     
+   
     try {
-
       const token = await req.session.token.token;
       console.log("token: ", token);
 
-
-      const res = await axios.get(" http://34.173.232.127/api/v1/users/me/", {
+      const res = await api.get("/users/me/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -52,9 +54,10 @@ export const getServerSideProps = withIronSessionSsr(
   } ,
   {
     cookieName: "token",
-    password:"Lo7s8sidjlsmiwpamsldldl851KWH@#$O852",
+    password:
+      "$Kv4v3r6t8b7x5fd2a9c73baa7495d8268b048dc791c301621da7129s3C9g1#2qweIokLKJXx",
     cookieOptions: {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.ENV === "production",
     },
   }
 );

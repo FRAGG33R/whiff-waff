@@ -3,11 +3,10 @@ import Image from "next/image";
 import InformationIcons from "../../../public/informationIcons.svg";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
-import UserInput from "../ui/inputs/userInput";
+import UserInput from "../ui/inputs/settingsInputs";
 import { useState } from "react";
 import ImageUpload from "./uploadImg";
 import { KeyboardEvent } from "react";
-import router from "next/router";
 
 
 import axios from "axios";
@@ -16,6 +15,7 @@ import { userDataAtom} from "../../atom/atomStateuser";
 import { userType } from "./../../types/userType";
 
 const InformationsSetting = () => {
+  console.log("i am here")
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastNam] = useState("");
   const [userName, setUserName] = useState("");
@@ -24,14 +24,13 @@ const InformationsSetting = () => {
   const [lastError, setLastError] = useState(false);
   const [userError, setUserError] = useState(false);
   const [emailError, setEmailError] = useState(false);
-
   const [avatarImage, setAvatarImage] = useState<File | string>("");
   const [userData, setUserData] = useState<any>(null);
   const [user, setUser] = useRecoilState(userDataAtom);
-  const [userState, setUserState] = useState<userType>(user as userType)
-  console.log("userState: ", userState);
+  const [userState, setUserState] = useState<userType>(user as userType);
 
   useEffect(() => {
+    setUserState(user as userType);
     setAvatarImage(userState.avatar);
     setFirstName(userState.firstName);
     setLastNam(userState.lastName);
@@ -56,10 +55,8 @@ const InformationsSetting = () => {
     setFirstName("");
     setLastNam("");
     setUserName("");
-    setFirstError(false);
-    setLastError(false);
-    setUserError(false);
   };
+  
   const inputFields = [
     {
       id: "firstName",
@@ -98,6 +95,7 @@ const InformationsSetting = () => {
 
   const handleConfirm = async () => {
     if (!firstName.match(/^.{3,}$/)) {
+      console.log("firstName: ", firstName);
       setFirstError(true);
       return;
     }
@@ -144,12 +142,9 @@ const InformationsSetting = () => {
           },
         }
       );
-      console.log(req);
-      console.log(req.data);
     } catch (error) {
       console.log(error);
     }
-    router.push("/friends");
   };
   const handleImageUpload = (file: File) => {
     setAvatarImage(file);

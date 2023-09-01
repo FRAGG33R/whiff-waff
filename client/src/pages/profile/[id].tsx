@@ -15,7 +15,6 @@ export default function Profile(props: { data: userType }) {
   const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
 
-  console.log((props.data as any).gamesData);
   setUser((props.data as any).user);
   setMatchHistory((props.data as any).gamesData);
   setLoggedUser((props.data as any).loggedUser);

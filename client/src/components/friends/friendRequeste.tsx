@@ -12,15 +12,15 @@ import axios from "axios";
 import { IconFriendsOff } from "@tabler/icons-react";
 const friendRequeste = () => {
   const [active, setActive] = useState(1);
-  const [friendData, setFriendData] = useRecoilState(pandingDataAtom);
-  const [friendState, setFriendState] = useState<User[]>(friendData as User[]); 
-  const [user, setUser] = useRecoilState(userDataAtom);
+  const [pendingFriends, setPendingFriends] = useRecoilState(pandingDataAtom);
+  const [pendingFriendState, setPendingFriendState] = useState<User[]>(pendingFriends as User[]); 
+ const [user, setUser] = useRecoilState(userDataAtom);
   const [userState, setUserState] = useState<userType>(user as userType)
   const [refresh, setRefresh] = useState<number>(0);
   useEffect(() => {
-    setFriendState(friendData as User[]);
+    setPendingFriendState(pendingFriends as User[]);
 
-  }, [friendData]);
+  }, [pendingFriends]);
 
   const fetchPandingData = async () => {
     try {
@@ -40,8 +40,8 @@ const friendRequeste = () => {
         avatar: sender.avatar,
         stat: sender.stat
       }));
-      setFriendState(filteredPending as User[]);
-      setFriendData(filteredPending as User[]);
+      setPendingFriendState(filteredPending as User[]);
+      setPendingFriends(filteredPending as User[]);
 
     } catch (error) {
       console.log(error);
@@ -60,17 +60,17 @@ const friendRequeste = () => {
     <div className="w-full h-[90%] flex items-center rounded-[12px] md:rounded-[20px]  ">
       <div className="w-full h-full  flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-center space-y-10">
       <div className="w-full h-[80%]  flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-start space-y-10">
-      {friendState.length === 0 ? (
+      {pendingFriendState.length === 0 ? (
       <div className="flex items-center justify-center">
        <IconFriendsOff className="w-8 md:w-16 h-8 md:h-16"/>
       </div>
-    ) : (Array.isArray(friendState) &&
-      friendState.map((request, index) => (
-        <RequestePage req={request} key={index} refetch={refetch} />
+    ) : (Array.isArray(pendingFriendState) &&
+      pendingFriendState.map((request, index) => (
+        <RequestePage req={request} key={index} pendingFriends={pendingFriendState} setPendingFriends={setPendingFriendState}/>
       ))
     )}
     </div>
-        <Pagination max={Math.ceil((friendState as any).elementsNumber/7)}active={active} setActive={setActive} />
+        <Pagination max={Math.ceil((pendingFriendState as any).elementsNumber/7)}active={active} setActive={setActive} />
       </div>
     </div>
   );

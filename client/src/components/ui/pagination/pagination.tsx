@@ -10,7 +10,7 @@ export function Pagination(props: {
   const [max, setMax] = useState(props.max);
   const [startPage, setStartPage] = useState(1);
   const endPage = Math.min(startPage + 4, max);
-
+  
   const getItemProps = (index: number) =>
     ({
       className:
@@ -25,36 +25,30 @@ export function Pagination(props: {
   const next = () => {
     if (props.active === max) return;
 
-    if (props.active === endPage && endPage < max) {
+    if (props.active === endPage && endPage < max)
       setStartPage(startPage + 1);
-    }
-
     props.setActive(props.active + 1);
   };
 
   const prev = () => {
     if (props.active === 1) return;
-
-    // Update the start page if needed
-    if (props.active === startPage && startPage > 1) {
+    if (props.active === startPage && startPage > 1)
       setStartPage(startPage - 1);
-    }
-
     props.setActive(props.active - 1);
   };
 
   return (
-    <div className="flex items-center md:gap-4 pt-10 md:pt-0 2xl:pt-12 ">
+    <div className="flex items-center md:gap-4 md:pt-6">
       <button
         className="flex items-center md:gap-2 text-white px-2 md:px-4 py-1 md:py-2 rounded-md hover:bg-GreenishYellow hover:text-black"
         onClick={prev}
         disabled={props.active === 1}
-      >
+	>
         <ArrowLeftIcon strokeWidth={2} className="h-6 md:h-4 w-4" />
         <div className="md:block hidden">Previous</div>
       </button>
       <div className="flex items-center md:gap-2">
-        {Array.from({ length: 5 }, (_, index) => {
+        {Array.from({ length: props.max }, (_, index) => {
           const pageNumber = startPage + index;
           return (
             <IconButton key={pageNumber} {...getItemProps(pageNumber)}>

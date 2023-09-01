@@ -1,28 +1,90 @@
 import Image from "next/image";
-import { IconSettings } from "@tabler/icons-react";
-import { useRouter } from "next/router";
-import { matchStatistics } from "@/types/matchStatistics";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import LevelBar from "../ui/progressBar/levelBar";
+import { loggedUserType, userType } from "@/types/userType";
+import totalWins from "../../../public/totalWins.svg";
+import totalMatches from "../../../public/totalMatches.svg";
+import totalLoses from "../../../public/totalLoses.svg";
+import matchStatistics from "@/types/matchStatistics";
+import HexaGon from "./hexagon";
+import { IconSettings } from "@tabler/icons-react";
+import { useRouter } from "next/router";
+import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
+import { useState } from "react";
+import { useRecoilState } from "recoil";
+import { api } from "../axios/instance";
+import PendingButton from "../ui/buttons/pendingButton";
 
 export default function ProfileInformations() {
   const router = useRouter();
+  const [user, setUser] = useRecoilState(userAtom);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [userState, setUserState] = useState<userType>(user as userType);
 
+  const matchStatistics: matchStatistics[] = [
+    {
+      title: "Total Matches",
+      value: Number(userState.stat.wins) + Number(userState.stat.loses),
+      avatar: totalMatches,
+    },
+    { title: "Total Wins", value: userState.stat.wins, avatar: totalWins },
+    { title: "Total Loses", value: userState.stat.loses, avatar: totalLoses },
+  ];
+  const handleConnect = async () => {
+    const token = localStorage.getItem("token");
+    console.log("token => ", token);
+    console.log("id => ", (user as userType).id);
+    if (!token) router.push("/login");
+    try {
+      const res = await api.patch(
+        "/users/sendFriendship",
+        { id: (user as userType).id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("response : ", res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMessage = () => {
+    router.push(`/chat/${userState.userName}`)
+  };
+  const handleChallenge = () => {
+    router.push(`/game/${userState.userName}`);
+  };
+  const handleBlock = async () => {
+	const token = localStorage.getItem("token");
+    console.log("token => ", token);
+    console.log("id => ", (user as userType).id);
+
+    if (!token) router.push("/login");
+    try {
+      const res = await api.patch(
+        "/users/friendshipResponse",
+        { id: (user as userType).id, status : 'BLOCKED' },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("response : ", res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
       <div className="w-full h-[80%] flex flex-col md:flex-row items-center xl:space-x-8">
         <div className="h-[70%] md:h-full max-w-[180px] w-[180px] md:w-[27%] xl:w-[25%] md:-space-y-5 xl:space-y-0 flex flex-col">
           <div className="w-full h-[80%] flex items-center justify-center py-8 pl-2">
-            <div className="mask mask-hexagon-2 flex items-center justify-center bg-DeepRose w-[280px] lg:w-[480px] h-32 lg:h-48 rotate-90">
-              <div className="mask mask-hexagon-2 w-[92%] h-[92%] bg-white text-black flex items-center justify-center">
-                <img
-                  alt="profile picture"
-                  className="bg-DeepRose w-[130px] lg:w-[200px] -rotate-90"
-                  src="https://cdn.intra.42.fr/users/35ff685f27d505abc8e1d226a8befd14/machlouj.jpg"
-                />
-              </div>
-            </div>
+            <HexaGon avatar={userState.avatar} />
           </div>
           <button
             onClick={() => {
@@ -40,18 +102,36 @@ export default function ProfileInformations() {
             </div>
           </button>
         </div>
-        <div className="h-[30%] md:h-full w-[75%] flex flex-col">
+        <div className="h-[30%] md:h-full w-[90%] md:w-[75%] flex flex-col">
           <div className="h-full md:h-[70%] max-w-44 flex flex-col space-y-1 md:space-y-2">
             <div className="w-full h-full flex items-end md:justify-start justify-center font-normal md:font-semibold font-teko text-3xl xl:text-4xl 2xl:text-5xl text-Mercury tracking-wider">
-              L3AX
+              {userState.userName}
             </div>
-            <div className="w-full h-full flex flex-row items-center md:justify-start justify-clenter space-x-2 2xl:space-x-6">
-              <SecondaryButton text="Connect" onClick={() => {}} />
-              <SecondaryButton text="Message" onClick={() => {}} />
-              <PrimaryButton text="Challenge" onClick={() => {}} />
+            <div className="w-full h-full flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
+              {userState.userName != (loggedUser as loggedUserType).userName ? (
+                <>
+                  {userState.status === "PENDING" ? (
+                    <PendingButton text="Pending" onClick={handleConnect} />
+                  ) : userState.status === 'ACCEPTED' ? (
+                    <SecondaryButton text="Block" onClick={handleBlock} />
+				  ) :(
+                    <SecondaryButton text="Connect" onClick={handleConnect} />
+
+				  )}
+                  <SecondaryButton text="Message" onClick={handleMessage} />
+                  <PrimaryButton text="Challenge" onClick={handleChallenge} />
+                </>
+              ) : (
+                <div className="text-md md:text-2xl text-[#6C7FA7] font-medium">
+                  Hey dude 👋 How are you ?
+                </div>
+              )}
             </div>
             <div className="w-full md:w-10/12 2xl:w-11/12 h-12 py-2 md:h-full flex items-center justify-center">
-              <LevelBar level={9} progress={32} />
+              <LevelBar
+                level={Math.floor(userState.stat.level)}
+                progress={Number((userState.stat.level % 1).toFixed(2)) * 100}
+              />
             </div>
           </div>
         </div>

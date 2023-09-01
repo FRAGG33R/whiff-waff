@@ -2,35 +2,37 @@ import { useState } from "react";
 import WinIcon from "../../../public/totalWins.svg";
 import LoseIcon from "../../../public/totalLoses.svg";
 import Image from "next/image";
+import matchComponentType from "@/types/matchType";
 
-export default function MatchComponent(props: { Mode: "Win" | "Lose" }) {
-  const [match] = useState({
-    firstUserName: "FRAGGER",
-    secondUserName: "MattheDavis",
-    firstScore: 5,
-    secondScore: 3,
-  });
+export default function MatchComponent(props: matchComponentType) {
+//   const [match] = useState({
+//     firstUserName: "FRAGGER",
+//     secondUserName: "MattheDavis",
+//     firstScore: 5,
+//     secondScore: 3,
+//   });
   return (
     <div
-      className={`w-[95%] h-16 md:h-20 flex items-center justify-center rounded-[12px] md:rounded-[20px] ${
+	  key={props.key}
+      className={`w-[95%] h-16 md:h-24 flex items-center justify-center rounded-[12px] md:rounded-[20px] ${
         props.Mode === "Win" ? "bg-GreenishYellow" : "bg-[#0F0F0F]/[32%]"
       }`}
     >
       <div className="w-[95%] md:w-[98%] h-full flex flex-row items-center justify-center">
         <div className="h-full w-1/3 flex flex-row items-center  md:space-x-4 space-x-2 2xl:space-x-6 ">
-          <div className="w-14 md:w-16 h-14  md:h-16 flex items-center justify-center tooltip" data-tip={match.firstUserName}>
+          <div className="w-14 md:w-20 h-14 md:h-20 flex items-center justify-center tooltip" data-tip={props.firstUserName}>
             <img
-              src="https://images.unsplash.com/photo-1618641986557-1ecd230959aa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1587&q=80"
+              src={props.firstUserAvatar}
               alt="profile picture"
-              className="w-12 md:w-16 h-12 md:h-16 rounded-[12px] md:rounded-[20px] "
+              className="w-12 md:w-20 h-12 md:h-20 rounded-[12px] md:rounded-[20px] "
             />
           </div>
           <div
-            className={`font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[1.6rem] text-center md:block hidden tracking-wide ${
+            className={`font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[2rem] text-center md:block hidden tracking-wide ${
               props.Mode === "Win" ? "text-[#090909]" : "text-white"
             }`}
           >
-            {match.firstUserName}
+            {props.firstUserName}
           </div>
         </div>
         <div className="h-full w-1/3 flex flex-row space-x-2 ">
@@ -39,7 +41,7 @@ export default function MatchComponent(props: { Mode: "Win" | "Lose" }) {
               props.Mode === "Win" ? "text-[#090909]" : "text-white"
             }`}
           >
-            {match.firstScore}
+            {props.firstScore}
           </div>
           <div className="h-full w-1/3 flex items-center flex-col md:-space-y-3 justify-center text-[2.8vw] xl:text-[1.6rem] 2xl:text-4xl font-teko">
 			{props.Mode === "Win" ? (
@@ -54,22 +56,22 @@ export default function MatchComponent(props: { Mode: "Win" | "Lose" }) {
               props.Mode === "Win" ? "text-[#090909]" : "text-white"
             }`}
           >
-            {match.secondScore}
+            {props.secondScore}
           </div>
         </div>
         <div className="h-full w-1/3 flex flex-row items-center justify-end md:space-x-4 space-x-2 2xl:space-x-6">
           <div
-            className={`font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[1.6rem] text-center md:block hidden ${
+            className={`font-normal font-teko text-[2.5vw] xl:text-[1.4rem] 2xl:text-[2rem] text-center md:block hidden ${
               props.Mode === "Win" ? "text-[#090909]" : "text-white"
             }`}
           >
-            {match.secondUserName}
+            {props.secondUserName}
           </div>
-          <div className="w-14 md:w-16 h-14 md:h-16 flex items-center justify-center tooltip" data-tip={match.secondUserName}>
+          <div className="w-14 md:w-20 h-14 md:h-20 flex items-center justify-center tooltip" data-tip={props.secondUserName}>
             <img
-              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2360&q=80"
+              src={props.secondUserAvatar}
               alt="profile picture"
-              className="w-12 md:w-16 h-12 md:h-16 rounded-[12px] md:rounded-[20px] "
+              className="w-12 md:w-20 h-12 md:h-20 rounded-[12px] md:rounded-[20px] "
             />
           </div>
         </div>

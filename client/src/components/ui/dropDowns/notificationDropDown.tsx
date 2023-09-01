@@ -5,15 +5,16 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  IconButton,
   Avatar,
   Typography,
   Badge,
 } from "@material-tailwind/react";
 import { ClockIcon } from "@heroicons/react/24/outline";
-import { IconBell } from "@tabler/icons-react";
+import Notification from "../../../../public/notifications.svg";
+import Image from "next/image";
 import { NotificationProps } from "../../../types/dropDownType";
 import { motion } from "framer-motion";
+
 const NotificationDropDown: React.FC<NotificationProps> = (props) => {
   const { notifications, content } = props;
 
@@ -25,14 +26,22 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
   };
   return (
     <Fragment>
-      <div className="flex mb-5 gap-5  bg-CarbonGrey bg-opacity-10 rounded-lg ">
+      <div className="flex min-w-1 items-center justify-center bg-opacity-10 rounded-lg">
         <Menu placement="bottom">
-          <motion.div initial={{ scale: 0.9 }} whileHover={{ scale: 1.2 }}>
+          <motion.div>
             <Badge content={content}>
               <MenuHandler>
-                <IconButton variant="text">
-                  <IconBell className="h-5 w-5 text-Ceramic " />
-                </IconButton>
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.1 }}
+                  className="bg-[#606060]/[12%] w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-[12px] md:rounded-[20px]"
+                >
+                  <Image
+                    src={Notification}
+                    alt="chat notification icon"
+                    className="w-6 sm:w-7 md:w-9"
+                  />
+                </motion.button>
               </MenuHandler>
             </Badge>
           </motion.div>

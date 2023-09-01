@@ -1,3 +1,4 @@
+'use client'
 import Card from "../assets/card";
 
 export default function SignInComponent()

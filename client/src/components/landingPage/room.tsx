@@ -51,8 +51,10 @@ export default function Room() {
   };
 
   // -- HOOKS --
+
   useEffect(() => {
-    rotation.toFixed(1) as unknown as number < -2.3 ? router.push("/login") : null;
+	rotation.toFixed(2) as unknown as number < -2.4 ? router.push("/login") : null;
+
   }, [rotation]);
 
   useEffect(() => {
@@ -74,6 +76,7 @@ export default function Room() {
       containerRef.current?.removeEventListener("wheel", handleWheel);
     };
   }, [isMobile]);
+  
   return (
     <div className="w-full h-full items-center justify-center flex-col bg-[#121A28] overflow-y-hidden">
       <div
@@ -128,7 +131,6 @@ export default function Room() {
               maxPolarAngle={Math.PI / 2}
               rotateSpeed={0.5}
             />
-
             <spotLight
               intensity={0.45}
               position={[-20, 20, 20]}

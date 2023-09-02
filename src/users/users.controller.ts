@@ -2,13 +2,14 @@ import { BadRequestException, Body, Controller, Get, HttpStatus, Patch, Post, Re
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request, Response } from "express";
 import { UsersService } from "./users.service";
-import { UpdateFriendshipDto, UpdateUserDto, SendFriendshipDto } from "src/dto";
+import { UpdateFriendshipDto, UpdateUserDto, SendFriendshipDto, UserSearchDto } from "src/dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { JwtGuard } from "src/auth/guards/guards.jwtGuard";
 import { ResponseInfo } from 'src/shared/responses/responses.sucess-response'
 import * as values from 'src/shared/constants/constants.values'
 import * as  messages from 'src/shared/constants/constants.messages';
 import { PassThrough } from "stream";
+import { MessageBody, SubscribeMessage } from "@nestjs/websockets";
 
 const fileName = 'avatar'
 const tagUserSwagger = 'users'
@@ -19,6 +20,7 @@ const historyGame = 'historyGame/:userId'
 const settings = 'settings'
 const friends = 'friends'
 const friendshipResponse = 'friendshipResponse'
+const search = 'search'
 const sendFriendship = 'sendFriendship'
 const numberOfGamesParam = 'elementsNumer'
 const userNamePraram = 'userName'
@@ -118,8 +120,9 @@ export class UsersController {
 	async getFriends(@Req() req: Request) {
 		const page = Number(req.query.page) || values.NUMBER_OF_FIRST_PAGE;
 		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_FRIENDS;
+		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const friends = await this.userService.getFriends((req.user as any).id, page, elementsNumer);
-		return (friends)
+		return new ResponseInfo(HttpStatus.OK, { loggedUser, friends });
 	}
 
 	@ApiBearerAuth()
@@ -137,5 +140,12 @@ export class UsersController {
 		const user = await this.userService.updateFriendshipStatus((req as any).user.id, data.id, data.status)
 		res.send(user);
 		await this.userService.deleteFriendshipTuple((req as any).user.id, data.id);
+	}
+
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Post(search)
+	async searchUsers(@Body() data: UserSearchDto) {
+		return await this.userService.searchUsersByNames(data.userName);
 	}
 }

@@ -39,3 +39,5 @@ prisma/migrations
 
 # environment variable
 .env
+test.js
+.gitignore

@@ -386,7 +386,7 @@ export class UsersService {
 				}
 			})
 			let friendsData: { pendingFriends: any, acceptedFriends: any, pendingNumber: any, acceptedNumber: any } = { pendingFriends, acceptedFriends, pendingNumber, acceptedNumber }
-			return friendsData;//TODO add protection
+			return friendsData;
 		} catch (error) {
 			this.logger.error(error.message);
 			throw error
@@ -483,6 +483,25 @@ export class UsersService {
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError)
 				throw new NotFoundException(message.ERROR_SENT_INVITATON)
+		}
+	}
+
+	async searchUsersByNames(firstName: string): Promise<any> {
+		try {
+			return await this.prismaService.user.findMany({
+				select: {
+					avatar: true,
+					userName: true
+				},
+				where: {
+					userName: {
+						startsWith: firstName
+					}
+				}
+			})
+		} catch (error) {
+			console.log(error);
+			throw new InternalServerErrorException();
 		}
 	}
 }

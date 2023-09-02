@@ -32,10 +32,9 @@ const GamePage: React.FC = () => {
       "https://cdn.intra.42.fr/users/e91ca4bc18567a537339d354852ecce1/hlalouli.jpg",
   });
 
-  const handlePlay = (map: string, mode: string, category: string) => {
+  const handlePlay = (map: string, mode: string) => {
     setSelectedMap(map);
     setSelectedMode(mode);
-    setSelectedCategory(category);
   };
   const divRef = useRef(null);
   console.log(divRef.current);

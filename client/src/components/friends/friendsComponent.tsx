@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import FriendGame from "./friendGame";
 import { Pagination } from "../ui/pagination/pagination";
 import { useState, useEffect } from "react";

@@ -11,12 +11,26 @@ import { loggedUserAtom } from "@/context/RecoilAtoms";
 import { useRecoilState } from "recoil";
 import { userType } from "./../../types/userType";
 import { userDataAtom } from "@/atom/atomStateuser";
-
+import {
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from "@material-tailwind/react";
 interface OptionProps {
-  onPlay: (map: string, mode: string, category: string) => void;
+  onPlay: (map: string, mode: string) => void;
 }
-const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
-  const [loggedUser, setLoggedUser ] = useRecoilState(loggedUserAtom);
+const Option: React.FC<OptionProps> = ({ onPlay }) => {
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [Game] = useState({
+    userName: "Houssam",
+    userName1: "Aissam",
+    level: 12,
+    level1: 2,
+    image:
+      "https://cdn.intra.42.fr/users/e91ca4bc18567a537339d354852ecce1/hlalouli.jpg",
+  });
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const [beginner, setBeginner] = useState(false);
   const [inrermediare, setInrermediare] = useState(false);
@@ -25,6 +39,12 @@ const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
   const [defi, setDefi] = useState(false);
   const name = "houssam";
   console.log((userData as userType).userName);
+  const [open, setDialogOpen] = useState(false);
+  const [isFindingPlayer, setIsFindingPlayer] = useState(true);
+
+  const handleOpen = () => {
+    setDialogOpen(!open);
+  };
   const handleTime = () => {
     setTime(!time);
     setDefi(false);
@@ -57,27 +77,19 @@ const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
     } else if (advenced) {
       selectedMap = "Advanced";
     }
-  
+
     let selectedMode: string | undefined;
     if (time) {
       selectedMode = "Time";
     } else if (defi) {
       selectedMode = "Defi";
     }
-    let selectedCategory: string | undefined;
-    if ((userData as userType).userName === name) {
-      alert("You are already waiting for a game");
-      selectedCategory = "waiting";
-    }else{
-      alert("You are already playing for a game");
-      selectedCategory = "playing";
-    }
+    setDialogOpen(false);
     if (selectedMap && selectedMode) {
-      onPlay(selectedMap, selectedMode, selectedCategory);
+      onPlay(selectedMap, selectedMode);
     } else {
       console.log("Select a map and a mode to play");
     }
-
   };
   return (
     <div className="w-full 2xl:h-full flex  flex-col gap-4 md:gap-6  ">
@@ -95,7 +107,11 @@ const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
             </div>
             <button
               className={`w-full 2xl:h-[110px] h-[100px] flex flex-row items-center justify-center rounded-3xl bg-opacity-10 gap-2 
-          ${beginner ? "bg-[#24A6CF] hover:animate-pulse" : "bg-[#606060] hover:animate-pulse"}`}
+          ${
+            beginner
+              ? "bg-[#24A6CF] hover:animate-pulse"
+              : "bg-[#606060] hover:animate-pulse"
+          }`}
               onClick={handleBeginner}
             >
               <div className="w-[50%] 2xl:h-[90px] flex items-center justify-start ">
@@ -107,15 +123,21 @@ const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
                 </span>
               </div>
 
-              <div className={`w-[40%] 2xl:h-[90px] flex items-center justify-center transition-opacity duration-300 ${
+              <div
+                className={`w-[40%] 2xl:h-[90px] flex items-center justify-center transition-opacity duration-300 ${
                   beginner ? "opacity-100" : "opacity-50"
-                }`}>
+                }`}
+              >
                 <Image src={Beginner} alt="Beginner" width={130} />
               </div>
             </button>
             <button
               className={`w-full 2xl:h-[110px] h-[100px] flex flex-row items-center justify-center rounded-3xl bg-opacity-10 gap-2 
-                ${inrermediare ? "bg-[#E79BA5] hover:animate-pulse" : "bg-[#606060] hover:animate-pulse"}`}
+                ${
+                  inrermediare
+                    ? "bg-[#E79BA5] hover:animate-pulse"
+                    : "bg-[#606060] hover:animate-pulse"
+                }`}
               onClick={handleIntermediare}
             >
               <div className="w-[50%] h-[90px] flex items-center justify-start">
@@ -137,10 +159,16 @@ const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
             </button>
             <button
               className={`w-full 2xl:h-[110px] h-[100px]  flex flex-row items-center justify-center rounded-3xl bg-opacity-10 gap-2 
-            ${advenced ? "bg-[#FFCC80] hover:animate-pulse" : "bg-[#606060] hover:animate-pulse"}`}
+            ${
+              advenced
+                ? "bg-[#FFCC80] hover:animate-pulse"
+                : "bg-[#606060] hover:animate-pulse"
+            }`}
               onClick={handleAdvenced}
             >
-              <div className={`w-[50%] h-[90px] flex items-center justify-start `}>
+              <div
+                className={`w-[50%] h-[90px] flex items-center justify-start `}
+              >
                 <span
                   className="font-teko text-[#E4E5E7] text-[1.5rem] md:text-[2rem] lg:text-[2.5rem] 2xl:text-[2rem] 3xl:text-[4rem] transition-colors duration-300"
                   style={{ textShadow: "3px 5px 25px #FFCC80" }}
@@ -149,9 +177,11 @@ const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
                 </span>
               </div>
 
-              <div className={`w-[40%] h-[90px] flex items-center justify-center transition-opacity duration-300 ${
+              <div
+                className={`w-[40%] h-[90px] flex items-center justify-center transition-opacity duration-300 ${
                   advenced ? "opacity-100" : "opacity-50"
-                }`}>
+                }`}
+              >
                 <Image src={Advanced} alt="Advanced" width={130} />
               </div>
             </button>
@@ -199,7 +229,132 @@ const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
               </button>
             </div>
             <div className="w-full 2xl:h-[110px] h-[100px] md:h-[100px] flex items-center justify-center">
-              <PrimaryButton text="Play" onClick={handlePlay} />
+              <PrimaryButton text="Play" onClick={handleOpen} />
+              {userData && (userData as userType).userName === name ? (
+                <>
+                  <Dialog
+                    className=" bg-CarbonGrey bg-opacity-30 h-[400px] w-[200px]"
+                    open={open}
+                    handler={handleOpen}
+                  >
+                    <DialogHeader className=" text-GreenishYellow font-teko flex items-center justify-center text-[2rem] ">
+                      Matching Queye
+                    </DialogHeader>
+                    <DialogBody className="h-[250px]" divider>
+                      <div className="w-full flex flex-row items-start justify-center ">
+                        <div className="w-[40%] h-[200px]  flex  items-center justify-center flex-row ">
+                          <div
+                            className="3xl:w-[30%] 2xl:w-[40%] xl:w-full lg:w-full h-[80%] flex items-center justify-center tooltip  "
+                            data-tip={`${Game.userName}  ${Game.level}`}
+                          >
+                            <img
+                              src={Game.image}
+                              alt="profile picture"
+                              className="  2xl:w-16  h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
+                            />
+                          </div>
+                        </div>
+                        <div className="w-[20%] h-[200px] flex items-center justify-center font-teko text-[5rem] text-GreenishYellow ">
+                          vs
+                        </div>
+                        <div className="w-[40%] h-[200px] flex flex-row  items-center justify-center">
+                          {isFindingPlayer ? (
+                            <div className="spinner">Loading...</div>
+                          ) : (
+                            <div
+                              className="3xl:w-[30%] 2xl:w-[40%] xl:w-full lg:w-full h-[80%] flex items-center justify-center tooltip"
+                              data-tip={`${Game.userName}  ${Game.level}`}
+                            >
+                              <img
+                                src={Game.image}
+                                alt="profile picture"
+                                className="2xl:w-16 h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </DialogBody>
+                    <DialogFooter>
+                      <Button
+                        variant="text"
+                        color="red"
+                        onClick={handleOpen}
+                        className="mr-1"
+                      >
+                        <span>Cancel</span>
+                      </Button>
+                      <Button
+                        variant="gradient"
+                        color="green"
+                        onClick={handlePlay}
+                      >
+                        <span>Confirm</span>
+                      </Button>
+                    </DialogFooter>
+                  </Dialog>
+                </>
+              ) : (
+                <>
+                  <Dialog
+                    className=" bg-CarbonGrey bg-opacity-30 h-[400px] w-[200px]"
+                    open={open}
+                    handler={handleOpen}
+                  >
+                    <DialogHeader className=" text-GreenishYellow font-teko flex items-center justify-center text-[2rem] ">
+                      Friends
+                    </DialogHeader>
+                    <DialogBody className="h-[250px]" divider>
+                      <div className="w-full flex flex-row items-start justify-center ">
+                        <div className="w-[40%] h-[200px]  flex  items-center justify-center flex-row ">
+                          <div
+                            className="3xl:w-[30%] 2xl:w-[40%] xl:w-full lg:w-full h-[80%] flex items-center justify-center tooltip  "
+                            data-tip={`${Game.userName}  ${Game.level}`}
+                          >
+                            <img
+                              src={Game.image}
+                              alt="profile picture"
+                              className="  2xl:w-16  h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
+                            />
+                          </div>
+                        </div>
+                        <div className="w-[20%] h-[200px] flex items-center justify-center font-teko text-[5rem] text-GreenishYellow ">
+                          vs
+                        </div>
+                        <div className="w-[40%] h-[200px] flex flex-row  items-center justify-center ">
+                          <div
+                            className="3xl:w-[30%] 2xl:w-[40%] xl:w-full lg:w-full h-[80%] flex items-center justify-center tooltip  "
+                            data-tip={`${Game.userName}  ${Game.level}`}
+                          >
+                            <img
+                              src={Game.image}
+                              alt="profile picture"
+                              className="  2xl:w-16  h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </DialogBody>
+                    <DialogFooter>
+                      <Button
+                        variant="text"
+                        color="red"
+                        onClick={handleOpen}
+                        className="mr-1"
+                      >
+                        <span>Cancel</span>
+                      </Button>
+                      <Button
+                        variant="gradient"
+                        color="green"
+                        onClick={handlePlay}
+                      >
+                        <span>Confirm</span>
+                      </Button>
+                    </DialogFooter>
+                  </Dialog>
+                </>
+              )}
             </div>
           </div>
         </div>

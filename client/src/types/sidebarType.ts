@@ -5,9 +5,9 @@ import racket from "../../public/racket.svg";
 import chat from "../../public/chat.svg";
 
 export const navigation = [
-  { name: "profile", icon: profile },
+  { name: `profile`, icon: profile },
   { name: "game", icon: racket },
-  { name: "chat/111", icon: chat },
+  { name: "chat", icon: chat },
   { name: "friends", icon: friends },
   { name: "settings", icon: settings },
 ];

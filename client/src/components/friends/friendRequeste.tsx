@@ -33,7 +33,7 @@ const friendRequeste = () => {
         },
       });
       const userId = userState.userName;
-      const pending = res.data.pendingFriends;
+      const pending = res.data.response.friends.pendingFriends;
       const filteredPending = pending.map(({ sender, status }:any) => ({
         id: sender.id,
         userName: sender.userName,
@@ -61,8 +61,10 @@ const friendRequeste = () => {
       <div className="w-full h-full  flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-center space-y-10">
       <div className="w-full h-[80%]  flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-start space-y-10">
       {pendingFriendState.length === 0 ? (
-      <div className="flex items-center justify-center">
-       <IconFriendsOff className="w-8 md:w-16 h-8 md:h-16"/>
+      <div className="w-full h-full flex items-center justify-center">
+        <div>
+       <IconFriendsOff className="w-8 md:w-24 h-8 md:h-24"/>
+       </div>
       </div>
     ) : (Array.isArray(pendingFriendState) &&
       pendingFriendState.map((request, index) => (

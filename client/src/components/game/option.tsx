@@ -7,17 +7,24 @@ import Defi from "./../../../public/Defi.svg";
 import PrimaryButton from "../../components/ui/buttons/primaryButton";
 import Image from "next/image";
 import { useState } from "react";
+import { loggedUserAtom } from "@/context/RecoilAtoms";
+import { useRecoilState } from "recoil";
+import { userType } from "./../../types/userType";
+import { userDataAtom } from "@/atom/atomStateuser";
 
 interface OptionProps {
-  onPlay: (map: string, mode: string) => void;
+  onPlay: (map: string, mode: string, category: string) => void;
 }
 const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
+  const [loggedUser, setLoggedUser ] = useRecoilState(loggedUserAtom);
+  const [userData, setUserData] = useRecoilState(userDataAtom);
   const [beginner, setBeginner] = useState(false);
   const [inrermediare, setInrermediare] = useState(false);
   const [advenced, setAdvenced] = useState(false);
   const [time, setTime] = useState(false);
   const [defi, setDefi] = useState(false);
-
+  const name = "houssam";
+  console.log((userData as userType).userName);
   const handleTime = () => {
     setTime(!time);
     setDefi(false);
@@ -57,12 +64,20 @@ const Option: React.FC<OptionProps> = ({ onPlay,  }) => {
     } else if (defi) {
       selectedMode = "Defi";
     }
-  
+    let selectedCategory: string | undefined;
+    if ((userData as userType).userName === name) {
+      alert("You are already waiting for a game");
+      selectedCategory = "waiting";
+    }else{
+      alert("You are already playing for a game");
+      selectedCategory = "playing";
+    }
     if (selectedMap && selectedMode) {
-      onPlay(selectedMap, selectedMode);
+      onPlay(selectedMap, selectedMode, selectedCategory);
     } else {
       console.log("Select a map and a mode to play");
     }
+
   };
   return (
     <div className="w-full 2xl:h-full flex  flex-col gap-4 md:gap-6  ">

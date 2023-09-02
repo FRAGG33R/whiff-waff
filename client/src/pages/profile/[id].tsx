@@ -32,6 +32,7 @@ export const getServerSideProps = withIronSessionSsr(
       console.log("Session : ", req.session);
       const token = await req.session.token.token;
       const { id } = params;
+      console.log("id : ", id);
 
       const res = await api.get(`/users/profile/${id}`, {
         headers: {

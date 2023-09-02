@@ -9,22 +9,17 @@ import { friendDataAtom } from "../atom/atomStateFriend";
 import { pandingDataAtom } from "../atom/atomStatePanding";
 import { User, UserFriend } from "./../types/userFriendType";
 import { parseJwtSsr } from "@/lib/jwtTokenSsr";
+import { loggedUserFriendsAtom } from "@/context/RecoilAtoms";
+import { userType } from "@/types/userType";
 
 
-export default function Friends(props: UserFriend) {
+export default function Friends( props: { data: userType ,props: UserFriend }) {
   const [userDataFriend, setUserDataFriend] = useRecoilState(friendDataAtom);
   const [userDataPanding, setUserDataPanding] = useRecoilState(pandingDataAtom);
-
-//  setTimeout(() => {
-//     setUserDataFriend(props.secondData );
-//     setUserDataPanding(props.firstData );
-//   }, 0); 
-  setUserDataFriend(props.secondData);
-  setUserDataPanding(props.firstData);
-
-
-
-
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserFriendsAtom);
+  setLoggedUser((props.data as any).loggedUser);
+  setUserDataFriend((props as any ).secondData);
+  setUserDataPanding((props as any).firstData);
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       <FriendsPage />
@@ -52,9 +47,8 @@ export const getServerSideProps = withIronSessionSsr(
           },
         }
       );
-
-      const accepted = res.data.acceptedFriends;
-      const pending = res.data.pendingFriends;
+      const accepted = res.data.response.friends.acceptedFriends;
+      const pending = res.data.response.friends.pendingFriends;
       const filteredAccepted = accepted
         .filter(
           (friends:any) => friends.receiver.id === userId
@@ -68,6 +62,7 @@ export const getServerSideProps = withIronSessionSsr(
         }));
       return {
         props: {
+          data: res.data.response ,
           firstData: filteredPending,
           secondData: filteredAccepted,
         },

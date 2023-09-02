@@ -23,3 +23,10 @@ export const matchHistoryAtom = atom({
 	key: `matchHistory-${Math.random()}`,
 	default: [],
   });
+
+  export const loggedUserFriends = createContext<loggedUserType | undefined>(undefined);
+ 
+  export const loggedUserFriendsAtom = atom({
+	key: `loggedUserFriends-${Math.random()}`,
+	default: {},
+  });

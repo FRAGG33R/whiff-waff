@@ -12,20 +12,17 @@ import { loggedUserAtom } from "@/context/RecoilAtoms";
 import { useRecoilState } from "recoil";
 import { userType } from "./../../types/userType";
 import { userDataAtom } from "@/atom/atomStateuser";
-import { parseJwt } from "@/lib/parseJwt";
 
 
 const GamePage: React.FC = () => {
   const [selectedMap, setSelectedMap] = useState<string>("");
   const [selectedMode, setSelectedMode] = useState<string>("");
+  const  [selectedCategory, setSelectedCategory] = useState<string>("");
   const [userData, setUserData] = useRecoilState(userDataAtom);
+  const [loggedUser, setLoggedUser ] = useRecoilState(loggedUserAtom);
 
 
 
-  const handlePlay = (map: string, mode: string) => {
-    setSelectedMap(map);
-    setSelectedMode(mode);
-  };
   const [Game] = useState({
     userName: "Houssam",
     userName1: "Aissam",
@@ -34,6 +31,12 @@ const GamePage: React.FC = () => {
     image:
       "https://cdn.intra.42.fr/users/e91ca4bc18567a537339d354852ecce1/hlalouli.jpg",
   });
+
+  const handlePlay = (map: string, mode: string, category: string) => {
+    setSelectedMap(map);
+    setSelectedMode(mode);
+    setSelectedCategory(category);
+  };
   const divRef = useRef(null);
   console.log(divRef.current);
   return (

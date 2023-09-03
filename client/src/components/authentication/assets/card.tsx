@@ -101,7 +101,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
 
   const signIn = async () => {
     router.push(
-      "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-82573d757bf7f76ec64fd426f2b6956cca48fda1f72cb2028a189dedcc8715f0&redirect_uri=http%3A%2F%2Fe3r10p12.1337.ma%3A3000%2Fintra_callback&response_type=code"
+      "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-8593bd13a36671c41af1aca8f8a825ef77e1a7e5901bf60eeb024c6b8ed7e9d9&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fintra_callback&response_type=code"
     );
   };
 

@@ -3,6 +3,7 @@ import { UsersModule } from 'src/users/users.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ChatModule } from 'src/chat/chat.module';
 @Module({
 	imports: [UsersModule, AuthModule, ConfigModule.forRoot({
 		isGlobal: true,
@@ -15,7 +16,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 				pass: process.env.DEFAULT_MAIL_PASSWORD
 			}
 		}
-	})],
+	}), ChatModule],
 })
 
 export class AppModule { }

@@ -488,6 +488,8 @@ export class UsersService {
 
 	async searchUsersByNames(firstName: string): Promise<any> {
 		try {
+			if (!firstName)
+				return [];
 			return await this.prismaService.user.findMany({
 				select: {
 					avatar: true,

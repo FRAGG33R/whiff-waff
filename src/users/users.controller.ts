@@ -146,6 +146,7 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Post(search)
 	async searchUsers(@Body() data: UserSearchDto) {
-		return await this.userService.searchUsersByNames(data.userName);
+		const users = await this.userService.searchUsersByNames(data.userName);
+		return new ResponseInfo(HttpStatus.OK, users);
 	}
 }

@@ -42,10 +42,52 @@ export default function Conversation() {
       time: "3:12",
       userName: "Navoos",
     },
+    {
+      type: "receiver",
+      content:
+        "Lorem Ipsum dolar sign nisi an abstruction of the middle, lines are broken !",
+      time: "2:33",
+      userName: "Navoos",
+    },
+    {
+      type: "sender",
+      content:
+        "Lorem Ipsum dolar sign nisi an abstruction of the middle, lines are broken !",
+      time: "4:13",
+      userName: "Navoos",
+    },
+    {
+      type: "receiver",
+      content:
+        "Lorem Ipsum dolar sign nisi an abstruction of the middle, lines are broken !",
+      time: "3:12",
+      userName: "Navoos",
+    },
+    {
+      type: "sender",
+      content:
+        "Lorem Ipsum dolar sign nisi an abstruction of the middle, lines are broken !",
+      time: "2:33",
+      userName: "Navoos",
+    },
+    {
+      type: "receiver",
+      content:
+        "Lorem Ipsum dolar sign nisi an abstruction of the middle, lines are broken !",
+      time: "4:13",
+      userName: "Navoos",
+    },
+    {
+      type: "sender",
+      content:
+        "Lorem Ipsum dolar sign nisi an abstruction of the middle, lines are broken !",
+      time: "3:12",
+      userName: "Navoos",
+    },
   ];
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full overflow-y-scroll">
       {conversation.map((item, index) => {
         return (
           <div className={`chat ${item.type === "receiver" ? 'chat-end text-white' : "chat-start text-black"} `}>
@@ -54,7 +96,7 @@ export default function Conversation() {
                 <div>{item.userName}</div>
                 <div>{item.time}</div>
               </div>
-              <div className="font-poppins">
+              <div className="font-poppins w-full">
                 It's over Anakin, I have the high ground. 
               </div>
             </div>

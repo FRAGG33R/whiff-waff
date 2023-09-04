@@ -17,7 +17,7 @@ export default function ChatComponent() {
             avatar="https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638"
           />
         </div>
-        <div className="w-full xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] flex flex-row space-x-2 md:space-x-10 overflow-y-scroll overflow-x-hidden lg:overflow-y-auto ">
+        <div className="w-full xl:h-[91%] md:h-[93%] lg:h-[91.5%] h-[91.5%] flex flex-row space-x-2 md:space-x-10 overflow-y-hidden overflow-x-hidden">
           <div className="h-full min-w-[80px] max-w-[400px] w-1/4 md:w-1/3 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]"></div>
           <div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
             <div className="w-full h-16 md:h-24 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
@@ -27,9 +27,12 @@ export default function ChatComponent() {
                 avatar="https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638"
               />
             </div>
-            <div className="w-full flex-1 flex itmes-center justify-center py-4 md:py-10 px-4 md:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
-              <div className="w-full h-full">
+            <div className="w-full  h-[945px] flex itmes-center justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+              <div className="w-full h-full flex flex-col items-center justify-between space-y-2 ">
 				<Conversation />
+				<div className="h-16 md:h-24 w-full flex items-end justify-center ">
+				<input type="text" placeholder="Write a message..." className="input input-ghost w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] text-md md:text-[1.3rem] tracking-wide text-HokiCl caret-GreenishYellow placeholder:text-HokiCl focus:text-HokiCl bg-[#606060]/[12%] focus:bg-[#606060]/[12%] focus:ring-0 focus:outline-none font-poppins " />
+				</div>
 			  </div>
             </div>
           </div>

@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 export default function Conversation() {
   const conversation = [
     {
@@ -85,9 +87,16 @@ export default function Conversation() {
       userName: "Navoos",
     },
   ];
+  const conversationRef = useRef(null);
+  useEffect(() => {
+    const conversationDiv : any = conversationRef.current;
+    if (conversationDiv) {
+      conversationDiv.scrollTop = conversationDiv.scrollHeight;
+    }
+  }, []);
 
   return (
-    <div className="w-full h-full overflow-y-scroll">
+    <div ref={conversationRef} className="w-full h-full overflow-y-scroll">
       {conversation.map((item, index) => {
         return (
           <div className={`chat ${item.type === "receiver" ? 'chat-end text-white' : "chat-start text-black"} `}>

@@ -3,7 +3,7 @@ import NavBar from "../layout/navBar";
 import SideBar from "../layout/sideBar";
 import ScoreGame from "./scoreGame";
 import Option from "./option";
-import GamePing from './gameComponent'
+import GamePing from "./gameComponent";
 import LevelIcon from "../../../public/level.svg";
 import Challenger from "../../..//public/challenger.svg";
 import PingPongTable from "./Rectangle";
@@ -13,15 +13,12 @@ import { useRecoilState } from "recoil";
 import { userType } from "./../../types/userType";
 import { userDataAtom } from "@/atom/atomStateuser";
 
-
 const GamePage: React.FC = () => {
   const [selectedMap, setSelectedMap] = useState<string>("");
   const [selectedMode, setSelectedMode] = useState<string>("");
-  const  [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [userData, setUserData] = useRecoilState(userDataAtom);
-  const [loggedUser, setLoggedUser ] = useRecoilState(loggedUserAtom);
-
-
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
 
   const [Game] = useState({
     userName: "Houssam",
@@ -41,11 +38,15 @@ const GamePage: React.FC = () => {
   return (
     <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row overflow-y-hidden">
       <div className="h-full   min-w-[40px] w-[30px] md:w-[100px]">
-      <SideBar />
+        <SideBar />
       </div>
       <div className="h-full  w-[82%] md:w-[90%] xl:w-[95%] space-y-2 md:space-y-8 ">
         <div className="h-[45px]   md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
-        <NavBar level={String((userData as userType).stat.level)} avatar={(userData as userType).avatar} useName={(userData as userType).userName}/>
+          <NavBar
+            level={String((userData as userType).stat.level)}
+            avatar={(userData as userType).avatar}
+            useName={(userData as userType).userName}
+          />
         </div>
         <div className="w-[99%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10 flex flex-col items-start justify-start  ">
           <div className="w-full h-[140px]  2xl:flex  items-center justify-center flex-row gap-2 xl:block hidden">
@@ -82,11 +83,7 @@ const GamePage: React.FC = () => {
                     </span>
                   </div>
                   <div className=" lg:w-[40%] md:w-[40%] sm:w-[40%] w-[50%] h-full flex items-center justify-center  ">
-                    <Image
-                      src={Challenger}
-                      alt="expert icon"
-                      width={70}
-                    />
+                    <Image src={Challenger} alt="expert icon" width={70} />
                   </div>
                 </div>
                 <div className="w-[20%] md:w-[15%] lg:w-[20%] lg:h-[100px] h-[100px] md:h-[100px]  flex items-center justify-center gap-2 ">
@@ -97,12 +94,10 @@ const GamePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div
-                className="w-full 2xl:w-full 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl"
-              >
+              <div className="w-full 2xl:w-full 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl">
                 {selectedMap && selectedMode && (
-        <GamePing map={selectedMap} mode={selectedMode} />
-      )}
+                  <GamePing map={selectedMap} mode={selectedMode} />
+                )}
               </div>
               <div className="w-full lg:h-[130px] h-[130px] md:h-[130px] xl:hidden flex items-center justify-end  gap-4 ">
                 <div className="w-[20%] md:w-[15%] lg:w-[20%] lg:h-[100px] h-[100px] md:h-[100px]  flex items-center justify-center gap-2 ">
@@ -113,12 +108,8 @@ const GamePage: React.FC = () => {
                   </div>
                 </div>
                 <div className="w-[80%] md:w-[70%] lg:w-[60%] lg:h-[80px] h-[80px] md:h-[80px]  flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%] ">
-                <div className=" lg:w-[40%] md:w-[40%] sm:w-[40%] w-[50%] h-full flex items-center justify-center  ">
-                    <Image
-                      src={Challenger}
-                      alt="expert icon"
-                      width={70}
-                    />
+                  <div className=" lg:w-[40%] md:w-[40%] sm:w-[40%] w-[50%] h-full flex items-center justify-center  ">
+                    <Image src={Challenger} alt="expert icon" width={70} />
                   </div>
                   <div className=" lg:w-[40%] md:w-[40%] sm:w-[40%] sm:flex flex-row justify-center lg:space-x-3  lg:space-y-4  space-x-3 space-y-4 hidden ">
                     <Image
@@ -134,7 +125,7 @@ const GamePage: React.FC = () => {
                       {Game.level}
                     </span>
                   </div>
-                  
+
                   <div className="h-full lg:w-[20%] md:w-[20%] sm:w-[20%] w-[50%] flex flex-row items-center md:space-x-4 2xl:space-x-2  ">
                     <div
                       className="h-full w-full flex items-center justify-center tooltip  "
@@ -152,7 +143,7 @@ const GamePage: React.FC = () => {
             </div>
 
             <div className="w-full 2xl:w-[30%] 2xl:h-full xl:h-[900px] lg:h-[900px] md:h-[900px] h-[900px]  bg-CarbonGrey bg-opacity-10  rounded-xl ">
-            <Option onPlay={handlePlay} />
+              <Option onPlay={handlePlay} />
             </div>
           </div>
         </div>

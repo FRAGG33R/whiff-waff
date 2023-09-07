@@ -1,20 +1,13 @@
 import "../app/globals.css";
 import SettingPage from "@/components/settings/settingPage";
-import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
-import {   useRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { userDataAtom} from "../atom/atomStateuser";
-import { userType } from "@/types/userType";
 import { api } from "@/components/axios/instance";
-import { useEffect } from "react";
-
 
 export default function Settings(props:{data:any}) {
-
-  
   const [userData, setUserData] = useRecoilState(userDataAtom);
-    setUserData(props.data.response.user);
-
+  setUserData(props.data.response.user);
 
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
@@ -26,23 +19,21 @@ export default function Settings(props:{data:any}) {
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }: any) {
-    
-   
     try {
       const token = await req.session.token.token;
-      console.log("token: ", token);
+    //   console.log("token: ", token);
 
       const res = await api.get("/users/me/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("res: ", res.data);
+    //   console.log("res: ", res.data);
       return {
         props: { data: res.data},
       };
     } catch (error) {
-      console.log(error);
+    //   console.log(error);
       return {
         redirect: {
           destination: "/login",

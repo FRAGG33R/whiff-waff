@@ -5,11 +5,10 @@ import {
   MenuHandler,
   MenuList,
   MenuItem,
-  IconButton,
   Avatar,
   Typography,
-  Badge,
 } from "@material-tailwind/react";
+import { Badge as MaterialUIBadge } from "@mui/material";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import chatIcon from "../../../../public/chatNotification.svg";
 import { NotificationProps } from "../../../types/dropDownType";
@@ -29,7 +28,7 @@ const MessageDropDown: React.FC<NotificationProps> = (props) => {
       <div className="flex min-w-1 h-full items-center justify-center rounded-lg ">
         <Menu placement="bottom">
           <motion.div className="flex items-center justify-center">
-            <Badge content={content}>
+            <MaterialUIBadge  color="error" badgeContent={content}>
               <MenuHandler>
                 <motion.button whileTap={{scale : 0.9}} whileHover={{ scale : 1.1}} className="bg-[#606060]/[12%] w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-[12px] md:rounded-[20px]">
                   <Image
@@ -39,7 +38,7 @@ const MessageDropDown: React.FC<NotificationProps> = (props) => {
                   />
                 </motion.button>
               </MenuHandler>
-            </Badge>
+            </MaterialUIBadge>
           </motion.div>
           <MenuList className="flex flex-col bg-HokiCl border-0">
             <p className="flex items-center justify-center text-Mercury font-teko text-2xl">

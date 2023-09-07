@@ -1,10 +1,8 @@
 import "../app/globals.css";
 import SettingPage from "@/components/settings/settingPage";
-import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
 import {   useRecoilState } from "recoil";
 import { userDataAtom} from "../atom/atomStateuser";
-import { userType } from "@/types/userType";
 import { api } from "@/components/axios/instance";
 import { useEffect } from "react";
 
@@ -13,7 +11,10 @@ export default function Settings(props:{data:any}) {
 
   
   const [userData, setUserData] = useRecoilState(userDataAtom);
+
     setUserData(props.data.response.user);
+
+
 
 
   return (

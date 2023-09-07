@@ -16,7 +16,6 @@ const friendRequeste = () => {
   const [pendingFriendState, setPendingFriendState] = useState<User[]>(pendingFriends as User[]); 
  const [user, setUser] = useRecoilState(userDataAtom);
   const [userState, setUserState] = useState<userType>(user as userType)
-  const [refresh, setRefresh] = useState<number>(0);
   useEffect(() => {
     setPendingFriendState(pendingFriends as User[]);
 
@@ -50,11 +49,9 @@ const friendRequeste = () => {
   useEffect(() => {
     fetchPandingData();
   
-  }, [active, refresh]);
+  }, [active]);
 
-  const refetch = () => {
-    setRefresh(refresh + 1);
-  };
+
 
   return (
     <div className="w-full h-[90%] flex items-center rounded-[12px] md:rounded-[20px]  ">

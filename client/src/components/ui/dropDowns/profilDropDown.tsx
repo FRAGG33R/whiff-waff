@@ -77,8 +77,8 @@ const ProfileDropDown = () => {
               color="#CBFC01"
               className="flex items-center"
             />
-            <Typography
-              variant="body2"
+            <Typography 
+              variant="h1"
               className="font-teko text-xl text-Mercury"
             >
               My Profile
@@ -98,7 +98,7 @@ const ProfileDropDown = () => {
               className="flex items-center"
             />
             <Typography
-              variant="body2"
+              variant="h1"
               className="font-teko text-xl text-Mercury"
             >
               Edit Profile
@@ -113,7 +113,7 @@ const ProfileDropDown = () => {
           >
             <Image src={Logout} alt="logout" width={18} />
             <Typography
-              variant="body2"
+              variant="h1"
               className="font-teko text-xl text-Mercury "
             >
               Log Out

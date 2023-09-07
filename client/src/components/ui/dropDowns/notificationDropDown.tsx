@@ -7,8 +7,8 @@ import {
   MenuItem,
   Avatar,
   Typography,
-  Badge,
 } from "@material-tailwind/react";
+import { Badge as MaterialUIBadge } from "@mui/material";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import Notification from "../../../../public/notifications.svg";
 import Image from "next/image";
@@ -29,7 +29,7 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
       <div className="flex min-w-1 items-center justify-center bg-opacity-10 rounded-lg">
         <Menu placement="bottom">
           <motion.div>
-            <Badge content={content}>
+            <MaterialUIBadge  color="error" badgeContent={content}>
               <MenuHandler>
                 <motion.button
                   whileTap={{ scale: 0.9 }}
@@ -43,7 +43,7 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
                   />
                 </motion.button>
               </MenuHandler>
-            </Badge>
+            </MaterialUIBadge>
           </motion.div>
           <MenuList className="flex flex-col  bg-HokiCl border-0 ">
             <p className="flex items-center justify-center text-Mercury font-teko text-2xl">

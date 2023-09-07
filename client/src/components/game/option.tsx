@@ -17,6 +17,7 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
+  Spinner
 } from "@material-tailwind/react";
 interface OptionProps {
   onPlay: (map: string, mode: string) => void;
@@ -250,7 +251,7 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
                             <img
                               src={Game.image}
                               alt="profile picture"
-                              className="  2xl:w-16  h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
+                              className="  2xl:w-20  h-12 md:h-20 rounded-[12px] md:rounded-[20px]"
                             />
                           </div>
                         </div>
@@ -259,7 +260,10 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
                         </div>
                         <div className="w-[40%] h-[200px] flex flex-row  items-center justify-center">
                           {isFindingPlayer ? (
-                            <div className="spinner">Loading...</div>
+                            <div className="text-GreenishYellow  font-teko text-[2rem]">waiting...
+                            <Spinner color="indigo" className="h-20 w-20 " />
+                            
+                            </div>
                           ) : (
                             <div
                               className="3xl:w-[30%] 2xl:w-[40%] xl:w-full lg:w-full h-[80%] flex items-center justify-center tooltip"

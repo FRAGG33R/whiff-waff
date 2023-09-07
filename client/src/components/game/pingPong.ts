@@ -1,3 +1,4 @@
+
 import Matter, { Engine, Render, World, Bodies , Pair} from 'matter-js';
 class PingPongTable {
   private engine: any;
@@ -19,6 +20,7 @@ class PingPongTable {
   private obstacle5: any;
   private obstacle6: any;
 
+
   constructor(element: HTMLElement, tableOption: string, UrlTable: string) {
     this.element = element;
     this.engine = Matter.Engine.create({gravity: {x: 0, y: 0}});
@@ -32,7 +34,7 @@ class PingPongTable {
         width: width,
         height: height,
         wireframes: false,
-        background: "#E4E5E7"
+        background: "#D2386D"
       },
     });
 
@@ -40,7 +42,7 @@ class PingPongTable {
     this.render.canvas.style.backgroundSize = "cover";
     this.render.canvas.style.position = "absolute";
     if (tableOption === 'Beginner') {
-      this.initializeElements(width, height, tableBorderThickness, "#E4E5E7", "#6C7FA7", "#CBFC01");
+      this.initializeElements(width, height, tableBorderThickness, "#E4E5E7", "#D2386D", "#CBFC01");
     } else if (tableOption === 'Intermediate') {
       this.initializeElements(width, height, tableBorderThickness, "#351F60", "#6C7FA7", "#D2386D");
     } else if (tableOption === 'Advanced') {
@@ -332,4 +334,3 @@ class PingPongTable {
 }
 
 export default PingPongTable;
-

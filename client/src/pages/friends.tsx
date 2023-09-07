@@ -17,9 +17,11 @@ export default function Friends( props: { data: userType ,props: UserFriend }) {
   const [userDataFriend, setUserDataFriend] = useRecoilState(friendDataAtom);
   const [userDataPanding, setUserDataPanding] = useRecoilState(pandingDataAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserFriendsAtom);
-  setLoggedUser((props.data as any).loggedUser);
-  setUserDataFriend((props as any ).secondData);
-  setUserDataPanding((props as any).firstData);
+ 
+    setLoggedUser((props.data as any).loggedUser);
+    setUserDataFriend((props as any ).secondData);
+    setUserDataPanding((props as any).firstData);
+
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       <FriendsPage />

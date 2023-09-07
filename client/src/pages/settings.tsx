@@ -22,7 +22,6 @@ export const getServerSideProps = withIronSessionSsr(
     try {
       const token = await req.session.token.token;
     //   console.log("token: ", token);
-
       const res = await api.get("/users/me/", {
         headers: {
           Authorization: `Bearer ${token}`,

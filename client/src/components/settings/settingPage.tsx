@@ -12,11 +12,10 @@ import { UseTrailProps } from "@react-spring/core";
 const SettingPage = () => {
 
   const [userData, setUserData] = useRecoilState(userDataAtom);
-  
   return (
     <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row overflow-y-hidden">
-      <div className="h-full  min-w-[40px] w-[30px] md:w-[100px]">
-        <SideBar/>
+      <div className="h-full min-w-[40px] w-[30px] md:w-[100px]">
+        <SideBar />
       </div>
       <div className="h-full w-[77%] md:w-[90%] xl:w-[95%] space-y-2 md:space-y-8">
       <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full ">
@@ -27,7 +26,7 @@ const SettingPage = () => {
             <div className="w-full xl:w-[60%] h-full  bg-CarbonGrey bg-opacity-10  rounded-xl ">
               <InformationsSetting />
             </div>
-            <div className="w-full xl:w-[40%] h-full  bg-CarbonGrey bg-opacity-10  rounded-xl ">
+            <div className="w-full xl:w-[40%] h-full bg-CarbonGrey bg-opacity-10 rounded-xl">
               <TwoFactor />
             </div>
           </div>

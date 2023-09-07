@@ -17,9 +17,9 @@ export default function IntraCallback() {
         router.push(`/profile/${parseJwt(authRes.data.token).userName}`);
       }
     } catch (err) {
-      console.log("err");
+      console.log(err);
       localStorage.removeItem("token");
-      router.push("/login");
+    //   router.push("/login");
     }
   };
 

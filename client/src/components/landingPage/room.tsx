@@ -17,6 +17,7 @@ export default function Room() {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [progressBar, setProgressBar] = useState<number>(0);
   const [isLightOn, setIsLightOn] = useState(true);
+  const [isRedirect, setIsRedirect] = useState<boolean>(false);
   const router = useRouter();
   const progressRef = useRef(0);
 
@@ -53,8 +54,12 @@ export default function Room() {
   // -- HOOKS --
 
   useEffect(() => {
-	rotation.toFixed(2) as unknown as number < -2.4 ? router.push("/login") : null;
-
+	if (!isRedirect) {
+		if (rotation.toFixed(2) as unknown as number < -2.4) {
+			router.push("/login")
+			setIsRedirect(true)
+		}
+	}
   }, [rotation]);
 
   useEffect(() => {

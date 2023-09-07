@@ -14,6 +14,14 @@ const nextConfig = {
 	// 	  }
 	// 	]
 	//   }
+	async rewrites() {
+		return [
+		  {
+			source: '/favicon.ico',
+			destination: '/favicon.ico',
+		  },
+		];
+	  },
 }
 
 module.exports = nextConfig

@@ -9,7 +9,7 @@ export default function AchievementComponent() {
 	
   return (
     <div className="w-full h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
-      <div className="w-full h-[7%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
+      <div className="w-full h-[9%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
         <Image
           src={AchievementsIcon}
           alt="match history icon"

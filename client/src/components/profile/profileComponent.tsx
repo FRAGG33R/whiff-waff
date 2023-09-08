@@ -13,11 +13,11 @@ export default function ProfileComponent()
 	const [loggedUser, setLoggedUser ] = useRecoilState(loggedUserAtom);
 
   return (
-    <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2 ">
-      <div className="h-full min-w-[60px] w-[60px] md:w-[100px]">
+    <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 xl:gap-10 flex-row text-white overflow-y-hidden pt-2">
+      <div className="h-full min-w-[60px] w-[60px] md:w-[100px] pt-2">
 		<SideBar />
       </div>
-      <div className="h-full w-[77%] md:w-[90%] xl:w-[95%] space-y-2 md:space-y-8 ">
+      <div className="h-full w-full space-y-2 xl:space-y-10 pt-2 ">
         <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
 			<NavBar level={String((loggedUser as loggedUserType).level)} avatar={(loggedUser as loggedUserType).avatar} useName={(loggedUser as loggedUserType).userName}/>
         </div>

@@ -13,12 +13,12 @@ export default function SingleAchievements(props : {title : string, description 
           className="w-56 h-80 pt-5 -ml-4"
         />
       </div>
-      <div className="w-full min-h-1 flex flex-col items-start justify-start md:space-y-3 text-Mercury uppercase -ml-6 md:pt-4">
-        <div className="w-full min-h-1 flex flex-col">
+      <div className="w-full h-full flex flex-col items-start justify-start md:space-y-3 text-Mercury uppercase -ml-6 md:pt-4">
+        <div className="w-full min-h-1 flex flex-col ">
           <div className="text-sm md:text-[1.7rem] font-medium max-h-6 flex items-center tracking-wide font-teko md:pt-0 pt-2">{props.title}</div>
           <div className="text-[0.6rem] md:text-[1.1rem] font-thin max-h-5 tracking-wider pr-[0.09rem] font-teko">{props.description}</div>
         </div>
-	  	<div className="h-full w-11/12">
+	  	<div className="h-full w-11/12 flex items-end md:items-start justify-start">
 			<AchievementsProgressBar achievmentprogress={props.level} />
 		</div>
       </div>

@@ -13,6 +13,7 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { userDataAtom } from "../../atom/atomStateuser";
 import { userType } from "./../../types/userType";
+import { userAtom } from "@/context/RecoilAtoms";
 
 const InformationsSetting = () => {
   console.log("i am here");
@@ -26,7 +27,7 @@ const InformationsSetting = () => {
   const [emailError, setEmailError] = useState(false);
   const [avatarImage, setAvatarImage] = useState<File | string>("");
   const [userData, setUserData] = useState<any>(null);
-  const [user, setUser] = useRecoilState(userDataAtom);
+  const [user, setUser] = useRecoilState(userAtom);
   const [userState, setUserState] = useState<userType>(user as userType);
   const [showImageUpload, setShowImageUpload] = useState(false);
 

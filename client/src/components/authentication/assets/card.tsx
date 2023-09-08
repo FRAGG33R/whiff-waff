@@ -101,7 +101,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
 
   const signIn = async () => {
     router.push(
-      "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-82573d757bf7f76ec64fd426f2b6956cca48fda1f72cb2028a189dedcc8715f0&redirect_uri=http%3A%2F%2Fe3r10p12.1337.ma%3A3000%2Fintra_callback&response_type=code"
+		"https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-82573d757bf7f76ec64fd426f2b6956cca48fda1f72cb2028a189dedcc8715f0&redirect_uri=http%3A%2F%2Fe3r10p12.1337.ma%3A3000%2Fintra_callback&response_type=code"
     );
   };
 
@@ -163,7 +163,6 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
           const res = await api.post(`auth/${props.Mode}/`, req);
           const { token, statusCode } = res.data;
           localStorage.setItem("token", token);
-	
           const r = await localApi.post("/saveToken", { token }); //storing the token after the user validate the email only
 		  if (statusCode === 201) {
             setNeedsVerification((prev) => !prev);

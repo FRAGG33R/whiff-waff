@@ -19,12 +19,8 @@ export default function MatchComponents() {
   const [displayedMatchHistory, setDisplayedHistory] = useState((matchHistory as any).historyGame);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [user, setUser] = useRecoilState(userAtom);
-  console.log('--> ', (matchHistory as any).historyGame);
 
   const fetchMatchHistoryPage = async () => {
-    console.log("-> ", (user as userType).userName);
-    console.log("->", activePage);
-
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -46,7 +42,6 @@ export default function MatchComponents() {
   };
 
   useEffect(() => {
-    console.log(activePage);
     fetchMatchHistoryPage();
   }, [activePage]);
 

@@ -31,6 +31,7 @@ export default function ProfileInformations() {
     { title: "Total Wins", value: userState.stat.wins, avatar: totalWins },
     { title: "Total Loses", value: userState.stat.loses, avatar: totalLoses },
   ];
+
   const handleConnect = async () => {
     const token = localStorage.getItem("token");
     console.log("token => ", token);
@@ -55,14 +56,13 @@ export default function ProfileInformations() {
   const handleMessage = () => {
     router.push(`/chat/${userState.userName}`)
   };
+
   const handleChallenge = () => {
     router.push(`/game/${userState.userName}`);
   };
+
   const handleBlock = async () => {
 	const token = localStorage.getItem("token");
-    console.log("token => ", token);
-    console.log("id => ", (user as userType).id);
-
     if (!token) router.push("/login");
     try {
       const res = await api.patch(
@@ -74,16 +74,15 @@ export default function ProfileInformations() {
           },
         }
       );
-      console.log("response : ", res.data);
     } catch (error) {
       console.log(error);
     }
   }
   return (
-    <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+    <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] py-2">
       <div className="w-full h-[80%] flex flex-col md:flex-row items-center xl:space-x-8">
         <div className="h-[70%] md:h-full max-w-[180px] w-[180px] md:w-[27%] xl:w-[25%] md:-space-y-5 xl:space-y-0 flex flex-col">
-          <div className="w-full h-[80%] flex items-center justify-center py-8 pl-2">
+          <div className="w-full h-[70%] flex items-center justify-center py-8 pl-2">
             <HexaGon avatar={userState.avatar} />
           </div>
           <button
@@ -97,17 +96,17 @@ export default function ProfileInformations() {
               color="#6C7FA7"
               stroke={1.5}
             />
-            <div className="font-teko font-normal text-xl xl:text-2xl text-HokiCl pt-1 ">
+            <div className="font-teko font-normal text-xl xl:text-2xl text-HokiCl pt-1 min-w-1">
               Edit Profile
             </div>
           </button>
         </div>
-        <div className="h-[30%] md:h-full w-[90%] md:w-[75%] flex flex-col">
-          <div className="h-full md:h-[70%] max-w-44 flex flex-col space-y-1 md:space-y-2">
+        <div className="h-[30%] md:h-full w-[90%] md:w-[80%] flex flex-col ">
+          <div className="h-full md:h-[70%] max-w-44 flex flex-col xl:space-y-2">
             <div className="w-full h-full flex items-end md:justify-start justify-center font-normal md:font-semibold font-teko text-3xl xl:text-4xl 2xl:text-5xl text-Mercury tracking-wider">
               {userState.userName}
             </div>
-            <div className="w-full h-full flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
+            <div className="w-full min-h-1 flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
               {userState.userName != (loggedUser as loggedUserType).userName ? (
                 <>
                   {userState.status === "PENDING" ? (

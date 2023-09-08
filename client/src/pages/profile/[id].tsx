@@ -29,17 +29,14 @@ export default function Profile(props: { data: userType }) {
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, params }: any) {
     try {
-      console.log("Session : ", req.session);
       const token = await req.session.token.token;
       const { id } = params;
-      console.log("id : ", id);
 
       const res = await api.get(`/users/profile/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-	  console.log('data : ', res.data.response.user );
 	  
       return {
         props: { data: res.data.response },

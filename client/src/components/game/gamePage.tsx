@@ -8,7 +8,7 @@ import LevelIcon from "../../../public/level.svg";
 import Challenger from "../../..//public/challenger.svg";
 import PingPongTable from "./Rectangle";
 import Image from "next/image";
-import { loggedUserAtom } from "@/context/RecoilAtoms";
+import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
 import { useRecoilState } from "recoil";
 import { userType } from "./../../types/userType";
 import { userDataAtom } from "@/atom/atomStateuser";
@@ -17,9 +17,8 @@ const GamePage: React.FC = () => {
   const [selectedMap, setSelectedMap] = useState<string>("");
   const [selectedMode, setSelectedMode] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [userData, setUserData] = useRecoilState(userDataAtom);
+  const [userData, setUserData] = useRecoilState(userAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
-  const divRef = useRef(null);
 
   const [Game] = useState({
     userName: "Houssam",

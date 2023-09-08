@@ -22,7 +22,7 @@ export default function ProfileComponent()
 			<NavBar level={String((loggedUser as loggedUserType).level)} avatar={(loggedUser as loggedUserType).avatar} useName={(loggedUser as loggedUserType).userName}/>
         </div>
         <div className="w-full h-full overflow-y-scroll overflow-x-hidden lg:overflow-y-auto space-y-2 xl:space-y-10 ">
-          <div className="w-full h-[700px] lg:h-[350px] flex flex-col lg:flex-row gap-2 xl:gap-10 ">
+          <div className="w-full h-[700px] lg:h-[350px] flex flex-col lg:flex-row gap-2 xl:gap-10">
             <div className="w-full lg:w-[55%] h-full">
               <ProfileInformations />
             </div>

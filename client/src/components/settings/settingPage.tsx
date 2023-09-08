@@ -4,15 +4,16 @@ import TwoFactor from "./twoFactor";
 import NavBar from "../layout/navBar";
 import SideBar from "../layout/sideBar";
 import {  useRecoilState} from "recoil";
-import { loggedUserAtom } from "@/context/RecoilAtoms";
+import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
 import { userType } from "./../../types/userType";
 import { userDataAtom } from "@/atom/atomStateuser";
 import { UseTrailProps } from "@react-spring/core";
 
 const SettingPage = () => {
+  const [userData, setUserData] = useRecoilState(userAtom);
 
-  const [userData, setUserData] = useRecoilState(userDataAtom);
   return (
+	
     <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row overflow-y-hidden">
       <div className="h-full min-w-[40px] w-[30px] md:w-[100px]">
         <SideBar />

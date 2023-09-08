@@ -2,16 +2,18 @@ import "../app/globals.css";
 import SettingPage from "@/components/settings/settingPage";
 import { withIronSessionSsr } from "iron-session/next";
 import { useRecoilState } from "recoil";
-import { userDataAtom} from "../atom/atomStateuser";
 import { api } from "@/components/axios/instance";
+import { userAtom } from "@/context/RecoilAtoms";
 
-export default function Settings(props:{data:any}) {
-  const [userData, setUserData] = useRecoilState(userDataAtom);
+export default function Settings(props: { data: any }) {
+  const [userData, setUserData] = useRecoilState(userAtom);
+  console.log(props.data);
+  
   setUserData(props.data.response.user);
 
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-        <SettingPage />
+      <SettingPage />
     </div>
   );
 }
@@ -26,25 +28,25 @@ export const getServerSideProps = withIronSessionSsr(
         },
       });
       return {
-        props: { data: res.data},
+        props: { data: res.data },
       };
-    } catch (error : any) {
-		if (error.response)
+    } catch (error: any) {
+      if (error.response)
         return {
           redirect: {
             destination: "/404",
             permanent: false,
           },
         };
-	  else
-		return {
-			redirect: {
-			destination: "/login",
-			permanent: false,
-			},
-		};
+      else
+        return {
+          redirect: {
+            destination: "/login",
+            permanent: false,
+          },
+        };
     }
-  } ,
+  },
   {
     cookieName: "token",
     password:

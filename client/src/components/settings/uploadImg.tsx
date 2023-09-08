@@ -3,7 +3,6 @@ import { useDropzone } from "react-dropzone";
 import { IconUpload } from "@tabler/icons-react";
 import { ImageUploadProps } from "../../types/uploadType";
 import SecondaryButton from "../ui/buttons/primaryButton";
-
 const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -35,10 +34,10 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
       <div
         {...getRootProps()}
         className={
-          "border-2 border-dashed border-GreenishYellow p-4 rounded-lg text-center " +
-          (isDragActive ? "bg-gray-100" : "bg-DeepRose")
+          (isDragActive ? "bg-gray-100" : "")
         }
       >
+        
         <input {...getInputProps()} />
         {selectedFile ? <p>{selectedFile.name}</p> : <IconUpload />}
       </div>

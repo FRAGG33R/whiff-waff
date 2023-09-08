@@ -10,7 +10,7 @@ import { useState } from "react";
 import { itemVariants } from "@/types/framerVariants";
 import axios from "axios";
 import { useRouter } from "next/router";
-import userType from "@/types/userType";
+import { userType } from "@/types/userType";
 import { useRecoilState } from "recoil";
 import { userAtom } from "@/context/RecoilAtoms";
 import { localApi } from "@/components/axios/instance";

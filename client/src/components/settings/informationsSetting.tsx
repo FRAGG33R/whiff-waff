@@ -7,15 +7,15 @@ import UserInput from "../ui/inputs/settingsInputs";
 import { useState } from "react";
 import ImageUpload from "./uploadImg";
 import { KeyboardEvent } from "react";
-
+import SettingsHexaGon from "./settingsHexagon";
 
 import axios from "axios";
-import {  useRecoilState} from "recoil";
-import { userDataAtom} from "../../atom/atomStateuser";
+import { useRecoilState } from "recoil";
+import { userDataAtom } from "../../atom/atomStateuser";
 import { userType } from "./../../types/userType";
 
 const InformationsSetting = () => {
-  console.log("i am here")
+  console.log("i am here");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastNam] = useState("");
   const [userName, setUserName] = useState("");
@@ -28,6 +28,7 @@ const InformationsSetting = () => {
   const [userData, setUserData] = useState<any>(null);
   const [user, setUser] = useRecoilState(userDataAtom);
   const [userState, setUserState] = useState<userType>(user as userType);
+  const [showImageUpload, setShowImageUpload] = useState(false);
 
   useEffect(() => {
     setUserState(user as userType);
@@ -36,10 +37,9 @@ const InformationsSetting = () => {
     setLastNam(userState.lastName);
     setUserName(userState.userName);
     setEmail(userState.email);
-    setUserData(userState);  
-  },[] );
-  
-  
+    setUserData(userState);
+  }, []);
+
   let jwtToken: string | null = null;
 
   if (typeof window !== "undefined") {
@@ -51,12 +51,12 @@ const InformationsSetting = () => {
       handleConfirm();
     }
   };
-  const handleCancle = () => {                                      
+  const handleCancle = () => {
     setFirstName("");
     setLastNam("");
     setUserName("");
   };
-  
+
   const inputFields = [
     {
       id: "firstName",
@@ -69,7 +69,7 @@ const InformationsSetting = () => {
       regExp: /^.{3,}$/,
       isError: firstError,
       isDisabled: false,
-      value:firstName ,
+      value: firstName,
       setError: setFirstError,
       setValue: setFirstName,
       errorMessage: "Invalid First Name",
@@ -92,46 +92,43 @@ const InformationsSetting = () => {
     },
   ];
 
-
   const handleConfirm = async () => {
     if (!firstName.match(/^.{3,}$/)) {
       console.log("firstName: ", firstName);
       setFirstError(true);
       return;
     }
-  
+
     if (!lastName.match(/^.{3,}$/)) {
       setLastError(true);
       return;
     }
-    
+
     if (!userName.match(/^[a-zA-Z0-9_.]{3,16}$/)) {
       setUserError(true);
       return;
     }
-  
+
     const formData = new FormData();
 
     if (firstName !== userData.firstName) {
       formData.append("firstName", firstName);
     }
-  
+
     if (lastName !== userData.lastName) {
       formData.append("lastName", lastName);
     }
-  
+
     if (userName !== userData.userName) {
       formData.append("userName", userName);
     }
-  
+
     if (avatarImage) {
-      if (avatarImage !== userData.avatar){
-        console.log("avatarImage: ", avatarImage);
-        console.log("userData.avatar: ", userData.avatar);
+      if (avatarImage !== userData.avatar) {
         formData.append("avatar", avatarImage);
       }
     }
-  
+
     try {
       const req = await axios.patch(
         " http://34.173.232.127/api/v1/users/settings/",
@@ -148,10 +145,8 @@ const InformationsSetting = () => {
   };
   const handleImageUpload = (file: File) => {
     setAvatarImage(file);
-    
   };
 
- 
   return (
     <div className="w-full h-full flex flex-col gap-4 md:gap-6  ">
       <div className="w-full h-[7%]  md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
@@ -164,21 +159,16 @@ const InformationsSetting = () => {
           INFORMATIONS
         </div>
       </div>
-      <div className=" w-full h-[100px] sm:h-[130px] md:h-[160px] lg:h-[240px] xl:h-[240px] 2xl:h-[240px]  flex items-center justify-center py-8 pl-2">
-        <div className="relative w-1/2">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <ImageUpload onImageUpload={handleImageUpload} />
-            {/* <img src={avatarImage} alt="Avatar Image"/> */}
+      <div className="w-full h-[100px] sm:h-[130px] md:h-[160px] lg:h-[240px] xl:h-[240px] 2xl:h-[240px] flex items-center justify-center py-8 pl-2">
+           <SettingsHexaGon avatar={userState.avatar} onImageUpload={handleImageUpload}/>
           </div>
-        </div>
-      </div>
 
       <div className="w-full h-full flex items-center justify-center flex-col gap-2 md:gap-6 ">
         <div className="w-full h-[14%] md:h-[17%] flex flex-row items-center justify-center gap-5 md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14">
           {inputFields.map((input) => (
             <div key={input.id}>
               <UserInput handleKeyDown={handleKeyDown} {...input} />
-              {(input.isError )  && (
+              {input.isError && (
                 <p className="text-md text-red-500 flex items-center justify-center font-poppins ">
                   {input.errorMessage}
                 </p>
@@ -241,5 +231,3 @@ const InformationsSetting = () => {
 };
 
 export default InformationsSetting;
-
-

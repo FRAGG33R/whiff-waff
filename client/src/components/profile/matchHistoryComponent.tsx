@@ -47,7 +47,7 @@ export default function MatchComponents() {
 
   return (
     <div className="w-full h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
-      <div className="w-full h-[10%] md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 py-2  ">
+      <div className="w-full h-[10%] md:h-[12%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 py-2 ">
         <Image
           src={HistoryIcon}
           alt="match history icon"

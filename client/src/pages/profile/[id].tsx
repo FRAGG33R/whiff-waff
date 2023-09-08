@@ -28,21 +28,20 @@ export default function Profile(props: { data: userType }) {
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, params }: any) {
-    try {
-      const token = await req.session.token.token;
-      const { id } = params;
-
+	  try {
+		const token = await req.session.token.token;
+		const { id } = params;
       const res = await api.get(`/users/profile/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-	  
       return {
         props: { data: res.data.response },
       };
-    } catch (error: any) {
-      if (error.response.status == 404)
+
+    } catch (error : any) {
+      if (error.response)
         return {
           redirect: {
             destination: "/404",

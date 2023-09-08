@@ -6,7 +6,6 @@ import { userAtom } from '@/context/RecoilAtoms';
 export default function RankComponent()
 {
 	const [user, setUser] = useRecoilState(userAtom) as any;
-	console.log(user.stat.rank);
 	
 	return (
 		<div className="w-full h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">

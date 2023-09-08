@@ -11,7 +11,7 @@ import { loggedUserType } from "@/types/userType";
 export default function ProfileComponent()
 {
 	const [loggedUser ] = useRecoilState(loggedUserAtom);
-
+	
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 xl:gap-10 flex-row text-white overflow-y-hidden pt-2">
       <div className="h-full min-w-[60px] w-[60px] md:w-[100px] pt-2">

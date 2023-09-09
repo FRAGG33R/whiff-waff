@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, HttpCode, HttpStatus, Patch, Post, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { Request, Response } from "express";
 import { UsersService } from "./users.service";
@@ -145,7 +145,8 @@ export class UsersController {
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(search)
-	async searchUsers(@Body() data: UserSearchDto) {
+	@HttpCode(HttpStatus.OK)
+	async searchUsers(@Body() data: UserSearchDto): Promise<ResponseInfo>  {
 		const users = await this.userService.searchUsersByNames(data.userName);
 		return new ResponseInfo(HttpStatus.OK, users);
 	}

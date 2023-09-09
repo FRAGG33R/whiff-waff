@@ -407,9 +407,12 @@ export class UsersService {
 					]
 				},
 			})
-			for (let i = 0; i < existingUser.length; i++)
+			for (let i = 0; i < existingUser.length; i++) {
 				if (existingUser[i].status == FriendshipStatus.BLOCKED)
 					throw message.INVITAION_TO_BLOCKED_USER
+				else if (existingUser[i].status == FriendshipStatus.PENDING || existingUser[i].status == FriendshipStatus.ACCEPTED)
+					throw message.ERROR_INVITATON
+			}
 			const data = await this.prismaService.friendship.create({
 				data: {
 					senderId: senderId,

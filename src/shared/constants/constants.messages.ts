@@ -18,3 +18,4 @@ export const ERROR_SENT_INVITATON = 'There were no requests for friendship found
 export const UNEXISTING_ID = 'The provided ID did not correspond to any existing user'
 
 export const INVITAION_TO_BLOCKED_USER = 'user has been blocked.'
+export const NOT_FRIEND = 'the given user is not friend'

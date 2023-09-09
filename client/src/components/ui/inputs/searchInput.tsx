@@ -48,18 +48,22 @@ const SearchInput: React.FC<searchInputProps> = () => {
         <Image src={VectorIcon} alt="vector icon" />
       </div>
       {searchValue !== null && (
-        <div className="w-full absolute h-60 z-50 bg-blue-600  p-4">
+        <div className="w-full absolute h-60 z-50 bg-HokiCl rounded-[12px] md:rounded-[20px] mt-2 p-4">
           {searchResult && (
-            <div className="w-full h-full overflow-y-auto flex flex-col items-center justify-center space-y-2">
-				{searchResult.map((item, index) => {
-					return (
-						<div className="w-full h-12 flex flex-row items-center justify-between">
-							{item.userName}
-							<img src={item.avatar} alt="user avatar" className="w-10 h-10" />
-						</div>
-					)
-				})}
-			</div>
+            <div className="w-full h-full overflow-y-auto flex flex-col items-center justify-start space-y-2 bg-transparent">
+              {searchResult.length > 0 && searchResult.map((item, index) => {
+                return (
+                  <div className="w-full h-16 flex flex-row items-center justify-between rounded-[12px] md:rounded-[20px] bg-ViolentViolet/[33%] px-6 text-white">
+                    <img
+                      src={item.avatar}
+                      alt="user avatar"
+                      className="w-10 h-10"
+					  />
+					  {item.userName}
+                  </div>
+                );
+              }) }
+            </div>
           )}
         </div>
       )}

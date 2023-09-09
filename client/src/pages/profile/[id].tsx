@@ -5,6 +5,7 @@ import {
   matchHistoryAtom,
   userAtom,
 } from "@/context/RecoilAtoms";
+
 import { useRecoilState } from "recoil";
 import ProfileComponent from "@/components/profile/profileComponent";
 import { userType } from "@/types/userType";

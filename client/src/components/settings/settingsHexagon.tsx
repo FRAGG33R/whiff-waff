@@ -19,7 +19,7 @@ const HexaGon: React.FC<HexaGonProps> = ({ avatar, onImageUpload }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="mask mask-hexagon-2 w-[92%] h-[92%] bg-white text-black flex items-center justify-center">
+      <div className="mask mask-hexagon-2 w-[90%] h-[90%] bg-white text-black flex items-center justify-center">
         <img
           alt="profile picture"
           className="bg-DeepRose w-[130px] lg:w-[200px] -rotate-90"
@@ -27,7 +27,7 @@ const HexaGon: React.FC<HexaGonProps> = ({ avatar, onImageUpload }) => {
         />
       </div>
       {showImageUpload && (
-        <div className="mask mask-hexagon overlay absolute inset-0 flex items-center justify-center -rotate-90 bg-black opacity-80 border">
+        <div className="mask mask-hexagon overlay absolute inset-0 flex items-center justify-center -rotate-90 bg-black opacity-80 ">
           <ImageUpload onImageUpload={onImageUpload} />
         </div>
       )}

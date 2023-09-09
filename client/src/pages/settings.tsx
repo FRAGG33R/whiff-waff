@@ -4,12 +4,13 @@ import { withIronSessionSsr } from "iron-session/next";
 import { useRecoilState } from "recoil";
 import { api } from "@/components/axios/instance";
 import { userAtom } from "@/context/RecoilAtoms";
+import { useEffect } from "react";
 
 export default function Settings(props: { data: any }) {
   const [userData, setUserData] = useRecoilState(userAtom);
   console.log(props.data);
-  
   setUserData(props.data.response.user);
+
 
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">

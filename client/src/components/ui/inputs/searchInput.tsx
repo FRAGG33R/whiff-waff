@@ -51,18 +51,25 @@ const SearchInput: React.FC<searchInputProps> = () => {
         <div className="w-full absolute h-60 z-50 bg-HokiCl rounded-[12px] md:rounded-[20px] mt-2 p-4">
           {searchResult && (
             <div className="w-full h-full overflow-y-auto flex flex-col items-center justify-start space-y-2 bg-transparent">
-              {searchResult.length > 0 && searchResult.map((item, index) => {
-                return (
-                  <div className="w-full h-16 flex flex-row items-center justify-between rounded-[12px] md:rounded-[20px] bg-ViolentViolet/[33%] px-6 text-white">
-                    <img
-                      src={item.avatar}
-                      alt="user avatar"
-                      className="w-10 h-10"
-					  />
-					  {item.userName}
-                  </div>
-                );
-              }) }
+              {searchResult.length > 0 &&
+                searchResult.map((item, index) => {
+                  return (
+                    <div
+                      onClick={() => {
+						router.push(`/profile/${item.userName}`)
+						router.reload();
+					}}
+                      className="w-full h-16 flex flex-row items-center justify-between rounded-[12px] md:rounded-[20px] bg-ViolentViolet/[33%] px-6 text-white cursor-pointer "
+                    >
+                      <img
+                        src={item.avatar}
+                        alt="user avatar"
+                        className="w-10 h-10"
+                      />
+                      {item.userName}
+                    </div>
+                  );
+                })}
             </div>
           )}
         </div>

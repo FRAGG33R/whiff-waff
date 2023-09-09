@@ -15,7 +15,6 @@ const SearchInput: React.FC<searchInputProps> = () => {
 
   const handleSearch = async (value: string) => {
     setLoaded(false);
-    console.log("val : ", value);
     try {
       const res = await api.post(
         "/users/search",
@@ -31,6 +30,10 @@ const SearchInput: React.FC<searchInputProps> = () => {
     }
   };
 
+  const handleNavigation = async (userName : string) => {
+	await router.push(`/profile/${userName}`)
+  }
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) setToken(token);
@@ -53,14 +56,14 @@ const SearchInput: React.FC<searchInputProps> = () => {
         <Image src={VectorIcon} alt="vector icon" />
       </div>
       {searchValue !== null && loaded === true && (
-        <div className="w-full absolute min-h-1 max-h-72 overflow-y-auto z-50 bg-HokiCl rounded-[12px] md:rounded-[20px] mt-2 p-4">
+        <div className="w-full absolute min-h-1 max-h-72 overflow-y-auto scrollbar scrollbar-track-rounded-full scrollbar-h-12 scrollbar-thumb-ViolentViolet  scrollbar-track-transparent z-50 bg-HokiCl rounded-[12px] md:rounded-[20px] mt-2 p-4">
           {searchResult.length > 0 && loaded === true && (
             <div className="w-full h-full overflow-y-auto flex flex-col items-center justify-start space-y-2 bg-transparent">
               {searchResult.map((item, index) => {
                 return (
                   <div
                     onClick={() => {
-                      router.push(`/profile/${item.userName}`);
+						router.push(`/profile/${item.userName}`)
                       router.reload();
                     }}
                     className="w-full h-[56px] lg:h-[70px] flex flex-row items-center justify-start gap-4 rounded-[12px] md:rounded-[20px] bg-ViolentViolet/[53%] px-2 text-white cursor-pointer "

@@ -34,7 +34,6 @@ export default function MatchComponents() {
           },
         }
       );
-		setMatchHistory(res.data.historyGame);
 		setDisplayedHistory(res.data.historyGame);
 	} catch (error) {
 
@@ -63,7 +62,7 @@ export default function MatchComponents() {
             {displayedMatchHistory.map((item: singleMatchType, index : number) => {
               return (
                 <MatchComponent
-                  key={index}
+                  index={index}
                   Mode={
                     (loggedUser as loggedUserType).userName ===
                     (user as userType).userName

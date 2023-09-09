@@ -5,24 +5,30 @@ import {
   matchHistoryAtom,
   userAtom,
 } from "@/context/RecoilAtoms";
-
 import { useRecoilState } from "recoil";
 import ProfileComponent from "@/components/profile/profileComponent";
 import { userType } from "@/types/userType";
+import { useEffect, useState } from "react";
 import "../../app/globals.css";
 
 export default function Profile(props: { data: userType }) {
   const [user, setUser] = useRecoilState(userAtom);
   const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [loaded, setLoaded] = useState(false);
 
-  setUser((props.data as any).user);
-  setMatchHistory((props.data as any).gamesData);
-  setLoggedUser((props.data as any).loggedUser);
+  useEffect(() => {
+	  console.log(props.data);
+	  setMatchHistory((props.data as any).gamesData);
+	  setUser((props.data as any).user);
+	  setLoggedUser((props.data as any).loggedUser);
+	  setLoaded(true);
+	}, [])
+  
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-      <ProfileComponent />
+    {loaded && <ProfileComponent />}
     </div>
   );
 }

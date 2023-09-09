@@ -21,7 +21,7 @@ export default function NavBar(props: navBarType) {
       <div className="w-full h-full flex flex-row justify-between md:gap-4 space-x-1 md:space-x-0">
         <div className="hidden h-full w-[40%] lg:w-[46%] xl:w-[40%] md:flex flex-row items-center bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
           <SearchInput
-		  onSearch={() => {}}
+		 	onSearch={() => {}}
             placeholder="Search for everything..."
           />
         </div>

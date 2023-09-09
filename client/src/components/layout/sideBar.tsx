@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { loggedUserAtom } from "@/context/RecoilAtoms";
 import { useRecoilState } from "recoil";
 import { loggedUserType } from "@/types/userType";
+
 export default function SideBar() {
   const router = useRouter()
   const [loggedUser, setLoggedUser ] = useRecoilState(loggedUserAtom);
@@ -17,7 +18,7 @@ export default function SideBar() {
       </div> 
       <div className="h-[90%] w-full flex flex-col items-center">
         <div className="lg:w-full w-1/2 h-full flex flex-col items-center space-y-12 md:space-y-14">
-          {navigation.map((item, index) => {
+          {navigation.map((item, index) => {	
             let route = `/${item.name}`;
             if (item.name === "chat" || item.name === "game" || item.name === "profile") {
               route += `/${(loggedUser as loggedUserType).userName}`;
@@ -28,7 +29,7 @@ export default function SideBar() {
                 onClick={() => router.push(route)} 
               >
                 <Image
-                  className="w-6 md:w-8 h-6 md:h-8 text-red-300"
+                  className="w-6 md:w-8 h-6 md:h-8 "
                   src={item.icon}
                   alt="icon"
                 />

@@ -4,16 +4,20 @@ import { withIronSessionSsr } from "iron-session/next";
 import { useRecoilState } from "recoil";
 import { api } from "@/components/axios/instance";
 import { userAtom } from "@/context/RecoilAtoms";
+import { useEffect, useState } from "react";
+import { parseJwtSsr } from "@/lib/jwtTokenSsr";
 
 export default function Settings(props: { data: any }) {
   const [userData, setUserData] = useRecoilState(userAtom);
-  console.log(props.data);
-  
-  setUserData(props.data.response.user);
+  const [loaded, setLoaded] = useState(false);
 
+  useEffect(() => {
+	  setUserData(props.data.response.user);
+	 setLoaded(true);  
+  })
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-      <SettingPage />
+      {loaded && <SettingPage />}
     </div>
   );
 }
@@ -22,11 +26,14 @@ export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }: any) {
     try {
       const token = await req.session.token.token;
-      const res = await api.get("/users/me/", {
+      const userData = parseJwtSsr(token);
+      console.log(userData);
+      const res = await api.get(`/users/profile/${userData.user}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
       return {
         props: { data: res.data },
       };

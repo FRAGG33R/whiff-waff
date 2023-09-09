@@ -54,6 +54,7 @@ const TwoFactor = () => {
       console.error("Error sending POST request:", error);
     }
   };
+  
   return (
     <div className="w-full h-full flex flex-col gap-4 md:gap-6  ">
       <div className="w-full h-[6%]  md:h-[10%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">

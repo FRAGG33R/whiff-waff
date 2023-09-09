@@ -18,7 +18,6 @@ export default function Profile(props: { data: userType }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-	  console.log(props.data);
 	  setMatchHistory((props.data as any).gamesData);
 	  setUser((props.data as any).user);
 	  setLoggedUser((props.data as any).loggedUser);

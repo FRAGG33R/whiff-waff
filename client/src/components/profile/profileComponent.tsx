@@ -18,7 +18,7 @@ export default function ProfileComponent()
       <div className="h-full min-w-[60px] w-[60px] md:w-[100px] pt-2">
 		<SideBar />
       </div>
-      <div className="h-full w-full space-y-2 xl:space-y-10 pt-2">
+      <div className="h-full w-[89%] md:w-full space-y-2 xl:space-y-10 pt-2">
         <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
 			<NavBar level={String((loggedUser as loggedUserType).level)} avatar={(loggedUser as loggedUserType).avatar} useName={(loggedUser as loggedUserType).userName}/>
         </div>

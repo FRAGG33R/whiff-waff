@@ -29,7 +29,7 @@ export default function NavBar(props: navBarType) {
           onClick={() => {
             setOpen((prev) => !prev);
           }}
-          className="flex h-full w-[15%] md:hidden items-center justify-center bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]"
+          className="flex h-full min-w-[15%] w-[15%] md:hidden items-center justify-center bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]"
         >
           <Image src={searchIcon} alt="search icon" className="w-5" />
         </button>
@@ -108,7 +108,7 @@ export default function NavBar(props: navBarType) {
         </div>
       </div>
       {open && (
-        <div className="z-10 md:hidden w-[80%] h-12 top-[4.8rem] bg-Mercury absolute rounded-[12px] md:rounded-[20px]">
+        <div className="z-10 md:hidden w-[70%] h-12 left-20 top-[4.8rem] bg-Mercury absolute rounded-[12px] md:rounded-[20px]">
           <MobileSearchInput
             onSearch={() => {}}
             placeholder="Search for everything..."

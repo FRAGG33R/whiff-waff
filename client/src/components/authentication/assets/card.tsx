@@ -214,7 +214,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
 		setNeedsVerification(false);
   }, [router.query]);
   return (
-    <div className="min-h-1 min-w-1 z-10 px-2 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
+    <div className="min-h-1 min-w-1 z-10 px-6 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
       <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
         <Image src={Logo} alt="Logo" className="" />
         <div className="text-2xl md:text-3xl font-teko font-bold">

@@ -21,7 +21,6 @@ const SearchInput: React.FC<searchInputProps> = () => {
         { userName: value },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("res : ", res.data.response);
       setSearchResult(res.data.response);
       setLoaded(true);
     } catch (error) {
@@ -32,8 +31,9 @@ const SearchInput: React.FC<searchInputProps> = () => {
 
   const handleNavigation = async (userName : string) => {
 	await router.push(`/profile/${userName}`)
+	router.reload();
   }
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) setToken(token);
@@ -62,10 +62,8 @@ const SearchInput: React.FC<searchInputProps> = () => {
               {searchResult.map((item, index) => {
                 return (
                   <div
-                    onClick={() => {
-						router.push(`/profile/${item.userName}`)
-                      router.reload();
-                    }}
+					key={index}
+                    onClick={() => handleNavigation(item.userName)}
                     className="w-full h-[56px] lg:h-[70px] flex flex-row items-center justify-start gap-4 rounded-[12px] md:rounded-[20px] bg-ViolentViolet/[53%] px-2 text-white cursor-pointer "
                   >
                     <img

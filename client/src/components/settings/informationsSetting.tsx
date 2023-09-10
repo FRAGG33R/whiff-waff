@@ -16,7 +16,6 @@ import { userType } from "./../../types/userType";
 import { userAtom } from "@/context/RecoilAtoms";
 
 const InformationsSetting = () => {
-  console.log("i am here");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastNam] = useState("");
   const [userName, setUserName] = useState("");
@@ -32,6 +31,8 @@ const InformationsSetting = () => {
   const [showImageUpload, setShowImageUpload] = useState(false);
 
   useEffect(() => {
+	console.log(user);
+	
     setUserState(user as userType);
     setAvatarImage(userState.avatar);
     setFirstName(userState.firstName);

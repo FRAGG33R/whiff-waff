@@ -16,7 +16,9 @@ import { IconBallFootballOff } from "@tabler/icons-react";
 export default function MatchComponents() {
   const [activePage, setActivePage] = useState(1);
   const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
-  const [displayedMatchHistory, setDisplayedHistory] = useState((matchHistory as any).historyGame);
+  const [displayedMatchHistory, setDisplayedHistory] = useState(
+    (matchHistory as any).historyGame
+  );
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [user, setUser] = useRecoilState(userAtom);
 
@@ -25,20 +27,15 @@ export default function MatchComponents() {
       const token = localStorage.getItem("token");
       if (!token) return;
       const res = await api.get(
-        `/users/historyGame/${
-          (user as userType).id
-        }?page=${activePage - 1}`,
+        `/users/historyGame/${(user as userType).id}?page=${activePage - 1}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-		setMatchHistory(res.data.historyGame);
-		setDisplayedHistory(res.data.historyGame);
-	} catch (error) {
-
-	}
+      setDisplayedHistory(res.data.historyGame);
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -60,53 +57,58 @@ export default function MatchComponents() {
       <div className="w-full h-[90%] md:h-[95%] flex flex-col items-center justify-start ">
         {displayedMatchHistory.length > 0 ? (
           <div className="w-full h-full flex items-center justify-start flex-col space-y-4">
-            {displayedMatchHistory.map((item: singleMatchType, index : number) => {
-              return (
-                <MatchComponent
-                  key={index}
-                  Mode={
-                    (loggedUser as loggedUserType).userName ===
-                    (user as userType).userName
-                      ? item.scoreLeft < item.scoreRight
-                        ? "Lose"
-                        : "Win"
-                      : item.scoreLeft > item.scoreRight
-                      ? "Lose"
-                      : "Win"
-                  }
-                  firstUserName={
-                    item.scoreLeft < item.scoreRight
-                      ? item.game.playerTwo.userName
-                      : item.game.playerOne.userName
-                  }
-                  secondUserName={
-                    item.scoreLeft < item.scoreRight
-                      ? item.game.playerOne.userName
-                      : item.game.playerTwo.userName
-                  }
-                  firstUserAvatar={
-                    item.scoreLeft < item.scoreRight
-                      ? item.game.playerTwo.avatar
-                      : item.game.playerOne.avatar
-                  }
-                  secondUserAvatar={
-                    item.scoreLeft < item.scoreRight
-                      ? item.game.playerOne.avatar
-                      : item.game.playerTwo.avatar
-                  }
-                  firstScore={
-                    item.scoreLeft > item.scoreRight
-                      ? item.scoreLeft
-                      : item.scoreRight
-                  }
-                  secondScore={
-                    item.scoreLeft < item.scoreRight
-                      ? item.scoreLeft
-                      : item.scoreRight
-                  }
-                />
-              );
-            })}
+            {displayedMatchHistory.map(
+              (item: singleMatchType, index: number) => {
+                return (
+                  <div 
+				  key={index}
+				  className="w-full h-full flex items-center justify-center">
+                    <MatchComponent
+                      Mode={
+                        (loggedUser as loggedUserType).userName ===
+                        (user as userType).userName
+                          ? item.scoreLeft < item.scoreRight
+                            ? "Lose"
+                            : "Win"
+                          : item.scoreLeft > item.scoreRight
+                          ? "Lose"
+                          : "Win"
+                      }
+                      firstUserName={
+                        item.scoreLeft < item.scoreRight
+                          ? item.game.playerTwo.userName
+                          : item.game.playerOne.userName
+                      }
+                      secondUserName={
+                        item.scoreLeft < item.scoreRight
+                          ? item.game.playerOne.userName
+                          : item.game.playerTwo.userName
+                      }
+                      firstUserAvatar={
+                        item.scoreLeft < item.scoreRight
+                          ? item.game.playerTwo.avatar
+                          : item.game.playerOne.avatar
+                      }
+                      secondUserAvatar={
+                        item.scoreLeft < item.scoreRight
+                          ? item.game.playerOne.avatar
+                          : item.game.playerTwo.avatar
+                      }
+                      firstScore={
+                        item.scoreLeft > item.scoreRight
+                          ? item.scoreLeft
+                          : item.scoreRight
+                      }
+                      secondScore={
+                        item.scoreLeft < item.scoreRight
+                          ? item.scoreLeft
+                          : item.scoreRight
+                      }
+                    />
+                  </div>
+                );
+              }
+            )}
           </div>
         ) : (
           <div className="w-full h-[400px] flex items-center justify-center flex-row space-x-2 md:space-x-6">
@@ -120,7 +122,7 @@ export default function MatchComponents() {
         {(matchHistory as any).historyGame.length > 0 && (
           <div className="w-full h-16 md:h-24 py-2 flex items-center justify-center ">
             <Pagination
-              max={Math.ceil(( matchHistory as any).gamesNumber / 5)}
+              max={Math.ceil((matchHistory as any).gamesNumber / 5)}
               active={activePage}
               setActive={setActivePage}
             />

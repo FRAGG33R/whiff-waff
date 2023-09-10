@@ -35,8 +35,8 @@ const GamePage: React.FC = () => {
   };
 
   return (
-    <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row overflow-y-hidden">
-      <div className="h-full min-w-[40px] w-[30px] md:w-[100px]">
+    <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row pt-2 overflow-hidden">
+      <div className="h-full min-w-[40px] w-[30px] md:w-[100px] pt-2">
         <SideBar />
       </div>
       <div className="h-full w-full space-y-2 xl:space-y-10 pt-2">

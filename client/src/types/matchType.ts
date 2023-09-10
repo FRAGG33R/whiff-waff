@@ -6,5 +6,4 @@ export default interface matchComponentType {
   secondUserAvatar : string;
   firstScore: number;
   secondScore: number;
-  key : number;
 }

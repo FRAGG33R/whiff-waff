@@ -8,7 +8,7 @@ const secondaryButton: React.FC<PrimaryButtonProps> = ({ text, onClick }) => {
       whileHover={{ scale: 1.07 }}
       whileTap={{ scale: 0.9 }}
       onClick={onClick}
-      className="flex items-center justify-center transparent font-teko   border-2 border-Ceramic
+      className="flex items-center justify-center transparent font-teko border-[3px] border-HokiCl
         rounded-full w-20 sm:w-20 md:w-28 lg:w-32  h-8 md:h-7 lg:h-9 text-Ceramic text-xl md:text-lg sm:text-[1.2rem] lg:text-2xl "
     >
       <span>{text}</span>

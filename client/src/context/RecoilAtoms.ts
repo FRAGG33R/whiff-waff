@@ -17,7 +17,7 @@ export const loggedUserAtom = atom({
 	default: {},
 });
 
-export const matchHistory = createContext< matchHistoryType | undefined>(undefined);
+export const matchHistory = createContext<matchHistoryType | undefined>(undefined);
 
 export const matchHistoryAtom = atom({
 	key: `matchHistory-${Math.random()}`,

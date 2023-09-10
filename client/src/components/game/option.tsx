@@ -188,7 +188,7 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
             </button>
           </div>
           <div className="w-[80%] 2xl:w-[80%]  xl:w-[60%] lg:w-[60%] md:w-[60%] 2xl:h-full xl:h-[40%] lg:h-[40%] md:h-[40%] h-[40%] flex flex-col items-center justify-start gap-6 ">
-            <div className="w-full 2xl:h-[110px] flex items-center justify-start  font-teko text-[#FFFFFF] text-[2rem] md:text-[3rem] lg:text-[3rem] 2xl:text-[3rem] ">
+            <div className="w-full 2xl:h-[90px] flex items-center justify-start  font-teko text-[#FFFFFF] text-[2rem] md:text-[3rem] lg:text-[3rem] 2xl:text-[3rem] ">
               Mode
             </div>
             <div className="w-full xl:h-[100px] lg:h-[100px] md:h-[100px] 2xl:h-[110px] h-[100px] flex flex-row items-center justify-start space-x-4 sm:space-x-8 md:space-x-10 lg:space-x-12 xl:space-x-16 2xl:space-x-16 ">

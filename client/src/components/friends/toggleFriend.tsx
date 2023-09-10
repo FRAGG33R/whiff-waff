@@ -27,8 +27,8 @@ const TabSwitch = () => {
            Friend Requests
           </div>
         </div>
-        <div className=" w-full h-[90%]  bg-CarbonGrey bg-opacity-10  rounded-xl flex flex-col justify-center ">
-          <div className={` w-full h-full
+        <div className=" w-full h-[90%]  bg-CarbonGrey bg-opacity-10  rounded-xl flex flex-col justify-center">
+          <div className={` w-full h-full b
           tab-content ${activeTab !== 1 ? "hidden" : ""}`}>
             <FriendsComponent/>
           </div>

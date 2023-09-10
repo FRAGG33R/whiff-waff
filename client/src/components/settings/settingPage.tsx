@@ -18,7 +18,7 @@ const SettingPage = () => {
       <div className="h-full min-w-[40px] w-[30px] md:w-[100px]">
         <SideBar />
       </div>
-      <div className="h-full w-[77%] md:w-[90%] xl:w-[95%] space-y-2 md:space-y-8">
+      <div className="h-full w-full space-y-2 xl:space-y-10 pt-2">
       <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full ">
 			<NavBar level={String((userData as userType).stat.level)} avatar={(userData as userType).avatar} useName={(userData as userType).userName}/>
         </div>

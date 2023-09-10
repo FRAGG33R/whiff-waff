@@ -40,7 +40,6 @@ class PingPongTable {
 
     Matter.Render.run(this.render);
     this.render.canvas.style.backgroundSize = "cover";
-    this.render.canvas.style.position = "absolute";
     if (tableOption === 'Beginner') {
       this.initializeElements(width, height, tableBorderThickness, "#E4E5E7", "#D2386D", "#CBFC01");
     } else if (tableOption === 'Intermediate') {
@@ -226,15 +225,39 @@ class PingPongTable {
       }
     });
 
+    let obstacleWidth: number = width * 0.3;
+let obstacleHeight: number = height * 0.1;
+
+// Adjust the obstacle dimensions for smaller screens
+if (window.innerWidth < 768) {
+  obstacleWidth = width * 0.2;
+  obstacleHeight = height * 0.05;
+}
+
+// Set the base positions for the obstacles
+let obstacle1PosY: number = height / 2 + 300;
+let obstacle2PosY: number = height / 2 - 300;
+let obstacle3PosX: number = width - tableBorderThickness / 2;
+let obstacle3PosY: number = height / 2 - 300;
+let obstacle4PosX: number = width - tableBorderThickness / 2;
+let obstacle4PosY: number = height / 2 + 300;
+
+// Adjust the obstacle positions for smaller screens
+if (window.innerWidth < 768) {
+  obstacle1PosY = height / 2 + 200;
+  obstacle2PosY = height / 2 - 200;
+  obstacle3PosY = height / 2 - 200;
+  obstacle4PosY = height / 2 + 200;
+}
     
 
     if (tableColor === "#351F60") {
       this.render.canvas.style.background = tableColor;
-      this.obstacle1 = Bodies.rectangle(
+      this.obstacle1 = Matter.Bodies.rectangle(
         tableBorderThickness / 2,
-        height / 2 + 300,
-        width * 0.3,
-        height * 0.1,
+        obstacle1PosY,
+        obstacleWidth,
+        obstacleHeight,
         {
           isStatic: true,
           render: {
@@ -243,11 +266,12 @@ class PingPongTable {
           chamfer: { radius: 20 },
         }
       );
-      this.obstacle2 = Bodies.rectangle(
+      
+      this.obstacle2 = Matter.Bodies.rectangle(
         tableBorderThickness / 2,
-        height / 2 - 300,
-        width * 0.2,
-        height * 0.05,
+        obstacle2PosY,
+        obstacleWidth,
+        obstacleHeight,
         {
           isStatic: true,
           render: {
@@ -256,11 +280,12 @@ class PingPongTable {
           chamfer: { radius: 20 },
         }
       );
-      this.obstacle3 = Bodies.rectangle(
-        width - tableBorderThickness / 2,
-        height / 2 - 300,
-        width * 0.2,
-        height * 0.1,
+      
+      this.obstacle3 = Matter.Bodies.rectangle(
+        obstacle3PosX,
+        obstacle3PosY,
+        obstacleWidth,
+        obstacleHeight,
         {
           isStatic: true,
           render: {
@@ -269,12 +294,12 @@ class PingPongTable {
           chamfer: { radius: 50 },
         }
       );
-    
-      this.obstacle4 = Bodies.rectangle(
-        width - tableBorderThickness / 2,
-        height / 2 + 300,
-        width * 0.1,
-        height * 0.2,
+      
+      this.obstacle4 = Matter.Bodies.rectangle(
+        obstacle4PosX,
+        obstacle4PosY,
+        obstacleWidth,
+        obstacleHeight,
         {
           isStatic: true,
           render: {
@@ -283,36 +308,35 @@ class PingPongTable {
           chamfer: { radius: 50 },
         }
       );
-    
       Matter.World.add(this.engine.world, [this.obstacle1, this.obstacle2, this.obstacle3, this.obstacle4]);
     }
     
     if (tableColor === "#6C7FA7") {
-      this.render.canvas.style.background = tableColor;
-      this.obstacle5 = Bodies.rectangle(
-        tableBorderThickness / 2,
-        height / 2 - 200,
-        width * 0.1,
-        height * 0.1,
+      this.obstacle5 = Matter.Bodies.rectangle(
+        obstacle3PosX,
+        obstacle3PosY,
+        obstacleWidth,
+        obstacleHeight,
         {
           isStatic: true,
           render: {
             fillStyle: PlayersColor,
           },
-          chamfer: { radius: 20 },
+          chamfer: { radius: 50 },
         }
       );
-      this.obstacle6 = Bodies.rectangle(
-        width - tableBorderThickness / 2,
-        height / 2 + 100,
-        width * 0.1,
-        height * 0.2,
+      
+      this.obstacle6 = Matter.Bodies.rectangle(
+        obstacle4PosX,
+        obstacle4PosY,
+        obstacleWidth,
+        obstacleHeight,
         {
           isStatic: true,
           render: {
             fillStyle: PlayersColor,
           },
-          chamfer: { radius: 20 },
+          chamfer: { radius: 50 },
         }
       );
     

@@ -7,11 +7,11 @@ import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import router from "next/router";
 import Image from "next/image";
-import Expert from "../../../public/EXPERT.svg";
-import GrandMaster from "../../../public/GRANDMASTER.svg";
-import Legend from "../../../public/LEGEND.svg";
-import Rookie from "../../../public/ROOKIE.svg";
-import Chanllenger from "../../../public/CHALLENGER.svg";
+import Expert from "../../../public/Expert_svg.svg";
+import GrandMaster from "../../../public/GrandMaster_svg.svg";
+import Legend from "../../../public/Legend_svg.svg";
+import Rookie from "../../../public/rookie_svg.svg";
+import Chanllenger from "../../../public/Challenger_svg.svg";
 import { FriendsProps, User, UserData, UserFriend } from "../../types/userFriendType";
 import axios from "axios";
 

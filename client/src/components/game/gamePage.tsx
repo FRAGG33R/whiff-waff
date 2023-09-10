@@ -39,20 +39,20 @@ const GamePage: React.FC = () => {
       <div className="h-full min-w-[40px] w-[30px] md:w-[100px]">
         <SideBar />
       </div>
-      <div className="h-full  w-[82%] md:w-[90%] xl:w-[95%] space-y-2 md:space-y-8 ">
-        <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
+      <div className="h-full w-full space-y-2 xl:space-y-10 pt-2">
+        <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full ">
           <NavBar
             level={String((userData as userType).stat.level)}
             avatar={(userData as userType).avatar}
             useName={(userData as userType).userName}
           />
         </div>
-        <div className="w-[99%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10 flex flex-col items-start justify-start  ">
+        <div className="w-full h-full overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-4 flex flex-col items-start justify-start  ">
           <div className="w-full h-[140px]  2xl:flex  items-center justify-center flex-row gap-2 xl:block hidden">
             <ScoreGame />
           </div>
-          <div className="w-full 2xl:h-[1200px]  flex flex-col 2xl:flex-row gap-8 ">
-            <div className="w-full 2xl:w-[70%] 2xl:h-full  lg:h-[1000px] flex flex-col md:h-[1000px] h-[1000px]  xl:h-[900px] gap-2 ">
+          <div className="w-full 2xl:h-[1000px]  flex flex-col 2xl:flex-row gap-8 ">
+            <div className="w-full 2xl:w-[70%] 2xl:h-full  lg:h-[1000px] flex flex-col md:h-[1000px] h-[800px]  xl:h-[900px] gap-2 ">
               <div className="w-full lg:h-[130px] h-[130px] md:h-[130px] xl:hidden flex items-center justify-start  gap-4 ">
                 <div className="w-[80%] md:w-[70%] lg:w-[60%] lg:h-[80px] h-[80px] md:h-[80px]  flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%] ">
                   <div className="h-full lg:w-[20%] md:w-[20%] sm:w-[20%] w-[50%] flex flex-row items-center md:space-x-4 2xl:space-x-2  ">
@@ -93,7 +93,7 @@ const GamePage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="w-full 2xl:w-full 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl">
+              <div className="w-full 2xl:w-full 2xl:h-full lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl ">
                 {selectedMap && selectedMode && (
                   <GamePing map={selectedMap} mode={selectedMode} />
                 )}

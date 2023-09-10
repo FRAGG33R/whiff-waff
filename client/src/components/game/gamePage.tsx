@@ -35,11 +35,11 @@ const GamePage: React.FC = () => {
   };
 
   return (
-    <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row overflow-y-hidden">
-      <div className="h-full min-w-[40px] w-[30px] md:w-[100px]">
+    <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row pt-2 overflow-hidden">
+      <div className="h-full min-w-[40px] w-[30px] md:w-[100px] pt-2">
         <SideBar />
       </div>
-      <div className="h-full  w-[82%] md:w-[90%] xl:w-[95%] space-y-2 md:space-y-8 ">
+      <div className="h-full w-[89%] md:w-full space-y-2 md:space-y-10 pt-2">
         <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
           <NavBar
             level={String((userData as userType).stat.level)}
@@ -47,8 +47,8 @@ const GamePage: React.FC = () => {
             useName={(userData as userType).userName}
           />
         </div>
-        <div className="w-[99%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10 flex flex-col items-start justify-start  ">
-          <div className="w-full h-[140px]  2xl:flex  items-center justify-center flex-row gap-2 xl:block hidden">
+        <div className="w-[99%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-auto scrollbar scrollbar-track-rounded-full scrollbar-thumb-GreenishYellow  scrollbar-track-transparent  space-y-2 xl:space-y-10 flex flex-col items-start justify-start  ">
+          <div className="w-full h-[140px] 2xl:flex items-center justify-center flex-row gap-2 xl:block hidden">
             <ScoreGame />
           </div>
           <div className="w-full 2xl:h-[1200px]  flex flex-col 2xl:flex-row gap-8 ">

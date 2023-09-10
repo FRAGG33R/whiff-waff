@@ -5,12 +5,7 @@ import Image from "next/image";
 import matchComponentType from "@/types/matchType";
 
 export default function MatchComponent(props: matchComponentType) {
-//   const [match] = useState({
-//     firstUserName: "FRAGGER",
-//     secondUserName: "MattheDavis",
-//     firstScore: 5,
-//     secondScore: 3,
-//   });
+
   return (
     <div
       className={`w-[95%] h-16 md:h-24 flex items-center justify-center rounded-[12px] md:rounded-[20px] ${

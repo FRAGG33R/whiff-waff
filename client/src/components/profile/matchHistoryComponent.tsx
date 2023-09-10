@@ -60,7 +60,9 @@ export default function MatchComponents() {
             {displayedMatchHistory.map(
               (item: singleMatchType, index: number) => {
                 return (
-                  <div className="w-full h-full flex items-center justify-center">
+                  <div 
+				  key={index}
+				  className="w-full h-full flex items-center justify-center">
                     <MatchComponent
                       Mode={
                         (loggedUser as loggedUserType).userName ===

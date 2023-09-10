@@ -56,7 +56,7 @@ const SearchInput: React.FC<searchInputProps> = () => {
         <Image src={VectorIcon} alt="vector icon" />
       </div>
       {searchValue !== null && loaded === true && (
-        <div className="w-full absolute min-h-1 max-h-72 overflow-y-auto scrollbar scrollbar-track-rounded-full scrollbar-h-12 scrollbar-thumb-ViolentViolet  scrollbar-track-transparent z-50 bg-HokiCl rounded-[12px] md:rounded-[20px] mt-2 p-4">
+        <div className="w-full absolute min-h-1 max-h-72 overflow-y-auto scrollbar scrollbar-track-rounded-full scrollbar-thumb-ViolentViolet  scrollbar-track-transparent z-50 bg-HokiCl rounded-[12px] md:rounded-[20px] mt-2 p-4">
           {searchResult.length > 0 && loaded === true && (
             <div className="w-full h-full overflow-y-auto flex flex-col items-center justify-start space-y-2 bg-transparent">
               {searchResult.map((item, index) => {

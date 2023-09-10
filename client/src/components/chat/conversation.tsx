@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
-import { conversation } from "@/types/dummy";
 
-export default function Conversation() {
+export default function Conversation(props  : {conversation : any}) {
   const conversationRef = useRef(null);
 
   useEffect(() => {
@@ -9,11 +8,11 @@ export default function Conversation() {
     if (conversationDiv) {
       conversationDiv.scrollTop = conversationDiv.scrollHeight;
     }
-  }, []);
+  }, [props.conversation.length]);
 
   return (
     <div ref={conversationRef} className="w-full h-full overflow-y-scroll scrollbar scrollbar-track-rounded-full scrollbar-thumb-GreenishYellow  scrollbar-track-transparent ">
-      {conversation.map((item, index) => {
+      {props.conversation.map((item : any, index : number) => {
         return (
           <div key={index} className={`chat ${item.type === "receiver" ? 'chat-end text-white' : "chat-start text-black"} `}>
             <div className={`${item.type === 'receiver' ? "bg-HokiCl" : "bg-GreenishYellow"} px-1 md:px-4 w-[150px] md:w-[350px] xl:w-[400px] 2xl:w-[600px] rounded-[12px] py-1 md:py-2 flex flex-col md:space-y-6 items-center justify-center`}>
@@ -21,8 +20,8 @@ export default function Conversation() {
                 <div>{item.userName}</div>
                 <div>{item.time}</div>
               </div>
-              <div className="font-poppins w-full text-sm md:text-lg">
-                It's over Anakin, I have the high ground. 
+              <div className="font-poppins w-full break-all text-sm md:text-lg">
+                {item.content}
               </div>
             </div>
           </div>

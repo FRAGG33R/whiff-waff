@@ -4,16 +4,6 @@ import { withIronSessionSsr } from "iron-session/next";
 import { useRecoilState } from "recoil";
 import { api } from "@/components/axios/instance";
 import { userAtom } from "@/context/RecoilAtoms";
-<<<<<<< HEAD
-import { useEffect } from "react";
-
-export default function Settings(props: { data: any }) {
-  const [userData, setUserData] = useRecoilState(userAtom);
-  console.log(props.data);
-  setUserData(props.data.response.user);
-
-
-=======
 import { useEffect, useState } from "react";
 import { parseJwtSsr } from "@/lib/jwtTokenSsr";
 
@@ -25,7 +15,6 @@ export default function Settings(props: { data: any }) {
 	  setUserData(props.data.response.user);
 	 setLoaded(true);  
   })
->>>>>>> 69df5d63941e72d659d09c841d2aadc3d98973af
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       {loaded && <SettingPage />}

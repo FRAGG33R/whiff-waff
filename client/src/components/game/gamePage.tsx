@@ -1,11 +1,11 @@
-import React, { use, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import NavBar from "../layout/navBar";
 import SideBar from "../layout/sideBar";
 import ScoreGame from "./scoreGame";
 import Option from "./option";
 import GamePing from "./gameComponent";
-import LevelIcon from "../../../public/level.svg";
-import Challenger from "../../..//public/challenger.svg";
+import LEVEL from "../../../public/LEVEL.svg";
+import CHALLENGER from "../../../public/CHALLENGER.svg";
 import PingPongTable from "./Rectangle";
 import Image from "next/image";
 import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
@@ -69,7 +69,7 @@ const GamePage: React.FC = () => {
                   </div>
                   <div className=" lg:w-[40%] md:w-[40%] sm:w-[40%] sm:flex flex-row justify-center lg:space-x-3  lg:space-y-4  space-x-3 space-y-4 hidden ">
                     <Image
-                      src={LevelIcon}
+                      src={LEVEL}
                       alt="level icon"
                       className=" "
                       width={30}
@@ -82,7 +82,7 @@ const GamePage: React.FC = () => {
                     </span>
                   </div>
                   <div className=" lg:w-[40%] md:w-[40%] sm:w-[40%] w-[50%] h-full flex items-center justify-center  ">
-                    <Image src={Challenger} alt="expert icon" width={70} />
+                    <Image src={CH} alt="expert icon" width={70} />
                   </div>
                 </div>
                 <div className="w-[20%] md:w-[15%] lg:w-[20%] lg:h-[100px] h-[100px] md:h-[100px]  flex items-center justify-center gap-2 ">

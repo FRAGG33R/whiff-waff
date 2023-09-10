@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import LevelIcon from "../../../public/level.svg";
-import Challenger from '../../..//public/Challenger_svg.svg'
+import LevelIcon from "../../../public/LEVEL.svg";
+import Challenger from '../../..//public/CHALLENGER.svg'
 
 const ScoreGame = () => {
     const [Game] = useState({

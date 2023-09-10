@@ -68,27 +68,27 @@ class PingPongTable {
     document.addEventListener("mousemove", (event) => {
       const mouseX = event.clientX;
       const tableWidth = this.element.getBoundingClientRect().width - 16 ;
-      const player1HalfWidth = (this.player1.bounds.max.x - this.player1.bounds.min.x) / 2;
-      const minPlayer1X = 16 + player1HalfWidth;
-      const maxPlayer1X = tableWidth - player1HalfWidth;
-      const clampedX = Math.min(Math.max(mouseX, minPlayer1X), maxPlayer1X);
-      Matter.Body.setPosition(this.player1, { x: clampedX, y: this.player1.position.y });
+      const player2HalfWidth = (this.player2.bounds.max.x - this.player2.bounds.min.x) / 2;
+      const minPlayer2X = 16 + player2HalfWidth;
+      const maxPlayer2X = tableWidth - player2HalfWidth;
+      const clampedX = Math.min(Math.max(mouseX, minPlayer2X), maxPlayer2X);
+      Matter.Body.setPosition(this.player2, { x: clampedX, y: this.player2.position.y });
     });
   
     document.addEventListener("keydown", (event) => {
       const key = event.key;
       const playerSpeed = 200; 
       const tableWidth = this.element.getBoundingClientRect().width - 16;
-      const player2HalfWidth = (this.player2.bounds.max.x - this.player2.bounds.min.x) / 2;
-      const minPlayer2X = 16 + player2HalfWidth;
-      const maxPlayer2X = tableWidth - player2HalfWidth;
+      const player1HalfWidth = (this.player1.bounds.max.x - this.player1.bounds.min.x) / 2;
+      const minPlayer1X = 16 + player1HalfWidth;
+      const maxPlayer1X = tableWidth - player1HalfWidth;
   
-      if (key === "ArrowLeft" && this.player2) {
-        const newPos = Math.max(this.player2.position.x - playerSpeed, minPlayer2X);
-        Matter.Body.setPosition(this.player2, { x: newPos, y: this.player2.position.y });
-      } else if (key === "ArrowRight" && this.player2) {
-        const newPos = Math.min(this.player2.position.x + playerSpeed, maxPlayer2X);
-        Matter.Body.setPosition(this.player2, { x: newPos, y: this.player2.position.y });
+      if (key === "ArrowLeft" && this.player1) {
+        const newPos = Math.max(this.player1.position.x - playerSpeed, minPlayer1X);
+        Matter.Body.setPosition(this.player1, { x: newPos, y: this.player1.position.y });
+      } else if (key === "ArrowRight" && this.player1) {
+        const newPos = Math.min(this.player1.position.x + playerSpeed, maxPlayer1X);
+        Matter.Body.setPosition(this.player1, { x: newPos, y: this.player1.position.y });
       }
     });
   }

@@ -10,7 +10,7 @@ const TabSwitch = () => {
   };
 
   return (
-    <div className="flex items-start justify-start h-[1320px] w-full flex-col space-y-4">
+    <div className="flex items-start justify-start h-[1120px] w-full flex-col space-y-4">
         <div className="w-full h-[10%]  space-x-4 flex flex-row items-center justify-start">
           <div
             className={`flex items-center justify-center rounded-md w-[200px]  h-[90%] text-xl md:text-2xl lg:text-[2.5rem] font-teko text-[#6C7FA7]

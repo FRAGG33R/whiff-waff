@@ -18,7 +18,7 @@ const FriendsPage = () => {
         <div className="h-[45px]  md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
         <NavBar level={String((loggedUserFriends as loggedUserType).level)} avatar={(loggedUserFriends as loggedUserType).avatar} useName={(loggedUserFriends as loggedUserType).userName}/>
         </div>
-        <div className="w-full xl:h-[91%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10 flex items-start justify-start ">
+        <div className="w-full xl:h-[88%] md:h-[93%] sm:h-[95%] lg:h-[91.5%] h-[96.5%] overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-10 flex items-start justify-start ">
           <TabSwitch/>
         </div>
       </div>

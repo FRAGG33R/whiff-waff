@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LevelIcon from "../../../public/level.svg";
+import LevelIcon from "../../../public/LEVEL.svg";
 import Online from "../../../public/online.svg";
 import Offline from "../../../public/Offline.svg";
 import InGame from "../../../public/InGame.svg";
@@ -10,14 +10,38 @@ import Image from "next/image";
 import Expert from "../../../public/Expert_svg.svg";
 import GrandMaster from "../../../public/GrandMaster_svg.svg";
 import Legend from "../../../public/Legend_svg.svg";
-import Rookie from "../../../public/rookie_svg.svg";
-import Chanllenger from "../../../public/Challenger_svg.svg";
-import { FriendsProps, User, UserData, UserFriend } from "../../types/userFriendType";
+import ROOKIE from "../../../public/ROOKIE_SVG.svg";
+import Challenger from "../../../public/CHALLENGER.svg";
+import {
+  FriendsProps,
+  User,
+  UserData,
+  UserFriend,
+} from "../../types/userFriendType";
 import axios from "axios";
-
-export default function FriendGame({ friends, AcceptedFriends, setAcceptedFriends }: { friends: User, AcceptedFriends: User[], setAcceptedFriends: Function}) {
+interface RankItem {
+  rank: string;
+  image: string;
+}
+export default function FriendGame({
+  friends,
+  AcceptedFriends,
+  setAcceptedFriends,
+}: {
+  friends: User;
+  AcceptedFriends: User[];
+  setAcceptedFriends: Function;
+}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const rankItems: RankItem[] = [
+    { rank: "ROOKIE", image: ROOKIE },
+    { rank: "EXPERT", image: Expert },
+    { rank: "GRANDMASTER", image: GrandMaster },
+    { rank: "LEGEND", image: Legend },
+    { rank: "", image: Challenger },
+  ];
   let jwtToken: string | null = null;
+  console.log(friends.stat.rank);
 
   if (typeof window !== "undefined") {
     jwtToken = localStorage.getItem("token");
@@ -29,14 +53,16 @@ export default function FriendGame({ friends, AcceptedFriends, setAcceptedFriend
   const handleMessage = () => {
     router.push("/chat");
   };
-  const  handleBlock = async() => {
-    try{
-      setAcceptedFriends(AcceptedFriends.filter((friend:User) => friend.id !== friends.id));
+  const handleBlock = async () => {
+    try {
+      setAcceptedFriends(
+        AcceptedFriends.filter((friend: User) => friend.id !== friends.id)
+      );
       const res = await axios.patch(
         "http://34.173.232.127/api/v1/users/friendshipResponse",
         {
-          id:friends.id,
-          status: "BLOCKED"
+          id: friends.id,
+          status: "BLOCKED",
         },
         {
           headers: {
@@ -44,12 +70,10 @@ export default function FriendGame({ friends, AcceptedFriends, setAcceptedFriend
           },
         }
       );
+    } catch (error) {
+      console.log(error);
     }
-      catch (error) {
-        console.log(error);
-      }
   };
-
 
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -91,47 +115,37 @@ export default function FriendGame({ friends, AcceptedFriends, setAcceptedFriend
               {friends.stat.level}
             </span>
           </div>
-          <div className="sm:w-1/3 w-12  lg:w-1/5 flex  h-full ">
-            {friends.stat.rank === "Rookie" ? (
-
+          <div className="sm:w-1/3 w-12 lg:w-1/5 flex h-full">
+            {rankItems.map((item, index) => (
               <Image
-                src={Rookie}
+                src={item.image}
                 alt="expert icon"
-                width={80}
-                height={70}
+                width={100}
+                height={90}
+                key={index}
+                className={`${
+                  friends.stat.rank === item.rank ? "" : "hidden"
+                } sm:w-1/3 w-12 lg:w-1/5 flex  h-full`}
               />
-            ): friends.stat.rank === "Expert" ? (<Image
-              src={Expert}
-              alt="expert icon"
-              width={80}
-              height={70}
-            />): friends.stat.rank === "GrandMaster" ? (<Image
-              src={GrandMaster}
-              alt="expert icon"
-              width={80}
-              height={70}
-            />): friends.stat.rank === "Legend" ? (<Image
-              src={Legend}
-              alt="expert icon"
-              width={80}
-              height={70}
-            />):  (<Image
-              src={Chanllenger}
-              alt="expert icon"
-              width={80}
-              height={70}
-            />)
-          }
+            ))}
           </div>
           <div className="sm:w-1/3 w-12 lg:w-1/5  flex   flex-row space-x-2 space-y-1">
             {/* {friends.status === "Online" ? ( */}
-              <Image src={Online} alt="online" width={20} height={20} className="lg:block hidden " />
+            <Image
+              src={Online}
+              alt="online"
+              width={20}
+              height={20}
+              className="lg:block hidden "
+            />
             {/* ) : friends.status === "Offline" ? ( */}
-              {/* <Image src={Offline} alt="offline" width={20} height={20} className="lg:block hidden " /> */}
+            {/* <Image src={Offline} alt="offline" width={20} height={20} className="lg:block hidden " /> */}
             {/* ) : ( */}
-              {/* <Image src={InGame} alt="InGame" width={20} height={20} className="lg:block hidden " /> */}
+            {/* <Image src={InGame} alt="InGame" width={20} height={20} className="lg:block hidden " /> */}
             {/* )} */}
-            <span className={`font-medium font-teko text-[1.2rem] xl:text-[1rem] 2xl:text-[1.5rem]  text-center tracking-wide text-[#00FF00]"  `}>
+            <span
+              className={`font-medium font-teko text-[1.2rem] xl:text-[1rem] 2xl:text-[1.5rem]  text-center tracking-wide text-[#00FF00]"  `}
+            >
               Online
             </span>
           </div>

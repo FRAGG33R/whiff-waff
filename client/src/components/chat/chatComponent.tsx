@@ -19,7 +19,7 @@ export default function ChatComponent() {
           />
         </div>
         <div className="w-full h-[94%] md:h-[91%] flex flex-row space-x-2 md:space-x-10 overflow-y-hidden overflow-x-hidden">
-          <div className="h-full min-w-[80px] max-w-[400px] w-1/4 md:w-1/3 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]"></div>
+          <div className="h-full min-w-[60px] max-w-[400px] w-1/4 md:w-1/3 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]"></div>
           <div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
             <div className="w-full h-16 md:h-24 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
               <UserBar

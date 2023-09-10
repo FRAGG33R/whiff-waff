@@ -16,12 +16,12 @@ export default function Conversation() {
       {conversation.map((item, index) => {
         return (
           <div key={index} className={`chat ${item.type === "receiver" ? 'chat-end text-white' : "chat-start text-black"} `}>
-            <div className={`${item.type === 'receiver' ? "bg-HokiCl" : "bg-GreenishYellow"} px-4  xl:w-[400px] 2xl:w-[600px] rounded-[12px] py-2 flex flex-col space-y-6 items-center justify-center`}>
-              <div className="w-full flex flex-row items-center justify-between font-normal font-teko text-xl md:text-2xl">
+            <div className={`${item.type === 'receiver' ? "bg-HokiCl" : "bg-GreenishYellow"} px-1 md:px-4 w-[150px] md:w-[350px] xl:w-[400px] 2xl:w-[600px] rounded-[12px] py-1 md:py-2 flex flex-col md:space-y-6 items-center justify-center`}>
+              <div className="w-full flex flex-row items-center justify-between font-normal font-teko text-md md:text-2xl">
                 <div>{item.userName}</div>
                 <div>{item.time}</div>
               </div>
-              <div className="font-poppins w-full">
+              <div className="font-poppins w-full text-sm md:text-lg">
                 It's over Anakin, I have the high ground. 
               </div>
             </div>

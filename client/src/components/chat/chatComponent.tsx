@@ -4,16 +4,18 @@ import UserBar from "./userBar";
 import Conversation from "./conversation";
 import { conversation } from "@/types/dummy";
 import { ChangeEvent, useState } from "react";
-import { FormEvent } from "react";
-
+import { FormEvent, MouseEvent} from "react";
 export default function ChatComponent() {
   const [conversationArray, setConversationArray] = useState<any[]>(conversation);
   const [messageContent, setMessageContent] = useState<string | null> (null);
 
-  const handleNewMessage = async (e : FormEvent<HTMLFormElement>) => {
+  const handleNewMessage = (e : FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>) => {
 	e.preventDefault();
-	console.log('submited with : ', messageContent);
-	
+	if (messageContent?.length === 0) {
+		alert('Message should not be empty !');
+		return;
+	}
+
 	var now = new Date();
 	const currentTime = `${now.getHours()} : ${now.getMinutes()}`;
 
@@ -23,7 +25,8 @@ export default function ChatComponent() {
 		time : currentTime,
 		userName : "Fragger",
 	}
-	conversationArray.push(newMessage);
+	setConversationArray((prevConversationArray) => [...prevConversationArray, newMessage]);
+	setMessageContent("");
   };
 
   const handleChange = (value : string) => {
@@ -64,6 +67,7 @@ export default function ChatComponent() {
 					  onChange={(e) => handleChange(e.target.value)}
                       className="input input-ghost w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] text-md md:text-[1.3rem] tracking-wide text-HokiCl caret-GreenishYellow placeholder:text-HokiCl focus:text-HokiCl bg-[#606060]/[12%] focus:bg-[#606060]/[12%] focus:ring-0 focus:outline-none font-poppins "
                     />
+					<button onClick={handleNewMessage}>submit</button>
                   </form>
                 </div>
               </div>

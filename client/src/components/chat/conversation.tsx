@@ -8,7 +8,7 @@ export default function Conversation(props  : {conversation : any}) {
     if (conversationDiv) {
       conversationDiv.scrollTop = conversationDiv.scrollHeight;
     }
-  }, [props.conversation]);
+  }, [props.conversation.length]);
 
   return (
     <div ref={conversationRef} className="w-full h-full overflow-y-scroll scrollbar scrollbar-track-rounded-full scrollbar-thumb-GreenishYellow  scrollbar-track-transparent ">

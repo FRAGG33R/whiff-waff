@@ -2,8 +2,33 @@ import SideBar from "../layout/sideBar";
 import NavBar from "../layout/navBar";
 import UserBar from "./userBar";
 import Conversation from "./conversation";
+import { conversation } from "@/types/dummy";
+import { ChangeEvent, useState } from "react";
+import { FormEvent } from "react";
 
 export default function ChatComponent() {
+  const [conversationArray, setConversationArray] = useState<any[]>(conversation);
+  const [messageContent, setMessageContent] = useState<string | null> (null);
+
+  const handleNewMessage = async (e : FormEvent<HTMLFormElement>) => {
+	e.preventDefault();
+	console.log('submited with : ', messageContent);
+	
+	var now = new Date();
+	const currentTime = `${now.getHours()} : ${now.getMinutes()}`;
+
+	const newMessage = {
+		type : "receiver",
+		content : messageContent,
+		time : currentTime,
+		userName : "Fragger",
+	}
+	conversationArray.push(newMessage);
+  };
+
+  const handleChange = (value : string) => {
+	setMessageContent(value);
+  }
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
@@ -30,11 +55,18 @@ export default function ChatComponent() {
             </div>
             <div className="w-full h-[960px] flex itmes-center justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
               <div className="w-full h-[76%] md:h-full flex flex-col items-center justify-between space-y-2 ">
-				<Conversation />
-				<div className="h-16 md:h-24 w-full flex items-end justify-center ">
-				<input type="text" placeholder="Write a message..." className="input input-ghost w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] text-md md:text-[1.3rem] tracking-wide text-HokiCl caret-GreenishYellow placeholder:text-HokiCl focus:text-HokiCl bg-[#606060]/[12%] focus:bg-[#606060]/[12%] focus:ring-0 focus:outline-none font-poppins " />
-				</div>
-			  </div>
+                <Conversation conversation={conversationArray} />
+                <div className="h-16 md:h-24 w-full flex items-end justify-center ">
+                  <form className="w-full min-h-1" onSubmit={handleNewMessage}>
+                    <input
+                      type="text"
+                      placeholder="Write a message..."
+					  onChange={(e) => handleChange(e.target.value)}
+                      className="input input-ghost w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] text-md md:text-[1.3rem] tracking-wide text-HokiCl caret-GreenishYellow placeholder:text-HokiCl focus:text-HokiCl bg-[#606060]/[12%] focus:bg-[#606060]/[12%] focus:ring-0 focus:outline-none font-poppins "
+                    />
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
         </div>

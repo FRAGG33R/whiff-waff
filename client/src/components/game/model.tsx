@@ -7,11 +7,9 @@ import {
     DialogFooter,
     Spinner
   } from "@material-tailwind/react";
-interface ModelProps {
-    showModal: boolean;
-    setShowModal: (showModal: boolean) => void;
-    text: string;
-}
+import { ModelProps } from '@/types/model';
+  
+
 const Model:React.FC<ModelProps> = ({ showModal, setShowModal , text}) => {
   return (
     <div>

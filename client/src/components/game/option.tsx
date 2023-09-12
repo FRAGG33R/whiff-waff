@@ -287,14 +287,15 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
                         variant="text"
                         color="red"
                         onClick={handleOpen}
-                        className="mr-1"
+                        className="mr-1 border-[1px] rounded-[20px] border-CarbonGrey"
                       >
                         <span>Cancel</span>
                       </Button>
                       <Button
                         variant="gradient"
-                        color="green"
+                        color="blue-gray"
                         onClick={handlePlay}
+                        className="rounded-[20px]"
                       >
                         <span>Confirm</span>
                       </Button>
@@ -347,14 +348,15 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
                         variant="text"
                         color="red"
                         onClick={handleOpen}
-                        className="mr-1"
+                        className="mr-1 border-[1px] rounded-[20px] border-CarbonGrey"
                       >
                         <span>Cancel</span>
                       </Button>
                       <Button
                         variant="gradient"
-                        color="green"
+                        color="blue-gray"
                         onClick={handlePlay}
+                        className="rounded-[20px]"
                       >
                         <span>Confirm</span>
                       </Button>

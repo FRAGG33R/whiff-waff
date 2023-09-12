@@ -9,7 +9,8 @@ import { userType } from "./../../types/userType";
 
 const SettingPage = () => {
   const [userData, setUserData] = useRecoilState(userAtom);
-
+  console.log("avatar",(userData as userType).avatar);
+  
   return (
     <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row overflow-y-hidden">
       <div className="h-full min-w-[40px] w-[30px] md:w-[100px]">

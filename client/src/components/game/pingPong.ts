@@ -12,7 +12,6 @@ class PingPongTable {
   private tableBorderTop: any;
   private tableBorderBottom: any;
   private ballShadow: any;
-  private ballShadow1: any;
   private obstacle1: any ;
   private obstacle2: any;
   private obstacle3: any;
@@ -21,7 +20,7 @@ class PingPongTable {
   private obstacle6: any;
 
 
-  constructor(element: HTMLElement, tableOption: string, UrlTable: string) {
+  constructor(element: HTMLElement, tableOption: string) {
     this.element = element;
     this.engine = Matter.Engine.create({gravity: {x: 0, y: 0}});
     let width = element.getBoundingClientRect().width;
@@ -43,7 +42,7 @@ class PingPongTable {
     if (tableOption === 'Beginner') {
       this.initializeElements(width, height, tableBorderThickness, "#E4E5E7", "#D2386D", "#CBFC01");
     } else if (tableOption === 'Intermediate') {
-      this.initializeElements(width, height, tableBorderThickness, "#351F60", "#6C7FA7", "#D2386D");
+      this.initializeElements(width, height, tableBorderThickness, "#351F60", "#6C7FA7", "#E4E5E7");
     } else if (tableOption === 'Advanced') {
       this.initializeElements(width, height, tableBorderThickness, "#D2386D", "#351F60", "#E4E5E7");
     } else {
@@ -228,13 +227,11 @@ class PingPongTable {
     let obstacleWidth: number = width * 0.3;
 let obstacleHeight: number = height * 0.1;
 
-// Adjust the obstacle dimensions for smaller screens
 if (window.innerWidth < 768) {
   obstacleWidth = width * 0.2;
   obstacleHeight = height * 0.05;
 }
 
-// Set the base positions for the obstacles
 let obstacle1PosY: number = height / 2 + 300;
 let obstacle2PosY: number = height / 2 - 300;
 let obstacle3PosX: number = width - tableBorderThickness / 2;
@@ -242,7 +239,6 @@ let obstacle3PosY: number = height / 2 - 300;
 let obstacle4PosX: number = width - tableBorderThickness / 2;
 let obstacle4PosY: number = height / 2 + 300;
 
-// Adjust the obstacle positions for smaller screens
 if (window.innerWidth < 768) {
   obstacle1PosY = height / 2 + 200;
   obstacle2PosY = height / 2 - 200;
@@ -291,7 +287,7 @@ if (window.innerWidth < 768) {
           render: {
             fillStyle: PlayersColor,
           },
-          chamfer: { radius: 50 },
+          chamfer: { radius: 20 },
         }
       );
       
@@ -305,7 +301,7 @@ if (window.innerWidth < 768) {
           render: {
             fillStyle: PlayersColor,
           },
-          chamfer: { radius: 50 },
+          chamfer: { radius: 20 },
         }
       );
       Matter.World.add(this.engine.world, [this.obstacle1, this.obstacle2, this.obstacle3, this.obstacle4]);
@@ -327,8 +323,8 @@ if (window.innerWidth < 768) {
       );
       
       this.obstacle6 = Matter.Bodies.rectangle(
-        obstacle4PosX,
-        obstacle4PosY,
+        tableBorderThickness / 2,
+        obstacle1PosY,
         obstacleWidth,
         obstacleHeight,
         {
@@ -336,7 +332,7 @@ if (window.innerWidth < 768) {
           render: {
             fillStyle: PlayersColor,
           },
-          chamfer: { radius: 50 },
+          chamfer: { radius: 20 },
         }
       );
     

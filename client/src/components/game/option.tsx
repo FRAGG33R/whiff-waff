@@ -77,6 +77,8 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
       selectedMap = "Intermediate";
     } else if (advenced) {
       selectedMap = "Advanced";
+    } else {
+      selectedMap = "Beginner";
     }
 
     let selectedMode: string | undefined;
@@ -92,6 +94,7 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
       console.log("Select a map and a mode to play");
     }
   };
+
   return (
     <div className="w-full 2xl:h-full flex  flex-col gap-4 md:gap-6  ">
       <div className=" w-full 2xl:h-[120px] flex  flex-col items-center justify-center">

@@ -1,8 +1,13 @@
-import React, { useState } from "react";
-import ImageUpload from "./uploadImg";
 import { HexaGonProps } from "@/types/hexagonSetting";
+import React, { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
+import { IconUpload } from "@tabler/icons-react";
+import { ImageUploadProps } from "../../types/uploadType";
+import ValidationAlert from "../ui/alerts/validationAlert";
 
-const HexaGon: React.FC<HexaGonProps> = ({ avatar, onImageUpload }) => {
+const HexaGon: React.FC<HexaGonProps & ImageUploadProps> = ({setErrorFile ,setSelected, avatar, onImageUpload }) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
 
   const handleMouseEnter = () => {
@@ -13,26 +18,63 @@ const HexaGon: React.FC<HexaGonProps> = ({ avatar, onImageUpload }) => {
     setShowImageUpload(false);
   };
 
-  return (
-    <div
-      className="mask mask-hexagon-2 flex items-center justify-center bg-DeepRose w-[280px] lg:w-[480px] h-32 lg:h-48 rotate-90 "
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className="mask mask-hexagon-2 w-[90%] h-[90%] bg-white text-black flex items-center justify-center">
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    if (file && file.type.startsWith("image/") && file.size <= 4 * 1024 * 1024) {
+      setSelectedFile(file);
+      onImageUpload(file);
+      setUploadError(null);
+      setSelected(true);
+    } else {
+      const errorMessage =
+        "Invalid file format or size. Please select an image file (max size: 4MB).";
+      setUploadError(errorMessage);
+      setErrorFile(true);
+    }
+  }, [onImageUpload]);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  
+  const renderImage = () => {
+    if (selectedFile) {
+      return (
+        <img
+          src={URL.createObjectURL(selectedFile)}
+          alt="Uploaded Image"
+          className="bg-DeepRose w-[130px] lg:w-[200px] -rotate-90"
+        />
+      );
+    } else {
+      return (
         <img
           alt="profile picture"
           className="bg-DeepRose w-[130px] lg:w-[200px] -rotate-90"
           src={avatar}
         />
+      );
+    }
+  };
+
+  return (
+    <div
+      className="mask mask-hexagon-2 flex items-center justify-center bg-DeepRose w-[280px] lg:w-[480px] h-32 lg:h-48 rotate-90"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="mask mask-hexagon-2 w-[90%] h-[90%] bg-white text-black flex items-center justify-center">
+        {renderImage()}
       </div>
       {showImageUpload && (
-        <div className="mask mask-hexagon overlay absolute inset-0 flex items-center justify-center -rotate-90 bg-black opacity-80 ">
-          <ImageUpload onImageUpload={onImageUpload} />
+        <div className="mask mask-hexagon overlay absolute inset-0 flex items-center justify-center -rotate-90 bg-black opacity-80">
+          <div {...getRootProps()} className={isDragActive ? "bg-gray-100" : ""}>
+            <input {...getInputProps()} />
+            {selectedFile ? <p>{selectedFile.name}</p> : <IconUpload />}
+          </div>
         </div>
       )}
     </div>
   );
 };
+
 
 export default HexaGon;

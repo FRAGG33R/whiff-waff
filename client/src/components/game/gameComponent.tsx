@@ -29,17 +29,14 @@ const GameComponent: React.FC<GameProps> = ({ map , mode })=> {
 
   useEffect(() => {
     if (tableInstance != null){
-      console.log("**** destroyed");
       tableInstance.stopRendering();
     }
-    console.log("map", map);
-    tableInstance = new PingPongTable(myref.current!, map, backgroundImageUrl);
-    console.log("**%^&*^&*", tableInstance);
+    tableInstance = new PingPongTable(myref.current!, map);;
   }, [wSize]);
 
   return <div 
   className='flex items-center justify-center w-full h-full rounded-lg' ref={myref}>
-   </div>;
+   </div>
 };
 
 export default GameComponent;

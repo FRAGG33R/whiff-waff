@@ -5,7 +5,6 @@ import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import UserInput from "../ui/inputs/settingsInputs";
 import { useState } from "react";
-import ImageUpload from "./uploadImg";
 import { KeyboardEvent } from "react";
 import SettingsHexaGon from "./settingsHexagon";
 
@@ -98,7 +97,6 @@ const InformationsSetting = () => {
 
   const handleConfirm = async () => {
     if (!firstName.match(/^.{3,}$/)) {
-      console.log("firstName: ", firstName);
       setFirstError(true);
       return;
     }
@@ -132,7 +130,6 @@ const InformationsSetting = () => {
         formData.append("avatar", avatarImage);
       }
     }
-
     try {
       const req = await axios.patch(
         " http://34.173.232.127/api/v1/users/settings/",

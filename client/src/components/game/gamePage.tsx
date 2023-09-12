@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import NavBar from "../layout/navBar";
 import SideBar from "../layout/sideBar";
 import ScoreGame from "./scoreGame";
@@ -9,6 +9,15 @@ import { useRecoilState } from "recoil";
 import { userType } from "./../../types/userType";
 import LoggedInfo from "./loggedInfo";
 import AdversarieInfo from "./adversarieInfo";
+import {
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Spinner
+} from "@material-tailwind/react";
+import Model from "./model";
 
 const GamePage: React.FC = () => {
   const [selectedMap, setSelectedMap] = useState<string>("");
@@ -16,6 +25,7 @@ const GamePage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [userData, setUserData] = useRecoilState(userAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const [Game] = useState({
     userName: "Houssam",
@@ -30,10 +40,44 @@ const GamePage: React.FC = () => {
     setSelectedMap(map);
     setSelectedMode(mode);
   };
-
+  useEffect(() => {
+    setShowModal(true);
+  }, []);
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row pt-2 overflow-hidden">
-      <div className="h-full min-w-[40px] w-[30px] md:w-[100px] pt-2">
+            {showModal && (
+        <Dialog
+          className="bg-RhinoBlue bg-opacity-80 h-[400px] w-[200px] rounded-[20px]"
+          open={showModal}
+          handler={() => setShowModal(false)}
+        >
+          <DialogHeader className="text-GreenishYellow font-teko flex items-center justify-center text-[3rem] ">
+          Game Manual
+          </DialogHeader>
+          <DialogBody className="h-[210px] flex flex-col justify-center items-center" >
+            <div className=" font-poppins font-medium text-[1.5rem]">
+              <p className="flex flex-col ">
+                <span className="text-Mercury">1.  Choose a map and a mode</span>
+                <span className="text-Mercury">2.  Click on play</span> 
+                <span className="text-Mercury">3. Play by Mouse or Keyboard (ArrowLeft, ArrowRight)</span>
+              </p>
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="text"
+              color="white"
+              onClick={() => setShowModal(false)} 
+              className="mr-1 border-[3px] rounded-[20px] border-CarbonGrey"
+            >
+              <span>Cancel</span>
+            </Button>
+          </DialogFooter>
+        </Dialog>
+      )}
+      <div
+        className="h-full min-w-[40px] w-[30px] md:w-[100px] pt-2"
+      >
         <SideBar />
       </div>
       <div className="h-full w-full space-y-2 xl:space-y-10 pt-2">

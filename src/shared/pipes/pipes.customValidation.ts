@@ -14,13 +14,13 @@ export class CustomValidationPipe implements PipeTransform<any> {
 		return validationPipe.transform(value, metadata);
 	}
 }
+
 export class CustomWebSocketValidationPipe implements PipeTransform<any> {
 	public transform(value: any, metadata: ArgumentMetadata) {
 		const validationPipe = new ValidationPipe({
 			whitelist: true,
 			exceptionFactory: (errors) => {
 				const message = Object.values(errors[0].constraints)[0];
-				console.log('khti chra3 3tana 4');
 				return new WsException({ error: 'Bad Request', message });
 			},
 		});

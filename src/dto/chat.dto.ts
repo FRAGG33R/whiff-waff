@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty, IsOptional } from "class-validator";
+import { IsDate, IsDateString, IsNotEmpty, IsOptional } from "class-validator";
 
 export class ConversationDto {
 	@ApiProperty()
@@ -20,4 +20,16 @@ export class ConversationDto {
 	@ApiProperty({ example: new Date().toISOString(), required: false })
 	@IsOptional()
 	nbPage: Number;
+}
+
+export class dtoWebSocketTset {
+	@IsNotEmpty()
+	receiverId: string;
+
+	@IsNotEmpty()
+	content: string;
+
+	@IsNotEmpty()
+	@IsDateString()
+	currentDate: string;
 }

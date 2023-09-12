@@ -37,14 +37,15 @@ model User {
 }
 
 model Chat {
-    senderId   String    @map("sender_id")
-    receiverId String    @map("received_id")
-    messageId  String    @map("message_id")
-    sender     User      @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
-    receiver   User      @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
-    message    Message[]
+    id         String   @id @default(uuid())
+    senderId   String   @map("sender_id")
+    receiverId String   @map("received_id")
+    messageId  String   @map("message_id")
+    sender     User     @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+    receiver   User     @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+    message    String
+    date       DateTime @default(now())
 
-    @@id([senderId, receiverId])
     @@map("chat")
 }
 
@@ -76,7 +77,6 @@ model Message {
     senderId   String @map("sender_id")
     receiverId String @map("received_id")
     roomChatId String @map("room_chat_id")
-    chat       Chat   @relation(fields: [senderId, receiverId], references: [senderId, receiverId], onDelete: Cascade)
     roomSender Join?  @relation(fields: [roomChatId, senderId], references: [roomChatId, userId], onDelete: Cascade)
 
     @@map("message")

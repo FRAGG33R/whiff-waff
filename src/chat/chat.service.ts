@@ -37,22 +37,41 @@ export class ChatService {
 		return new IndividualChatResponse(messages, nbEkements);
 	}
 
-	async getConversation(data: ConversationDto) {
+	async checkFriendship(sender: string, receiver: string): Promise<boolean> {
+		const isFriend = await this.prismaService.friendship.findFirst({
+			where: {
+				OR:
+					[{
+						AND: [{ senderId: sender },
+						{ receivedId: receiver }]
+					}, {
+						AND: [{ senderId: receiver },
+						{ receivedId: sender }]
+					}]
+			}
+		});
+		if (!isFriend || isFriend.status != FriendshipStatus.ACCEPTED)
+			return false;
+		return true;
+	}
+
+	async getConversation(data: ConversationDto): Promise<IndividualChatResponse> {
 		try {
 			const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
-			const isFriend = await this.prismaService.friendship.findFirst({
-				where: {
-					OR:
-						[{
-							AND: [{ senderId: (data as any).senderId },
-							{ receivedId: (data as any).receiverId }]
-						}, {
-							AND: [{ senderId: (data as any).receiverId },
-							{ receivedId: (data as any).senderId }]
-						}]
-				}
-			});
-			if (!isFriend || isFriend.status != FriendshipStatus.ACCEPTED)
+			// const isFriend = await this.prismaService.friendship.findFirst({
+			// 	where: {
+			// 		OR:
+			// 			[{
+			// 				AND: [{ senderId: (data as any).senderId },
+			// 				{ receivedId: (data as any).receiverId }]
+			// 			}, {
+			// 				AND: [{ senderId: (data as any).receiverId },
+			// 				{ receivedId: (data as any).senderId }]
+			// 			}]
+			// 	}
+			// });
+			const isFriend = await this.checkFriendship((data as any).senderId, (data as any).receiverId);
+			if (!isFriend || (isFriend as any).status != FriendshipStatus.ACCEPTED)
 				throw message.NOT_FRIEND
 			const conversation = await this.prismaService.chat.findMany({
 				select: {

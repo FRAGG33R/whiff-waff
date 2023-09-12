@@ -32,7 +32,7 @@ module.exports = withMT({
       },
     },
     screens: {
-      '3xl': '1920px',
+      '3xl': '1930px',
     },
   },
   plugins: [require("daisyui"), require('tailwind-scrollbar')],

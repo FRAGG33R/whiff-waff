@@ -57,7 +57,7 @@ export default function ChatComponent() {
                 avatar="https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638"
               />
             </div>
-            <div className="w-full flex itmes-center h-[645px] md:h-[950px]  justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+            <div className="w-full flex itmes-center h-full md:h-[780px] 3xl:h-[957px]  justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
               <div className="w-full h-[76%] md:h-full flex flex-col items-center justify-between space-y-2">
                 <Conversation conversation={conversationArray} />
                 <div className="h-16 md:h-24 w-full flex items-end justify-center ">

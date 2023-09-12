@@ -18,24 +18,24 @@ export default function Profile(props: { data: userType }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-	  setMatchHistory((props.data as any).gamesData);
-	  setUser((props.data as any).user);
-	  setLoggedUser((props.data as any).loggedUser);
-	  setLoaded(true);
-	}, [])
-  
+    setMatchHistory((props.data as any).gamesData);
+    setUser((props.data as any).user);
+    setLoggedUser((props.data as any).loggedUser);
+    setLoaded(true);
+  }, []);
+
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-    {loaded && <ProfileComponent />}
+      {loaded && <ProfileComponent />}
     </div>
   );
 }
 
 export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req, params }: any) {
-	  try {
-		const token = await req.session.token.token;
-		const { id } = params;
+    try {
+      const token = await req.session.token.token;
+      const { id } = params;
       const res = await api.get(`/users/profile/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -44,8 +44,7 @@ export const getServerSideProps = withIronSessionSsr(
       return {
         props: { data: res.data.response },
       };
-
-    } catch (error : any) {
+    } catch (error: any) {
       if (error.response)
         return {
           redirect: {
@@ -53,13 +52,13 @@ export const getServerSideProps = withIronSessionSsr(
             permanent: false,
           },
         };
-	  else
-		return {
-			redirect: {
-			destination: "/login",
-			permanent: false,
-			},
-		};
+      else
+        return {
+          redirect: {
+            destination: "/login",
+            permanent: false,
+          },
+        };
     }
   },
   {

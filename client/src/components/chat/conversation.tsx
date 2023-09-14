@@ -11,7 +11,7 @@ export default function Conversation(props  : {conversation : any}) {
   }, [props.conversation.length]);
 
   return (
-    <div ref={conversationRef} className="w-full h-full overflow-y-scroll scrollbar scrollbar-track-rounded-full scrollbar-thumb-GreenishYellow  scrollbar-track-transparent ">
+    <div ref={conversationRef} className="w-full h-full overflow-y-scroll scrollbar scrollbar-track-rounded-full scrollbar-thumb-GreenishYellow scrollbar-track-transparent ">
       {props.conversation.map((item : any, index : number) => {
         return (
           <div key={index} className={`chat ${item.type === "receiver" ? 'chat-end text-white' : "chat-start text-black"} `}>

@@ -15,7 +15,7 @@ import { dtoWebSocketTset } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
-@WebSocketGateway({
+@WebSocketGateway(80, {
 	cors: {
 		origin: "*"
 	}
@@ -40,7 +40,7 @@ export class ChatGateway implements OnGatewayConnection {
 
 	@UseGuards(GuardsService)
 	@UsePipes(new CustomWebSocketValidationPipe())
-	@SubscribeMessage('message')
+	@SubscribeMessage('mess age')
 	async handleMessage(@MessageBody() dto: dtoWebSocketTset, @ConnectedSocket() client: Socket): Promise<void> {
 		const receiverIsFriend = await this.chatService.checkFriendship((client as any).user.id, dto.receiverId);
 		if (!receiverIsFriend)

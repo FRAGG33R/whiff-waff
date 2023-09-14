@@ -237,7 +237,8 @@ export class UsersService {
 			if (avatarFile) {
 				this.storageService.deleteImage(userName + avatar.slice(avatar.lastIndexOf('.')));
 				const fileName: string = (dto.userName || userName) + "." + avatarFile.mimetype.split('/')[1];
-				const avatarUrl = await this.storageService.uploadImage(avatarFile, fileName);
+				await this.storageService.uploadImage(avatarFile, fileName);
+				const avatarUrl =  this.storageService.getPublicImageUrl(fileName);
 				dto.avatar = avatarUrl;
 			}
 			const { verfiedEmail, twoFactorAuth, password, ...newUser } = await this.prismaService.user.update({

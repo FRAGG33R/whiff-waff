@@ -38,14 +38,29 @@ export class BucketService extends BucketStorageService {
 					.on(values.ERROR_TRIGRRED_EVENT, () => {
 						reject(messages.CLOUD_FAIL_MESSAGE)
 					})
-					.end(buffer)
+					.end(buffer);
 			});
 		} catch (error) {
-			console.log(error);//remove this
+			console.log(error);//TODO remove this
 		}
 	}
 
-	deleteImage(file: string) {
-		const test = this.bucket.file(file).delete({ ignoreNotFound: true });
+	async deleteImage(file: string): Promise<any>{
+		try {
+			await this.bucket.file(file).delete({ ignoreNotFound: false });
+		} catch (e) {
+			console.log("error: ", e);//TODO remove this
+		}
+	}
+
+	getPublicImageUrl(url: string): string{
+		try {
+			return this.storage.bucket(this.bucket).file(url).publicUrl();
+			// const test = this.storage.bucket(this.bucket).file(url);
+			// await test.makePublic();
+		} catch (error) {
+			console.log('error', error);
+			
+		}
 	}
 }

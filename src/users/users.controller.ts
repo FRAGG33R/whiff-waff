@@ -111,7 +111,7 @@ export class UsersController {
 		}
 	}))
 	async updateUserdata(@Body() dto: UpdateUserDto, @Req() req: Request, @UploadedFile() avatar: Express.Multer.File) {
-		return this.userService.upDateUserdata((req.user as any).id, dto, avatar);
+		return await this.userService.upDateUserdata((req.user as any).id, dto, avatar);
 	}
 
 	@ApiBearerAuth()

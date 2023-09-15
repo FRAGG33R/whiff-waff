@@ -28,7 +28,10 @@ export class BucketService extends BucketStorageService {
 				const { buffer } = file;
 				const blob = this.bucket.file(fileName)
 				const blobStream = blob.createWriteStream({
-					resumable: false
+					resumable: false,
+					metadata: {
+						cacheControl: 'no-store',
+					}
 				})
 				blobStream.on(values.BUCKET_TRIGRRED_EVENT, () => {
 					const publicUrl: string = util.format(
@@ -49,14 +52,14 @@ export class BucketService extends BucketStorageService {
 		try {
 			await this.bucket.file(file).delete({ ignoreNotFound: false });
 		} catch (e) {
-			console.log("error: ", e);//TODO remove this
+			console.log("error: file not found :  ", file);//TODO remove this
 		}
 	}
 
 	getPublicImageUrl(url: string): string{
 		try {
-			return this.storage.bucket(this.bucket).file(url).publicUrl();
-			// const test = this.storage.bucket(this.bucket).file(url);
+			const test = this.storage.bucket(this.bucket).file(url);
+			return test.publicUrl();
 			// await test.makePublic();
 		} catch (error) {
 			console.log('error', error);

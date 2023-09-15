@@ -12,6 +12,7 @@ import { BucketStorageService } from "src/bucket/bucket.storage-service";
 import * as message from 'src/shared/constants/constants.messages'
 
 const userService = 'userService';
+const prefixImage = 'cloud'
 @Injectable()
 export class UsersService {
 	logger = new Logger(userService);
@@ -235,10 +236,9 @@ export class UsersService {
 				}
 			})
 			if (avatarFile) {
-				this.storageService.deleteImage(userName + avatar.slice(avatar.lastIndexOf('.')));
+				await this.storageService.deleteImage(prefixImage + userName + avatar.slice(avatar.lastIndexOf('.')));
 				const fileName: string = (dto.userName || userName) + "." + avatarFile.mimetype.split('/')[1];
-				await this.storageService.uploadImage(avatarFile, fileName);
-				const avatarUrl =  this.storageService.getPublicImageUrl(fileName);
+				const avatarUrl = await this.storageService.uploadImage(avatarFile, prefixImage + fileName);
 				dto.avatar = avatarUrl;
 			}
 			const { verfiedEmail, twoFactorAuth, password, ...newUser } = await this.prismaService.user.update({

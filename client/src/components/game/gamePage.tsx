@@ -88,7 +88,7 @@ const GamePage: React.FC = () => {
             useName={(userData as userType).userName}
           />
         </div>
-        <div className="w-full h-full overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-4 flex flex-col items-start justify-start  ">
+        <div className="w-full h-full overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-4 flex flex-col items-start justify-start scrollbar scrollbar-thumb-GreenishYellow  scrollbar-track-transparent">
           <div className="w-full h-[140px]  2xl:flex  items-center justify-center flex-row gap-2 xl:block hidden">
             <ScoreGame />
           </div>

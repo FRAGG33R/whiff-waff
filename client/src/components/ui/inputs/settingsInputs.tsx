@@ -61,6 +61,8 @@ const UserInput: React.FC<InputProps> = ({
             ? "w-[13rem]  sm:w-[22rem]  md:w-[22rem] lg:w-[31rem] xl:w-[31rem] 2xl:w-[35rem] 3xl:w-[54rem] h-9 md:h-10 sm:h-10 lg:h-14 xl:h-14 3xl:h-16 text-sm sm:text-lg md:text-md lg:text-xl xl:text-2xl 2xl:text-2xl 3xl:text-2xl"
             : width === "code"
             ? "w-[12rem]  sm:w-[13rem]  md:w-[15rem] lg:w-[18rem] xl:w-[18rem]  md:h-12 h-10 3xl:h-14  placeholder:sm:text-[1.7rem] sm:text-5xl placeholder:lg:text-[2.3rem] lg:text-2xl   "
+            : width === "channel"
+            ? "w-[12rem]  sm:w-[13rem]  md:w-[15rem] lg:w-[18rem] xl:w-[18rem]  md:h-12 h-10 3xl:h-14  placeholder:sm:text-[1.7rem] text-sm sm:text-lg md:text-md lg:text-xl xl:text-2xl 2xl:text-2xl 3xl:text-2xl  "
             : ""
         }`}
       ></input>

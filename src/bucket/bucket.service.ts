@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, Logger } from "@nestjs/common";
 import { Storage } from '@google-cloud/storage'
 import * as util from 'util';
 import { BucketStorageService } from "./bucket.storage-service";
@@ -7,11 +7,13 @@ import * as env from 'src/shared/constants/constants.name-variables'
 import * as  values from 'src/shared/constants/constants.values';
 import * as path from 'src/shared/constants/constants.paths'
 import * as  messages from 'src/shared/constants/constants.messages';
+
+const bucketService = 'BucketService';
 @Injectable()
 export class BucketService extends BucketStorageService {
 	private readonly storage: Storage;
 	private readonly bucket: any;
-
+	private logger = new Logger(bucketService);
 
 	constructor(private readonly config: ConfigService) {
 		super();
@@ -44,7 +46,8 @@ export class BucketService extends BucketStorageService {
 					.end(buffer);
 			});
 		} catch (error) {
-			console.log(error);//TODO remove this
+			this.logger.error(bucketService);
+			throw new InternalServerErrorException();
 		}
 	}
 
@@ -52,18 +55,7 @@ export class BucketService extends BucketStorageService {
 		try {
 			await this.bucket.file(file).delete({ ignoreNotFound: false });
 		} catch (e) {
-			console.log("error: file not found :  ", file);//TODO remove this
-		}
-	}
-
-	getPublicImageUrl(url: string): string{
-		try {
-			const test = this.storage.bucket(this.bucket).file(url);
-			return test.publicUrl();
-			// await test.makePublic();
-		} catch (error) {
-			console.log('error', error);
-			
+			this.logger.error(bucketService);
 		}
 	}
 }

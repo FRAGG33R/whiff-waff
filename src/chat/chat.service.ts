@@ -1,41 +1,18 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Chat, FriendshipStatus, PrismaClient } from '@prisma/client';
-import { table } from 'console';
-import { take } from 'rxjs';
-import { Message, IndividualChatResponse } from 'src/custom_types/custom_types.Individual-chat';
+import { FriendshipStatus } from '@prisma/client';
+import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
 import { ConversationDto } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as message from 'src/shared/constants/constants.messages'
+import { IndentStyle } from 'typescript';
+
+const senderType = 'sender';
+const receiverType = 'receiver';
+const refactoringAll = 'allConversations'
+const refactoringOne = 'individualConversation'
 @Injectable()
 export class ChatService {
 	constructor(private readonly prismaService: PrismaService) { }
-
-	private refactorConversation(sender: string, conversationdata: any) {
-		conversationdata.forEach((element: { sender: { id: string; }; type: string; }) => {
-			if (element.sender.id === sender)
-				element.type = 'sender'
-			else
-				element.type = 'receiver'
-		});
-		return conversationdata;
-	}
-
-	private transformToChatResponse(conversation: any): IndividualChatResponse {
-		const messages: Message[] = [];
-		const nbEkements = (conversation as any).length;
-		for (const message of conversation) {
-			messages.push({
-				message: message.message,
-				date: message.date,
-				sender: {
-					id: message.sender.id,
-					userName: message.sender.userName
-				},
-				type: message.type
-			})
-		}
-		return new IndividualChatResponse(messages, nbEkements);
-	}
 
 	async checkFriendship(sender: string, receiver: string): Promise<boolean> {
 		const isFriend = await this.prismaService.friendship.findFirst({
@@ -55,55 +32,124 @@ export class ChatService {
 		return true;
 	}
 
-	async getConversation(data: ConversationDto): Promise<IndividualChatResponse> {
+	private formatConversationResponse(sender: string, conversationdata: any, refactorType: string): IndividualConversationResponse | AllUserConversationsResponse {
+		let messages: Message[] = [];
+		let receiver: any;
+		let allConversations: AllUserConversationsResponse[] = [];
+		conversationdata.forEach((element: any) => {
+			const type = ((element as any).originalSender.id === sender) ? senderType : receiverType;
+			receiver = ((element as any).sender.id === sender) ? (element as any).receiver : (element as any).sender;
+			messages.push({
+				content: element.message,
+				date: element.date,
+				type: type
+			} as Message);
+			delete element.message;
+			delete element.date;
+			delete element.originalSender;
+			delete element.sender;
+			delete element.receiver;
+			if (refactorType === refactoringAll) {
+				element.receiver = receiver;
+				element.messages = messages;
+				allConversations.push(new AllUserConversationsResponse(new IndividualConversationResponse(element.messages, element.receiver)));
+				messages = [];
+			}
+		});
+		if (refactorType === refactoringOne) {
+			const individualConvesartion = { receiver, messages };
+			return new IndividualConversationResponse(individualConvesartion.messages, individualConvesartion.receiver);
+		}
+		return conversationdata;
+	}
+
+	async getAllConversationsById(loggedUserId: string, data: ConversationDto): Promise<AllUserConversationsResponse> {
 		try {
 			const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
-			// const isFriend = await this.prismaService.friendship.findFirst({
-			// 	where: {
-			// 		OR:
-			// 			[{
-			// 				AND: [{ senderId: (data as any).senderId },
-			// 				{ receivedId: (data as any).receiverId }]
-			// 			}, {
-			// 				AND: [{ senderId: (data as any).receiverId },
-			// 				{ receivedId: (data as any).senderId }]
-			// 			}]
-			// 	}
-			// });
-			const isFriend = await this.checkFriendship((data as any).senderId, (data as any).receiverId);
-			if (!isFriend || (isFriend as any).status != FriendshipStatus.ACCEPTED)
-				throw message.NOT_FRIEND
-			const conversation = await this.prismaService.chat.findMany({
+			let conversation = await this.prismaService.chat.findMany({
 				select: {
-					message: true,
-					date: true,
-					sender: {
+					originalSender: {
 						select: {
 							id: true,
+							avatar: true,
+							email: true,
 							userName: true
 						}
 					},
-				},
-				where: {
-					AND: [{
-						OR: [{ AND: [{ senderId: (data as any).senderId, receiverId: (data as any).receiverId }] },
-						{
-							AND: [{ receiverId: (data as any).senderId },
-							{ senderId: (data as any).receiverId }]
-						}]
+					sender: {
+						select: {
+							id: true,
+							avatar: true,
+							email: true,
+							userName: true
+						}
 					},
-					{ AND: [{ date: { gte: (data as any).startDate } }, { date: { lte: (data as any).endDate } }] }]
+					receiver: {
+						select: {
+							id: true,
+							avatar: true,
+							email: true,
+							userName: true
+						}
+					},
+					message: true,
+					date: true,
 				},
 				take: (data as any).nbElements,
 				skip: skip,
 				orderBy: {
-					date: 'asc',
-				}
+					date: 'desc',
+				},
+				distinct: ['senderId', 'receiverId'],
 			})
-			const responseChat = this.refactorConversation((data as any).senderId, conversation);
-			return this.transformToChatResponse(responseChat);
+			const allConversation = this.formatConversationResponse(loggedUserId, conversation, refactoringAll) as AllUserConversationsResponse;
+			(allConversation[0] as any) = await this.getIndividualConversationById(loggedUserId, conversation[0].receiver.id, data);
+			return allConversation;
 		} catch (error) {
 			throw new ForbiddenException(error);
 		}
+	}
+
+	async getIndividualConversationById(loggedUserId: string, receiverId: string, data: ConversationDto): Promise<IndividualConversationResponse> {
+		const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
+		const conversation = await this.prismaService.chat.findMany({
+			select: {
+				originalSender: {
+					select: {
+						id: true,
+						avatar: true,
+						email: true,
+						userName: true
+					}
+				},
+				sender: {
+					select: {
+						id: true,
+						avatar: true,
+						email: true,
+						userName: true
+					}
+				},
+				receiver: {
+					select: {
+						id: true,
+						avatar: true,
+						email: true,
+						userName: true
+					}
+				},
+				message: true,
+				date: true,
+			},
+			take: (data as any).nbElements,
+			skip: skip,
+			orderBy: {
+				date: 'desc',
+			},
+			where: {
+				OR: [{ AND: [{ senderId: loggedUserId }, { receiverId: receiverId }] }, { AND: [{ receiverId: loggedUserId }, { senderId: receiverId }] }]
+			}
+		})
+		return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
 	}
 }

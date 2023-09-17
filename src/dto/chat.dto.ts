@@ -1,11 +1,7 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { IsDate, IsDateString, IsNotEmpty, IsOptional } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsDateString, IsNotEmpty, IsOptional } from "class-validator";
 
 export class ConversationDto {
-	@ApiProperty()
-	@IsNotEmpty()
-	receiverId: string;
-
 	@ApiProperty({ example: new Date().toISOString(), required: false })
 	@IsOptional()
 	startDate: string;
@@ -14,10 +10,11 @@ export class ConversationDto {
 	@IsOptional()
 	endDate: string;
 
-	@ApiProperty({ example: new Date().toISOString(), required: false })
+	@ApiProperty()
 	@IsOptional()
 	nbElements: Number;
-	@ApiProperty({ example: new Date().toISOString(), required: false })
+
+	@ApiProperty()
 	@IsOptional()
 	nbPage: Number;
 }

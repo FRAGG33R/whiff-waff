@@ -30,6 +30,7 @@ model User {
     onRightPlay          Play[]            @relation("right")
     sender               Chat[]            @relation("sender")
     receiver             Chat[]            @relation("receiver")
+    originalSenders      Chat[]            @relation("originalSender")
     achievements         haveAchievement[]
     chatrooms            Join[]
 
@@ -37,14 +38,17 @@ model User {
 }
 
 model Chat {
-    id         String   @id @default(uuid())
-    senderId   String   @map("sender_id")
-    receiverId String   @map("received_id")
-    messageId  String   @map("message_id")
-    sender     User     @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
-    receiver   User     @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+    id         String @id @default(uuid())
+    senderId   String @map("sender_id")
+    receiverId String @map("received_id")
+    messageId  String @map("message_id")
+    sender     User   @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+    receiver   User   @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
     message    String
-    date       DateTime @default(now())
+
+    originalSender     User   @relation("originalSender", fields: [originalSenderId], references: [id], onDelete: Cascade)
+    originalSenderId String   @map("sender_name")
+    date             DateTime @default(now())
 
     @@map("chat")
 }

@@ -87,10 +87,10 @@ export class UsersController {
 	@UseGuards(JwtGuard)
 	@Get(historyGame)
 	async getHistoryGames(@Req() req: Request) {
-		const idUser = req.params.userId;
+		const userId = req.params.userId;
 		const page = Number(req.query.page) || values.NUMBER_OF_FIRST_PAGE;
 		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_GAMES;
-		const historyGame = await this.userService.getHistoryGame(idUser, page, elementsNumer);
+		const historyGame = await this.userService.getHistoryGame(userId, page, elementsNumer);
 		return historyGame;
 	}
 

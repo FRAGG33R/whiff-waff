@@ -1,21 +1,30 @@
 interface Sender {
 	id: string;
+	avatar: string;
+	email: string;
 	userName: string;
 }
 
 export interface Message {
-	message: string;
+	content: string;
 	date: string;
-	sender: Sender;
 	type: string;
 }
 
-export class IndividualChatResponse {
-	messages: Message[];
-	nbElements: number;
+export class IndividualConversationResponse {
+	private receiver: Sender;
+	private messages: Message[];
 
-	constructor(messages: Message[], nbElements: number) {
+	constructor(messages: Message[], receiver: Sender) {
+		this.receiver = receiver;
 		this.messages = messages;
-		this.nbElements = nbElements;
 	}
-}	
+}
+
+export class AllUserConversationsResponse {
+	private conversations: IndividualConversationResponse;
+
+	constructor(conversations: IndividualConversationResponse) {
+		this.conversations = conversations;
+	}
+}

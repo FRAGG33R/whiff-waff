@@ -3,8 +3,6 @@ import { FriendshipStatus } from '@prisma/client';
 import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
 import { ConversationDto, dtoWebSocketTset } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import * as message from 'src/shared/constants/constants.messages'
-import { IndentStyle } from 'typescript';
 
 const senderType = 'sender';
 const receiverType = 'receiver';
@@ -163,7 +161,6 @@ export class ChatService {
 					originalSenderId: loggedUserId,
 					message: receiverInfo.content,
 					date: receiverInfo.currentDate,
-					messageId: 'null'
 				}
 			});
 		} catch (error) {

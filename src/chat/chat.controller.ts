@@ -32,4 +32,6 @@ export class ChatController {
 		const receivedId = (req as any).params.receiverId;
 		return await this.chatService.getIndividualConversationById(loggedUserId, receivedId, data);
 	}
+
+	
 }

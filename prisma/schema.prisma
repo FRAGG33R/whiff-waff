@@ -45,7 +45,7 @@ model Chat {
     receiver   User   @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
     message    String
 
-    originalSender     User   @relation("originalSender", fields: [originalSenderId], references: [id], onDelete: Cascade)
+    originalSender   User     @relation("originalSender", fields: [originalSenderId], references: [id], onDelete: Cascade)
     originalSenderId String   @map("sender_name")
     date             DateTime @default(now())
 

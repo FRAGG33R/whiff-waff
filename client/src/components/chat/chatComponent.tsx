@@ -3,14 +3,15 @@ import NavBar from "../layout/navBar";
 import UserBar from "./userBar";
 import Conversation from "./conversation";
 import { conversation } from "@/types/dummy";
-import { ChangeEvent, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { FormEvent, MouseEvent } from "react";
 import { IconSend } from "@tabler/icons-react";
+import io from 'socket.io-client';
+
 import SingleConversationHistory from "./singleConversationHistory";
 
 export default function ChatComponent() {
-  const [conversationArray, setConversationArray] =
-    useState<any[]>(conversation);
+  const [conversationArray, setConversationArray] = useState<any[]>(conversation);
   const [messageContent, setMessageContent] = useState<string>("");
   const dummyArray = [
 	{
@@ -75,6 +76,33 @@ export default function ChatComponent() {
     setMessageContent(value);
   };
 
+  const establishConnection = async () => {
+	const token = localStorage.getItem('token');
+	console.log('token : ', token);
+	try {
+		const socket = io('http://34.173.232.127:3001/', {
+			extraHeaders : {
+				authorization: `Bearer ${token}`,
+			}
+		});
+		const now = new Date();
+		socket.emit('message', {
+			receiverId : '7ba855be-5355-416c-b69b-98ef952a31ac',
+			content : "hello world ",
+			currentDate : now,
+		});
+		console.log('finish');
+		
+		console.log(socket);
+	} catch (error) {
+		console.log(error);
+		
+	}
+  }
+  useEffect( () => {
+	establishConnection();
+  })
+
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
       <div className="h-full min-w-[60px] w-[60px] md:w-[100px] pt-2">
@@ -93,11 +121,13 @@ export default function ChatComponent() {
             <div className="w-full px-4 h-32 bg-blue-300 ">Toggel switch</div>
             <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
               {dummyArray.map((item, index) => (
+				<Fragment key={index} >
                 <SingleConversationHistory
                   userName={item.userName}
                   lastMessage={item.lastMessage}
                   avatar={item.avatar}
                 />
+				</Fragment>
               ))}
             </div>
           </div>

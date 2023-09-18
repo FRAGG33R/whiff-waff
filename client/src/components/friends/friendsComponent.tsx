@@ -68,7 +68,13 @@ const friendsComponent = () => {
       )))}
     </div>
 
-        <Pagination max={Math.ceil((friendState as any).elementsNumber /7)} active={active} setActive={setActive} />
+    {friendState.length !== 0 && (
+        <Pagination
+          max={Math.ceil((friendState as any).elementsNumber / 7)}
+          active={active}
+          setActive={setActive}
+        />
+    )}
       </div>
     </div>
   );

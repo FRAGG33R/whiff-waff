@@ -69,7 +69,13 @@ const friendRequeste = () => {
       ))
     )}
     </div>
-        <Pagination max={Math.ceil((pendingFriendState as any).elementsNumber/7)}active={active} setActive={setActive} />
+    {pendingFriendState.length !== 0 && (
+        <Pagination
+          max={Math.ceil((pendingFriendState as any).elementsNumber / 7)}
+          active={active}
+          setActive={setActive}
+        />
+    )}
       </div>
     </div>
   );

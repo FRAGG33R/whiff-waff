@@ -41,7 +41,6 @@ model Chat {
     id         String @id @default(uuid())
     senderId   String @map("sender_id")
     receiverId String @map("received_id")
-    messageId  String @map("message_id")
     sender     User   @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
     receiver   User   @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
     message    String

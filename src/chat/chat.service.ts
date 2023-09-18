@@ -1,7 +1,7 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { FriendshipStatus } from '@prisma/client';
 import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
-import { ConversationDto } from 'src/dto/chat.dto';
+import { ConversationDto, dtoWebSocketTset } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as message from 'src/shared/constants/constants.messages'
 import { IndentStyle } from 'typescript';
@@ -151,5 +151,23 @@ export class ChatService {
 			}
 		})
 		return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
+	}
+
+	async saveMessage(loggedUserId: string, receiverInfo: dtoWebSocketTset) {
+		try {
+			const sortedUsers: string[] = Array(loggedUserId, receiverInfo.receiverId).sort();
+			await this.prismaService.chat.create({
+				data : {
+					senderId: sortedUsers[0],
+					receiverId: sortedUsers[1],
+					originalSenderId: loggedUserId,
+					message: receiverInfo.content,
+					date: receiverInfo.currentDate,
+					messageId: 'null'
+				}
+			});
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
 	}
 }

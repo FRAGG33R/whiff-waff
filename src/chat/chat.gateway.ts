@@ -8,7 +8,7 @@ import { dtoWebSocketTset } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 
 const chatGateway = 'ChatGateway';
-@WebSocketGateway(80, {
+@WebSocketGateway(6080, {
 	cors: {
 		origin: "*"
 	}

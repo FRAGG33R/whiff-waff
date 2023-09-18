@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsNotEmpty, IsOptional } from "class-validator";
-
+import { ChatRoomType } from "@prisma/client";
+import { Transform } from "class-transformer";
+import { IsDate, IsDateString, IsISO8601, IsNotEmpty, IsOptional, Matches, ValidationOptions, isDateString } from "class-validator";
+import * as values from 'src/shared/constants/constants.values'
 export class ConversationDto {
 	@ApiProperty({ example: new Date().toISOString(), required: false })
 	@IsOptional()
@@ -19,6 +21,21 @@ export class ConversationDto {
 	nbPage: Number;
 }
 
+export class RoomInfos {
+	@ApiProperty()
+	@IsNotEmpty()
+	channelName: string;
+
+	@ApiProperty()
+	@Matches(`^${values.CHANNEL_TYPES}$`, 'i', { message: `type must be ${values.CHANNEL_TYPES}` })
+	@IsOptional()
+	channelType: ChatRoomType;
+
+	@ApiProperty()
+	@IsOptional()
+	channelPassword: string;
+}
+
 export class dtoWebSocketTset {
 	@IsNotEmpty()
 	receiverId: string;
@@ -26,7 +43,7 @@ export class dtoWebSocketTset {
 	@IsNotEmpty()
 	content: string;
 
-	@IsNotEmpty()
-	@IsDateString()
-	currentDate: string;
+	@IsDate()
+	@Transform( ({ value }) => new Date(value))
+	currentDate: Date;
 }

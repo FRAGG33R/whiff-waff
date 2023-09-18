@@ -8,8 +8,6 @@ import { JwtGuard } from "src/auth/guards/guards.jwtGuard";
 import { ResponseInfo } from 'src/shared/responses/responses.sucess-response'
 import * as values from 'src/shared/constants/constants.values'
 import * as  messages from 'src/shared/constants/constants.messages';
-import { PassThrough } from "stream";
-import { MessageBody, SubscribeMessage } from "@nestjs/websockets";
 
 const fileName = 'avatar'
 const tagUserSwagger = 'users'

@@ -1,5 +1,5 @@
 import { ForbiddenException, HttpException, HttpStatus, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { Friendship, FriendshipStatus, Prisma, Rank, User } from "@prisma/client";
+import { FriendshipStatus, User } from "@prisma/client";
 import { SignUpDto, UpdateUserDto } from "src/dto";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AchievementService } from "src/achievements/achievements.service";

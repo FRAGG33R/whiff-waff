@@ -1,4 +1,4 @@
-import { Logger, UseGuards, UsePipes, } from '@nestjs/common';
+import { Logger, UseFilters, UseGuards, UsePipes, ValidationPipe, } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
@@ -13,6 +13,7 @@ const chatGateway = 'ChatGateway';
 		origin: "*"
 	}
 })
+
 export class ChatGateway implements OnGatewayConnection {
 	private readonly loggedUsers: Map<string, string[]> = new Map<string, string[]>();
 	logger = new Logger(chatGateway);
@@ -32,21 +33,21 @@ export class ChatGateway implements OnGatewayConnection {
 	}
 
 	@UseGuards(GuardsService)
-	@UsePipes(new CustomWebSocketValidationPipe())
 	@SubscribeMessage('message')
-	async handleMessage(@MessageBody() dto: dtoWebSocketTset, @ConnectedSocket() client: Socket): Promise<void> {
+	async handleMessage(@MessageBody(new CustomWebSocketValidationPipe()) dto: dtoWebSocketTset, @ConnectedSocket() client: Socket): Promise<void> {
 		const receiverIsFriend = await this.chatService.checkFriendship((client as any).user.id, dto.receiverId);
 		if (!receiverIsFriend)
 			throw new WsException('user not a friend');
 		const receiver = this.loggedUsers.get(dto.receiverId);
-		receiver.forEach(element => {
-			let sended: boolean = client.to(element).emit('message', dto);
-			if (!sended)
-			{
-				this.logger.error('emit method faild to send message');
-				throw new WsException('internal server error');
-			}
-		});
-		this.chatService.saveMessage((client as any).user.id, dto);
+		if (receiver) {
+			receiver.forEach(element => {
+				let sended: boolean = client.to(element).emit('message', dto);
+				if (!sended) {
+					this.logger.error('emit method faild to send message');
+					throw new WsException('internal server error');
+				}
+			});
+		}
+		await this.chatService.saveMessage((client as any).user.id, dto);
 	}
 }

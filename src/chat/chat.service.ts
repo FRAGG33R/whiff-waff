@@ -1,8 +1,13 @@
 import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { FriendshipStatus } from '@prisma/client';
+import { FriendshipStatus, ChatRoomType, UserStatus } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
-import { ConversationDto, dtoWebSocketTset } from 'src/dto/chat.dto';
+import { ConversationDto, RoomInfos, dtoWebSocketTset } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+
+import * as ErrorCode from '../shared/constants/constants.code-error';
+import * as  CodeMessages from 'src/shared/constants/constants.messages';
+import { type } from 'os';
 
 const senderType = 'sender';
 const receiverType = 'receiver';
@@ -155,7 +160,7 @@ export class ChatService {
 		try {
 			const sortedUsers: string[] = Array(loggedUserId, receiverInfo.receiverId).sort();
 			await this.prismaService.chat.create({
-				data : {
+				data: {
 					senderId: sortedUsers[0],
 					receiverId: sortedUsers[1],
 					originalSenderId: loggedUserId,
@@ -163,6 +168,101 @@ export class ChatService {
 					date: receiverInfo.currentDate,
 				}
 			});
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async joinRoom(loggedUserId: string, data: RoomInfos) {
+		try {
+			const existRoom = await this.getRoomByName(data.channelName);
+			if (!existRoom) {
+				const newRoom = await this.creatRoom(data);
+				await this.joinUserToRomm(loggedUserId, newRoom.id, UserStatus.ADMIN);
+			}
+			else {
+				// const alreadyExists = await this.prismaService.join.findUnique({
+				// 	where: {
+				// 		userId_roomChatId: {
+				// 			userId: loggedUserId,
+				// 			roomChatId: existRoom.id
+				// 		}
+				// 	}
+				// })
+				// if (alreadyExists)
+				// 	throw { type: 'alreadyExists' }
+				if (existRoom.type === ChatRoomType.PRIVATE) {
+					const invitedUsersIds = await this.getInvitedUserOnChannelById(loggedUserId, existRoom.id)
+					if (!invitedUsersIds)
+						throw { type: 'forbiden', message: `The user does not have an invitation to join the room : ${existRoom.name}` }
+					await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
+				}
+				else if (existRoom.type === ChatRoomType.PROTECTED) {
+					if (data.channelPassword != existRoom.password)
+						throw { type: 'forbiden' }
+					await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
+				}
+				else
+					await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
+			}
+		} catch (error) {
+			if (error instanceof PrismaClientKnownRequestError) {
+				if (error.code === ErrorCode.DUPLICATE_ENTRY_ERROR_CODE)
+					throw new ForbiddenException(`user${CodeMessages.P2002_MSG}`)
+			}
+			if (error.type === 'forbiden') {
+				throw new ForbiddenException('incorrect password');
+			}
+			if (error.type === 'alreadyExists')
+				throw new ForbiddenException(`user${CodeMessages.P2002_MSG}`)
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async getInvitedUserOnChannelById(invitedUserId: string, roomChatId: string) {
+		return await this.prismaService.invitedRoomChat.findUnique({
+			where: {
+				invitedUserId_roomChatId: {
+					invitedUserId: invitedUserId,
+					roomChatId: roomChatId
+				}
+			}
+		})
+	}
+
+	async joinUserToRomm(loggedUserId: string, roomId: string, typeUser: UserStatus) {
+		await this.prismaService.join.create({
+			data: {
+				userId: loggedUserId,
+				roomChatId: roomId,
+				statut: typeUser
+			}
+		})
+	}
+
+	async creatRoom(data: RoomInfos) {
+		try {
+			data.channelType = (!data.channelType) ? ChatRoomType.PUBLIC : data.channelType;
+			data.channelPassword = (data.channelType === ChatRoomType.PRIVATE) ? undefined : data.channelPassword;
+			return await this.prismaService.roomChat.create({
+				data: {
+					name: data.channelName,
+					type: data.channelType,
+					password: data.channelPassword
+				}
+			})
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async getRoomByName(roomName: string) {
+		try {
+			return await this.prismaService.roomChat.findUnique({
+				where: {
+					name: roomName
+				}
+			})
 		} catch (error) {
 			throw new InternalServerErrorException(error);
 		}

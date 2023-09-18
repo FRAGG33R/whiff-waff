@@ -11,28 +11,30 @@ datasource db {
 }
 
 model User {
-    id                   String            @id @default(uuid())
-    userName             String            @unique @map("user_name")
-    firstName            String            @map("first_name")
-    lastName             String            @map("last_name")
-    avatar               String
-    email                String            @unique
-    password             String?           @map("password_hash")
-    twoFactorAuth        Boolean           @map("two_factor_auth")
-    verfiedEmail         Boolean           @map("verfied_email")
-    status               PlayerStatus
-    stat                 Stats?
-    sentNotification     Notification[]    @relation("sendNotfication")
-    receivedNotification Notification[]    @relation("receiveNotification")
-    senderFriendship     Friendship[]      @relation("sendFriendship")
-    receiverFriendship   Friendship[]      @relation("receiveFriendship")
-    oneLeftPlay          Play[]            @relation("left")
-    onRightPlay          Play[]            @relation("right")
-    sender               Chat[]            @relation("sender")
-    receiver             Chat[]            @relation("receiver")
-    originalSenders      Chat[]            @relation("originalSender")
-    achievements         haveAchievement[]
-    chatrooms            Join[]
+    id                        String            @id @default(uuid())
+    userName                  String            @unique @map("user_name")
+    firstName                 String            @map("first_name")
+    lastName                  String            @map("last_name")
+    avatar                    String
+    email                     String            @unique
+    password                  String?           @map("password_hash")
+    twoFactorAuth             Boolean           @map("two_factor_auth")
+    verfiedEmail              Boolean           @map("verfied_email")
+    status                    PlayerStatus
+    stat                      Stats?
+    sentNotification          Notification[]    @relation("sendNotfication")
+    receivedNotification      Notification[]    @relation("receiveNotification")
+    senderFriendship          Friendship[]      @relation("sendFriendship")
+    receiverFriendship        Friendship[]      @relation("receiveFriendship")
+    oneLeftPlay               Play[]            @relation("left")
+    onRightPlay               Play[]            @relation("right")
+    sender                    Chat[]            @relation("sender")
+    receiver                  Chat[]            @relation("receiver")
+    originalSenders           Chat[]            @relation("originalSender")
+    achievements              haveAchievement[]
+    chatrooms                 Join[]
+    InvitedRoomChat           InvitedRoomChat[] @relation("invitedUser")
+    AdminsRoomChatInvitations InvitedRoomChat[] @relation("admin")
 
     @@map("user")
 }
@@ -53,13 +55,27 @@ model Chat {
 }
 
 model RoomChat {
-    id           String       @id @default(uuid())
-    passwordHash String?      @map("password_hash")
-    passwordSalt String?      @map("password_salt")
-    type         ChatRoomType
-    joins        Join[]
+    id              String            @id @default(uuid())
+    name            String            @unique
+    password        String?           @map("password_hash")
+    type            ChatRoomType
+    joins           Join[]
+    InvitedRoomChat InvitedRoomChat[]
 
     @@map("room_chat")
+}
+
+model InvitedRoomChat {
+    adminId       String @map("sender_id")
+    invitedUserId String @map("received_id")
+    roomChatId    String @map("room_chat_id")
+
+    invitedUser User     @relation("invitedUser", fields: [invitedUserId], references: [id], onDelete: Cascade)
+    admin       User     @relation("admin", fields: [adminId], references: [id], onDelete: Cascade)
+    roomChat    RoomChat @relation(fields: [roomChatId], references: [id], onDelete: Cascade)
+
+    @@id([invitedUserId, roomChatId])
+    @@map("invited_room_chat")
 }
 
 model Join {
@@ -228,6 +244,6 @@ enum UserStatus {
     ADMIN
     BANNED
     MUTED
-
+	DEFLAULT
     @@map("user_status")
 }

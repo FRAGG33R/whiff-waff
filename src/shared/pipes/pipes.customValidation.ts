@@ -4,6 +4,7 @@ import { WsException } from '@nestjs/websockets';
 export class CustomValidationPipe implements PipeTransform<any> {
 	public transform(value: any, metadata: ArgumentMetadata) {
 		const validationPipe = new ValidationPipe({
+
 			whitelist: true,
 			exceptionFactory: (errors) => {
 				const message = Object.values(errors[0].constraints)[0];

@@ -1,7 +1,7 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { SignUpDto } from "./auth.dto";
-import { IsNotEmpty, IsNumber, IsOptional, Matches } from "class-validator";
-import { Friendship, FriendshipStatus } from "@prisma/client";
+import { IsNotEmpty, IsOptional, Matches } from "class-validator";
+import { FriendshipStatus } from "@prisma/client";
 
 export class UpdateUserDto extends PartialType(SignUpDto) { }
 

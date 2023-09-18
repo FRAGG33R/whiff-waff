@@ -39,7 +39,7 @@ const ProfileDropDown = () => {
       <motion.div
         initial={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center w-8 md:w-12 h-10"
+        className="flex items-center justify-center w-8 md:w-12 h-10 cursor-pointer"
       >
         <IconChevronDown stroke={2.5} size={30} color="#CBFC01" />
       </motion.div>

@@ -36,7 +36,7 @@ export const getServerSideProps = withIronSessionSsr(
       const userId = parseJwtSsr(token).id;
 
       const res = await axios.get(
-        "  http://34.173.232.127/api/v1/users/friends",
+        "http://34.173.232.127/api/v1/users/friends",
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -1,9 +1,8 @@
 import SideBar from "../layout/sideBar";
 import NavBar from "../layout/navBar";
 import UserBar from "./userBar";
-import Conversation from "./conversation";
 import { conversation } from "@/types/dummy";
-import { ChangeEvent, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { FormEvent, MouseEvent } from "react";
 import { IconSend } from "@tabler/icons-react";
 import CreateChannel from "./createChannel";
@@ -14,13 +13,24 @@ import ChannelsConversation from "./channelsConversation";
 import { avatar } from "@material-tailwind/react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-
+import { io } from "socket.io-client";
+import { useRecoilState } from "recoil";
+import { chatAtom } from "@/context/RecoilAtoms";
+import { conversationType } from "@/types/chatType";
+import Conversation from "./conversation";
 
 export default function ChatComponent() {
-  const [conversationArray, setConversationArray] =
-    useState<any[]>(conversation);
+  const [chat, setChat] = useRecoilState(chatAtom);
+  console.log("chat data : ", chat);
+  const [conversations, setConversations] = useState<conversationType[]>(
+    chat as conversationType[]
+  );
+  const [selectedConversatoin, setSelectedConversation] =
+    useState<conversationType | null>(
+      conversation.length > 0 ? conversation[0] : null
+    );
   const [messageContent, setMessageContent] = useState<string>("");
-  const [activeTab, setActiveTab] = useState('Chat');
+  const [activeTab, setActiveTab] = useState("Chat");
   const handleToggle = (value: string) => {
     setActiveTab(value);
   };
@@ -126,7 +136,6 @@ export default function ChatComponent() {
       alert("Message should not be empty !");
       return;
     }
-
     var now = new Date();
     const currentTime = `${now.getHours()} : ${now.getMinutes()}`;
     const newMessage = {
@@ -135,11 +144,10 @@ export default function ChatComponent() {
       time: currentTime,
       userName: "Fragger",
     };
-
-    setConversationArray((prevConversationArray) => [
-      ...prevConversationArray,
-      newMessage,
-    ]);
+    // setConversationArray((prevConversationArray) => [
+    //   ...prevConversationArray,
+    //   newMessage,
+    // ]);
 
     setMessageContent("");
   };
@@ -147,6 +155,36 @@ export default function ChatComponent() {
   const handleChange = (value: string) => {
     setMessageContent(value);
   };
+
+  const handleSelectedConversation = (conversation: conversationType) => {
+    setSelectedConversation(conversation);
+  };
+  const establishConnection = async () => {
+    const token = localStorage.getItem("token");
+    console.log("token : ", token);
+    try {
+      const socket = io("http://34.173.232.127:3001/", {
+        extraHeaders: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+      const now = new Date();
+      socket.emit("message", {
+        receiverId: "7ba855be-5355-416c-b69b-98ef952a31ac",
+        content: "hello world ",
+        currentDate: now,
+      });
+      console.log("finish");
+
+      console.log(socket);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    // establishConnection();
+  });
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
@@ -170,44 +208,47 @@ export default function ChatComponent() {
                 onToggle={handleToggle}
               />
             </div>
-            {activeTab === 'Chat' ? (
-    <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-      {dummyArray.map((item, index) => (
-        <SingleConversationHistory
-          key={index}
-          userName={item.userName}
-          lastMessage={item.lastMessage}
-          avatar={item.avatar}
-        />
-      ))}
-    </div>
-  ) : (
-    <>
-      <motion.div
-        whileTap={{ backgroundColor: "#2e4169" }}
-        className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
-      >
-        <CreateChannel />
-      </motion.div>
-      <motion.div
-        whileTap={{ backgroundColor: "#2e4169" }}
-        className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
-      >
-        <ExploreChannels />
-      </motion.div>
-      <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-        {dummyArray1.map((item, index) => (
-          <ChannelsConversation
-            key={index}
-            lastUser={item.userName}
-            channelName={item.channelName}
-            lastMessage={item.lastMessage}
-            avatars={item.avatars || []}
-          />
-        ))}
-      </div>
-    </>
-  )}
+            {activeTab === "Chat" ? (
+              <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
+                {dummyArray.map((item, index) => (
+                  <SingleConversationHistory
+                    key={index}
+                    userName={item.userName}
+                    lastMessage={item.lastMessage}
+                    avatar={item.avatar}
+                    selected={false}
+                    messagePrefix={false}
+                    onClick={() => {}}
+                  />
+                ))}
+              </div>
+            ) : (
+              <>
+                <motion.div
+                  whileTap={{ backgroundColor: "#2e4169" }}
+                  className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
+                >
+                  <CreateChannel />
+                </motion.div>
+                <motion.div
+                  whileTap={{ backgroundColor: "#2e4169" }}
+                  className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
+                >
+                  <ExploreChannels />
+                </motion.div>
+                <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
+                  {dummyArray1.map((item, index) => (
+                    <ChannelsConversation
+                      key={index}
+                      lastUser={item.userName}
+                      channelName={item.channelName}
+                      lastMessage={item.lastMessage}
+                      avatars={item.avatars || []}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </div>
           <div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
             <div className="w-full h-16 md:h-24 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
@@ -219,7 +260,9 @@ export default function ChatComponent() {
             </div>
             <div className="w-full flex itmes-center min-h-[780px] 3xl:h-full max-h-[957px]  justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
               <div className="w-full h-[76%] md:h-full flex flex-col items-center justify-between space-y-2">
-                <Conversation conversation={conversationArray} />
+                {selectedConversatoin && (
+                  <Conversation conversation={selectedConversatoin} />
+                )}
                 <div className="h-16 md:h-24 w-full flex items-end justify-center ">
                   <form className="w-full min-h-1" onSubmit={handleNewMessage}>
                     <div className="w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] bg-[#606060]/[12%] focus:bg-[#606060]/[12%]  font-poppins flex flex-row items-center justify-center px-2">

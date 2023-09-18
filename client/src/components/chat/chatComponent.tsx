@@ -7,6 +7,7 @@ import { ChangeEvent, useState } from "react";
 import { FormEvent, MouseEvent } from "react";
 import { IconSend } from "@tabler/icons-react";
 import CreateChannel from "./createChannel";
+import ChannelToggleSwitch from "../ui/buttons/channelToggleSwitch";
 import ExploreChannels from "./exploreChannels";
 import SingleConversationHistory from "./singleConversationHistory";
 import ChannelsConversation from "./channelsConversation";
@@ -14,10 +15,15 @@ import { avatar } from "@material-tailwind/react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+
 export default function ChatComponent() {
   const [conversationArray, setConversationArray] =
     useState<any[]>(conversation);
   const [messageContent, setMessageContent] = useState<string>("");
+  const [activeTab, setActiveTab] = useState('Chat');
+  const handleToggle = (value: string) => {
+    setActiveTab(value);
+  };
   const dummyArray = [
     {
       userName: "JohnWick",
@@ -157,30 +163,51 @@ export default function ChatComponent() {
         </div>
         <div className="w-full h-[92%] md:h-[91%] flex flex-row space-x-2 md:space-x-10 overflow-y-hidden overflow-x-hidden">
           <div className="h-full min-w-[60px] max-w-[400px] w-1/4 md:w-1/3 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] flex flex-col items-center justify-start py-12 space-y-12">
-            <div className="w-full px-4 h-32 bg-blue-300 ">Toggel switch</div>
-            <motion.div
-              whileTap={{ backgroundColor: "#2e4169" }}
-              className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
-            >
-              <CreateChannel />
-            </motion.div>
-            <motion.div
-              whileTap={{ backgroundColor: "#2e4169" }}
-              className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
-            >
-              <ExploreChannels />
-              </motion.div>
-            <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-              {dummyArray1.map((item, index) => (
-                <ChannelsConversation
-                  key={index}
-                  lastUser={item.userName}
-                  channelName={item.channelName}
-                  lastMessage={item.lastMessage}
-                  avatars={item.avatars || []}
-                />
-              ))}
+            <div className="hidden w-full px-4 h-32  md:flex justify-center items-center">
+              <ChannelToggleSwitch
+                firstValue="Chat"
+                secondValue="Channels"
+                onToggle={handleToggle}
+              />
             </div>
+            {activeTab === 'Chat' ? (
+    <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
+      {dummyArray.map((item, index) => (
+        <SingleConversationHistory
+          key={index}
+          userName={item.userName}
+          lastMessage={item.lastMessage}
+          avatar={item.avatar}
+        />
+      ))}
+    </div>
+  ) : (
+    <>
+      <motion.div
+        whileTap={{ backgroundColor: "#2e4169" }}
+        className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
+      >
+        <CreateChannel />
+      </motion.div>
+      <motion.div
+        whileTap={{ backgroundColor: "#2e4169" }}
+        className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
+      >
+        <ExploreChannels />
+      </motion.div>
+      <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
+        {dummyArray1.map((item, index) => (
+          <ChannelsConversation
+            key={index}
+            lastUser={item.userName}
+            channelName={item.channelName}
+            lastMessage={item.lastMessage}
+            avatars={item.avatars || []}
+          />
+        ))}
+      </div>
+    </>
+  )}
           </div>
           <div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
             <div className="w-full h-16 md:h-24 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">

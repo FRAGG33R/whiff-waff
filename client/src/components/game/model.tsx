@@ -4,8 +4,7 @@ import {
     Dialog,
     DialogHeader,
     DialogBody,
-    DialogFooter,
-    Spinner
+    DialogFooter
   } from "@material-tailwind/react";
 import { ModelProps } from '@/types/model';
   

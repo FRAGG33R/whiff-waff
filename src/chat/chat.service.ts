@@ -147,7 +147,7 @@ export class ChatService {
 			take: (data as any).nbElements,
 			skip: skip,
 			orderBy: {
-				date: 'desc',
+				date: 'asc',
 			},
 			where: {
 				OR: [{ AND: [{ senderId: loggedUserId }, { receiverId: receiverId }] }, { AND: [{ receiverId: loggedUserId }, { senderId: receiverId }] }]

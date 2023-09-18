@@ -1,59 +1,55 @@
 import ChatComponent from "@/components/chat/chatComponent";
 import { withIronSessionSsr } from "iron-session/next";
 import { api } from "@/components/axios/instance";
-import '@/app/globals.css'
+import { useRecoilState } from "recoil";
+import { chatAtom } from "@/context/RecoilAtoms";
+import { useEffect, useState } from "react";
+import "@/app/globals.css";
 
-export default function Chat(props : {data : any})
-{
-	console.log(props.data);
-	
-	return (
-		<div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-			<ChatComponent />
-		</div>
-	)
+export default function Chat(props: { data: any }) {
+  const [chat, setChat] = useRecoilState(chatAtom);
+  const [loaded, setLoaded] = useState<boolean>(false);
+
+  useEffect(() => {
+    setChat(props.data);
+    setLoaded(true);
+  });
+
+  return (
+    <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
+      {loaded && <ChatComponent />}
+    </div>
+  );
 }
 
-
-// export const getServerSideProps = withIronSessionSsr(
-// 	async function getServerSideProps({ req, params }: any) {
-// 	  try {
-// 		const token = await req.session.token.token;
-// 		const { id } = params;
-// 		const res = await api.get(`/users/profile/${id}`, {
-// 		  headers: {
-// 			Authorization: `Bearer ${token}`,
-// 		  },
-// 		});
-// 		console.log(res.data);
-		
-// 		return {
-// 		  props: { data: res.data.response },
-// 		};
-// 	  } catch (error: any) {
-// 		if (error.response)
-// 		  return {
-// 			redirect: {
-// 			  destination: "/404",
-// 			  permanent: false,
-// 			},
-// 		  };
-// 		else
-// 		  return {
-// 			redirect: {
-// 			  destination: "/login",
-// 			  permanent: false,
-// 			},
-// 		  };
-// 	  }
-// 	},
-// 	{
-// 	  cookieName: "token",
-// 	  password:
-// 		"$Kv4v3r6t8b7x5fd2a9c73baa7495d8268b048dc791c301621da7129s3C9g1#2qweIokLKJXx",
-// 	  cookieOptions: {
-// 		secure: process.env.NODE_ENV === "production",
-// 	  },
-// 	}
-//   );
-  
+export const getServerSideProps = withIronSessionSsr(
+  async function getServerSideProps({ req }: any) {
+    try {
+      const token = await req.session.token.token;
+      const res = await api.get(`chat/IndividualConversations`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return {
+        props: { data: res.data },
+      };
+    } catch (error: any) {
+      console.log(error.resposnse);
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+  },
+  {
+    cookieName: "token",
+    password:
+      "$Kv4v3r6t8b7x5fd2a9c73baa7495d8268b048dc791c301621da7129s3C9g1#2qweIokLKJXx",
+    cookieOptions: {
+      secure: process.env.NODE_ENV === "production",
+    },
+  }
+);

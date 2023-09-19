@@ -31,11 +31,12 @@ export const getServerSideProps = withIronSessionSsr(
           Authorization: `Bearer ${token}`,
         },
       });
+	  console.log(res);
       return {
         props: { data: res.data },
       };
     } catch (error: any) {
-      console.log(error.resposnse);
+      console.log(error);
       return {
         redirect: {
           destination: "/login",

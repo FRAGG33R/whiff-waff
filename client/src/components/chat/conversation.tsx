@@ -21,7 +21,6 @@ export default function Conversation(props  : {conversation : conversationType})
       conversationDiv.scrollTop = conversationDiv.scrollHeight;
     }
   }, [props.conversation.messages.length]);
-  console.log('Conversation : ', user);
   
   return (
     <div ref={conversationRef} className="w-full h-full overflow-y-scroll scrollbar scrollbar-track-rounded-full scrollbar-thumb-GreenishYellow scrollbar-track-transparent ">

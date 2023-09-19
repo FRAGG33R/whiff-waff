@@ -104,7 +104,7 @@ export class ChatService {
 				take: (data as any).nbElements,
 				skip: skip,
 				orderBy: {
-					date: 'desc',
+					date: 'asc',
 				},
 				distinct: ['senderId', 'receiverId'],
 			})

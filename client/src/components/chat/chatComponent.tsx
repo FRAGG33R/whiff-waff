@@ -104,7 +104,7 @@ export default function ChatComponent() {
       content: messageContent,
       currentDate: date,
     };
-    console.log(newMessage);
+
     if (selectedConversatoin) {
       const newSelectedConversation: conversationType = {
         receiver: selectedConversatoin.receiver,
@@ -132,20 +132,33 @@ export default function ChatComponent() {
   };
 
   const handleReceivedMessage = (message: any) => {
-    console.log("I received this message : ", message);
-
-    if (selectedConversatoin) {
-      const newMessage: messageType = {
-        content: message.content,
-        type: "receiver",
-        date: message.currentDate,
-      };
-      const newSelectedConversation: conversationType = {
-        receiver: selectedConversatoin.receiver,
-        messages: [...selectedConversatoin?.messages, newMessage],
-      };
-      setSelectedConversation(newSelectedConversation);
-    }
+	console.log("I received this message: ", message);
+	const newMessage : messageType = {
+		content: message.content,
+		type: "receiver",
+		date: message.currentDate,
+		};
+	if (selectedConversatoin) {
+		// const newSelectedConversation: conversationType = {
+		//   receiver: selectedConversatoin.receiver,
+		//   messages: [
+		// 	...selectedConversatoin?.messages,
+		// 	{
+		// 	  content: newMessage.content,
+		// 	  type: newMessage.type,
+		// 	  date: String(newMessage.date),
+		// 	},
+		//   ],
+		// };
+		setSelectedConversation((prev : conversationType | null) => {
+			const newArray  : messageType[] = [...prev!.messages, newMessage];
+			console.log('new array ', newArray);
+			return {
+				receiver : prev?.receiver!,
+				messages : newArray
+			};
+		})
+	  }
   };
 
   const handleConnection = () => {
@@ -212,7 +225,7 @@ export default function ChatComponent() {
                     }
                     messagePrefix={
                       item.messages[item.messages.length - 1].type ===
-                      "receiver"
+                      "sender"
                     }
                     onClick={() => handleSelectedConversation(item)}
                   />

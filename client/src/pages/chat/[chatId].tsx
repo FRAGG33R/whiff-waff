@@ -2,16 +2,18 @@ import ChatComponent from "@/components/chat/chatComponent";
 import { withIronSessionSsr } from "iron-session/next";
 import { api } from "@/components/axios/instance";
 import { useRecoilState } from "recoil";
-import { chatAtom } from "@/context/RecoilAtoms";
+import { chatAtom, loggedUserAtom } from "@/context/RecoilAtoms";
 import { useEffect, useState } from "react";
 import "@/app/globals.css";
 
 export default function Chat(props: { data: any }) {
   const [chat, setChat] = useRecoilState(chatAtom);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [loaded, setLoaded] = useState<boolean>(false);
 
   useEffect(() => {
-    setChat(props.data);
+    setChat(props.data.allConversation);
+	setLoggedUser(props.data.loggedUser);
     setLoaded(true);
   });
 
@@ -31,7 +33,7 @@ export const getServerSideProps = withIronSessionSsr(
           Authorization: `Bearer ${token}`,
         },
       });
-	  console.log(res);
+	  console.log(res.data);
       return {
         props: { data: res.data },
       };

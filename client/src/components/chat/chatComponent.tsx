@@ -15,64 +15,25 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { io } from "socket.io-client";
 import { useRecoilState } from "recoil";
-import { chatAtom } from "@/context/RecoilAtoms";
-import { conversationType } from "@/types/chatType";
+import { chatAtom, loggedUserAtom } from "@/context/RecoilAtoms";
+import { conversationType, messageType } from "@/types/chatType";
 import Conversation from "./conversation";
+import { loggedUserType } from "@/types/userType";
 
 export default function ChatComponent() {
   const [chat, setChat] = useRecoilState(chatAtom);
-  const [socket , setSocket] = useState<any>();
-  console.log("chat data : ", chat);
-  const [conversations, setConversations] = useState<conversationType[]>(
-    chat as conversationType[]
-  );
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [socket, setSocket] = useState<any>();
+  const [conversations, setConversations] = useState<conversationType[]>(chat as conversationType[]);
   const [selectedConversatoin, setSelectedConversation] =
     useState<conversationType | null>(
-      conversation.length > 0 ? conversation[0] : null
+      (chat as conversationType[]).length > 0 ? (chat as conversationType[])[0] : null
     );
   const [messageContent, setMessageContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Chat");
   const handleToggle = (value: string) => {
     setActiveTab(value);
   };
-  const dummyArray = [
-    {
-      userName: "JohnWick",
-      avatar:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      lastMessage: "Hello there!",
-    },
-    {
-      userName: "Alice",
-      avatar:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      lastMessage: "How are you doing?",
-    },
-    {
-      userName: "fragger",
-      avatar:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      lastMessage: "I'll see you tomorrow!",
-    },
-    {
-      userName: "JohnWick",
-      avatar:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      lastMessage: "Hello there!",
-    },
-    {
-      userName: "Alice",
-      avatar:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      lastMessage: "How are you doing?",
-    },
-    {
-      userName: "fragger",
-      avatar:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      lastMessage: "I'll see you tomorrow!",
-    },
-  ];
 
   const dummyArray1 = [
     {
@@ -137,16 +98,28 @@ export default function ChatComponent() {
       alert("Message should not be empty !");
       return;
     }
-    var now = new Date();
-    const currentTime = `${now.getHours()} : ${now.getMinutes()}`;
+    const date = Date.now();
     const newMessage = {
-		receiverId : selectedConversatoin?.receiver.id,
-		content : messageContent, 
-		currentDate : new Date()
+      receiverId: selectedConversatoin?.receiver.id,
+      content: messageContent,
+      currentDate: date,
     };
-	console.log(newMessage);
-	
-	socket.emit("message", newMessage);
+    console.log(newMessage);
+    if (selectedConversatoin) {
+      const newSelectedConversation: conversationType = {
+        receiver: selectedConversatoin.receiver,
+        messages: [
+          ...selectedConversatoin?.messages,
+          {
+            content: newMessage.content,
+            type: "sender",
+            date: String(newMessage.currentDate),
+          },
+        ],
+      };
+      setSelectedConversation((prev) => newSelectedConversation);
+    }
+    socket.emit("message", newMessage);
     setMessageContent("");
   };
 
@@ -158,43 +131,47 @@ export default function ChatComponent() {
     setSelectedConversation(conversation);
   };
 
-  const handleReceivedMessage =  (message : any) => {
-	console.log('I received this message : ', message);
-	if (selectedConversatoin) {
-		const newSelectedConversation : conversationType = {
-			receiver: selectedConversatoin.receiver,
-			messages: [...selectedConversatoin?.messages, message],
-		}
-		setSelectedConversation((prev) => newSelectedConversation);
-		console.log("selecetd :", selectedConversatoin);
-		
-	}
-  }
+  const handleReceivedMessage = (message: any) => {
+    console.log("I received this message : ", message);
+
+    if (selectedConversatoin) {
+      const newMessage: messageType = {
+        content: message.content,
+        type: "receiver",
+        date: message.currentDate,
+      };
+      const newSelectedConversation: conversationType = {
+        receiver: selectedConversatoin.receiver,
+        messages: [...selectedConversatoin?.messages, newMessage],
+      };
+      setSelectedConversation(newSelectedConversation);
+    }
+  };
 
   const handleConnection = () => {
-	console.log('connection successfuly');
-  }
+    console.log("connection successfuly");
+  };
 
-  const handleException = (error  : any) => {
-	console.log('socket error : ', error);
-  }
+  const handleException = (error: any) => {
+    console.log("socket error : ", error);
+  };
 
   useEffect(() => {
-	const token = localStorage.getItem("token");
-      const socket = io("http://34.173.232.127:6080/", {
-        extraHeaders: {
-          authorization: `Bearer ${token}`,
-        },
-      });
-	  socket.on('connect', handleConnection);
-	  socket.on('exception', handleException);
-	  socket.on('message', handleReceivedMessage);
-	  setSocket(socket);
-	return () => {
-	  socket.off('connect', handleConnection);
-	  socket.off('message', handleReceivedMessage);
-	  socket.off('exception', handleException);
-	};
+    const token = localStorage.getItem("token");
+    const socket = io("http://34.173.232.127:6080/", {
+      extraHeaders: {
+        authorization: `Bearer ${token}`,
+      },
+    });
+    socket.on("connect", handleConnection);
+    socket.on("exception", handleException);
+    socket.on("message", handleReceivedMessage);
+    setSocket(socket);
+    return () => {
+      socket.off("connect", handleConnection);
+      socket.off("message", handleReceivedMessage);
+      socket.off("exception", handleException);
+    };
   }, []);
 
   return (
@@ -205,9 +182,9 @@ export default function ChatComponent() {
       <div className="h-full w-[89%] md:w-full space-y-2 md:space-y-10 pt-2">
         <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full">
           <NavBar
-            level="0"
-            useName="fragger"
-            avatar="https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638"
+            level={String((loggedUser as loggedUserType).level)}
+            useName={(loggedUser as loggedUserType).userName}
+            avatar={(loggedUser as loggedUserType).avatar}
           />
         </div>
         <div className="w-full h-[92%] md:h-[91%] flex flex-row space-x-2 md:space-x-10 overflow-y-hidden overflow-x-hidden">
@@ -221,14 +198,22 @@ export default function ChatComponent() {
             </div>
             {activeTab === "Chat" ? (
               <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-                {conversations.map((item : conversationType, index : number) => (
+                {conversations.map((item: conversationType, index: number) => (
                   <SingleConversationHistory
                     key={index}
                     userName={item.receiver.userName}
-                    lastMessage={item.messages[item.messages.length - 1].content}
+                    lastMessage={
+                      item.messages[item.messages.length - 1].content
+                    }
                     avatar={item.receiver.avatar}
-                    selected={selectedConversatoin?.receiver.userName === item.receiver.userName}
-                    messagePrefix={item.messages[item.messages.length - 1].type === "receiver"}
+                    selected={
+                      selectedConversatoin?.receiver.userName ===
+                      item.receiver.userName
+                    }
+                    messagePrefix={
+                      item.messages[item.messages.length - 1].type ===
+                      "receiver"
+                    }
                     onClick={() => handleSelectedConversation(item)}
                   />
                 ))}
@@ -303,3 +288,4 @@ export default function ChatComponent() {
     </div>
   );
 }
+  

@@ -7,7 +7,7 @@ import { AllUserConversationsResponse, IndividualConversationResponse } from 'sr
 
 const chatController = 'chat'
 const conversationEndpoint = 'individualConversations'
-const individualConversation = 'individualConversations/:receiverId' //TODO
+const individualConversation = 'individualConversations/:receiverId'
 const createRoom = 'room/create'
 @Controller(chatController)
 export class ChatController {
@@ -33,7 +33,9 @@ export class ChatController {
 		data.nbPage = (!data.nbPage) ? data.nbPage = undefined : Number(data.nbPage);
 		const loggedUserId = (req as any).user.id;
 		const receivedId = (req as any).params.receiverId;
-		return await this.chatService.getIndividualConversationById(loggedUserId, receivedId, data);
+		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
+		const conversation = await this.chatService.getIndividualConversationById(loggedUserId, receivedId, data);
+		return { conversation, loggedUser } as any;
 	}
 	
 	@ApiBearerAuth()

@@ -98,7 +98,7 @@ export class ChatService {
 					message: true,
 					date: true,
 				},
-				where  : {
+				where: {
 					OR: [{ senderId: loggedUserId }, { receiverId: loggedUserId }]
 				},
 				take: (data as any).nbElements,
@@ -108,9 +108,12 @@ export class ChatService {
 				},
 				distinct: ['senderId', 'receiverId'],
 			})
-			const allConversation = this.formatConversationResponse(loggedUserId, conversation, refactoringAll) as AllUserConversationsResponse;
-			(allConversation[0] as any) = await this.getIndividualConversationById(loggedUserId, conversation[0].receiver.id, data);
-			return allConversation;
+			if (conversation.length > 0) {
+				const allConversation = this.formatConversationResponse(loggedUserId, conversation, refactoringAll) as AllUserConversationsResponse;
+				(allConversation[0] as any) = await this.getIndividualConversationById(loggedUserId, conversation[0].receiver.id, data);
+				return allConversation;
+			}
+			return conversation as any;
 		} catch (error) {
 			throw new ForbiddenException(error);
 		}
@@ -155,9 +158,11 @@ export class ChatService {
 				date: 'asc',
 			},
 			where: {
-				OR: [{ AND: [{ senderId: loggedUserId }, { receiverId: receiverId }] }, { AND: [{ receiverId: loggedUserId }, { senderId: receiverId }] }]
+				AND: [{ senderId: sorted[0] }, { receiverId: sorted[1] }]
 			}
 		})
+		if (conversation.length === 0)
+			return conversation as any;
 		return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
 	}
 

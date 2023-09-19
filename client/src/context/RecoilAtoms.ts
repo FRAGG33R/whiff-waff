@@ -2,7 +2,7 @@ import { createContext } from "react";
 import {loggedUserType, userType} from "@/types/userType";
 import { atom } from "recoil";
 import {matchHistoryType} from '@/types/userType'
-import { conversationType } from "@/types/conversationType";
+import { conversationType } from "@/types/chatType";
 
 export const userContext = createContext<userType | undefined>(undefined);
 

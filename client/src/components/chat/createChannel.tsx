@@ -83,7 +83,7 @@ const CreateChannel = () => {
             />
           </div>
         </DialogBody>
-        <DialogFooter className="">
+        <DialogFooter className=" gap-4">
           <Button
             variant="text"
             color="red"

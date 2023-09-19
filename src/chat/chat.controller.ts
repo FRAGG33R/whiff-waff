@@ -19,7 +19,9 @@ export class ChatController {
 		data.nbElements = (!data.nbElements) ? data.nbElements = undefined : Number(data.nbElements);
 		data.nbPage = (!data.nbPage) ? data.nbPage = undefined : Number(data.nbPage);
 		const loggedUserId = (req as any).user.id;
-		return await this.chatService.getAllConversationsById(loggedUserId, data);
+		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
+		const allConversation = await this.chatService.getAllConversationsById(loggedUserId, data);
+		return { allConversation, loggedUser };
 	}
 
 	@ApiBearerAuth()

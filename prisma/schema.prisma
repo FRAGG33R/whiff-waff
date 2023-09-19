@@ -49,7 +49,7 @@ model Chat {
 
     originalSender   User     @relation("originalSender", fields: [originalSenderId], references: [id], onDelete: Cascade)
     originalSenderId String   @map("sender_name")
-    date             DateTime @default(now())
+    date             BigInt
 
     @@map("chat")
 }

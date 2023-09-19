@@ -36,7 +36,7 @@ export class GuardsService implements CanActivate {
 		}
 	}
 
-	private async validate(payload: any): Promise<boolean> {
+	async validate(payload: any): Promise<boolean> {
 		const user = await this.prismaService.user.findUnique({ where: { id: payload.id } });
 		if (user)
 			return true;

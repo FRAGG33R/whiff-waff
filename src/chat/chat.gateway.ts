@@ -22,7 +22,8 @@ export class ChatGateway implements OnGatewayConnection {
 	async handleConnection(client: Socket) {
 		const validUser = (client.handshake.headers.authorization) ?
 			GuardsService.validateToken(client.handshake.headers?.authorization, this.configService.get('JWT_SECRET')) : false;
-		if (!validUser)
+		const existsUser = (validUser) ? await this.guardService.validate(validUser): false;
+		if (!existsUser)
 			client.disconnect();
 		else if (this.loggedUsers) {
 			if (!this.loggedUsers.has((validUser as any).id))
@@ -48,6 +49,10 @@ export class ChatGateway implements OnGatewayConnection {
 				}
 			});
 		}
-		await this.chatService.saveMessage((client as any).user.id, dto);
+		try {
+			await this.chatService.saveMessage((client as any).user.id, dto);
+		} catch (error) {
+			console.log(error);
+		}
 	}
 }

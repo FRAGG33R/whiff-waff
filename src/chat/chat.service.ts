@@ -98,6 +98,9 @@ export class ChatService {
 					message: true,
 					date: true,
 				},
+				where  : {
+					OR: [{ senderId: loggedUserId }, { receiverId: loggedUserId }]
+				},
 				take: (data as any).nbElements,
 				skip: skip,
 				orderBy: {
@@ -147,12 +150,13 @@ export class ChatService {
 			take: (data as any).nbElements,
 			skip: skip,
 			orderBy: {
-				date: 'asc',
+				date: 'desc',
 			},
 			where: {
 				OR: [{ AND: [{ senderId: loggedUserId }, { receiverId: receiverId }] }, { AND: [{ receiverId: loggedUserId }, { senderId: receiverId }] }]
 			}
 		})
+
 		return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
 	}
 
@@ -165,7 +169,7 @@ export class ChatService {
 					receiverId: sortedUsers[1],
 					originalSenderId: loggedUserId,
 					message: receiverInfo.content,
-					date: receiverInfo.currentDate,
+					date: BigInt(receiverInfo.currentDate),
 				}
 			});
 		} catch (error) {

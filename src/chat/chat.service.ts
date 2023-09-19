@@ -44,7 +44,7 @@ export class ChatService {
 			receiver = ((element as any).sender.id === sender) ? (element as any).receiver : (element as any).sender;
 			messages.push({
 				content: element.message,
-				date: element.date,
+				date: element.date.toString(),
 				type: type
 			} as Message);
 			delete element.message;
@@ -118,6 +118,8 @@ export class ChatService {
 
 	async getIndividualConversationById(loggedUserId: string, receiverId: string, data: ConversationDto): Promise<IndividualConversationResponse> {
 		const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
+		const sorted = Array(loggedUserId, receiverId).sort();
+
 		const conversation = await this.prismaService.chat.findMany({
 			select: {
 				originalSender: {
@@ -156,7 +158,6 @@ export class ChatService {
 				OR: [{ AND: [{ senderId: loggedUserId }, { receiverId: receiverId }] }, { AND: [{ receiverId: loggedUserId }, { senderId: receiverId }] }]
 			}
 		})
-
 		return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
 	}
 

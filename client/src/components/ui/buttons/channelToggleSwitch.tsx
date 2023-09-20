@@ -42,7 +42,7 @@ const ChannelToggleSwitch: React.FC<ToggleChatProps> = ({
             onClick={() => switchTab(value)}
             className={
               activeTab === value
-                ? "text-DarkBg font-teko "
+                ? "text-DarkBg font-teko  "
                 : "font-teko text-Ceramic"
             }
           >

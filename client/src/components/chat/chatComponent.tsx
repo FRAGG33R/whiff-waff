@@ -1,8 +1,7 @@
 import SideBar from "../layout/sideBar";
 import NavBar from "../layout/navBar";
 import UserBar from "./userBar";
-import { conversation } from "@/types/dummy";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FormEvent, MouseEvent } from "react";
 import { IconSend } from "@tabler/icons-react";
 import CreateChannel from "./createChannel";
@@ -10,8 +9,6 @@ import ChannelToggleSwitch from "../ui/buttons/channelToggleSwitch";
 import ExploreChannels from "./exploreChannels";
 import SingleConversationHistory from "./singleConversationHistory";
 import ChannelsConversation from "./channelsConversation";
-import { avatar } from "@material-tailwind/react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { io } from "socket.io-client";
 import { useRecoilState } from "recoil";
@@ -24,10 +21,14 @@ export default function ChatComponent() {
   const [chat, setChat] = useRecoilState(chatAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [socket, setSocket] = useState<any>();
-  const [conversations, setConversations] = useState<conversationType[]>(chat as conversationType[]);
+  const [conversations, setConversations] = useState<conversationType[]>(
+    chat as conversationType[]
+  );
   const [selectedConversatoin, setSelectedConversation] =
     useState<conversationType | null>(
-      (chat as conversationType[]).length > 0 ? (chat as conversationType[])[0] : null
+      (chat as conversationType[]).length > 0
+        ? (chat as conversationType[])[0]
+        : null
     );
   const [messageContent, setMessageContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Chat");
@@ -132,33 +133,21 @@ export default function ChatComponent() {
   };
 
   const handleReceivedMessage = (message: any) => {
-	console.log("I received this message: ", message);
-	const newMessage : messageType = {
-		content: message.content,
-		type: "receiver",
-		date: message.currentDate,
-		};
-	if (selectedConversatoin) {
-		// const newSelectedConversation: conversationType = {
-		//   receiver: selectedConversatoin.receiver,
-		//   messages: [
-		// 	...selectedConversatoin?.messages,
-		// 	{
-		// 	  content: newMessage.content,
-		// 	  type: newMessage.type,
-		// 	  date: String(newMessage.date),
-		// 	},
-		//   ],
-		// };
-		setSelectedConversation((prev : conversationType | null) => {
-			const newArray  : messageType[] = [...prev!.messages, newMessage];
-			console.log('new array ', newArray);
-			return {
-				receiver : prev?.receiver!,
-				messages : newArray
-			};
-		})
-	  }
+    console.log("I received this message: ", message);
+    const newMessage: messageType = {
+      content: message.content,
+      type: "receiver",
+      date: message.currentDate,
+    };
+    if (selectedConversatoin) {
+      setSelectedConversation((prev: conversationType | null) => {
+        const newArray: messageType[] = [...prev!.messages, newMessage];
+        return {
+          receiver: prev?.receiver!,
+          messages: newArray,
+        };
+      });
+    }
   };
 
   const handleConnection = () => {
@@ -211,37 +200,45 @@ export default function ChatComponent() {
             </div>
             {activeTab === "Chat" ? (
               <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-                {conversations.map((item: conversationType, index: number) => (
-                  <SingleConversationHistory
-                    key={index}
-                    userName={item.receiver.userName}
-                    lastMessage={
-                      item.messages[item.messages.length - 1].content
-                    }
-                    avatar={item.receiver.avatar}
-                    selected={
-                      selectedConversatoin?.receiver.userName ===
-                      item.receiver.userName
-                    }
-                    messagePrefix={
-                      item.messages[item.messages.length - 1].type ===
-                      "sender"
-                    }
-                    onClick={() => handleSelectedConversation(item)}
-                  />
-                ))}
+                {(chat as conversationType[]).length > 0 ? (
+                  <>
+                    {conversations.map(
+                      (item: conversationType, index: number) => (
+                        <SingleConversationHistory
+                          key={index}
+                          userName={item.receiver.userName}
+                          lastMessage={
+                            item.messages[item.messages.length - 1].content
+                          }
+                          avatar={item.receiver.avatar}
+                          selected={
+                            selectedConversatoin?.receiver.userName ===
+                            item.receiver.userName
+                          }
+                          messagePrefix={
+                            item.messages[item.messages.length - 1].type ===
+                            "sender"
+                          }
+                          onClick={() => handleSelectedConversation(item)}
+                        />
+                       )
+                    )}
+                  </>
+                ) : (
+                  <> No conversation found</>
+                )}
               </div>
             ) : (
               <>
                 <motion.div
                   whileTap={{ backgroundColor: "#2e4169" }}
-                  className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
+                  className="w-full px-4 h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
                 >
                   <CreateChannel />
                 </motion.div>
                 <motion.div
                   whileTap={{ backgroundColor: "#2e4169" }}
-                  className="w-full px-4  h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
+                  className="w-full px-4 h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
                 >
                   <ExploreChannels />
                 </motion.div>
@@ -270,11 +267,15 @@ export default function ChatComponent() {
               )}
             </div>
             <div className="w-full flex itmes-center min-h-[780px] 3xl:h-full max-h-[957px]  justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
-              <div className="w-full h-[76%] md:h-full flex flex-col items-center justify-between space-y-2">
-                {selectedConversatoin && (
+              <div className="w-full h-full flex flex-col items-center justify-between space-y-2">
+                {selectedConversatoin ? (
                   <Conversation conversation={selectedConversatoin} />
-                )}
-                <div className="h-16 md:h-24 w-full flex items-end justify-center ">
+                ) : (
+					<div className="w-full h-full flex items-center justify-center">
+						No messages
+					</div>
+				)}
+                {selectedConversatoin && <div className="h-16 md:h-24 w-full flex items-end justify-center ">
                   <form className="w-full min-h-1" onSubmit={handleNewMessage}>
                     <div className="w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] bg-[#606060]/[12%] focus:bg-[#606060]/[12%] font-poppins flex flex-row items-center justify-center px-2">
                       <input
@@ -292,7 +293,7 @@ export default function ChatComponent() {
                       </button>
                     </div>
                   </form>
-                </div>
+                </div>}
               </div>
             </div>
           </div>
@@ -301,4 +302,3 @@ export default function ChatComponent() {
     </div>
   );
 }
-  

@@ -16,6 +16,7 @@ import { chatAtom, loggedUserAtom } from "@/context/RecoilAtoms";
 import { conversationType, messageType } from "@/types/chatType";
 import Conversation from "./conversation";
 import { loggedUserType } from "@/types/userType";
+import ChannelSettings from "./channelSetting";
 
 export default function ChatComponent() {
   const [chat, setChat] = useRecoilState(chatAtom);
@@ -240,7 +241,7 @@ export default function ChatComponent() {
                   whileTap={{ backgroundColor: "#2e4169" }}
                   className="w-full px-4 h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
                 >
-                  <ExploreChannels />
+                  <ChannelSettings />
                 </motion.div>
                 <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
                   {dummyArray1.map((item, index) => (

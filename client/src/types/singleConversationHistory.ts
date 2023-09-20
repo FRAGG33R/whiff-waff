@@ -6,3 +6,10 @@ export interface SingleConversationHistoryType {
 	onClick : () => void;
 	selected : boolean
 }
+
+export interface SingleMembreType {
+	userName : string, 
+	avatar : string,
+	admin : boolean,
+	member : boolean,
+}

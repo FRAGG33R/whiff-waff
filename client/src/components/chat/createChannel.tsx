@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import ADDCHANNEL from "../../../public/ADDCHANNEL.svg";
+import PrimaryButton from "../ui/buttons/primaryButton";
+import SecondaryButton from "../ui/buttons/secondaryButton";
 import {
   Button,
   Dialog,
@@ -14,7 +16,8 @@ const CreateChannel = () => {
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [errorChannel, setErrorChannel] = useState(false);
+  const [errorPassword, setErrorPassword] = useState(false);
   const handleOpen = () => setOpen(!open);
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -52,10 +55,10 @@ const CreateChannel = () => {
               lableColor="bg-RhinoBlue "
               width="xl"
               regExp={/^[a-zA-Z0-9_.]{3,16}$/}
-              isError={error}
+              isError={errorChannel}
               isDisabled={false}
               value={channelName}
-              setError={setError}
+              setError={setErrorChannel}
               setValue={setChannelName}
             />
           </div>
@@ -68,38 +71,29 @@ const CreateChannel = () => {
               lableColor="bg-RhinoBlue "
               width="xl"
               regExp={/^.{6,}$/}
-              isError={error}
+              isError={errorPassword}
               isDisabled={false}
-              value={password}
-              setError={setError}
+              value={password} 
+              setError={setErrorPassword}
               setValue={setPassword}
             />
           </div>
           <div className="w-40 sm:w-52 md:w-52 lg:w-72">
-            <Checkbox
-              label="Private Channel"
-              className="border-GreenishYellow "
-              color="yellow"
-            />
+            <div className="form-control">
+              <label className="flex flex-row gap-4">
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  className="checkbox checkbox-success border-4 border-GreenishYellow"
+                />
+                <span className="font-teko text-[1.2rem]">Private Channel</span>
+              </label>
+            </div>
           </div>
         </DialogBody>
         <DialogFooter className=" gap-4">
-          <Button
-            variant="text"
-            color="red"
-            onClick={handleOpen}
-            className="mr-1 border-[1px] rounded-[20px] border-CarbonGrey"
-          >
-            <span>Cancel</span>
-          </Button>
-          <Button
-            variant="gradient"
-            color="blue-gray"
-            onClick={handleOpen}
-            className="rounded-[20px]"
-          >
-            <span>Confirm</span>
-          </Button>
+          <SecondaryButton text="Cancel" onClick={handleOpen} />
+          <PrimaryButton text="Confirm" onClick={handleOpen} />
         </DialogFooter>
       </Dialog>
     </div>

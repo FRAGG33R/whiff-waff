@@ -97,7 +97,7 @@ const ExploreChannels = () => {
         </div>
         </DialogHeader>
         <DialogBody className="h-[510px] flex flex-col justify-center items-center">
-        <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
+        <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar  scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
               {dummyArray1.map((item, index) => (
                 <ModelChannel
                   key={index}

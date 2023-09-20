@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { SignUpDto } from "./auth.dto";
-import { IsNotEmpty, IsOptional, Matches } from "class-validator";
+import { IsNotEmpty, IsOptional, IsUppercase, Matches } from "class-validator";
 import { FriendshipStatus } from "@prisma/client";
 
 export class UpdateUserDto extends PartialType(SignUpDto) { }
@@ -14,6 +14,7 @@ export class UpdateFriendshipDto {
 
 	@ApiProperty({ example: 'ACCEPTED' })
 	@IsNotEmpty()
+	@IsUppercase()
 	@Matches(`^${Object.values(FriendshipStatus).filter(v => typeof v !== "number").join('|')}$`, 'i', { message: 'status must be ACCEPTED, REFUSED or BLOCKED' })
 	status: FriendshipStatus;
 }

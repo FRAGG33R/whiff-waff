@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ConversationDto, RoomInfos } from 'src/dto/chat.dto';
+import { ConversationDto, Invitation, RoomInfos } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 import { JwtGuard } from 'src/auth/guards/guards.jwtGuard';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -9,6 +9,7 @@ const chatController = 'chat'
 const conversationEndpoint = 'individualConversations'
 const individualConversation = 'individualConversations/:receiverId'
 const createRoom = 'room/create'
+const inviteRoom = 'room/invite'
 @Controller(chatController)
 export class ChatController {
 	constructor(private readonly chatService: ChatService) { }
@@ -33,14 +34,19 @@ export class ChatController {
 		data.nbPage = (!data.nbPage) ? data.nbPage = undefined : Number(data.nbPage);
 		const loggedUserId = (req as any).user.id;
 		const receivedId = (req as any).params.receiverId;
-		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		return await this.chatService.getIndividualConversationById(loggedUserId, receivedId, data);
 	}
-	
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(createRoom)
 	async joinRoom(@Body() data: RoomInfos, @Req() req: Request) {
-		return this.chatService.joinRoom((req as any).user.id, data);
+		await this.chatService.joinRoom((req as any).user.id, data);
+		return 'success' //TODO return success
+	}
+
+	@Post(inviteRoom)
+	async inviteRoom(@Body() data: Invitation, @Req() req: Request) {
+		await this.chatService.sendInvitation(data.adminId, data.channelId, data.invitedId);
 	}
 }

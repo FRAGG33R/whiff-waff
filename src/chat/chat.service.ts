@@ -1,12 +1,13 @@
-import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { FriendshipStatus, ChatRoomType, UserStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
-import { ConversationDto, RoomInfos, dtoWebSocketTset } from 'src/dto/chat.dto';
+import { ConversationDto, Invitation, RoomInfos, dtoWebSocketTset } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import * as ErrorCode from '../shared/constants/constants.code-error';
 import * as  CodeMessages from 'src/shared/constants/constants.messages';
+import * as message from 'src/shared/constants/constants.messages';
 import { type } from 'os';
 
 const senderType = 'sender';
@@ -191,20 +192,22 @@ export class ChatService {
 				await this.joinUserToRomm(loggedUserId, newRoom.id, UserStatus.ADMIN);
 			}
 			else {
-				// const alreadyExists = await this.prismaService.join.findUnique({
-				// 	where: {
-				// 		userId_roomChatId: {
-				// 			userId: loggedUserId,
-				// 			roomChatId: existRoom.id
-				// 		}
-				// 	}
-				// })
-				// if (alreadyExists)
-				// 	throw { type: 'alreadyExists' }
+				if (data.channelType && (data.channelType !== existRoom.type))
+					throw { type: 'channelExists', channel: existRoom.type }
+				const alreadyExists = await this.prismaService.join.findUnique({
+					where: {
+						userId_roomChatId: {
+							userId: loggedUserId,
+							roomChatId: existRoom.id
+						}
+					}
+				})
+				if (alreadyExists)
+					throw { type: 'alreadyExists' }
 				if (existRoom.type === ChatRoomType.PRIVATE) {
 					const invitedUsersIds = await this.getInvitedUserOnChannelById(loggedUserId, existRoom.id)
 					if (!invitedUsersIds)
-						throw { type: 'forbiden', message: `The user does not have an invitation to join the room : ${existRoom.name}` }
+						throw { type: 'Privateforbiden' }
 					await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
 				}
 				else if (existRoom.type === ChatRoomType.PROTECTED) {
@@ -223,8 +226,13 @@ export class ChatService {
 			if (error.type === 'forbiden') {
 				throw new ForbiddenException('incorrect password');
 			}
+			if (error.type === 'Privateforbiden') {
+				throw new ForbiddenException(`The user is not authorized to access the room called : ${data.channelName}`);
+			}
 			if (error.type === 'alreadyExists')
-				throw new ForbiddenException(`user${CodeMessages.P2002_MSG}`)
+				throw new ForbiddenException(`user${CodeMessages.P2002_MSG} in ${data.channelName}`)
+			if (error.type === 'channelExists')
+				throw new ForbiddenException(`${data.channelName}${CodeMessages.P2002_MSG} as a ${error.channel} type`)
 			throw new InternalServerErrorException(error);
 		}
 	}
@@ -253,7 +261,7 @@ export class ChatService {
 	async creatRoom(data: RoomInfos) {
 		try {
 			data.channelType = (!data.channelType) ? ChatRoomType.PUBLIC : data.channelType;
-			data.channelPassword = (data.channelType === ChatRoomType.PRIVATE) ? undefined : data.channelPassword;
+			data.channelPassword = (data.channelType === ChatRoomType.PROTECTED) ? data.channelPassword : undefined;
 			return await this.prismaService.roomChat.create({
 				data: {
 					name: data.channelName,
@@ -276,5 +284,85 @@ export class ChatService {
 		} catch (error) {
 			throw new InternalServerErrorException(error);
 		}
+	}
+
+	async getRoomById(roomId: string) {
+		try {
+			return await this.prismaService.roomChat.findUnique({
+				where: {
+					id: roomId
+				}
+			})
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async getJoinedRoomByIds(adminId: string, roomId: string) {
+		const room = await this.prismaService.join.findUnique({
+			select: {
+				statut: true,
+				roomChat: {
+					select: {
+						type: true
+					}
+				}
+			},
+			where: {
+				userId_roomChatId: {
+					userId: adminId,
+					roomChatId: roomId
+				}
+			}
+		})
+		return room;
+	}
+
+	async getIvitedUsersByIds(invitedId: string, roomId: string) {
+		const invitedUser = await this.prismaService.invitedRoomChat.findUnique({
+			where: {
+				invitedUserId_roomChatId: {
+					invitedUserId: invitedId,
+					roomChatId: roomId
+				}
+			}
+		})
+		return invitedUser;
+	}
+
+	async sendInvitation(adminId: string, roomId: string, invitedId: string) {
+		try {
+			const existRoom = await this.getJoinedRoomByIds(adminId, roomId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			if (existRoom.statut !== UserStatus.ADMIN)
+				throw { type: 'notAdmin' }
+			if (existRoom.roomChat.type !== ChatRoomType.PRIVATE)
+				throw { type: 'notPrivate' }
+			const invitedUser = await this.getIvitedUsersByIds(invitedId, roomId);
+			if (invitedUser)
+				throw { type: 'alreadyExists' }
+			await this.prismaService.invitedRoomChat.create({
+				data: {
+					adminId: adminId,
+					roomChatId: roomId,
+					invitedUserId: invitedId
+				}
+			});
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'notAdmin')
+				throw new ForbiddenException('Only administrators are authorized to send invitations.')
+			if (error.type === 'alreadyExists')
+				throw new ForbiddenException('User already invited')
+			if (error.type === 'notPrivate')
+				throw new ForbiddenException('The channel should be in a private type')
+				if (error instanceof PrismaClientKnownRequestError)
+					if (error.code === ErrorCode.FOREIGN_KEY_CONSTRAINT_CODE)
+						throw new NotFoundException(message.UNEXISTING_ID)
+			throw new InternalServerErrorException();
+		}
+
 	}
 }

@@ -52,7 +52,7 @@ const CreateChannel = () => {
               placeholder="Channel Name"
               type="text"
               label="Name"
-              lableColor="bg-RhinoBlue "
+              lableColor="bg-[#212d5e] "
               width="xl"
               regExp={/^[a-zA-Z0-9_.]{3,16}$/}
               isError={errorChannel}
@@ -68,7 +68,7 @@ const CreateChannel = () => {
               placeholder="*********"
               type="password"
               label="Password"
-              lableColor="bg-RhinoBlue "
+            lableColor="bg-[#212d5e] "
               width="xl"
               regExp={/^.{6,}$/}
               isError={errorPassword}

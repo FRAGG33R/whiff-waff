@@ -69,14 +69,10 @@ const ChannelSettings = () => {
         className="flex items-center justify-start gap-2"
       >
         <Image
-          src={EXPLORE}
+          src={Setting}
           alt="information icon"
           className="w-[90%] 2xl:w-[23%] h-full "
         />
-        <div className=" 2xl:w-[80%] 2xl:flex items-center justify-start font-teko font-semibold  hidden xl:text-4xl text-[#6C7FA7] text-opacity-50">
-          {" "}
-          Explore channels
-        </div>
       </button>
       <Dialog
         className="bg-[#6C7FA7]  h-[800px] w-[200px] rounded-[20px]"

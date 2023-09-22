@@ -7,6 +7,17 @@ export default function ConversationChannels(
   const { avatars } = props;
 
   const renderAvatars = () => {
+    if (avatars.length === 1) {
+      return (
+        <div className="w-full h-full flex justify-center items-center">
+          <img
+            alt="user avatar"
+            className="w-10 h-10 rounded-[12px] "
+            src={avatars[0]}
+          />
+        </div>
+      );
+    } else
     if (avatars.length === 2) {
       return (
         <div className="flex flex-col w-10 h-10 lg:w-14 lg:h-14 2xl:w-16 2xl:h-16 3xl:w-20 3xl:h-20   -space-x-1 -space-y-2">

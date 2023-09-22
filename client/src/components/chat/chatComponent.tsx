@@ -191,8 +191,8 @@ export default function ChatComponent() {
           />
         </div>
         <div className="w-full h-[92%] md:h-[91%] flex flex-row space-x-2 md:space-x-10 overflow-y-hidden overflow-x-hidden">
-          <div className="h-full min-w-[60px] max-w-[400px] w-1/4 md:w-1/3 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] flex flex-col items-center justify-start py-12 space-y-12">
-            <div className="hidden w-full px-4 h-32  md:flex justify-center items-center">
+          <div className="h-full min-w-[60px] max-w-[400px] w-1/4 md:w-1/3 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] flex flex-col items-center justify-start  space-y-6">
+            <div className="hidden w-full px-4 h-28 md:flex justify-center items-center">
               <ChannelToggleSwitch
                 firstValue="Chat"
                 secondValue="Channels"
@@ -231,20 +231,18 @@ export default function ChatComponent() {
               </div>
             ) : (
               <>
-                <motion.div
-                  whileTap={{ backgroundColor: "#2e4169" }}
-                  className="w-full px-4 h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
+                <div className="w-full h-full px-2 lg:px-4 space-y-2 xl:space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
+				<div
+                  className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
                 >
                   <CreateChannel />
-                </motion.div>
-                <motion.div
-                  whileTap={{ backgroundColor: "#2e4169" }}
-                  className="w-full px-4 h-24 2xl:h-32 flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
+                </div>
+                <div
+                  className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
                 >
                   <ExploreChannels />
-                </motion.div>
-                <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-                  {dummyArray1.map((item, index) => (
+                </div>
+				  {dummyArray1.map((item, index) => (
                     <ChannelsConversation
                       key={index}
                       lastUser={item.userName}
@@ -258,7 +256,7 @@ export default function ChatComponent() {
             )}
           </div>
           <div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
-            <div className="w-full h-16 md:h-24 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+            <div className="w-full h-16 md:h-24 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] ">
               {selectedConversatoin && (
                 <UserBar
                   userName={selectedConversatoin?.receiver.userName}
@@ -267,7 +265,7 @@ export default function ChatComponent() {
                 />
               )}
             </div>
-            <div className="w-full flex itmes-center min-h-[780px] 3xl:h-full max-h-[957px]  justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+            <div className="w-full flex itmes-center min-h-[10px] md:min-h-[780px] 3xl:h-full max-h-[957px] justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
               <div className="w-full h-full flex flex-col items-center justify-between space-y-2">
                 {selectedConversatoin ? (
                   <Conversation conversation={selectedConversatoin} />
@@ -276,7 +274,7 @@ export default function ChatComponent() {
 						No messages
 					</div>
 				)}
-                {selectedConversatoin && <div className="h-16 md:h-24 w-full flex items-end justify-center ">
+                {selectedConversatoin && <div className="h-16 md:h-24 w-full flex items-end justify-center">
                   <form className="w-full min-h-1" onSubmit={handleNewMessage}>
                     <div className="w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] bg-[#606060]/[12%] focus:bg-[#606060]/[12%] font-poppins flex flex-row items-center justify-center px-2">
                       <input

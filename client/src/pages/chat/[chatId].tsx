@@ -33,7 +33,6 @@ export const getServerSideProps = withIronSessionSsr(
           Authorization: `Bearer ${token}`,
         },
       });
-	  console.log(res);
       return {
         props: { data: res.data },
       };

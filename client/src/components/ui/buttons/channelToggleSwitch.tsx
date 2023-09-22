@@ -29,10 +29,10 @@ const ChannelToggleSwitch: React.FC<ToggleChatProps> = ({
   return (
     <Tabs value={activeTab}>
       <TabsHeader
-        className="rounded-full bg-black bg-opacity-10 font-teko   lg:w-40 2xl:w-56 3xl:w-72 h-8 md:h-10 lg:h-12  xl:h-14 "
+        className="rounded-full bg-black bg-opacity-10 font-teko lg:w-40 2xl:w-56 3xl:w-72 h-8 md:h-10 lg:h-12 xl:h-14 "
         indicatorProps={{
           className:
-            "bg-GreenishYellow  shadow-none rounded-full font-teko text-Ceramic",
+            "bg-GreenishYellow shadow-none rounded-full font-teko text-Ceramic",
         }}
       >
         {data.map(({ label, value }) => (
@@ -42,8 +42,8 @@ const ChannelToggleSwitch: React.FC<ToggleChatProps> = ({
             onClick={() => switchTab(value)}
             className={
               activeTab === value
-                ? "text-DarkBg font-teko  "
-                : "font-teko text-Ceramic"
+                ? "text-DarkBg font-teko text-md xl:text-2xl"
+                : "font-teko text-HokiCl text-md xl:text-2xl"
             }
           >
             {label}

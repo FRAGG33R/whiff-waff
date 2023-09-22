@@ -64,7 +64,7 @@ const ExploreChannels = () => {
     },
   ];
   return (
-    <div className="w-full flex flex-row  gap-2 ">
+    <div className="w-full flex flex-row  gap-2 justify-center xl:justify-start ">
       <button
         onClick={handleOpen}
         className="flex items-center justify-start gap-2"
@@ -72,9 +72,9 @@ const ExploreChannels = () => {
         <Image
           src={EXPLORE}
           alt="information icon"
-          className="w-[90%] 2xl:w-[23%] h-full "
+          className="w-10 md:w-16 h-full "
         />
-        <div className=" 2xl:w-[80%] 2xl:flex items-center justify-start font-teko font-semibold  hidden xl:text-4xl text-[#6C7FA7] text-opacity-50">
+        <div className="2xl:w-[80%] 2xl:flex items-center justify-start font-teko font-meduim hidden 2xl:text-3xl 3xl:text-4xl text-[#6C7FA7] text-opacity-50">
           {" "}
           Explore channels
         </div>

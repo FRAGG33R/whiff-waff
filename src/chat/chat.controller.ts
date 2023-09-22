@@ -8,6 +8,8 @@ import { AllUserConversationsResponse, IndividualConversationResponse } from 'sr
 const chatController = 'chat'
 const conversationEndpoint = 'individualConversations'
 const individualConversation = 'individualConversations/:receiverId'
+const roomConversation = 'room/Conversations/:roomId'
+const roomConversations = 'room/Conversations'
 const createRoom = 'room/create'
 const inviteRoom = 'room/invite'
 @Controller(chatController)
@@ -36,6 +38,18 @@ export class ChatController {
 		const receivedId = (req as any).params.receiverId;
 		return await this.chatService.getIndividualConversationById(loggedUserId, receivedId, data);
 	}
+
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Get(roomConversation)
+	async getRoomConversation(@Query() data: ConversationDto, @Req() req: Request) {
+		data.nbElements = (!data.nbElements) ? data.nbElements = undefined : Number(data.nbElements);
+		data.nbPage = (!data.nbPage) ? data.nbPage = undefined : Number(data.nbPage);
+		const loggedUserId = (req as any).user.id;
+		const roomId = (req as any).params.roomId;
+		return await this.chatService.getRoomIndividualConversationById(loggedUserId, roomId, data);
+	}
+
 
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)

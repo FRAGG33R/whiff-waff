@@ -5,13 +5,13 @@ import { IsDate, IsDateString, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsUp
 import * as values from 'src/shared/constants/constants.values'
 import { isDate } from "util/types";
 export class ConversationDto {
-	@ApiProperty({ example: new Date().toISOString(), required: false })
+	@ApiProperty({ required: false })
 	@IsOptional()
-	startDate: string;
+	startDate: number;
 
-	@ApiProperty({ example: new Date().toISOString(), required: false })
+	@ApiProperty({ required: false })
 	@IsOptional()
-	endDate: string;
+	endDate: number;
 
 	@ApiProperty()
 	@IsOptional()
@@ -29,10 +29,10 @@ export class RoomInfos {
 
 	@ApiProperty()
 	@IsUppercase()
-	@Matches(`^${values.CHANNEL_TYPES}$`, 'i', { message: `type must be ${values.CHANNEL_TYPES}`})
+	@Matches(`^${values.CHANNEL_TYPES}$`, 'i', { message: `type must be ${values.CHANNEL_TYPES}` })
 	@IsOptional()
 	channelType: ChatRoomType;
-	
+
 	@ApiProperty()
 	@IsOptional()
 	channelPassword: string;
@@ -41,14 +41,14 @@ export class Invitation {
 	@ApiProperty()
 	@IsNotEmpty()
 	adminId: string;
-	
+
 	@ApiProperty()
 	@IsNotEmpty()
 	invitedId: ChatRoomType;
 
 	@ApiProperty()
 	@IsNotEmpty()
-	channelId	: string;
+	channelId: string;
 }
 
 export class dtoWebSocketTset {

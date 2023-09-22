@@ -18,6 +18,23 @@ const refactoringOne = 'individualConversation'
 export class ChatService {
 	constructor(private readonly prismaService: PrismaService) { }
 
+	async saveMessage(loggedUserId: string, receiverInfo: dtoWebSocketTset) {
+		try {
+			const sortedUsers: string[] = Array(loggedUserId, receiverInfo.receiverId).sort();
+			await this.prismaService.chat.create({
+				data: {
+					senderId: sortedUsers[0],
+					receiverId: sortedUsers[1],
+					originalSenderId: loggedUserId,
+					message: receiverInfo.content,
+					date: BigInt(receiverInfo.currentDate),
+				}
+			});
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
+	}
+
 	async checkFriendship(sender: string, receiver: string): Promise<boolean> {
 		const isFriend = await this.prismaService.friendship.findFirst({
 			where: {
@@ -123,7 +140,6 @@ export class ChatService {
 	async getIndividualConversationById(loggedUserId: string, receiverId: string, data: ConversationDto): Promise<IndividualConversationResponse> {
 		const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
 		const sorted = Array(loggedUserId, receiverId).sort();
-
 		const conversation = await this.prismaService.chat.findMany({
 			select: {
 				originalSender: {
@@ -167,22 +183,6 @@ export class ChatService {
 		return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
 	}
 
-	async saveMessage(loggedUserId: string, receiverInfo: dtoWebSocketTset) {
-		try {
-			const sortedUsers: string[] = Array(loggedUserId, receiverInfo.receiverId).sort();
-			await this.prismaService.chat.create({
-				data: {
-					senderId: sortedUsers[0],
-					receiverId: sortedUsers[1],
-					originalSenderId: loggedUserId,
-					message: receiverInfo.content,
-					date: BigInt(receiverInfo.currentDate),
-				}
-			});
-		} catch (error) {
-			throw new InternalServerErrorException(error);
-		}
-	}
 
 	async joinRoom(loggedUserId: string, data: RoomInfos) {
 		try {
@@ -286,16 +286,42 @@ export class ChatService {
 		}
 	}
 
-	async getRoomById(roomId: string) {
+
+
+	async sendInvitation(adminId: string, roomId: string, invitedId: string) {
 		try {
-			return await this.prismaService.roomChat.findUnique({
-				where: {
-					id: roomId
+			const existRoom = await this.getJoinedRoomByIds(adminId, roomId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			if (existRoom.statut !== UserStatus.ADMIN)
+				throw { type: 'notAdmin' }
+			if (existRoom.roomChat.type !== ChatRoomType.PRIVATE)
+				throw { type: 'notPrivate' }
+			const invitedUser = await this.getIvitedUsersByIds(invitedId, roomId);
+			if (invitedUser)
+				throw { type: 'alreadyExists' }
+			await this.prismaService.invitedRoomChat.create({
+				data: {
+					adminId: adminId,
+					roomChatId: roomId,
+					invitedUserId: invitedId
 				}
-			})
+			});
 		} catch (error) {
-			throw new InternalServerErrorException(error);
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'notAdmin')
+				throw new ForbiddenException('Only administrators are authorized to send invitations.')
+			if (error.type === 'alreadyExists')
+				throw new ForbiddenException('User already invited')
+			if (error.type === 'notPrivate')
+				throw new ForbiddenException('The channel should be in a private type')
+			if (error instanceof PrismaClientKnownRequestError)
+				if (error.code === ErrorCode.FOREIGN_KEY_CONSTRAINT_CODE)
+					throw new NotFoundException(message.UNEXISTING_ID)
+			throw new InternalServerErrorException();
 		}
+
 	}
 
 	async getJoinedRoomByIds(adminId: string, roomId: string) {
@@ -330,39 +356,69 @@ export class ChatService {
 		return invitedUser;
 	}
 
-	async sendInvitation(adminId: string, roomId: string, invitedId: string) {
+	async getRoomIndividualConversationById(loggedUserId: string, roomId: string, data: ConversationDto) {
 		try {
-			const existRoom = await this.getJoinedRoomByIds(adminId, roomId);
-			if (!existRoom)
-				throw { type: 'notFound' }
-			if (existRoom.statut !== UserStatus.ADMIN)
-				throw { type: 'notAdmin' }
-			if (existRoom.roomChat.type !== ChatRoomType.PRIVATE)
-				throw { type: 'notPrivate' }
-			const invitedUser = await this.getIvitedUsersByIds(invitedId, roomId);
-			if (invitedUser)
-				throw { type: 'alreadyExists' }
-			await this.prismaService.invitedRoomChat.create({
-				data: {
-					adminId: adminId,
-					roomChatId: roomId,
-					invitedUserId: invitedId
+			const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
+			const roomConversation = await this.prismaService.message.findMany({
+				select: {
+					roomSender: {
+						select: {
+							user: {
+								select: {
+									id: true,
+									avatar: true,
+									email: true,
+									userName: true,
+								}
+							},
+						}
+					},
+					date: true,
+					message: true,
+				},
+				where: {
+					roomChatId: roomId
+				},
+				take: (data as any).nbElements,
+				skip: skip,
+				orderBy: {
+					date: 'asc'
 				}
-			});
+			})
+			roomConversation.forEach(element => {
+				element.date = element.date.toString() as any;
+			})
+			return this.fromatIndividualRoom(loggedUserId, roomConversation);
 		} catch (error) {
-			if (error.type === 'notFound')
-				throw new NotFoundException('The channel specified, or the administrator does not exist');
-			if (error.type === 'notAdmin')
-				throw new ForbiddenException('Only administrators are authorized to send invitations.')
-			if (error.type === 'alreadyExists')
-				throw new ForbiddenException('User already invited')
-			if (error.type === 'notPrivate')
-				throw new ForbiddenException('The channel should be in a private type')
-				if (error instanceof PrismaClientKnownRequestError)
-					if (error.code === ErrorCode.FOREIGN_KEY_CONSTRAINT_CODE)
-						throw new NotFoundException(message.UNEXISTING_ID)
-			throw new InternalServerErrorException();
-		}
+			console.log(error);
+			throw new InternalServerErrorException(error);
 
+		}
 	}
+
+	async fromatIndividualRoom(loggedUserId: string, roomsConversations: any) {
+		let message: Message;
+		const roomConversations: any[] = [];
+
+		roomsConversations.forEach((element: any) => {
+			const type = ((element as any).roomSender.user.id === loggedUserId) ? senderType : receiverType;
+			message = {
+				content: element.message,
+				date: element.date.toString(),
+				type: type
+			} as Message;
+			element.user = element.roomSender.user;
+			delete element.roomSender;
+			delete element.message;
+			delete element.date;
+			element.message = message;
+		});
+		return roomsConversations;
+	}
+
+
+
+
+
+
 }

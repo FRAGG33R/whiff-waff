@@ -31,7 +31,7 @@ const SearchInput: React.FC<searchInputProps> = () => {
 
   const handleNavigation = async (userName : string) => {
 	await router.push(`/profile/${userName}`)
-	router.reload();
+	if (router.pathname === `/profile/[id]`) router.reload();
   }
 
   useEffect(() => {

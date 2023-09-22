@@ -19,7 +19,7 @@ export default function SingleConversationHistory(
           {props.userName}
         </div>
         <div className="font-poppins font-light text-HokiCl 2xl:text-sm 3xl:text-lg hidden xl:block">
-          {(props.messagePrefix ? "You : " : "") + (props.lastMessage.length > 15 ? props.lastMessage.substring(0, 15) : props.lastMessage)}
+          {props.lastMessage !== undefined ? ((props.messagePrefix ? "You : " : "") + (props.lastMessage.length > 15 ? props.lastMessage.substring(0, 15) : props.lastMessage)): ""}
         </div>
       </div>
     </motion.div>

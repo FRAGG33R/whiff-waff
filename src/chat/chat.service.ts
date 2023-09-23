@@ -189,7 +189,7 @@ export class ChatService {
 			const existRoom = await this.getRoomByName(data.channelName);
 			if (!existRoom) {
 				const newRoom = await this.creatRoom(data);
-				await this.joinUserToRomm(loggedUserId, newRoom.id, UserStatus.ADMIN);
+				return await this.joinUserToRomm(loggedUserId, newRoom.id, UserStatus.ADMIN);
 			}
 			else {
 				if (data.channelType && (data.channelType !== existRoom.type))
@@ -208,15 +208,15 @@ export class ChatService {
 					const invitedUsersIds = await this.getInvitedUserOnChannelById(loggedUserId, existRoom.id)
 					if (!invitedUsersIds)
 						throw { type: 'Privateforbiden' }
-					await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
+					return await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
 				}
 				else if (existRoom.type === ChatRoomType.PROTECTED) {
 					if (data.channelPassword != existRoom.password)
 						throw { type: 'forbiden' }
-					await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
+					return await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
 				}
 				else
-					await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
+					return await this.joinUserToRomm(loggedUserId, existRoom.id, UserStatus.DEFLAULT);
 			}
 		} catch (error) {
 			if (error instanceof PrismaClientKnownRequestError) {
@@ -249,7 +249,7 @@ export class ChatService {
 	}
 
 	async joinUserToRomm(loggedUserId: string, roomId: string, typeUser: UserStatus) {
-		await this.prismaService.join.create({
+		return await this.prismaService.join.create({
 			data: {
 				userId: loggedUserId,
 				roomChatId: roomId,
@@ -417,8 +417,83 @@ export class ChatService {
 	}
 
 
+	async getRoomConversations(loggedUserId: string) {
+		try {
+			let roomsConversations = await this.getRoomsInfos(loggedUserId);
+			roomsConversations = await this.structreRoomdata(roomsConversations); 
+			roomsConversations[0] = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomSender.roomChatId, { nbElements: 10, nbPage: 0 } as any);
+			roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
+			return roomsConversations;
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
+	}
 
 
+	async getRoomsInfos(loggedUserId: string) {
+		return await this.prismaService.message.findMany({
+			distinct: ['roomChatId'],
+			where: {
+				senderId: loggedUserId,
+			},
+			orderBy: {
+				date: 'desc'
+			},
+			select: {
+				roomSender: {
+					select: {
+						user: {
+							select: {
+								id: true,
+								avatar: true,
+								email: true,
+								userName: true,
+							}
+						},
+						roomChatId: true,
+					}
+				},
+				message: true,
+				date: true,
+			}
+		});
+	}
 
+	async structreRoomdata(roomsConversations: any) {
+		for (let i = 0; i < roomsConversations.length; i++) {
+			roomsConversations[i].date = roomsConversations[i].date.toString() as any;
+			const avatars = await this.prismaService.join.findMany({
+				select: {
+					user: {
+						select: {
+							avatar: true,
+						}
+					}
+				},
+				where: {
+					roomChatId: roomsConversations[i].roomSender.roomChatId,
+				},
+			});
+			(roomsConversations[i] as any).avatars = avatars;
+		}
+		return roomsConversations;
+	}
 
+	formmatRoomConversations(loggedUserId: string, roomsConversations: any) {
+		roomsConversations.forEach((element: any, index: number) => {
+			if (index !== 0) {
+				const type = ((element as any).roomSender.user.id === loggedUserId) ? senderType : receiverType;
+				element.message = {
+					content: element.message,
+					date: element.date.toString(),
+					type: type
+				} as Message;
+				element.user = element.roomSender.user;
+				delete element.date;
+				delete element.roomSender.roomChatId;
+				delete element.roomSender;
+			}
+		});
+		return roomsConversations;
+	}
 }

@@ -1,9 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { ChatRoomType } from "@prisma/client";
-import { Transform } from "class-transformer";
-import { IsDate, IsDateString, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsUppercase, Matches, ValidationOptions, isDateString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsUppercase, Matches, ValidationOptions, isDateString } from "class-validator";
 import * as values from 'src/shared/constants/constants.values'
-import { isDate } from "util/types";
 export class ConversationDto {
 	@ApiProperty({ required: false })
 	@IsOptional()

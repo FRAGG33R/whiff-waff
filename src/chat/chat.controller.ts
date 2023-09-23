@@ -10,7 +10,7 @@ const conversationEndpoint = 'individualConversations'
 const individualConversation = 'individualConversations/:receiverId'
 const roomConversation = 'room/Conversations/:roomId'
 const roomConversations = 'room/Conversations'
-const createRoom = 'room/create'
+const joinRoom = 'room/join'
 const inviteRoom = 'room/invite'
 @Controller(chatController)
 export class ChatController {
@@ -41,6 +41,36 @@ export class ChatController {
 
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
+	@Post(joinRoom)
+	async joinRoom(@Body() data: RoomInfos, @Req() req: Request) {
+		return await this.chatService.joinRoom((req as any).user.id, data);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	@Post(inviteRoom)
+	async inviteRoom(@Body() data: Invitation, @Req() req: Request) {
+		await this.chatService.sendInvitation(data.adminId, data.channelId, data.invitedId);
+	}
+
+
+
+
+
+
+
+
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
 	@Get(roomConversation)
 	async getRoomConversation(@Query() data: ConversationDto, @Req() req: Request) {
 		data.nbElements = (!data.nbElements) ? data.nbElements = undefined : Number(data.nbElements);
@@ -49,18 +79,15 @@ export class ChatController {
 		const roomId = (req as any).params.roomId;
 		return await this.chatService.getRoomIndividualConversationById(loggedUserId, roomId, data);
 	}
-
-
-	@ApiBearerAuth()
+	
 	@UseGuards(JwtGuard)
-	@Post(createRoom)
-	async joinRoom(@Body() data: RoomInfos, @Req() req: Request) {
-		await this.chatService.joinRoom((req as any).user.id, data);
-		return 'success' //TODO return success
+	@Get(roomConversations)
+	async getRoomConversations(@Req() req: Request) {
+		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
+		const loggedUserId = (req as any).user.id;
+		const roomsConversations  = await this.chatService.getRoomConversations(loggedUserId);
+		return {loggedUser, roomsConversations};
 	}
 
-	@Post(inviteRoom)
-	async inviteRoom(@Body() data: Invitation, @Req() req: Request) {
-		await this.chatService.sendInvitation(data.adminId, data.channelId, data.invitedId);
-	}
+
 }

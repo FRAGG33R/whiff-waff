@@ -202,8 +202,11 @@ export class ChatService {
 						}
 					}
 				})
-				if (alreadyExists)
+				if (alreadyExists) {
+					if (alreadyExists.statut === UserStatus.BANNED)
+						throw { type: 'banned' }
 					throw { type: 'alreadyExists' }
+				}
 				if (existRoom.type === ChatRoomType.PRIVATE) {
 					const invitedUsersIds = await this.getInvitedUserOnChannelById(loggedUserId, existRoom.id)
 					if (!invitedUsersIds)
@@ -223,12 +226,10 @@ export class ChatService {
 				if (error.code === ErrorCode.DUPLICATE_ENTRY_ERROR_CODE)
 					throw new ForbiddenException(`user${CodeMessages.P2002_MSG}`)
 			}
-			if (error.type === 'forbiden') {
+			if (error.type === 'forbiden')
 				throw new ForbiddenException('incorrect password');
-			}
-			if (error.type === 'Privateforbiden') {
+			if (error.type === 'Privateforbiden' || error.type === 'banned')
 				throw new ForbiddenException(`The user is not authorized to access the room called : ${data.channelName}`);
-			}
 			if (error.type === 'alreadyExists')
 				throw new ForbiddenException(`user${CodeMessages.P2002_MSG} in ${data.channelName}`)
 			if (error.type === 'channelExists')
@@ -420,7 +421,7 @@ export class ChatService {
 	async getRoomConversations(loggedUserId: string) {
 		try {
 			let roomsConversations = await this.getRoomsInfos(loggedUserId);
-			roomsConversations = await this.structreRoomdata(roomsConversations); 
+			roomsConversations = await this.structreRoomdata(roomsConversations);
 			roomsConversations[0] = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomSender.roomChatId, { nbElements: 10, nbPage: 0 } as any);
 			roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
 			return roomsConversations;
@@ -429,6 +430,38 @@ export class ChatService {
 		}
 	}
 
+	async getRoomInfosById(roomId: string) {
+		try {
+			const newRoom =  await this.prismaService.roomChat.findUnique({
+				select : {
+					id : true,
+					name : true,
+					type : true,
+					joins :{
+						select : {
+							user : {
+								select : {
+									avatar : true,
+								}
+							}
+						}
+					}
+				},
+				where : {
+					id : roomId
+				}
+			})
+			let avatars: string[] = [];
+			newRoom.joins.forEach(element => {
+				avatars.push(element.user.avatar);
+			});
+			delete newRoom.joins;
+			(newRoom as any).avatars = avatars;
+			return newRoom;
+		} catch (error) {
+			
+		}
+	}
 
 	async getRoomsInfos(loggedUserId: string) {
 		return await this.prismaService.message.findMany({

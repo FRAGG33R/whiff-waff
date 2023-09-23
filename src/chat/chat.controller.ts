@@ -43,7 +43,8 @@ export class ChatController {
 	@UseGuards(JwtGuard)
 	@Post(joinRoom)
 	async joinRoom(@Body() data: RoomInfos, @Req() req: Request) {
-		return await this.chatService.joinRoom((req as any).user.id, data);
+		const joinedRoom = await this.chatService.joinRoom((req as any).user.id, data);
+		return await this.chatService.getRoomInfosById(joinedRoom.roomChatId);
 	}
 
 

@@ -11,6 +11,7 @@ const individualConversation = 'individualConversations/:receiverId'
 const roomConversation = 'room/Conversations/:roomId'
 const roomConversations = 'room/Conversations'
 const joinRoom = 'room/join'
+const updateRoom = 'room/update'
 const inviteRoom = 'room/invite'
 @Controller(chatController)
 export class ChatController {
@@ -45,6 +46,13 @@ export class ChatController {
 	async joinRoom(@Body() data: RoomInfos, @Req() req: Request) {
 		const joinedRoom = await this.chatService.joinRoom((req as any).user.id, data);
 		return await this.chatService.getRoomInfosById(joinedRoom.roomChatId);
+	}
+
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Post(updateRoom)
+	async updateRoom(@Body() data: RoomInfos, @Req() req: Request) {
+		return 'channel updated';
 	}
 
 

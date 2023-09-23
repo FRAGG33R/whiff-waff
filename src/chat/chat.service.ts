@@ -529,4 +529,6 @@ export class ChatService {
 		});
 		return roomsConversations;
 	}
+
+	
 }

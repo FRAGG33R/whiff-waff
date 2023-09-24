@@ -17,6 +17,7 @@ import Conversation from "./conversation";
 import { loggedUserType, userType } from "@/types/userType";
 import { useRouter } from "next/router";
 import { api } from "../axios/instance";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function ChatComponent() {
   const [chat, setChat] = useRecoilState(chatAtom);
@@ -89,9 +90,6 @@ export default function ChatComponent() {
   ];
   const router = useRouter();
 
-  //   console.log(chat);
-  //   console.log(router.query.chatId);
-
   const handleToggle = (value: string) => {
     setActiveTab(value);
   };
@@ -110,10 +108,8 @@ export default function ChatComponent() {
             Authorization: `Bearer ${token}`,
           },
         });
+		// throw an exception when the user not a friend of the logged user and router.back() to the previous page
         const userData = res.data.response.user;
-        console.log("user data :", userData);
-        //this is not updated the user atom
-        // setUser((prev) => userData);
 		const newConversation: conversationType = {
 			receiver: {
 			  id: userData.id,
@@ -134,7 +130,7 @@ export default function ChatComponent() {
 			newConversation
 		  ]);
       } catch (err: any) {
-        // router.back();
+        router.push('/login');
       }
     }
   };
@@ -178,6 +174,7 @@ export default function ChatComponent() {
 
   const handleSelectedConversation = (conversation: conversationType) => {
     setSelectedConversation(conversation);
+	router.push(`/chat/${conversation.receiver.userName}`);
   };
 
   const handleReceivedMessage = (message: any) => {
@@ -203,7 +200,16 @@ export default function ChatComponent() {
   };
 
   const handleException = (error: any) => {
-    console.log("socket error : ", error);
+	  console.log("socket error : ", error.message);
+	  toast.error(error.message,   {
+		style: {
+		  borderRadius: '12px',
+		  padding: '10px',
+		  background: '#6C7FA7',
+		  color: '#fff',
+		  fontFamily: 'Poppins',
+		},
+	  });
   };
 
   useEffect(() => {
@@ -216,6 +222,7 @@ export default function ChatComponent() {
         authorization: `Bearer ${token}`,
       },
     });
+	
     socket.on("connect", handleConnection);
     socket.on("exception", handleException);
     socket.on("message", handleReceivedMessage);
@@ -229,6 +236,7 @@ export default function ChatComponent() {
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
+	  <Toaster position="top-right"/>
       <div className="h-full min-w-[60px] w-[60px] md:w-[100px] pt-2">
         <SideBar />
       </div>

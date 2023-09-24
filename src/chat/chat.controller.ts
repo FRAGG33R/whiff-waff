@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ConversationDto, Invitation, RoomInfos } from 'src/dto/chat.dto';
+import { Body, Controller, Delete, Get, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { ConversationDto, Invitation, RoomDeleteInfos, RoomInfos, RoomUpdateInfos } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 import { JwtGuard } from 'src/auth/guards/guards.jwtGuard';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -12,7 +12,10 @@ const roomConversation = 'room/Conversations/:roomId'
 const roomConversations = 'room/Conversations'
 const joinRoom = 'room/join'
 const updateRoom = 'room/update'
+const deleteRoom = 'room/delete'
 const inviteRoom = 'room/invite'
+const kickRoom = 'room/kick'
+const banRoom = 'room/ban'
 @Controller(chatController)
 export class ChatController {
 	constructor(private readonly chatService: ChatService) { }
@@ -39,7 +42,7 @@ export class ChatController {
 		const receivedId = (req as any).params.receiverId;
 		return await this.chatService.getIndividualConversationById(loggedUserId, receivedId, data);
 	}
-
+	
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(joinRoom)
@@ -47,36 +50,44 @@ export class ChatController {
 		const joinedRoom = await this.chatService.joinRoom((req as any).user.id, data);
 		return await this.chatService.getRoomInfosById(joinedRoom.roomChatId);
 	}
-
+	
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(updateRoom)
-	async updateRoom(@Body() data: RoomInfos, @Req() req: Request) {
-		return 'channel updated';
+	async updateRoom(@Body() data: RoomUpdateInfos, @Req() req: Request) {
+		const loggedUserId = (req as any).user.id;
+		return await this.chatService.updateRoomInfos(data, loggedUserId);
 	}
-
-
-
-
-
-
-
-
-
-
-
-
+	
+	@Delete(deleteRoom)
+	async deleteRoom(@Body() data: RoomDeleteInfos, @Req() req: Request) {
+		const loggedUserId = (req as any).user.id;
+		return await this.chatService.deleteRoom(loggedUserId, data.channelId);
+	}
+	
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
 	@Post(inviteRoom)
 	async inviteRoom(@Body() data: Invitation, @Req() req: Request) {
-		await this.chatService.sendInvitation(data.adminId, data.channelId, data.invitedId);
+		const loggedUserId = (req as any).user.id;
+		await this.chatService.sendInvitation(loggedUserId, data.channelId, data.invitedId);
 	}
 
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Delete(kickRoom)
+	async kickUserFromRoom(@Body() data: Invitation, @Req() req: Request) {
+		const loggedUserId = (req as any).user.id;
+		return await this.chatService.kickUserFromRoom(loggedUserId, data);
+	}	
 
-
-
-
-
-
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Patch(banRoom)
+	async banUserFromRoom(@Body() data: Invitation, @Req() req: Request) {
+		const loggedUserId = (req as any).user.id;
+		return await this.chatService.banUserFromRoom(loggedUserId, data);
+	}
 
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
@@ -86,7 +97,9 @@ export class ChatController {
 		data.nbPage = (!data.nbPage) ? data.nbPage = undefined : Number(data.nbPage);
 		const loggedUserId = (req as any).user.id;
 		const roomId = (req as any).params.roomId;
-		return await this.chatService.getRoomIndividualConversationById(loggedUserId, roomId, data);
+		const roomConversation =  await this.chatService.getRoomIndividualConversationById(loggedUserId, roomId, data);
+		const blockedUsers = await this.chatService.getBlckedUsers(loggedUserId);
+		return {roomConversation, blockedUsers}
 	}
 	
 	@UseGuards(JwtGuard)
@@ -95,7 +108,9 @@ export class ChatController {
 		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const loggedUserId = (req as any).user.id;
 		const roomsConversations  = await this.chatService.getRoomConversations(loggedUserId);
-		return {loggedUser, roomsConversations};
+		const blockedUsers = await this.chatService.getBlckedUsers(loggedUserId);
+		const Conversationdata = {roomsConversations, blockedUsers}
+		return {loggedUser, Conversationdata};
 	}
 
 

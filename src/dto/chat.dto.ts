@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { ChatRoomType } from "@prisma/client";
 import { IsNotEmpty, IsNumber, IsOptional, IsUppercase, Matches, ValidationOptions, isDateString } from "class-validator";
 import * as values from 'src/shared/constants/constants.values'
@@ -35,11 +35,19 @@ export class RoomInfos {
 	@IsOptional()
 	channelPassword: string;
 }
-export class Invitation {
+
+export class RoomUpdateInfos extends PartialType(RoomInfos) { 
 	@ApiProperty()
 	@IsNotEmpty()
-	adminId: string;
+	channelId: string;
+}
 
+export class RoomDeleteInfos {
+	@ApiProperty()
+	@IsNotEmpty()
+	channelId: string;
+}
+export class Invitation {
 	@ApiProperty()
 	@IsNotEmpty()
 	invitedId: ChatRoomType;

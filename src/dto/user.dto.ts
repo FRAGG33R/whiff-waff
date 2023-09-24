@@ -5,7 +5,6 @@ import { FriendshipStatus } from "@prisma/client";
 
 export class UpdateUserDto extends PartialType(SignUpDto) { }
 
-
 export class UpdateFriendshipDto {
 
 	@ApiProperty({ example: '3ab94ff0-3450-45d8-afdc' })

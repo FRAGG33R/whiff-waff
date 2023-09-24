@@ -207,10 +207,10 @@ enum NotificationType {
 enum FriendshipStatus {
     PENDING
     ACCEPTED
-    REFUSED
     BLOCKED
-    EXPIRED
-
+	UNFRIEND
+	REFUSED
+	
     @@map("friendship_status")
 }
 

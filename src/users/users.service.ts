@@ -167,11 +167,23 @@ export class UsersService {
 			});
 			if (!user)
 				throw new NotFoundException(message.USER_NOT_FOUND);
-			const status = receiverFriendship.length > 0 ?
-				receiverFriendship[0].status : FriendshipStatus.PENDING;
+			let status = receiverFriendship.length > 0 ?
+				receiverFriendship[0].status : FriendshipStatus.UNFRIEND;
+			const isBlockedMe = await this.prismaService.friendship.findUnique({
+				where: {
+					senderId_receivedId: {
+						senderId: user.id,
+						receivedId: loggedUserId
+					}
+				}
+			});
+			if (isBlockedMe && isBlockedMe.status == FriendshipStatus.BLOCKED)
+				throw { type: 'forbidden' };
 			(user as any).status = status;
 			return user;
 		} catch (error) {
+			if (error.type == 'forbidden')
+				throw new ForbiddenException('user blocked you');
 			throw new NotFoundException(message.USER_NOT_FOUND);
 		}
 	}

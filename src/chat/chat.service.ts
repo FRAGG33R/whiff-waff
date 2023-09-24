@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundE
 import { FriendshipStatus, ChatRoomType, UserStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
-import { ConversationDto, Invitation, RoomInfos, dtoWebSocketTset } from 'src/dto/chat.dto';
+import { ConversationDto, Invitation, RoomInfos, RoomUpdateInfos, dtoWebSocketTset } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import * as ErrorCode from '../shared/constants/constants.code-error';
@@ -138,51 +138,58 @@ export class ChatService {
 	}
 
 	async getIndividualConversationById(loggedUserId: string, receiverId: string, data: ConversationDto): Promise<IndividualConversationResponse> {
-		const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
-		const sorted = Array(loggedUserId, receiverId).sort();
-		const conversation = await this.prismaService.chat.findMany({
-			select: {
-				originalSender: {
-					select: {
-						id: true,
-						avatar: true,
-						email: true,
-						userName: true
-					}
+		try {
+			const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
+			const sorted = Array(loggedUserId, receiverId).sort();
+			if (await this.checkFriendship(sorted[0], sorted[1]) === false)
+				throw { type: 'notFound' };
+			const conversation = await this.prismaService.chat.findMany({
+				select: {
+					originalSender: {
+						select: {
+							id: true,
+							avatar: true,
+							email: true,
+							userName: true
+						}
+					},
+					sender: {
+						select: {
+							id: true,
+							avatar: true,
+							email: true,
+							userName: true
+						}
+					},
+					receiver: {
+						select: {
+							id: true,
+							avatar: true,
+							email: true,
+							userName: true
+						}
+					},
+					message: true,
+					date: true,
 				},
-				sender: {
-					select: {
-						id: true,
-						avatar: true,
-						email: true,
-						userName: true
-					}
+				take: (data as any).nbElements,
+				skip: skip,
+				orderBy: {
+					date: 'asc',
 				},
-				receiver: {
-					select: {
-						id: true,
-						avatar: true,
-						email: true,
-						userName: true
-					}
-				},
-				message: true,
-				date: true,
-			},
-			take: (data as any).nbElements,
-			skip: skip,
-			orderBy: {
-				date: 'asc',
-			},
-			where: {
-				AND: [{ senderId: sorted[0] }, { receiverId: sorted[1] }]
-			}
-		})
-		if (conversation.length === 0)
-			return conversation as any;
-		return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
+				where: {
+					AND: [{ senderId: sorted[0] }, { receiverId: sorted[1] }]
+				}
+			})
+			if (conversation.length === 0)
+				return conversation as any;
+			return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new ForbiddenException(error.type);
+			throw new InternalServerErrorException(error);
+		}
 	}
-
 
 	async joinRoom(loggedUserId: string, data: RoomInfos) {
 		try {
@@ -289,12 +296,12 @@ export class ChatService {
 
 
 
-	async sendInvitation(adminId: string, roomId: string, invitedId: string) {
+	async sendInvitation(loggedUserId: string, roomId: string, invitedId: string) {
 		try {
-			const existRoom = await this.getJoinedRoomByIds(adminId, roomId);
+			const existRoom = await this.getJoinedRoomByIds(loggedUserId, roomId);
 			if (!existRoom)
 				throw { type: 'notFound' }
-			if (existRoom.statut !== UserStatus.ADMIN)
+			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
 			if (existRoom.roomChat.type !== ChatRoomType.PRIVATE)
 				throw { type: 'notPrivate' }
@@ -303,7 +310,7 @@ export class ChatService {
 				throw { type: 'alreadyExists' }
 			await this.prismaService.invitedRoomChat.create({
 				data: {
-					adminId: adminId,
+					adminId: loggedUserId,
 					roomChatId: roomId,
 					invitedUserId: invitedId
 				}
@@ -360,6 +367,9 @@ export class ChatService {
 	async getRoomIndividualConversationById(loggedUserId: string, roomId: string, data: ConversationDto) {
 		try {
 			const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
+			const existsRoom = await this.getJoinedRoomByIds(loggedUserId, roomId);
+			if (!existsRoom)
+				throw { type: 'notFound' }
 			const roomConversation = await this.prismaService.message.findMany({
 				select: {
 					roomSender: {
@@ -370,7 +380,7 @@ export class ChatService {
 									avatar: true,
 									email: true,
 									userName: true,
-								}
+								},
 							},
 						}
 					},
@@ -391,16 +401,49 @@ export class ChatService {
 			})
 			return this.fromatIndividualRoom(loggedUserId, roomConversation);
 		} catch (error) {
-			console.log(error);
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
 			throw new InternalServerErrorException(error);
 
 		}
 	}
 
+	async getBlckedUsers(loggedUserId: string) {
+		try {
+			const blockedUsers = await this.prismaService.friendship.findMany({
+				select: {
+					receivedId: true,
+					senderId: true,
+					sender: {
+						select: {
+							userName: true,
+						}
+					},
+					receiver: {
+						select: {
+							userName: true,
+						}
+					}
+				},
+				where: {
+					AND: [{ OR: [{ receivedId: loggedUserId }, { senderId: loggedUserId }] }, { status: FriendshipStatus.BLOCKED }]
+				}
+			})
+			let blckedIds: any = [];
+			blockedUsers.forEach(element => {
+				if (element.receivedId === loggedUserId)
+					blckedIds.push({ id: element.senderId, userName: element.sender.userName });
+				else
+					blckedIds.push({ id: element.receivedId, userName: element.receiver.userName });
+			});
+			return blckedIds;
+		} catch (error) {
+			throw new InternalServerErrorException(error);
+		}
+	}
+
 	async fromatIndividualRoom(loggedUserId: string, roomsConversations: any) {
 		let message: Message;
-		const roomConversations: any[] = [];
-
 		roomsConversations.forEach((element: any) => {
 			const type = ((element as any).roomSender.user.id === loggedUserId) ? senderType : receiverType;
 			message = {
@@ -432,23 +475,23 @@ export class ChatService {
 
 	async getRoomInfosById(roomId: string) {
 		try {
-			const newRoom =  await this.prismaService.roomChat.findUnique({
-				select : {
-					id : true,
-					name : true,
-					type : true,
-					joins :{
-						select : {
-							user : {
-								select : {
-									avatar : true,
+			const newRoom = await this.prismaService.roomChat.findUnique({
+				select: {
+					id: true,
+					name: true,
+					type: true,
+					joins: {
+						select: {
+							user: {
+								select: {
+									avatar: true,
 								}
 							}
 						}
 					}
 				},
-				where : {
-					id : roomId
+				where: {
+					id: roomId
 				}
 			})
 			let avatars: string[] = [];
@@ -459,7 +502,7 @@ export class ChatService {
 			(newRoom as any).avatars = avatars;
 			return newRoom;
 		} catch (error) {
-			
+			throw new InternalServerErrorException(error);
 		}
 	}
 
@@ -530,5 +573,104 @@ export class ChatService {
 		return roomsConversations;
 	}
 
-	
+	async updateRoomInfos(data: RoomUpdateInfos, loggedUserId: string) {
+		try {
+			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.channelId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+				throw { type: 'notAdmin' }
+			const newRommInfos = await this.prismaService.roomChat.update({
+				where: {
+					id: data.channelId
+				},
+				data: {
+					name: data.channelName,
+					type: data.channelType,
+					password: data.channelPassword
+				}
+			})
+			return newRommInfos;
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'notAdmin')
+				throw new ForbiddenException('Only administrators are authorized to update the room\'s information.');
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async deleteRoom(loggedUserId: string, roomId: string) {
+		try {
+			const existRoom = await this.getJoinedRoomByIds(loggedUserId, roomId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			if (existRoom.statut !== UserStatus.OWNER)
+				throw { type: 'notAdmin' }
+			return await this.prismaService.roomChat.delete({
+				where: {
+					id: roomId
+				}
+			})
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'notAdmin')
+				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async kickUserFromRoom(loggedUserId: string, data: Invitation) {
+		try {
+			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.channelId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+				throw { type: 'notAdmin' }
+			const kickedUser = await this.prismaService.join.delete({
+				where: {
+					userId_roomChatId: {
+						userId: data.invitedId,
+						roomChatId: data.channelId
+					}
+				}
+			});
+			return kickedUser;
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'notAdmin')
+				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async banUserFromRoom(loggedUserId: string, data: Invitation) {
+		try {
+			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.channelId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+				throw { type: 'notAdmin' }
+			const bannedUser = await this.prismaService.join.update({
+				where: {
+					userId_roomChatId: {
+						userId: data.invitedId,
+						roomChatId: data.channelId
+					}
+				},
+				data: {
+					statut: UserStatus.BANNED
+				}
+			});
+			return bannedUser;
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'notAdmin')
+				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			throw new InternalServerErrorException(error);
+		}
+	}
 }

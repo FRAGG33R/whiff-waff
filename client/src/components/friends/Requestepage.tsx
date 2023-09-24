@@ -1,8 +1,9 @@
 import { useState } from "react";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
-import { FriendsProps, User, UserFriend } from "../../types/userFriendType";
+import { User } from "../../types/userFriendType";
 import axios from "axios";
+import { api } from "../axios/instance";
 
 const RequestePage = ({ req, pendingFriends, setPendingFriends }: { req: User, pendingFriends : User[],  setPendingFriends : Function }) => {
 
@@ -17,8 +18,8 @@ const RequestePage = ({ req, pendingFriends, setPendingFriends }: { req: User, p
     try {
       setPendingFriends(pendingFriends.filter((friend:User) => friend.id !== req.id));
 
-      const res = await axios.patch (
-        "http://34.173.232.127/api/v1/users/friendshipResponse",
+      const res = await api.patch (
+        "/users/friendshipResponse",
         {
           id:req.id,
           status: "ACCEPTED"
@@ -38,8 +39,7 @@ const RequestePage = ({ req, pendingFriends, setPendingFriends }: { req: User, p
   const handleRefuse = async() => {
     try{
       setPendingFriends(pendingFriends.filter((friend:User) => friend.id !== req.id));
-      const res = await axios.patch(
-        "http://34.173.232.127/api/v1/users/friendshipResponse",
+      const res = await api.patch("/users/friendshipResponse",
         {
           id:req.id,
           status: "REFUSED"

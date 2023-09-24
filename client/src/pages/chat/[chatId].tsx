@@ -25,7 +25,7 @@ export default function Chat(props: { data: any }) {
 }
 
 export const getServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req }: any) {
+  async function getServerSideProps({ req, params }: any) {
     try {
       const token = await req.session.token.token;
       const res = await api.get(`chat/IndividualConversations`, {
@@ -33,6 +33,16 @@ export const getServerSideProps = withIronSessionSsr(
           Authorization: `Bearer ${token}`,
         },
       });
+	  const userName = params.chatId;
+	  const conversation = res.data.allConversation.find((conversation: any) => conversation.receiver.userName === userName);
+	  if (!conversation) {
+		  return {
+			  redirect: {
+				  destination: "/404",
+				  permanent: false,
+			  },
+		  };
+	  }
       return {
         props: { data: res.data },
       };

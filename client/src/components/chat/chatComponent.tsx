@@ -17,21 +17,19 @@ import Conversation from "./conversation";
 import { loggedUserType, userType } from "@/types/userType";
 import { useRouter } from "next/router";
 import { api } from "../axios/instance";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ChatComponent() {
-  const [chat, setChat] = useRecoilState(chatAtom);
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [chat] = useRecoilState(chatAtom);
+  const [loggedUser] = useRecoilState(loggedUserAtom);
   const [socket, setSocket] = useState<any>();
-  const [user, setUser] = useState<userType>();
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [token, setToken] = useState<string>('');
   const [conversations, setConversations] = useState<conversationType[]>(
     chat as conversationType[]
   );
   const [selectedConversatoin, setSelectedConversation] =
-    useState<conversationType | null>(
-      (chat as conversationType[]).length > 0
-        ? (chat as conversationType[])[0]
-        : null
+    useState<conversationType | null>(null
     );
   const [messageContent, setMessageContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Chat");
@@ -88,6 +86,7 @@ export default function ChatComponent() {
       lastMessage: "Hello there!",
     },
   ];
+
   const router = useRouter();
 
   const handleToggle = (value: string) => {
@@ -95,7 +94,12 @@ export default function ChatComponent() {
   };
 
   const findSelectedConversation = async (token: string) => {
-	if (router.query.chatId === (loggedUser as loggedUserType).userName) return;
+    if (router.query.chatId === (loggedUser as loggedUserType).userName) {
+		setSelectedConversation((chat as conversationType[]).length > 0
+        ? (chat as conversationType[])[0]
+        : null)
+		return;
+	}
     const conversation = (chat as conversationType[]).find(
       (item: conversationType) => item.receiver.userName === router.query.chatId
     );
@@ -108,29 +112,30 @@ export default function ChatComponent() {
             Authorization: `Bearer ${token}`,
           },
         });
-		// throw an exception when the user not a friend of the logged user and router.back() to the previous page
+        // throw an exception when the user not a friend of the logged user and router.back() to the previous page
         const userData = res.data.response.user;
-		const newConversation: conversationType = {
-			receiver: {
-			  id: userData.id,
-			  userName: userData.userName,
-			  email: userData.email,
-			  avatar: userData.avatar,
-			},
-			messages: [],
-		  };
-		  setSelectedConversation((prev: conversationType | null) => {
-			return {
-			  receiver: newConversation.receiver,
-			  messages: [],
-			};
-		  });
-		  setConversations((prev: conversationType[]) => [
-			...prev,
-			newConversation
-		  ]);
+        const newConversation: conversationType = {
+          receiver: {
+            id: userData.id,
+            userName: userData.userName,
+            email: userData.email,
+            avatar: userData.avatar,
+          },
+          messages: [],
+        };
+        setSelectedConversation((prev: conversationType | null) => {
+          return {
+            receiver: newConversation.receiver,
+            messages: [],
+          };
+        });
+        setConversations((prev: conversationType[]) => [
+          ...prev,
+          newConversation,
+        ]);
+
       } catch (err: any) {
-        router.push('/login');
+        router.push("/404");
       }
     }
   };
@@ -149,7 +154,6 @@ export default function ChatComponent() {
       content: messageContent,
       currentDate: date,
     };
-
     if (selectedConversatoin) {
       const newSelectedConversation: conversationType = {
         receiver: selectedConversatoin.receiver,
@@ -159,6 +163,7 @@ export default function ChatComponent() {
             content: newMessage.content,
             type: "sender",
             date: String(newMessage.currentDate),
+            isError: false,
           },
         ],
       };
@@ -172,9 +177,25 @@ export default function ChatComponent() {
     setMessageContent(value);
   };
 
-  const handleSelectedConversation = (conversation: conversationType) => {
-    setSelectedConversation(conversation);
-	router.push(`/chat/${conversation.receiver.userName}`);
+  const handleSelectedConversation = async (conversation: conversationType) => {
+	console.log("conversation : ", conversation.receiver.userName);
+	try {
+		const res  = await api.get(`/chat/individualConversations/${conversation.receiver.id}`, {
+			headers : {
+				Authorization : `Bearer ${token.length > 0 ? token : localStorage.getItem('token')}`
+			}	
+		})
+		setSelectedConversation((prev: conversationType | null) => {
+			return {
+			  receiver: conversation.receiver,
+			  messages: res.data.messages,
+			};
+		  });
+		console.log("res : ", res.data);
+		router.push(`/chat/${conversation.receiver.userName}`);
+	} catch (error) {
+		
+	}
   };
 
   const handleReceivedMessage = (message: any) => {
@@ -183,6 +204,7 @@ export default function ChatComponent() {
       content: message.content,
       type: "receiver",
       date: message.currentDate,
+      isError: false,
     };
     if (selectedConversatoin) {
       setSelectedConversation((prev: conversationType | null) => {
@@ -200,29 +222,46 @@ export default function ChatComponent() {
   };
 
   const handleException = (error: any) => {
-	  console.log("socket error : ", error.message);
-	  toast.error(error.message,   {
-		style: {
-		  borderRadius: '12px',
-		  padding: '10px',
-		  background: '#6C7FA7',
-		  color: '#fff',
-		  fontFamily: 'Poppins',
-		},
-	  });
-  };
+    console.log("socket error : ", error.message);
+    toast.error(error.message, {
+      style: {
+        borderRadius: "12px",
+        padding: "12px",
+        background: "#6C7FA7",
+        color: "#fff",
+        fontFamily: "Poppins",
+        fontSize: "18px",
+      },
+    });
 
+    //   setIsError(true);
+    //update the laset message on the selected conversation to be an error message
+    setSelectedConversation((prev: conversationType | null) => {
+      if (prev) {
+        const newMessages: messageType[] = [...prev.messages];
+        newMessages[newMessages.length - 1].isError = true;
+        return {
+          receiver: prev.receiver,
+          messages: newMessages,
+        };
+      }
+      return prev;
+    });
+  };
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
-    else findSelectedConversation(token);
+    else {
+		setToken(token);
+		findSelectedConversation(token)
+	}
 
     const socket = io("http://34.173.232.127:6080/", {
       extraHeaders: {
         authorization: `Bearer ${token}`,
       },
     });
-	
+
     socket.on("connect", handleConnection);
     socket.on("exception", handleException);
     socket.on("message", handleReceivedMessage);
@@ -236,7 +275,7 @@ export default function ChatComponent() {
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
-	  <Toaster position="top-right"/>
+      <Toaster position="top-right" />
       <div className="h-full min-w-[60px] w-[60px] md:w-[100px] pt-2">
         <SideBar />
       </div>

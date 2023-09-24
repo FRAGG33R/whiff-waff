@@ -3,6 +3,7 @@ import { conversationType, messageType } from "@/types/chatType";
 import { loggedUserType } from "@/types/userType";
 import { useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
+import { IconExclamationCircle } from '@tabler/icons-react';
 
 export default function Conversation(props  : {conversation : conversationType}) {
   const conversationRef = useRef(null);
@@ -30,8 +31,9 @@ export default function Conversation(props  : {conversation : conversationType})
                 <div>{item.type === "receiver" ? props.conversation.receiver.userName : (loggedUser as loggedUserType).userName}</div>
                 <div>{getTime(item.date)}</div>
               </div>
-              <div className="font-poppins w-full break-all text-sm md:text-lg">
+              <div className="font-poppins w-full break-all text-sm md:text-lg flex items-cente justify-between">
                 {item.content}
+				{item.isError && <IconExclamationCircle color="#FF0000" />}
               </div>
             </div>
           </div>

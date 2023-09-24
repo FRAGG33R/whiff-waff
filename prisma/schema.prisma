@@ -241,6 +241,7 @@ enum ChatRoomType {
 }
 
 enum UserStatus {
+	OWNER
     ADMIN
     BANNED
     MUTED

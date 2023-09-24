@@ -196,7 +196,7 @@ export class ChatService {
 			const existRoom = await this.getRoomByName(data.channelName);
 			if (!existRoom) {
 				const newRoom = await this.creatRoom(data);
-				return await this.joinUserToRomm(loggedUserId, newRoom.id, UserStatus.ADMIN);
+				return await this.joinUserToRomm(loggedUserId, newRoom.id, UserStatus.OWNER);
 			}
 			else {
 				if (data.channelType && (data.channelType !== existRoom.type))
@@ -665,6 +665,60 @@ export class ChatService {
 				}
 			});
 			return bannedUser;
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'notAdmin')
+				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async leaveRoom(loggedUserId: string, roomId: string) {//TODO send event to room sockets for removing user from room
+		try {
+			const existRoom = await this.getJoinedRoomByIds(loggedUserId, roomId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			const leavedRoom = await this.prismaService.join.delete({
+				where: {
+					userId_roomChatId: {
+						userId: loggedUserId,
+						roomChatId: roomId
+					}
+				}
+			});
+			let newAdmin = await this.prismaService.join.findFirst({
+				where: {
+					roomChatId: roomId,
+					statut: UserStatus.ADMIN
+				}
+			});
+			if (!newAdmin)
+				newAdmin = await this.prismaService.join.findFirst({
+					where: {
+						roomChatId: roomId,
+						statut: UserStatus.DEFLAULT
+					}
+				});
+			if (!newAdmin)
+				await this.prismaService.roomChat.delete({
+					where: {
+						id: roomId
+					}
+				});
+			else
+				await this.prismaService.join.update({
+					where: {
+						userId_roomChatId: {
+							userId: newAdmin.userId,
+							roomChatId: roomId
+						}
+					},
+					data: {
+						statut: UserStatus.OWNER
+					}
+				});
+			return leavedRoom;
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');

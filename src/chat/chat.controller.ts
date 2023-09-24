@@ -11,6 +11,7 @@ const individualConversation = 'individualConversations/:receiverId'
 const roomConversation = 'room/Conversations/:roomId'
 const roomConversations = 'room/Conversations'
 const joinRoom = 'room/join'
+const leaveRoom = 'room/leave/:roomId'
 const updateRoom = 'room/update'
 const deleteRoom = 'room/delete'
 const inviteRoom = 'room/invite'
@@ -51,6 +52,20 @@ export class ChatController {
 		return await this.chatService.getRoomInfosById(joinedRoom.roomChatId);
 	}
 	
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Delete(leaveRoom)
+	async leaveRoom(@Req() req: Request) {
+		return await this.chatService.leaveRoom((req as any).user.id, (req as any).params.roomId);
+	}
+
+
+
+
+
+
+
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(updateRoom)

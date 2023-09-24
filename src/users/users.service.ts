@@ -447,7 +447,7 @@ export class UsersService {
 
 
 	async deleteFriendshipTuple(loggedUserId: string, RequestSenderId: string): Promise<any> {
-		const existData = this.prismaService.friendship.findUnique({
+		const existData = await this.prismaService.friendship.findUnique({
 			where: {
 				senderId_receivedId: {
 					receivedId: RequestSenderId,

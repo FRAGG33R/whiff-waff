@@ -22,7 +22,7 @@ export default function Conversation(props  : {conversation : conversationType})
   }, [props.conversation.messages.length]);
   
   return (
-    <div ref={conversationRef} className="w-full h-full overflow-y-scroll scrollbar scrollbar-track-rounded-full scrollbar-thumb-GreenishYellow scrollbar-track-transparent ">
+    <div ref={conversationRef} className="w-full h-full overflow-y-scroll scrollbar scrollbar-track-rounded-full scroll-smooth scrollbar-thumb-GreenishYellow scrollbar-track-transparent ">
       {props.conversation.messages.map((item : messageType, index : number) => {
         return (
           <div key={index} className={`chat ${item.type === "sender" ? 'chat-end text-white' : "chat-start text-black"} `}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, KeyboardEvent } from "react";
 import Image from "next/image";
 import VectorIcon from "../../../../public/searchIcon.svg";
 import { searchInputProps } from "../../../types/inputsType";
@@ -29,6 +29,11 @@ const SearchInput: React.FC<searchInputProps> = () => {
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+		handleNavigation(searchResult[0].userName);
+    }
+  };
   const handleNavigation = async (userName : string) => {
 	await router.push(`/profile/${userName}`)
 	if (router.pathname === `/profile/[id]`) router.reload();
@@ -45,6 +50,7 @@ const SearchInput: React.FC<searchInputProps> = () => {
       <input
         type={"search"}
         name={"search"}
+		onKeyDown={handleKeyDown}
         placeholder={"Search for everything..."}
         onChange={(e) => {
           handleSearch(e.target.value);

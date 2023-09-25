@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundE
 import { FriendshipStatus, ChatRoomType, UserStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
-import { ConversationDto, Invitation, RoomInfos, RoomUpdateInfos, dtoWebSocketTset } from 'src/dto/chat.dto';
+import { ConversationDto, Invitation, RoomInfos, RoomUpdateInfos, RoomUserInfos, dtoWebSocketTset } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import * as ErrorCode from '../shared/constants/constants.code-error';
@@ -193,6 +193,8 @@ export class ChatService {
 
 	async joinRoom(loggedUserId: string, data: RoomInfos) {
 		try {
+			if (data.channelPassword && (data.channelType && data.channelType === ChatRoomType.PRIVATE))
+				throw { type: 'forbidenPrivate' }
 			const existRoom = await this.getRoomByName(data.channelName);
 			if (!existRoom) {
 				const newRoom = await this.creatRoom(data);
@@ -241,6 +243,8 @@ export class ChatService {
 				throw new ForbiddenException(`user${CodeMessages.P2002_MSG} in ${data.channelName}`)
 			if (error.type === 'channelExists')
 				throw new ForbiddenException(`${data.channelName}${CodeMessages.P2002_MSG} as a ${error.channel} type`)
+			if (error.type === 'forbidenPrivate')
+				throw new ForbiddenException(`private channel should not have a password`)
 			throw new InternalServerErrorException(error);
 		}
 	}
@@ -573,13 +577,18 @@ export class ChatService {
 		return roomsConversations;
 	}
 
-	async updateRoomInfos(data: RoomUpdateInfos, loggedUserId: string) {
+	async updateRoomInfos(data: RoomUpdateInfos, loggedUserId: string) {//TODO setting password make channel protected
 		try {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.channelId);
 			if (!existRoom)
 				throw { type: 'notFound' }
 			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
+			if (data.channelPassword) {
+				if (existRoom.roomChat.type === ChatRoomType.PRIVATE && ((!data.channelType || data.channelType === ChatRoomType.PRIVATE) && data.channelPassword))
+					throw { type: 'Privateforbiden' }
+				data.channelType = ChatRoomType.PROTECTED;
+			}
 			const newRommInfos = await this.prismaService.roomChat.update({
 				where: {
 					id: data.channelId
@@ -596,6 +605,8 @@ export class ChatService {
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
 			if (error.type === 'notAdmin')
 				throw new ForbiddenException('Only administrators are authorized to update the room\'s information.');
+			if (error.type === 'Privateforbiden')
+				throw new ForbiddenException('private channel should not have a password');
 			throw new InternalServerErrorException(error);
 		}
 	}
@@ -628,6 +639,9 @@ export class ChatService {
 				throw { type: 'notFound' }
 			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
+			const userStatus = await this.getJoinedRoomByIds(data.invitedId, data.channelId);
+			if (userStatus.statut === UserStatus.OWNER)
+				throw { type: 'owner' }
 			const kickedUser = await this.prismaService.join.delete({
 				where: {
 					userId_roomChatId: {
@@ -642,6 +656,8 @@ export class ChatService {
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
 			if (error.type === 'notAdmin')
 				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			if (error.type === 'owner')
+				throw new ForbiddenException('The owner cannot be kicked out of the room.');
 			throw new InternalServerErrorException(error);
 		}
 	}
@@ -653,6 +669,9 @@ export class ChatService {
 				throw { type: 'notFound' }
 			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
+			const userStatus = await this.getJoinedRoomByIds(data.invitedId, data.channelId);
+			if (userStatus.statut === UserStatus.OWNER)
+				throw { type: 'owner' }
 			const bannedUser = await this.prismaService.join.update({
 				where: {
 					userId_roomChatId: {
@@ -670,6 +689,8 @@ export class ChatService {
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
 			if (error.type === 'notAdmin')
 				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			if (error.type === 'owner')
+				throw new ForbiddenException('The owner cannot be banned from the room.');
 			throw new InternalServerErrorException(error);
 		}
 	}
@@ -724,6 +745,39 @@ export class ChatService {
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
 			if (error.type === 'notAdmin')
 				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async changeRoomUserStatus(loggedUserId: string, data: RoomUserInfos) {
+		try {
+			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.roomId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+				throw { type: 'notAdmin' }
+			const userStatus = await this.getJoinedRoomByIds(data.userId, data.roomId);
+			if (userStatus.statut === UserStatus.OWNER)
+				throw { type: 'owner' }
+			const newUserStatus = await this.prismaService.join.update({
+				where: {
+					userId_roomChatId: {
+						userId: data.userId,
+						roomChatId: data.roomId
+					}
+				},
+				data: {
+					statut: data.newStatus
+				},
+			});
+			return newUserStatus;
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'notAdmin')
+				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			if (error.type === 'owner')
+				throw new ForbiddenException('The owner cannot be banned from the room.');
 			throw new InternalServerErrorException(error);
 		}
 	}

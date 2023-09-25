@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ConversationDto, Invitation, RoomDeleteInfos, RoomInfos, RoomUpdateInfos } from 'src/dto/chat.dto';
+import { ConversationDto, Invitation, RoomDeleteInfos, RoomInfos, RoomUpdateInfos, RoomUserInfos } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 import { JwtGuard } from 'src/auth/guards/guards.jwtGuard';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -17,6 +17,7 @@ const deleteRoom = 'room/delete'
 const inviteRoom = 'room/invite'
 const kickRoom = 'room/kick'
 const banRoom = 'room/ban'
+const RoomUserStatus = 'room/userStatus'
 @Controller(chatController)
 export class ChatController {
 	constructor(private readonly chatService: ChatService) { }
@@ -43,7 +44,7 @@ export class ChatController {
 		const receivedId = (req as any).params.receiverId;
 		return await this.chatService.getIndividualConversationById(loggedUserId, receivedId, data);
 	}
-	
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(joinRoom)
@@ -51,35 +52,43 @@ export class ChatController {
 		const joinedRoom = await this.chatService.joinRoom((req as any).user.id, data);
 		return await this.chatService.getRoomInfosById(joinedRoom.roomChatId);
 	}
-	
-	@ApiBearerAuth()
-	@UseGuards(JwtGuard)
-	@Delete(leaveRoom)
-	async leaveRoom(@Req() req: Request) {
-		return await this.chatService.leaveRoom((req as any).user.id, (req as any).params.roomId);
-	}
-
-
-
-
-
-
-
 
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
-	@Post(updateRoom)
+	@Patch(updateRoom)
 	async updateRoom(@Body() data: RoomUpdateInfos, @Req() req: Request) {
 		const loggedUserId = (req as any).user.id;
 		return await this.chatService.updateRoomInfos(data, loggedUserId);
 	}
-	
+
+
+
+
+
+
+
+
+
+
+
+
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Delete(leaveRoom)
+	async leaveRoom(@Req() req: Request) {
+		await this.chatService.leaveRoom((req as any).user.id, (req as any).params.roomId);
+		return {message: 'You left the room'};
+	}
+
+
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
 	@Delete(deleteRoom)
 	async deleteRoom(@Body() data: RoomDeleteInfos, @Req() req: Request) {
 		const loggedUserId = (req as any).user.id;
 		return await this.chatService.deleteRoom(loggedUserId, data.channelId);
 	}
-	
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(inviteRoom)
@@ -96,12 +105,19 @@ export class ChatController {
 		return await this.chatService.kickUserFromRoom(loggedUserId, data);
 	}	
 
+	// @ApiBearerAuth()
+	// @UseGuards(JwtGuard)
+	// @Patch(banRoom)
+	// async banUserFromRoom(@Body() data: Invitation, @Req() req: Request) {
+	// 	const loggedUserId = (req as any).user.id;
+	// 	return await this.chatService.banUserFromRoom(loggedUserId, data);
+	// }
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
-	@Patch(banRoom)
-	async banUserFromRoom(@Body() data: Invitation, @Req() req: Request) {
-		const loggedUserId = (req as any).user.id;
-		return await this.chatService.banUserFromRoom(loggedUserId, data);
+	@Patch(RoomUserStatus)
+	async changeUserStatus(@Body() data: RoomUserInfos, @Req() req: Request) {
+		return await this.chatService.changeRoomUserStatus((req as any).user.id, data);
 	}
 
 	@ApiBearerAuth()

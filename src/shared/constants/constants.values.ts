@@ -1,4 +1,4 @@
-import { ChatRoomType } from "@prisma/client";
+import { ChatRoomType,  UserStatus } from "@prisma/client";
 
 export const DEFAULT_RANK_USER = "ROOKIE";
 export const DEFAULT_LEVEL_USER = 0;
@@ -14,6 +14,7 @@ export enum PlayerStatus {
 }
 
 export const CHANNEL_TYPES = Object.values(ChatRoomType).filter(v => typeof v !== "number").join('|')
+export const USER_STATUS = Object.values(UserStatus).filter(v => typeof v !== "number" && v !== UserStatus.OWNER ).join('|')
 export const SALT_ROUNDS = 10
 export const BUCKET_TRIGRRED_EVENT = 'finish'
 export const ERROR_TRIGRRED_EVENT = 'error'

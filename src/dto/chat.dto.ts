@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
-import { ChatRoomType } from "@prisma/client";
+import { ChatRoomType, UserStatus } from "@prisma/client";
 import { IsNotEmpty, IsNumber, IsOptional, IsUppercase, Matches, ValidationOptions, isDateString } from "class-validator";
 import * as values from 'src/shared/constants/constants.values'
 export class ConversationDto {
@@ -20,6 +20,21 @@ export class ConversationDto {
 	nbPage: Number;
 }
 
+export class RoomUserInfos {
+	@ApiProperty()
+	@IsNotEmpty()
+	roomId: string;
+	
+	@ApiProperty()
+	@IsNotEmpty()
+	userId: string;
+	
+	@ApiProperty()
+	@Matches(`^${values.USER_STATUS}$`, 'i', { message: `type must be ${values.USER_STATUS}` })
+	@IsNotEmpty()
+	newStatus: UserStatus;
+}
+
 export class RoomInfos {
 	@ApiProperty()
 	@IsNotEmpty()
@@ -36,12 +51,11 @@ export class RoomInfos {
 	channelPassword: string;
 }
 
-export class RoomUpdateInfos extends PartialType(RoomInfos) { 
+export class RoomUpdateInfos extends RoomInfos {
 	@ApiProperty()
 	@IsNotEmpty()
 	channelId: string;
 }
-
 export class RoomDeleteInfos {
 	@ApiProperty()
 	@IsNotEmpty()

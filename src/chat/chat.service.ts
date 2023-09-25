@@ -617,7 +617,7 @@ export class ChatService {
 			if (!existRoom)
 				throw { type: 'notFound' }
 			if (existRoom.statut !== UserStatus.OWNER)
-				throw { type: 'notAdmin' }
+				throw { type: 'notOwner' }
 			return await this.prismaService.roomChat.delete({
 				where: {
 					id: roomId
@@ -626,8 +626,8 @@ export class ChatService {
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
-			if (error.type === 'notAdmin')
-				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			if (error.type === 'notOwner')
+				throw new ForbiddenException('Only owners are authorized to delete the room.');
 			throw new InternalServerErrorException(error);
 		}
 	}

@@ -4,28 +4,24 @@ import UserBar from "./userBar";
 import { useEffect, useState } from "react";
 import { FormEvent, MouseEvent } from "react";
 import { IconSend } from "@tabler/icons-react";
-import CreateChannel from "./createChannel";
 import ChannelToggleSwitch from "../ui/buttons/channelToggleSwitch";
-import ExploreChannels from "./exploreChannels";
-import SingleConversationHistory from "./singleConversationHistory";
-import ChannelsConversation from "./channelsConversation";
 import { io } from "socket.io-client";
 import { useRecoilState } from "recoil";
 import { chatAtom, loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
 import { conversationType, messageType } from "@/types/chatType";
 import Conversation from "./conversation";
-import { loggedUserType, userType } from "@/types/userType";
+import { loggedUserType } from "@/types/userType";
 import { useRouter } from "next/router";
 import { api } from "../axios/instance";
 import toast, { Toaster } from "react-hot-toast";
-import { IconMessagesOff, IconMessageOff } from "@tabler/icons-react";
+import { IconMessageOff } from "@tabler/icons-react";
 import IndividualChatComponent from "./individualChatComponent";
+import ChannelChatComponent from "./channelChatComponent";
 
 export default function ChatComponent() {
   const [chat] = useRecoilState(chatAtom);
   const [loggedUser] = useRecoilState(loggedUserAtom);
   const [socket, setSocket] = useState<any>();
-  const [loaded, setLoaded] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
   const [conversations, setConversations] = useState<conversationType[]>(
     chat as conversationType[]
@@ -34,60 +30,6 @@ export default function ChatComponent() {
     useState<conversationType | null>(null);
   const [messageContent, setMessageContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Chat");
-  const dummyArray1 = [
-    {
-      channelName: "3assker6",
-      userName: "JohnWick",
-      avatars: [
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      ],
-      lastMessage: "Hello there!",
-    },
-    {
-      channelName: "3assker",
-      userName: "JohnWick",
-      avatars: [
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      ],
-      lastMessage: "Hello there!",
-    },
-    {
-      channelName: "3assker",
-      userName: "JohnWick",
-      avatars: [
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      ],
-      lastMessage: "Hello there!",
-    },
-    {
-      channelName: "3assker2",
-      userName: "JohnWick",
-      avatars: [
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      ],
-      lastMessage: "Hello there!",
-    },
-    {
-      channelName: "3assker3",
-      userName: "JohnWick",
-      avatars: [
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-      ],
-      lastMessage: "Hello there!",
-    },
-  ];
-
   const router = useRouter();
 
   const handleToggle = (value: string) => {
@@ -137,10 +79,12 @@ export default function ChatComponent() {
             messages: [],
           };
         });
+        console.log("newConversation : ", newConversation);
         setConversations((prev: conversationType[]) => [
           ...prev,
           newConversation,
         ]);
+        // router.push(`/chat/${userData.userName}`);
       } catch (err: any) {
         router.push("/404");
       }
@@ -210,21 +154,21 @@ export default function ChatComponent() {
 
   const handleReceivedMessage = (message: any) => {
     console.log("I received this message: ", message);
-      setSelectedConversation((prev: conversationType | null) => {
-        if (prev) {
-          const newMessage: messageType = {
-            content: message.content,
-            type: "receiver",
-            date: message.currentDate,
-            isError: false,
-          };
-          const newMessages: messageType[] = [...prev.messages, newMessage];
-          return {
-            receiver: prev.receiver,
-            messages: newMessages,
-          };
-        } else return prev;
-      });
+    setSelectedConversation((prev: conversationType | null) => {
+      if (prev) {
+        const newMessage: messageType = {
+          content: message.content,
+          type: "receiver",
+          date: message.currentDate,
+          isError: false,
+        };
+        const newMessages: messageType[] = [...prev.messages, newMessage];
+        return {
+          receiver: prev.receiver,
+          messages: newMessages,
+        };
+      } else return prev;
+    });
   };
 
   const handleConnection = () => {
@@ -243,7 +187,7 @@ export default function ChatComponent() {
         fontSize: "18px",
       },
     });
-    //   setIsError(true);
+    //setIsError(true);
     //update the laset message on the selected conversation to be an error message
     setSelectedConversation((prev: conversationType | null) => {
       if (prev) {
@@ -270,7 +214,6 @@ export default function ChatComponent() {
         authorization: `Bearer ${token}`,
       },
     });
-
     socket.on("connect", handleConnection);
     socket.on("exception", handleException);
     socket.on("message", handleReceivedMessage);
@@ -312,25 +255,7 @@ export default function ChatComponent() {
                 selectedConversation={selectedConversatoin!}
               />
             ) : (
-              <>
-                <div className="w-full h-full px-2 lg:px-4 space-y-2 xl:space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-                  <div className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]">
-                    <CreateChannel />
-                  </div>
-                  <div className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]">
-                    <ExploreChannels />
-                  </div>
-                  {dummyArray1.map((item, index) => (
-                    <ChannelsConversation
-                      key={index}
-                      lastUser={item.userName}
-                      channelName={item.channelName}
-                      lastMessage={item.lastMessage}
-                      avatars={item.avatars || []}
-                    />
-                  ))}
-                </div>
-              </>
+              <ChannelChatComponent />
             )}
           </div>
           <div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
@@ -343,7 +268,8 @@ export default function ChatComponent() {
                 />
               )}
             </div>
-            <div className="w-full flex itmes-center min-h-[10px] md:min-h-[780px] 3xl:h-full max-h-[957px] justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+			{/* for under 300px max-h-[480px] */}
+            <div className="w-full md:w-full flex itmes-center h-full  md:max-h-[957px] justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
               <div className="w-full h-full flex flex-col items-center justify-between space-y-2">
                 {selectedConversatoin ? (
                   <Conversation conversation={selectedConversatoin} />

@@ -89,20 +89,20 @@ export default function ProfileInformations() {
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     try {
-		console.log("id => ", (user as userType).id, "status => ", "UNFRIEND");
-		const res = await api.patch(
-			"/users/friendshipResponse",
-			{
-			  id: (user as userType).id,
-			  status: "UNFRIEND",
-			},
-			{
-			  headers: {
-				Authorization: `Bearer ${token}`,
-			  },
-			}
-		  );
-		  console.log("response : ", res.data);
+      console.log("id => ", (user as userType).id, "status => ", "UNFRIEND");
+      const res = await api.patch(
+        "/users/friendshipResponse",
+        {
+          id: (user as userType).id,
+          status: "UNFRIEND",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("response : ", res.data);
     } catch (error) {
       console.log(error);
     }
@@ -147,8 +147,15 @@ export default function ProfileInformations() {
                   ) : (
                     <SecondaryButton text="Unblock" onClick={handleUnblock} />
                   )}
-                  <SecondaryButton text="Message" onClick={handleMessage} />
-                  <PrimaryButton text="Challenge" onClick={handleChallenge} />
+                  {userState.status === "ACCEPTED" && (
+                    <>
+                      <SecondaryButton text="Message" onClick={handleMessage} />
+                      <PrimaryButton
+                        text="Challenge"
+                        onClick={handleChallenge}
+                      />
+                    </>
+                  )}
                 </>
               ) : (
                 <div className="text-md md:text-2xl text-[#6C7FA7] font-medium">

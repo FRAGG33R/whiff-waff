@@ -487,6 +487,36 @@ export class UsersService {
 					},
 				})
 			}
+			else if (status == FriendshipStatus.UNFRIEND) {
+				data = await this.prismaService.friendship.findUnique({
+					where: {
+						senderId_receivedId: {
+							receivedId: loggedUserId,
+							senderId: RequestSenderId
+						}
+					},
+				})
+				if (!data)
+					data = await this.prismaService.friendship.delete({
+						where: {
+							senderId_receivedId: {
+								receivedId: RequestSenderId,
+								senderId: loggedUserId
+							}
+						},
+					})
+				if (data)
+				{
+					data = await this.prismaService.friendship.delete({
+						where: {
+							senderId_receivedId: {
+								receivedId: data.receivedId,
+								senderId: data.senderId
+							}
+						},
+					})
+				}
+			}
 			else {
 				data = await this.prismaService.friendship.update({
 					data: {

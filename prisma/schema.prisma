@@ -175,7 +175,7 @@ model Friendship {
     status     FriendshipStatus
     sender     User             @relation("sendFriendship", fields: [senderId], references: [id], onDelete: Cascade)
     receiver   User             @relation("receiveFriendship", fields: [receivedId], references: [id], onDelete: Cascade)
-
+	blockedId  String?
     @@id([senderId, receivedId])
     @@map("friendship")
 }

@@ -22,7 +22,7 @@ export class ChatGateway implements OnGatewayConnection {
 	async handleConnection(client: Socket) {
 		const validUser = (client.handshake.headers.authorization) ?
 			GuardsService.validateToken(client.handshake.headers?.authorization, this.configService.get('JWT_SECRET')) : false;
-		const existsUser = (validUser) ? await this.guardService.validate(validUser): false;
+		const existsUser = (validUser) ? await this.guardService.validate(validUser) : false;
 		if (!existsUser)
 			client.disconnect();
 		else if (this.loggedUsers) {
@@ -40,6 +40,9 @@ export class ChatGateway implements OnGatewayConnection {
 		if (!receiverIsFriend)
 			throw new WsException('user not a friend');
 		const receiver = this.loggedUsers.get(dto.receiverId);
+		const checkFriendship = await this.chatService.checkFriendship((client as any).user.id, dto.receiverId);
+		if (!checkFriendship)
+			throw new WsException('user not a friend');
 		if (receiver) {
 			receiver.forEach(element => {
 				let sended: boolean = client.to(element).emit('message', dto);

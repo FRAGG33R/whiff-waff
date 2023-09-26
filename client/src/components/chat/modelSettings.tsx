@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import Silence from "../../../public/silence.svg";
 import SettingDrop from "../../../public/settingDrop.svg";
 import Image from "next/image";
-import { ClassNames } from "@emotion/react";
 const ModelSettings = (props: SingleMembreType) => {
   return (
     <motion.div

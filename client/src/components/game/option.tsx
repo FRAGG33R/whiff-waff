@@ -38,7 +38,7 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
   const [advenced, setAdvenced] = useState(false);
   const [time, setTime] = useState(false);
   const [defi, setDefi] = useState(false);
-  const name = "houssam";
+  const name = "hssam";
   console.log((userData as userType).userName);
   const [open, setDialogOpen] = useState(false);
   const [isFindingPlayer, setIsFindingPlayer] = useState(true);

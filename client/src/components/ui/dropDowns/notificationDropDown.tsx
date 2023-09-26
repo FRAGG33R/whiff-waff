@@ -54,7 +54,7 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
               notifications.map((notification, index) => (
                 <MenuItem
                   key={index}
-                  className=" flex items-center gap-4 py-2 pr-8 pl-2 "
+                  className=" flex items-center gap-4 py-2 pr-8 pl-2 focus:bg-[#D2386D] "
                 >
                   <Avatar
                     className="border-4  border-DeepRose rounded-2xl"

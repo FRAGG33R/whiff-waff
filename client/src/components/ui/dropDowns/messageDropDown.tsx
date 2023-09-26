@@ -40,8 +40,8 @@ const MessageDropDown: React.FC<NotificationProps> = (props) => {
               </MenuHandler>
             </MaterialUIBadge>
           </motion.div>
-          <MenuList className="flex flex-col bg-HokiCl border-0">
-            <p className="flex items-center justify-center text-Mercury font-teko text-2xl">
+          <MenuList className="flex flex-col bg-HokiCl border-0 ">
+            <p className="flex items-center justify-center text-Mercury font-teko text-2xl ">
               Message
             </p>
             {notifications &&
@@ -49,7 +49,7 @@ const MessageDropDown: React.FC<NotificationProps> = (props) => {
               notifications.map((notification, index) => (
                 <MenuItem
                   key={index}
-                  className=" flex items-center gap-4 py-2 pr-8 pl-2 "
+                  className=" flex items-center gap-4 py-2 pr-8 pl-2  focus:bg-[#D2386D] "
                 >
                   <Avatar
                     className="border-4 border-DeepRose rounded-2xl"

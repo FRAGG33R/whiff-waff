@@ -71,7 +71,7 @@ const ProfileDropDown = () => {
         className="bg-HokiCl border-0 w-40 z-10 absolute top-[4rem] sm:top-[4.5rem] md:top-[6rem] right-[1.2rem] md:right-10"
       >
         <motion.li variants={itemVariants}>
-          <MenuItem onClick={() => {router.push(`/profile/${(user as userType).userName}`)}} className="flex flex-row space-y-1 items-center gap-2 h-9">
+          <MenuItem onClick={() => {router.push(`/profile/${(user as userType).userName}`)}} className="flex flex-row space-y-1 items-center gap-2 h-9 hover:bg-DeepRose hover:text-HokiCl">
             <IconUserCircle
               size={22}
               color="#CBFC01"
@@ -79,7 +79,7 @@ const ProfileDropDown = () => {
             />
             <Typography 
               variant="h1"
-              className="font-teko text-xl text-Mercury"
+              className="font-teko text-xl text-Mercury "
             >
               My Profile
             </Typography>
@@ -90,7 +90,7 @@ const ProfileDropDown = () => {
             onClick={() => {
               router.push("/settings");
             }}
-            className="flex flex-row space-y-1 items-center gap-2 h-9"
+            className="flex flex-row space-y-1 items-center gap-2 h-9 hover:bg-DeepRose hover:text-HokiCl"
           >
             <IconSettings
               size={22}
@@ -109,7 +109,7 @@ const ProfileDropDown = () => {
           <hr className="my-2 border-GreenishYellow " />
           <MenuItem
             onClick={LogOut}
-            className="flex flex-row -space-y-1 space-x-1 gap-2 h-9"
+            className="flex flex-row -space-y-1 space-x-1 gap-2 h-9 hover:bg-DeepRose hover:text-HokiCl"
           >
             <Image src={Logout} alt="logout" width={18} />
             <Typography

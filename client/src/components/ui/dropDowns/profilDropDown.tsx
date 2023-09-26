@@ -95,7 +95,7 @@ const ProfileDropDown = () => {
             onClick={() => {
               router.push("/settings");
             }}
-            className="flex flex-row space-y-1 items-center gap-2 h-9"
+            className="flex flex-row space-y-1 items-center gap-2 h-9 hover:bg-DeepRose hover:text-HokiCl"
           >
             <IconSettings
               size={22}
@@ -111,7 +111,7 @@ const ProfileDropDown = () => {
           <hr className="my-2 border-GreenishYellow " />
           <MenuItem
             onClick={LogOut}
-            className="flex flex-row -space-y-1 space-x-1 gap-2 h-9"
+            className="flex flex-row -space-y-1 space-x-1 gap-2 h-9 hover:bg-DeepRose hover:text-HokiCl"
           >
             <Image src={Logout} alt="logout" width={18} />
             <Typography

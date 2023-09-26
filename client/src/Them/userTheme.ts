@@ -42,9 +42,9 @@ export const theme = {
             cursor: "cursor-pointer",
             userSelect: "select-none",
             transition: "transition-all",
-            bg: "hover:bg-[#23336C] hover:bg-opacity-80 focus:bg-[#23336C] focus:bg-opacity-60 active:bg-[#23336C] active:bg-opacity-60",
+            bg: "hover:bg-[#D2386D] hover:bg-opacity-80 focus:bg-[#D2386D] focus:bg-opacity-60 active:bg-[#D2386D] active:bg-opacity-60",
             color:
-              "hover:bg-[#23336C]  focus:text-[#23336C]  active:text-[#23336C] ",
+              "hover:bg-[#D2386D]  focus:text-[#D2386D]  active:text-[#D2386D] ",
             outline: "outline-none",
           },
           disabled: {

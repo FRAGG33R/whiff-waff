@@ -68,6 +68,7 @@ export default function FriendGame({
           },
         }
       );
+	  console.log("response : ", res.data);
     } catch (error) {
       console.log(error);
     }

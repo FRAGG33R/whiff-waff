@@ -16,3 +16,9 @@ export interface conversationType {
   receiver: receivertype;
   messages: messageType[];
 }
+
+export interface individualChatComponentType {
+  selectedConversation: conversationType;
+  handleSelectedConversation: Function;
+  conversations: conversationType[];
+}

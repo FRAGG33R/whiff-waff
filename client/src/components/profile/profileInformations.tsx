@@ -21,7 +21,6 @@ export default function ProfileInformations() {
   const [user, setUser] = useRecoilState(userAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [userState, setUserState] = useState<userType>(user as userType);
-
   const matchStatistics: matchStatistics[] = [
     {
       title: "Total Matches",
@@ -32,15 +31,48 @@ export default function ProfileInformations() {
     { title: "Total Loses", value: userState.stat.loses, avatar: totalLoses },
   ];
 
+  console.log("userState => ", user);
   const handleConnect = async () => {
     const token = localStorage.getItem("token");
     console.log("token => ", token);
     console.log("id => ", (user as userType).id);
     if (!token) router.push("/login");
     try {
-      const res = await api.patch(
+      const res = await api.post(
         "/users/sendFriendship",
         { id: (user as userType).id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("response : ", res.data);
+      setUserState({ ...userState, status: "PENDING" });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMessage = () => {
+    router.push(`/chat/${userState.userName}`);
+  };
+
+  const handleChallenge = () => {
+    router.push(`/game/${userState.userName}`);
+  };
+
+  const handleBlock = async () => {
+    const token = localStorage.getItem("token");
+    console.log("id => ", (user as userType).id);
+    if (!token) router.push("/login");
+    try {
+      const res = await api.patch(
+        "/users/friendshipResponse",
+        {
+          id: (user as userType).id,
+          status: "BLOCKED",
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,31 +85,28 @@ export default function ProfileInformations() {
     }
   };
 
-  const handleMessage = () => {
-    router.push(`/chat/${userState.userName}`)
-  };
-
-  const handleChallenge = () => {
-    router.push(`/game/${userState.userName}`);
-  };
-
-  const handleBlock = async () => {
-	const token = localStorage.getItem("token");
+  const handleUnblock = async () => {
+    const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     try {
-      const res = await api.patch(
-        "/users/friendshipResponse",
-        { id: (user as userType).id, status : 'BLOCKED' },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+		console.log("id => ", (user as userType).id, "status => ", "UNFRIEND");
+		const res = await api.patch(
+			"/users/friendshipResponse",
+			{
+			  id: (user as userType).id,
+			  status: "UNFRIEND",
+			},
+			{
+			  headers: {
+				Authorization: `Bearer ${token}`,
+			  },
+			}
+		  );
+		  console.log("response : ", res.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   return (
     <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] py-2">
       <div className="w-full h-[80%] flex flex-col md:flex-row items-center xl:space-x-8">
@@ -111,11 +140,13 @@ export default function ProfileInformations() {
                 <>
                   {userState.status === "PENDING" ? (
                     <PendingButton text="Pending" onClick={handleConnect} />
-                  ) : userState.status === 'ACCEPTED' ? (
+                  ) : userState.status === "ACCEPTED" ? (
                     <SecondaryButton text="Block" onClick={handleBlock} />
-				  ) :(
+                  ) : userState.status === "UNFRIEND" ? (
                     <SecondaryButton text="Connect" onClick={handleConnect} />
-				  )}
+                  ) : (
+                    <SecondaryButton text="Unblock" onClick={handleUnblock} />
+                  )}
                   <SecondaryButton text="Message" onClick={handleMessage} />
                   <PrimaryButton text="Challenge" onClick={handleChallenge} />
                 </>

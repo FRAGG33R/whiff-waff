@@ -18,8 +18,6 @@ import { localApi } from "@/components/axios/instance";
 const ProfileDropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loggedUser] = useRecoilState(loggedUserAtom);
-
-
   const router = useRouter();
 
   const LogOut = async () => {
@@ -72,17 +70,22 @@ const ProfileDropDown = () => {
         }}
         className="bg-HokiCl border-0 w-40 z-10 absolute top-[4rem] sm:top-[4.5rem] md:top-[6rem] right-[1.2rem] md:right-10"
       >
-        <motion.li variants={itemVariants}>
-          <MenuItem onClick={() => {router.push(`/profile/${(loggedUser as loggedUserType).userName}`)}} className="flex flex-row space-y-1 items-center gap-2 h-9">
+        <motion.li variants={itemVariants} >
+          <MenuItem
+            onClick={() => {
+              router.push(
+                `/profile/${(loggedUser as loggedUserType).userName}`
+              );
+              if (router.pathname === `/profile/[id]`) router.reload();
+            }}
+            className="flex flex-row space-y-1 items-center gap-2 h-9"
+          >
             <IconUserCircle
               size={22}
               color="#CBFC01"
               className="flex items-center"
             />
-            <Typography 
-              variant="h1"
-              className="font-teko text-xl text-Mercury"
-            >
+            <Typography variant="h1" className="font-teko text-xl text-Mercury">
               My Profile
             </Typography>
           </MenuItem>
@@ -99,10 +102,7 @@ const ProfileDropDown = () => {
               color="#CBFC01"
               className="flex items-center"
             />
-            <Typography
-              variant="h1"
-              className="font-teko text-xl text-Mercury"
-            >
+            <Typography variant="h1" className="font-teko text-xl text-Mercury">
               Edit Profile
             </Typography>
           </MenuItem>

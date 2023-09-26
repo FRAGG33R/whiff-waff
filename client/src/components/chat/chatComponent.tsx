@@ -18,19 +18,20 @@ import { loggedUserType, userType } from "@/types/userType";
 import { useRouter } from "next/router";
 import { api } from "../axios/instance";
 import toast, { Toaster } from "react-hot-toast";
+import { IconMessagesOff, IconMessageOff } from "@tabler/icons-react";
+import IndividualChatComponent from "./individualChatComponent";
 
 export default function ChatComponent() {
   const [chat] = useRecoilState(chatAtom);
   const [loggedUser] = useRecoilState(loggedUserAtom);
   const [socket, setSocket] = useState<any>();
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [token, setToken] = useState<string>('');
+  const [token, setToken] = useState<string>("");
   const [conversations, setConversations] = useState<conversationType[]>(
     chat as conversationType[]
   );
   const [selectedConversatoin, setSelectedConversation] =
-    useState<conversationType | null>(null
-    );
+    useState<conversationType | null>(null);
   const [messageContent, setMessageContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Chat");
   const dummyArray1 = [
@@ -95,16 +96,23 @@ export default function ChatComponent() {
 
   const findSelectedConversation = async (token: string) => {
     if (router.query.chatId === (loggedUser as loggedUserType).userName) {
-		setSelectedConversation((chat as conversationType[]).length > 0
-        ? (chat as conversationType[])[0]
-        : null)
-		return;
-	}
+      setSelectedConversation(
+        (chat as conversationType[]).length > 0
+          ? (chat as conversationType[])[0]
+          : null
+      );
+      return;
+    }
     const conversation = (chat as conversationType[]).find(
       (item: conversationType) => item.receiver.userName === router.query.chatId
     );
     if (conversation) {
-      setSelectedConversation(conversation);
+      setSelectedConversation((prev: conversationType | null) => {
+        return {
+          receiver: conversation.receiver,
+          messages: conversation.messages,
+        };
+      });
     } else {
       try {
         const res = await api.get(`/users/profile/${router.query.chatId}`, {
@@ -133,7 +141,6 @@ export default function ChatComponent() {
           ...prev,
           newConversation,
         ]);
-
       } catch (err: any) {
         router.push("/404");
       }
@@ -178,43 +185,49 @@ export default function ChatComponent() {
   };
 
   const handleSelectedConversation = async (conversation: conversationType) => {
-	console.log("conversation : ", conversation.receiver.userName);
-	try {
-		const res  = await api.get(`/chat/individualConversations/${conversation.receiver.id}`, {
-			headers : {
-				Authorization : `Bearer ${token.length > 0 ? token : localStorage.getItem('token')}`
-			}	
-		})
-		setSelectedConversation((prev: conversationType | null) => {
-			return {
-			  receiver: conversation.receiver,
-			  messages: res.data.messages,
-			};
-		  });
-		console.log("res : ", res.data);
-		router.push(`/chat/${conversation.receiver.userName}`);
-	} catch (error) {
-		
-	}
+    console.log("conversation : ", conversation.receiver.userName);
+    try {
+      const res = await api.get(
+        `/chat/individualConversations/${conversation.receiver.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              token.length > 0 ? token : localStorage.getItem("token")
+            }`,
+          },
+        }
+      );
+      setSelectedConversation((prev: conversationType | null) => {
+        return {
+          receiver: conversation.receiver,
+          messages: res.data.messages,
+        };
+      });
+      console.log("res : ", res.data);
+      router.push(`/chat/${conversation.receiver.userName}`);
+    } catch (error) {}
   };
 
   const handleReceivedMessage = (message: any) => {
     console.log("I received this message: ", message);
-    const newMessage: messageType = {
-      content: message.content,
-      type: "receiver",
-      date: message.currentDate,
-      isError: false,
-    };
     if (selectedConversatoin) {
       setSelectedConversation((prev: conversationType | null) => {
-        const newArray: messageType[] = [...prev!.messages, newMessage];
-        return {
-          receiver: prev?.receiver!,
-          messages: newArray,
-        };
+        if (prev) {
+          const newMessage: messageType = {
+            content: message.content,
+            type: "receiver",
+            date: message.currentDate,
+            isError: false,
+          };
+          const newMessages: messageType[] = [...prev.messages, newMessage];
+          return {
+            receiver: prev.receiver,
+            messages: newMessages,
+          };
+        } else return prev;
       });
-    }
+    } else
+	findSelectedConversation(token);
   };
 
   const handleConnection = () => {
@@ -233,7 +246,6 @@ export default function ChatComponent() {
         fontSize: "18px",
       },
     });
-
     //   setIsError(true);
     //update the laset message on the selected conversation to be an error message
     setSelectedConversation((prev: conversationType | null) => {
@@ -252,9 +264,9 @@ export default function ChatComponent() {
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     else {
-		setToken(token);
-		findSelectedConversation(token)
-	}
+      setToken(token);
+      findSelectedConversation(token);
+    }
 
     const socket = io("http://34.173.232.127:6080/", {
       extraHeaders: {
@@ -297,35 +309,11 @@ export default function ChatComponent() {
               />
             </div>
             {activeTab === "Chat" ? (
-              <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-                {(chat as conversationType[]).length > 0 ? (
-                  <>
-                    {conversations.map(
-                      (item: conversationType, index: number) => (
-                        <SingleConversationHistory
-                          key={index}
-                          userName={item.receiver.userName}
-                          lastMessage={
-                            item.messages[item.messages.length - 1]?.content
-                          }
-                          avatar={item.receiver.avatar}
-                          selected={
-                            selectedConversatoin?.receiver.userName ===
-                            item.receiver.userName
-                          }
-                          messagePrefix={
-                            item.messages[item.messages.length - 1]?.type ===
-                            "sender"
-                          }
-                          onClick={() => handleSelectedConversation(item)}
-                        />
-                      )
-                    )}
-                  </>
-                ) : (
-                  <> No conversation found</>
-                )}
-              </div>
+              <IndividualChatComponent
+                conversations={conversations}
+                handleSelectedConversation={handleSelectedConversation}
+                selectedConversation={selectedConversatoin!}
+              />
             ) : (
               <>
                 <div className="w-full h-full px-2 lg:px-4 space-y-2 xl:space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
@@ -363,8 +351,12 @@ export default function ChatComponent() {
                 {selectedConversatoin ? (
                   <Conversation conversation={selectedConversatoin} />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    No messages
+                  <div className="w-full h-full flex flex-col items-center justify-center space-y-2 py-12 font-poppins font-medium text-sm 2xl:text-xl">
+                    <IconMessageOff
+                      stroke={2}
+                      className="h-4 w-4 md:h-8 md:w-8"
+                    />
+                    <div className="text-center">No messages</div>
                   </div>
                 )}
                 {selectedConversatoin && (

@@ -210,7 +210,6 @@ export default function ChatComponent() {
 
   const handleReceivedMessage = (message: any) => {
     console.log("I received this message: ", message);
-    if (selectedConversatoin) {
       setSelectedConversation((prev: conversationType | null) => {
         if (prev) {
           const newMessage: messageType = {
@@ -226,8 +225,6 @@ export default function ChatComponent() {
           };
         } else return prev;
       });
-    } else
-	findSelectedConversation(token);
   };
 
   const handleConnection = () => {

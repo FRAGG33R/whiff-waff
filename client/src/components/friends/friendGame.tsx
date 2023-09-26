@@ -13,12 +13,10 @@ import Legend from "../../../public/Legend_svg.svg";
 import ROOKIE from "../../../public/ROOKIE_SVG.svg";
 import Challenger from "../../../public/CHALLENGER.svg";
 import {
-  FriendsProps,
-  User,
-  UserData,
-  UserFriend,
+  User
 } from "../../types/userFriendType";
 import axios from "axios";
+import { api } from "../axios/instance";
 interface RankItem {
   rank: string;
   image: string;
@@ -58,8 +56,8 @@ export default function FriendGame({
       setAcceptedFriends(
         AcceptedFriends.filter((friend: User) => friend.id !== friends.id)
       );
-      const res = await axios.patch(
-        "http://34.173.232.127/api/v1/users/friendshipResponse",
+      const res = await api.patch(
+        "/users/friendshipResponse",
         {
           id: friends.id,
           status: "BLOCKED",

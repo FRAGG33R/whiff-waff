@@ -10,14 +10,16 @@ import { useState } from "react";
 import { itemVariants } from "@/types/framerVariants";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { userType } from "@/types/userType";
+import { loggedUserType, userType } from "@/types/userType";
 import { useRecoilState } from "recoil";
-import { userAtom } from "@/context/RecoilAtoms";
+import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
 import { localApi } from "@/components/axios/instance";
 
 const ProfileDropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useRecoilState(userAtom);
+  const [loggedUser] = useRecoilState(loggedUserAtom);
+
+
   const router = useRouter();
 
   const LogOut = async () => {
@@ -71,7 +73,7 @@ const ProfileDropDown = () => {
         className="bg-HokiCl border-0 w-40 z-10 absolute top-[4rem] sm:top-[4.5rem] md:top-[6rem] right-[1.2rem] md:right-10"
       >
         <motion.li variants={itemVariants}>
-          <MenuItem onClick={() => {router.push(`/profile/${(user as userType).userName}`)}} className="flex flex-row space-y-1 items-center gap-2 h-9 hover:bg-DeepRose hover:text-HokiCl">
+          <MenuItem onClick={() => {router.push(`/profile/${(loggedUser as loggedUserType).userName}`)}} className="flex flex-row space-y-1 items-center gap-2 h-9">
             <IconUserCircle
               size={22}
               color="#CBFC01"

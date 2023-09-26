@@ -115,7 +115,6 @@ export default function ProfileInformations() {
                     <SecondaryButton text="Block" onClick={handleBlock} />
 				  ) :(
                     <SecondaryButton text="Connect" onClick={handleConnect} />
-
 				  )}
                   <SecondaryButton text="Message" onClick={handleMessage} />
                   <PrimaryButton text="Challenge" onClick={handleChallenge} />

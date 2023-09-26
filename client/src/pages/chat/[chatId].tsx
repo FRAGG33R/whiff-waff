@@ -6,7 +6,7 @@ import { chatAtom, loggedUserAtom } from "@/context/RecoilAtoms";
 import { useEffect, useState } from "react";
 import "@/app/globals.css";
 
-export default function Chat(props: { data: any }) {
+export default function Chat(props: { data : any }) {
   const [chat, setChat] = useRecoilState(chatAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -25,7 +25,7 @@ export default function Chat(props: { data: any }) {
 }
 
 export const getServerSideProps = withIronSessionSsr(
-  async function getServerSideProps({ req }: any) {
+  async function getServerSideProps({ req, params }: any) {
     try {
       const token = await req.session.token.token;
       const res = await api.get(`chat/IndividualConversations`, {
@@ -33,6 +33,16 @@ export const getServerSideProps = withIronSessionSsr(
           Authorization: `Bearer ${token}`,
         },
       });
+	//   const userName = params.chatId;
+	//   const conversation = res.data.allConversation.find((conversation: any) => conversation.receiver.userName === userName);
+	//   if (!conversation && userName !== res.data.loggedUser.userName) {
+	// 	  return {
+	// 		  redirect: {
+	// 			  destination: "/404",
+	// 			  permanent: false,
+	// 		  },
+	// 	  };
+	//   }
       return {
         props: { data: res.data },
       };

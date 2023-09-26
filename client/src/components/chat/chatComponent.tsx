@@ -9,34 +9,30 @@ import ChannelToggleSwitch from "../ui/buttons/channelToggleSwitch";
 import ExploreChannels from "./exploreChannels";
 import SingleConversationHistory from "./singleConversationHistory";
 import ChannelsConversation from "./channelsConversation";
-import { motion } from "framer-motion";
 import { io } from "socket.io-client";
 import { useRecoilState } from "recoil";
-import { chatAtom, loggedUserAtom } from "@/context/RecoilAtoms";
+import { chatAtom, loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
 import { conversationType, messageType } from "@/types/chatType";
 import Conversation from "./conversation";
-import { loggedUserType } from "@/types/userType";
-import ChannelSettings from "./channelSetting";
+import { loggedUserType, userType } from "@/types/userType";
+import { useRouter } from "next/router";
+import { api } from "../axios/instance";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ChatComponent() {
-  const [chat, setChat] = useRecoilState(chatAtom);
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [chat] = useRecoilState(chatAtom);
+  const [loggedUser] = useRecoilState(loggedUserAtom);
   const [socket, setSocket] = useState<any>();
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [token, setToken] = useState<string>('');
   const [conversations, setConversations] = useState<conversationType[]>(
     chat as conversationType[]
   );
   const [selectedConversatoin, setSelectedConversation] =
-    useState<conversationType | null>(
-      (chat as conversationType[]).length > 0
-        ? (chat as conversationType[])[0]
-        : null
+    useState<conversationType | null>(null
     );
   const [messageContent, setMessageContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Chat");
-  const handleToggle = (value: string) => {
-    setActiveTab(value);
-  };
-
   const dummyArray1 = [
     {
       channelName: "3assker6",
@@ -86,11 +82,63 @@ export default function ChatComponent() {
       userName: "JohnWick",
       avatars: [
         "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-        
       ],
       lastMessage: "Hello there!",
     },
   ];
+
+  const router = useRouter();
+
+  const handleToggle = (value: string) => {
+    setActiveTab(value);
+  };
+
+  const findSelectedConversation = async (token: string) => {
+    if (router.query.chatId === (loggedUser as loggedUserType).userName) {
+		setSelectedConversation((chat as conversationType[]).length > 0
+        ? (chat as conversationType[])[0]
+        : null)
+		return;
+	}
+    const conversation = (chat as conversationType[]).find(
+      (item: conversationType) => item.receiver.userName === router.query.chatId
+    );
+    if (conversation) {
+      setSelectedConversation(conversation);
+    } else {
+      try {
+        const res = await api.get(`/users/profile/${router.query.chatId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        // throw an exception when the user not a friend of the logged user and router.back() to the previous page
+        const userData = res.data.response.user;
+        const newConversation: conversationType = {
+          receiver: {
+            id: userData.id,
+            userName: userData.userName,
+            email: userData.email,
+            avatar: userData.avatar,
+          },
+          messages: [],
+        };
+        setSelectedConversation((prev: conversationType | null) => {
+          return {
+            receiver: newConversation.receiver,
+            messages: [],
+          };
+        });
+        setConversations((prev: conversationType[]) => [
+          ...prev,
+          newConversation,
+        ]);
+
+      } catch (err: any) {
+        router.push("/404");
+      }
+    }
+  };
 
   const handleNewMessage = (
     e: FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>
@@ -106,7 +154,6 @@ export default function ChatComponent() {
       content: messageContent,
       currentDate: date,
     };
-
     if (selectedConversatoin) {
       const newSelectedConversation: conversationType = {
         receiver: selectedConversatoin.receiver,
@@ -116,6 +163,7 @@ export default function ChatComponent() {
             content: newMessage.content,
             type: "sender",
             date: String(newMessage.currentDate),
+            isError: false,
           },
         ],
       };
@@ -129,8 +177,25 @@ export default function ChatComponent() {
     setMessageContent(value);
   };
 
-  const handleSelectedConversation = (conversation: conversationType) => {
-    setSelectedConversation(conversation);
+  const handleSelectedConversation = async (conversation: conversationType) => {
+	console.log("conversation : ", conversation.receiver.userName);
+	try {
+		const res  = await api.get(`/chat/individualConversations/${conversation.receiver.id}`, {
+			headers : {
+				Authorization : `Bearer ${token.length > 0 ? token : localStorage.getItem('token')}`
+			}	
+		})
+		setSelectedConversation((prev: conversationType | null) => {
+			return {
+			  receiver: conversation.receiver,
+			  messages: res.data.messages,
+			};
+		  });
+		console.log("res : ", res.data);
+		router.push(`/chat/${conversation.receiver.userName}`);
+	} catch (error) {
+		
+	}
   };
 
   const handleReceivedMessage = (message: any) => {
@@ -139,6 +204,7 @@ export default function ChatComponent() {
       content: message.content,
       type: "receiver",
       date: message.currentDate,
+      isError: false,
     };
     if (selectedConversatoin) {
       setSelectedConversation((prev: conversationType | null) => {
@@ -156,16 +222,46 @@ export default function ChatComponent() {
   };
 
   const handleException = (error: any) => {
-    console.log("socket error : ", error);
-  };
+    console.log("socket error : ", error.message);
+    toast.error(error.message, {
+      style: {
+        borderRadius: "12px",
+        padding: "12px",
+        background: "#6C7FA7",
+        color: "#fff",
+        fontFamily: "Poppins",
+        fontSize: "18px",
+      },
+    });
 
+    //   setIsError(true);
+    //update the laset message on the selected conversation to be an error message
+    setSelectedConversation((prev: conversationType | null) => {
+      if (prev) {
+        const newMessages: messageType[] = [...prev.messages];
+        newMessages[newMessages.length - 1].isError = true;
+        return {
+          receiver: prev.receiver,
+          messages: newMessages,
+        };
+      }
+      return prev;
+    });
+  };
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) router.push("/login");
+    else {
+		setToken(token);
+		findSelectedConversation(token)
+	}
+
     const socket = io("http://34.173.232.127:6080/", {
       extraHeaders: {
         authorization: `Bearer ${token}`,
       },
     });
+
     socket.on("connect", handleConnection);
     socket.on("exception", handleException);
     socket.on("message", handleReceivedMessage);
@@ -179,6 +275,7 @@ export default function ChatComponent() {
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
+      <Toaster position="top-right" />
       <div className="h-full min-w-[60px] w-[60px] md:w-[100px] pt-2">
         <SideBar />
       </div>
@@ -209,7 +306,7 @@ export default function ChatComponent() {
                           key={index}
                           userName={item.receiver.userName}
                           lastMessage={
-                            item.messages[item.messages.length - 1].content
+                            item.messages[item.messages.length - 1]?.content
                           }
                           avatar={item.receiver.avatar}
                           selected={
@@ -217,12 +314,12 @@ export default function ChatComponent() {
                             item.receiver.userName
                           }
                           messagePrefix={
-                            item.messages[item.messages.length - 1].type ===
+                            item.messages[item.messages.length - 1]?.type ===
                             "sender"
                           }
                           onClick={() => handleSelectedConversation(item)}
                         />
-                       )
+                      )
                     )}
                   </>
                 ) : (
@@ -232,17 +329,13 @@ export default function ChatComponent() {
             ) : (
               <>
                 <div className="w-full h-full px-2 lg:px-4 space-y-2 xl:space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-				<div
-                  className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
-                >
-                  <CreateChannel />
-                </div>
-                <div
-                  className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]"
-                >
-                  <ExploreChannels />
-                </div>
-				  {dummyArray1.map((item, index) => (
+                  <div className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]">
+                    <CreateChannel />
+                  </div>
+                  <div className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]">
+                    <ExploreChannels />
+                  </div>
+                  {dummyArray1.map((item, index) => (
                     <ChannelsConversation
                       key={index}
                       lastUser={item.userName}
@@ -270,29 +363,34 @@ export default function ChatComponent() {
                 {selectedConversatoin ? (
                   <Conversation conversation={selectedConversatoin} />
                 ) : (
-					<div className="w-full h-full flex items-center justify-center">
-						No messages
-					</div>
-				)}
-                {selectedConversatoin && <div className="h-16 md:h-24 w-full flex items-end justify-center">
-                  <form className="w-full min-h-1" onSubmit={handleNewMessage}>
-                    <div className="w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] bg-[#606060]/[12%] focus:bg-[#606060]/[12%] font-poppins flex flex-row items-center justify-center px-2">
-                      <input
-                        type="text"
-                        placeholder="Write a message..."
-                        onChange={(e) => handleChange(e.target.value)}
-                        value={messageContent}
-                        className="input input-ghost w-full h-full rounded-[12px] md:rounded-[20px] bg-transparent focus:ring-0 focus:outline-none placeholder:text-HokiCl focus:text-HokiCl caret-GreenishYellow tracking-wide text-HokiCl  text-md md:text-[1.3rem] "
-                      />
-                      <button
-                        onClick={handleNewMessage}
-                        className="w-10 h-8 md:h-12 md:w-12 rounded-[12px] md:rounded-[17px] bg-GreenishYellow text-black flex items-center justify-center"
-                      >
-                        <IconSend className="md:w-6 md:h-6 w-4 h-4" />
-                      </button>
-                    </div>
-                  </form>
-                </div>}
+                  <div className="w-full h-full flex items-center justify-center">
+                    No messages
+                  </div>
+                )}
+                {selectedConversatoin && (
+                  <div className="h-16 md:h-24 w-full flex items-end justify-center">
+                    <form
+                      className="w-full min-h-1"
+                      onSubmit={handleNewMessage}
+                    >
+                      <div className="w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] bg-[#606060]/[12%] focus:bg-[#606060]/[12%] font-poppins flex flex-row items-center justify-center px-2">
+                        <input
+                          type="text"
+                          placeholder="Write a message..."
+                          onChange={(e) => handleChange(e.target.value)}
+                          value={messageContent}
+                          className="input input-ghost w-full h-full rounded-[12px] md:rounded-[20px] bg-transparent focus:ring-0 focus:outline-none placeholder:text-HokiCl focus:text-HokiCl caret-GreenishYellow tracking-wide text-HokiCl  text-md md:text-[1.3rem] "
+                        />
+                        <button
+                          onClick={handleNewMessage}
+                          className="w-10 h-8 md:h-12 md:w-12 rounded-[12px] md:rounded-[17px] bg-GreenishYellow text-black flex items-center justify-center"
+                        >
+                          <IconSend className="md:w-6 md:h-6 w-4 h-4" />
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
             </div>
           </div>

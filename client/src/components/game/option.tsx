@@ -96,17 +96,17 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
   };
 
   return (
-    <div className="w-full 2xl:h-full flex  flex-col gap-4 md:gap-6  ">
-      <div className=" w-full 2xl:h-[120px] flex  flex-col items-center justify-center">
-        <div className=" w-full 2xl:h-[100px] flex items-center justify-center font-teko 2xl:text-[3.5rem] text-[2.5rem] md:text-[3.3rem] lg:text-[3rem] text-[#FFFFFF] ">
+    <div className="w-full 2xl:h-[960px] flex  flex-col gap-4 md:gap-6  ">
+      <div className=" w-full 2xl:h-[100px] flex  flex-col items-center justify-center ">
+        <div className=" w-full 2xl:h-[80px] flex items-center justify-center font-teko 2xl:text-[3.5rem] text-[2.5rem] md:text-[3.3rem] lg:text-[3rem] text-[#FFFFFF] ">
           Option
         </div>
         <div className=" w-[80%] 2xl:h-[5px] xl:h-[8px] lg:h-[8px] md:h-[6px] h-[5px] flex items-center bg-GreenishYellow justify-center font-teko " />
       </div>
-      <div className=" w-full 2xl:h-[950px] xl:h-[800px] lg:h-[800px] md:h-[800px] h-[800px] flex  justify-center ">
+      <div className=" w-full 2xl:h-[900px] xl:h-[800px] lg:h-[800px] md:h-[800px] h-[800px] flex  justify-center ">
         <div className="w-full 2xl:h-full flex  flex-col items-center justify-center gap-6 ">
           <div className="w-[80%] md:w-[60%] xl:w-[60%] lg:w-[60%] 2xl:w-[80%] 2xl:h-full xl:h-[60%] lg:h-[60%] md:h-[60%] h-[60%] flex flex-col items-center justify-center gap-6">
-            <div className="w-full 2xl:h-[100px] flex items-center justify-start  font-teko text-[#FFFFFF] text-[2rem] md:text-[3rem] lg:text-[3rem] 2xl:text-[3rem] ">
+            <div className="w-full 2xl:h-[80px] flex items-center justify-start  font-teko text-[#FFFFFF] text-[2rem] md:text-[3rem] lg:text-[3rem] 2xl:text-[3rem] ">
               Maps
             </div>
             <button
@@ -191,7 +191,7 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
             </button>
           </div>
           <div className="w-[80%] 2xl:w-[80%]  xl:w-[60%] lg:w-[60%] md:w-[60%] 2xl:h-full xl:h-[40%] lg:h-[40%] md:h-[40%] h-[40%] flex flex-col items-center justify-start gap-6 ">
-            <div className="w-full 2xl:h-[90px] flex items-center justify-start  font-teko text-[#FFFFFF] text-[2rem] md:text-[3rem] lg:text-[3rem] 2xl:text-[3rem] ">
+            <div className="w-full 2xl:h-[80px] flex items-center justify-start  font-teko text-[#FFFFFF] text-[2rem] md:text-[3rem] lg:text-[3rem] 2xl:text-[3rem] ">
               Mode
             </div>
             <div className="w-full xl:h-[100px] lg:h-[100px] md:h-[100px] 2xl:h-[110px] h-[100px] flex flex-row items-center justify-start space-x-4 sm:space-x-8 md:space-x-10 lg:space-x-12 xl:space-x-16 2xl:space-x-16 ">

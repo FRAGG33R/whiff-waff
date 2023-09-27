@@ -84,9 +84,9 @@ const CreateChannel = () => {
                 <input
                   type="checkbox"
                   defaultChecked
-                  className="checkbox checkbox-success border-4 border-GreenishYellow"
+                  className="checkbox   border-4 border-GreenishYellow"
                 />
-                <span className="font-teko text-[1.2rem]">Private Channel</span>
+                <span className="font-teko text-[1.2rem] text-[#CDCBCB]">Private Channel</span>
               </label>
             </div>
           </div>

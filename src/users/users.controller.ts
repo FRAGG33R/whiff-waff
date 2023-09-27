@@ -137,7 +137,6 @@ export class UsersController {
 	async updateFriendshipStatus(@Body() data: UpdateFriendshipDto, @Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<any> {
 		const user = await this.userService.updateFriendshipStatus((req as any).user.id, data.id, data.status)
 		res.send(user);
-		await this.userService.deleteFriendshipTuple((req as any).user.id, data.id);
 	}
 
 	@ApiBearerAuth()

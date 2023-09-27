@@ -4,7 +4,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket } from 'socket.io';
 import { CustomWebSocketValidationPipe } from 'src/shared/pipes/pipes.customValidation';
 import { GuardsService } from './guards/guards.service';
-import { dtoWebSocketTset } from 'src/dto/chat.dto';
+import { dtoIndividualChat, dtoRoomChat } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 
 const chatGateway = 'ChatGateway';
@@ -35,7 +35,7 @@ export class ChatGateway implements OnGatewayConnection {
 
 	@UseGuards(GuardsService)
 	@SubscribeMessage('message')
-	async handleMessage(@MessageBody(new CustomWebSocketValidationPipe()) dto: dtoWebSocketTset, @ConnectedSocket() client: Socket): Promise<void> {
+	async handleMessage(@MessageBody(new CustomWebSocketValidationPipe()) dto: dtoIndividualChat, @ConnectedSocket() client: Socket): Promise<void> {
 		const receiverIsFriend = await this.chatService.checkFriendship((client as any).user.id, dto.receiverId);
 		if (!receiverIsFriend)
 			throw new WsException('user not a friend');
@@ -57,5 +57,9 @@ export class ChatGateway implements OnGatewayConnection {
 		} catch (error) {
 			console.log(error);
 		}
+	}
+
+	async handelRoomMessage(@MessageBody(new CustomWebSocketValidationPipe()) dto: dtoRoomChat, @ConnectedSocket() client: Socket) {
+		// const isMember = await this.chatService.getRoomInfosById(dto.roomId, (client as any).user.id);
 	}
 }

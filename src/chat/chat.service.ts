@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundE
 import { FriendshipStatus, ChatRoomType, UserStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
-import { ConversationDto, Invitation, RoomInfos, RoomUpdateInfos, RoomUserInfos, dtoWebSocketTset } from 'src/dto/chat.dto';
+import { ConversationDto, Invitation, RoomInfos, RoomUpdateInfos, RoomUserInfos, dtoIndividualChat } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import * as ErrorCode from '../shared/constants/constants.code-error';
@@ -18,7 +18,7 @@ const refactoringOne = 'individualConversation'
 export class ChatService {
 	constructor(private readonly prismaService: PrismaService) { }
 
-	async saveMessage(loggedUserId: string, receiverInfo: dtoWebSocketTset) {
+	async saveMessage(loggedUserId: string, receiverInfo: dtoIndividualChat) {
 		try {
 			const sortedUsers: string[] = Array(loggedUserId, receiverInfo.receiverId).sort();
 			await this.prismaService.chat.create({

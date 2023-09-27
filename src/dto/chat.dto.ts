@@ -71,9 +71,20 @@ export class Invitation {
 	channelId: string;
 }
 
-export class dtoWebSocketTset {
+export class dtoIndividualChat {
 	@IsNotEmpty()
 	receiverId: string;
+
+	@IsNotEmpty()
+	content: string;
+
+	@IsNumber()
+	currentDate: number;
+}
+
+export class dtoRoomChat {
+	@IsNotEmpty()
+	roomId: string;
 
 	@IsNotEmpty()
 	content: string;

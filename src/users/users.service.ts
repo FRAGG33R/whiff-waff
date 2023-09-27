@@ -184,7 +184,7 @@ export class UsersService {
 				}
 			});
 
-			if (isBlockedMe[0] && ((isBlockedMe[0].status == FriendshipStatus.BLOCKED) && isBlockedMe[0].senderId !== loggedUserId))
+			if (isBlockedMe[0] && ((isBlockedMe[0].status == FriendshipStatus.BLOCKED) && isBlockedMe[0].blockedId !== loggedUserId))
 				throw { type: 'forbidden' };
 			(user as any).status = (isBlockedMe.length > 0 && isBlockedMe[0].status) || FriendshipStatus.UNFRIEND;
 			return user;
@@ -474,9 +474,30 @@ export class UsersService {
 		}
 	}
 
+	async findFriendshipTuple(loggedUserId: string, RequestSenderId: string): Promise<any> {
+		let data = await this.prismaService.friendship.findUnique({
+			where: {
+				senderId_receivedId: {
+					receivedId: loggedUserId,
+					senderId: RequestSenderId
+				}
+			},
+		});
+		if (!data)
+			data = await this.prismaService.friendship.findUnique({
+				where: {
+					senderId_receivedId: {
+						receivedId: RequestSenderId,
+						senderId: loggedUserId
+					}
+				},
+			});
+		return data;
+	}
+
 	async updateFriendshipStatus(loggedUserId: string, RequestSenderId: string, status: FriendshipStatus): Promise<any> {
 		try {
-			var data: any;
+			let data: any;
 			if (status == FriendshipStatus.REFUSED) {
 				data = await this.prismaService.friendship.delete({
 					where: {
@@ -488,36 +509,17 @@ export class UsersService {
 				})
 			}
 			else if (status == FriendshipStatus.UNFRIEND) {
-				data = await this.prismaService.friendship.findUnique({
+				data = await this.findFriendshipTuple(loggedUserId, RequestSenderId);
+				data = await this.prismaService.friendship.delete({
 					where: {
 						senderId_receivedId: {
-							receivedId: loggedUserId,
-							senderId: RequestSenderId
+							receivedId: data.receivedId,
+							senderId: data.senderId
 						}
 					},
 				})
-				if (!data)
-					data = await this.prismaService.friendship.delete({
-						where: {
-							senderId_receivedId: {
-								receivedId: RequestSenderId,
-								senderId: loggedUserId
-							}
-						},
-					})
-				if (data)
-				{
-					data = await this.prismaService.friendship.delete({
-						where: {
-							senderId_receivedId: {
-								receivedId: data.receivedId,
-								senderId: data.senderId
-							}
-						},
-					})
-				}
 			}
-			else {
+			else if (status == FriendshipStatus.ACCEPTED) {
 				data = await this.prismaService.friendship.update({
 					data: {
 						status: status
@@ -528,9 +530,24 @@ export class UsersService {
 							senderId: RequestSenderId
 						}
 					},
+				})
+				data = await this.getAcceptedFriendById(loggedUserId, RequestSenderId);
+			}
+			else {
+				data = await this.findFriendshipTuple(loggedUserId, RequestSenderId);
+				const blockedId = status == FriendshipStatus.BLOCKED ? loggedUserId : undefined;
+				data = await this.prismaService.friendship.update({
+					data: {
+						status: status,
+						blockedId: blockedId
+					},
+					where: {
+						senderId_receivedId: {
+							receivedId: data.receivedId,
+							senderId: data.senderId
+						}
+					},
 				});
-				if (status == FriendshipStatus.ACCEPTED)
-					data = await this.getAcceptedFriendById(loggedUserId, RequestSenderId);
 			}
 			return data;
 		} catch (error) {

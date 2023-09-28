@@ -467,10 +467,12 @@ export class ChatService {
 
 	async getRoomConversations(loggedUserId: string) {
 		try {
+			console.log('start to paint the tape : ', loggedUserId);
+
 			let roomsConversations = await this.getRoomsInfos(loggedUserId);
-			roomsConversations = await this.structreRoomdata(roomsConversations);
-			roomsConversations[0] = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomSender.roomChatId, { nbElements: 10, nbPage: 0 } as any);
-			roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
+			// roomsConversations = await this.structreRoomdata(roomsConversations);
+			// roomsConversations[0] = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomSender.roomChatId, { nbElements: 10, nbPage: 0 } as any);
+			// roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
 			return roomsConversations;
 		} catch (error) {
 			throw new InternalServerErrorException(error);
@@ -511,32 +513,43 @@ export class ChatService {
 	}
 
 	async getRoomsInfos(loggedUserId: string) {
-		return await this.prismaService.message.findMany({
-			distinct: ['roomChatId'],
-			where: {
-				senderId: loggedUserId,
-			},
-			orderBy: {
-				date: 'desc'
-			},
+		return await this.prismaService.join.findMany({
 			select: {
-				roomSender: {
+				roomChat: {
 					select: {
-						user: {
-							select: {
-								id: true,
-								avatar: true,
-								email: true,
-								userName: true,
-							}
-						},
-						roomChatId: true,
+						id: true,
+						name: true,
 					}
 				},
-				message: true,
-				date: true,
-			}
-		});
+				user: {
+					select: {
+						avatar: true,
+					}
+				},
+				messages: {
+					select: {
+						roomSender: {
+							select :{
+								user : {
+									select :{
+										id : true,
+										userName: true
+									}
+								}
+							}	
+						},
+						message: true,
+						date: true,
+					},
+					orderBy :{
+						date : 'desc'
+					}
+				}
+			},
+			where: {
+				userId: loggedUserId
+			},
+		})
 	}
 
 	async structreRoomdata(roomsConversations: any) {

@@ -118,7 +118,8 @@ export class ChatController {
 	async getRoomConversations(@Req() req: Request) {
 		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const loggedUserId = (req as any).user.id;
-		const roomsConversations  = await this.chatService.getRoomConversations(loggedUserId);
+		const roomsConversations = await this.chatService.getRoomConversations(loggedUserId);
+		console.log('done to paint the tape');
 		const blockedUsers = await this.chatService.getBlckedUsers(loggedUserId);
 		const Conversationdata = {roomsConversations, blockedUsers}
 		return {loggedUser, Conversationdata};

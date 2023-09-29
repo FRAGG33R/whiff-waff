@@ -370,7 +370,6 @@ export class ChatService {
 
 	async getRoomIndividualConversationById(loggedUserId: string, roomId: string, data: ConversationDto) {
 		try {
-			const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
 			const existsRoom = await this.getJoinedRoomByIds(loggedUserId, roomId);
 			if (!existsRoom)
 				throw { type: 'notFound' }
@@ -394,8 +393,6 @@ export class ChatService {
 				where: {
 					roomChatId: roomId
 				},
-				take: (data as any).nbElements,
-				skip: skip,
 				orderBy: {
 					date: 'asc'
 				}
@@ -404,6 +401,7 @@ export class ChatService {
 				element.date = element.date.toString() as any;
 			})
 			return this.fromatIndividualRoom(loggedUserId, roomConversation);
+			return roomConversation;
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
@@ -465,19 +463,101 @@ export class ChatService {
 	}
 
 
+
+
+
+
+	//=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=
 	async getRoomConversations(loggedUserId: string) {
 		try {
-			console.log('start to paint the tape : ', loggedUserId);
-
 			let roomsConversations = await this.getRoomsInfos(loggedUserId);
-			// roomsConversations = await this.structreRoomdata(roomsConversations);
-			// roomsConversations[0] = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomSender.roomChatId, { nbElements: 10, nbPage: 0 } as any);
+			let newMessage: any[] = [];
+			roomsConversations.forEach((element) => {
+				if (element.messages.length > 0) {
+					newMessage.push(element.messages[0]);
+					(element as any).message = newMessage;
+					(element as any).message[0].date = (element as any).message[0].date.toString();
+					(element as any).message[0].type = ((element as any).message[0].roomSender.user.id === loggedUserId) ? senderType : receiverType;
+				}
+				else
+				(element as any).message = [];
+				delete element.messages;
+			});
+			roomsConversations = await this.structreRoomdata(roomsConversations);
+			(roomsConversations[0] as any).message = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomChat.id, { nbElements: 10, nbPage: 0 } as any);
 			// roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
 			return roomsConversations;
 		} catch (error) {
 			throw new InternalServerErrorException(error);
 		}
+	} z
+
+	async getRoomsInfos(loggedUserId: string) {
+		return await this.prismaService.join.findMany({
+			select: {
+				roomChat: {
+					select: {
+						id: true,
+						name: true,
+					}
+				},
+				messages: {
+					select: {
+						roomSender: {
+							select: {
+								user: {
+									select: {
+										id: true,
+										userName: true
+									}
+								}
+							}
+						},
+						message: true,
+						date: true,
+					},
+					orderBy: {
+						date: 'desc'
+					}
+				}
+			},
+			where: {
+				userId: loggedUserId
+			},
+		})
 	}
+
+	async structreRoomdata(roomsConversations: any) {
+		for (let i = 0; i < roomsConversations.length; i++) {
+			const avatars = await this.prismaService.join.findMany({
+				select: {
+					user: {
+						select: {
+							avatar: true,
+						}
+					}
+				},
+				where: {
+					roomChatId: roomsConversations[i].roomChat.id,
+				},
+			});
+			let avatarsarray = [];
+			avatars.forEach(element => {
+				avatarsarray.push(element.user.avatar);
+			});
+			(roomsConversations[i] as any).avatars = avatarsarray;
+		}
+		return roomsConversations;
+	}
+	//=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=
+
+
+
+
+
+
+
+
 
 	async getRoomInfosById(roomId: string) {
 		try {
@@ -512,65 +592,9 @@ export class ChatService {
 		}
 	}
 
-	async getRoomsInfos(loggedUserId: string) {
-		return await this.prismaService.join.findMany({
-			select: {
-				roomChat: {
-					select: {
-						id: true,
-						name: true,
-					}
-				},
-				user: {
-					select: {
-						avatar: true,
-					}
-				},
-				messages: {
-					select: {
-						roomSender: {
-							select :{
-								user : {
-									select :{
-										id : true,
-										userName: true
-									}
-								}
-							}	
-						},
-						message: true,
-						date: true,
-					},
-					orderBy :{
-						date : 'desc'
-					}
-				}
-			},
-			where: {
-				userId: loggedUserId
-			},
-		})
-	}
 
-	async structreRoomdata(roomsConversations: any) {
-		for (let i = 0; i < roomsConversations.length; i++) {
-			roomsConversations[i].date = roomsConversations[i].date.toString() as any;
-			const avatars = await this.prismaService.join.findMany({
-				select: {
-					user: {
-						select: {
-							avatar: true,
-						}
-					}
-				},
-				where: {
-					roomChatId: roomsConversations[i].roomSender.roomChatId,
-				},
-			});
-			(roomsConversations[i] as any).avatars = avatars;
-		}
-		return roomsConversations;
-	}
+
+
 
 	formmatRoomConversations(loggedUserId: string, roomsConversations: any) {
 		roomsConversations.forEach((element: any, index: number) => {

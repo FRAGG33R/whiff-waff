@@ -70,57 +70,57 @@ const ProfileDropDown = () => {
         }}
         className="bg-HokiCl border-0 w-40 z-10 absolute top-[4rem] sm:top-[4.5rem] md:top-[6rem] right-[1.2rem] md:right-10"
       >
-        <motion.li variants={itemVariants} >
-          <MenuItem
+        <motion.li variants={itemVariants} className="rounded-lg  flex justify-center items-center">
+          <button
             onClick={() => {
               router.push(
                 `/profile/${(loggedUser as loggedUserType).userName}`
               );
               if (router.pathname === `/profile/[id]`) router.reload();
             }}
-            className="flex flex-row space-y-1 items-center gap-2 h-9"
+            className="flex flex-row space-y-1 items-center gap-2   w-full h-9 hover:bg-DeepRose rounded-lg hover:text-DeepRose"
           >
             <IconUserCircle
               size={22}
               color="#CBFC01"
-              className="flex items-center"
+              className=" flex items-center justify-center ml-3"
             />
-            <Typography variant="h1" className="font-teko text-xl text-Mercury">
+            <Typography variant="h1" className="font-teko text-xl text-Mercury  ">
               My Profile
             </Typography>
-          </MenuItem>
+          </button>
         </motion.li>
-        <motion.li variants={itemVariants}>
-          <MenuItem
+        <motion.li variants={itemVariants} className="rounded-lg  flex justify-center items-center">
+          <button
             onClick={() => {
               router.push("/settings");
             }}
-            className="flex flex-row space-y-1 items-center gap-2 h-9 hover:bg-DeepRose hover:text-HokiCl"
+            className="flex flex-row space-y-1 items-center gap-2   w-full h-9 hover:bg-DeepRose rounded-lg hover:text-DeepRose"
           >
             <IconSettings
               size={22}
               color="#CBFC01"
-              className="flex items-center"
+              className=" flex items-center justify-center ml-3"
             />
-            <Typography variant="h1" className="font-teko text-xl text-Mercury">
+            <Typography variant="h1" className="font-teko text-xl text-Mercury  ">
               Edit Profile
             </Typography>
-          </MenuItem>
+          </button>
         </motion.li>
         <motion.li variants={itemVariants}>
           <hr className="my-2 border-GreenishYellow " />
-          <MenuItem
+          <button
             onClick={LogOut}
-            className="flex flex-row -space-y-1 space-x-1 gap-2 h-9 hover:bg-DeepRose hover:text-HokiCl"
+            className="flex flex-row space-y-1 items-center gap-2   w-full h-9 hover:bg-DeepRose rounded-lg hover:text-DeepRose"
           >
-            <Image src={Logout} alt="logout" width={18} />
+            <Image src={Logout} alt="logout" width={18} className=" flex items-center justify-center ml-3"/>
             <Typography
               variant="h1"
               className="font-teko text-xl text-Mercury "
             >
               Log Out
             </Typography>
-          </MenuItem>
+          </button>
         </motion.li>
       </motion.ul>
     </motion.nav>

@@ -20,11 +20,11 @@ export const theme = {
           p: "p-3",
           border: "border border-blue-gray-50",
           borderRadius: "rounded-md",
-          boxShadow: "shadow-lg shadow-blue-gray-500/10",
+          boxShadow: "shadow-lg shadow-[#D2386D]/10",
           fontFamily: "font-sans",
           fontSize: "text-sm",
           fontWeight: "font-normal",
-          color: "text-blue-gray-500",
+          color: "text-[#D2386D]",
           overflow: "overflow-auto",
           outline: "focus:outline-none",
           zIndex: "z-[999]",
@@ -42,9 +42,9 @@ export const theme = {
             cursor: "cursor-pointer",
             userSelect: "select-none",
             transition: "transition-all",
-            bg: "hover:bg-[#D2386D] hover:bg-opacity-80 focus:bg-[#D2386D] focus:bg-opacity-60 active:bg-[#D2386D] active:bg-opacity-60",
+            bg: "hover:bg-[#D2386D] hover:bg-opacity-80 focus:bg-[#D2386D] focus:bg-opacity-100 active:bg-[#D2386D] active:bg-opacity-100",
             color:
-              "hover:bg-[#D2386D]  focus:text-[#D2386D]  active:text-[#D2386D] ",
+              "hover:bg-[#D2386D]  focus:text-[#D2386D]  active:text-[#D2386D]",
             outline: "outline-none",
           },
           disabled: {
@@ -52,12 +52,14 @@ export const theme = {
             cursor: "cursor-not-allowed",
             pointerEvents: "pointer-events-none",
             userSelect: "select-none",
-            bg: "hover:bg-transparent focus:bg-transparent active:bg-transparent",
+            bg: "hover:bg-[#D2386D] focus:bg-[#D2386D] active:bg-[#D2386D]",
             color:
-              "hover:text-blue-gray-500 focus:text-blue-gray-500 active:text-blue-gray-500",
+              "hover:text-[#D2386D] focus:text-[#D2386D]  active:text-[#D2386D] ",
           },
         },
       },
     },
   },
 };
+
+

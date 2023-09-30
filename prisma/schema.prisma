@@ -47,8 +47,8 @@ model Chat {
     receiver   User   @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
     message    String
 
-    originalSender   User     @relation("originalSender", fields: [originalSenderId], references: [id], onDelete: Cascade)
-    originalSenderId String   @map("sender_name")
+    originalSender   User   @relation("originalSender", fields: [originalSenderId], references: [id], onDelete: Cascade)
+    originalSenderId String @map("sender_name")
     date             BigInt
 
     @@map("chat")
@@ -85,6 +85,8 @@ model Join {
     messages   Message[]
     roomChat   RoomChat   @relation(fields: [roomChatId], references: [id], onDelete: Cascade)
     user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    mutedAt    BigInt?
+    mutedAmout Int?
 
     @@id([userId, roomChatId])
     @@map("join")
@@ -96,7 +98,7 @@ model Message {
     senderId   String @map("sender_id")
     roomChatId String @map("room_chat_id")
     roomSender Join?  @relation(fields: [roomChatId, senderId], references: [roomChatId, userId], onDelete: Cascade)
-	date	   BigInt
+    date       BigInt
 
     @@map("message")
 }
@@ -175,7 +177,8 @@ model Friendship {
     status     FriendshipStatus
     sender     User             @relation("sendFriendship", fields: [senderId], references: [id], onDelete: Cascade)
     receiver   User             @relation("receiveFriendship", fields: [receivedId], references: [id], onDelete: Cascade)
-	blockedId  String?
+    blockedId  String?
+
     @@id([senderId, receivedId])
     @@map("friendship")
 }
@@ -208,9 +211,9 @@ enum FriendshipStatus {
     PENDING
     ACCEPTED
     BLOCKED
-	UNFRIEND
-	REFUSED
-	
+    UNFRIEND
+    REFUSED
+
     @@map("friendship_status")
 }
 
@@ -241,10 +244,11 @@ enum ChatRoomType {
 }
 
 enum UserStatus {
-	OWNER
+    OWNER
     ADMIN
     BANNED
     MUTED
-	DEFLAULT
+    DEFLAULT
+
     @@map("user_status")
 }

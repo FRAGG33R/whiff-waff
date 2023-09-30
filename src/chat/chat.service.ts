@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundE
 import { FriendshipStatus, ChatRoomType, UserStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
-import { ConversationDto, Invitation, RoomInfos, RoomUpdateInfos, RoomUserInfos, dtoIndividualChat } from 'src/dto/chat.dto';
+import { ConversationDto, Invitation, MuteDto, RoomInfos, RoomUpdateInfos, RoomUserInfos, dtoIndividualChat } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import * as ErrorCode from '../shared/constants/constants.code-error';
@@ -401,7 +401,6 @@ export class ChatService {
 				element.date = element.date.toString() as any;
 			})
 			return this.fromatIndividualRoom(loggedUserId, roomConversation);
-			return roomConversation;
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
@@ -480,7 +479,7 @@ export class ChatService {
 					(element as any).message[0].type = ((element as any).message[0].roomSender.user.id === loggedUserId) ? senderType : receiverType;
 				}
 				else
-				(element as any).message = [];
+					(element as any).message = [];
 				delete element.messages;
 			});
 			roomsConversations = await this.structreRoomdata(roomsConversations);
@@ -808,6 +807,46 @@ export class ChatService {
 				},
 			});
 			return newUserStatus;
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'notAdmin')
+				throw new ForbiddenException('Only administrators are authorized to delete the room.');
+			if (error.type === 'owner')
+				throw new ForbiddenException('The owner cannot be banned from the room.');
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async muteUser(loggedUserId: string, data: MuteDto) {
+		try {
+			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.roomId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+				throw { type: 'notAdmin' }
+			const userStatus = await this.getJoinedRoomByIds(data.userId, data.roomId);
+			if (userStatus.statut === UserStatus.OWNER)
+				throw { type: 'owner' }
+			const muteUser = (data.mute) ? UserStatus.MUTED : userStatus.statut;
+			if (!data.mute) {
+				delete data.duration;
+				delete data.mutedAat;
+			}
+			const mutedUser = await this.prismaService.join.update({
+				where: {
+					userId_roomChatId: {
+						userId: data.userId,
+						roomChatId: data.roomId
+					}
+				},
+				data: {
+					statut: muteUser,
+					mutedAmout: data.duration,
+					mutedAt: data.mutedAat
+				}
+			});
+			return mutedUser;
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');

@@ -24,11 +24,11 @@ export class RoomUserInfos {
 	@ApiProperty()
 	@IsNotEmpty()
 	roomId: string;
-	
+
 	@ApiProperty()
 	@IsNotEmpty()
 	userId: string;
-	
+
 	@ApiProperty()
 	@Matches(`^${values.USER_STATUS}$`, 'i', { message: `type must be ${values.USER_STATUS}` })
 	@IsNotEmpty()
@@ -69,6 +69,28 @@ export class Invitation {
 	@ApiProperty()
 	@IsNotEmpty()
 	channelId: string;
+}
+
+export class MuteDto {
+	@ApiProperty()
+	@IsNotEmpty()
+	userId: string;
+
+	@ApiProperty()
+	@IsNotEmpty()
+	roomId: string;
+
+	@ApiProperty()
+	@IsNotEmpty()
+	mute: boolean;
+
+	@ApiProperty()
+	@IsNotEmpty()
+	duration: number;
+
+	@ApiProperty()
+	@IsNotEmpty()
+	mutedAat: number;
 }
 
 export class dtoIndividualChat {

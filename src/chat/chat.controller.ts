@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ConversationDto, Invitation, RoomDeleteInfos, RoomInfos, RoomUpdateInfos, RoomUserInfos } from 'src/dto/chat.dto';
+import { ConversationDto, Invitation, MuteDto, RoomDeleteInfos, RoomInfos, RoomUpdateInfos, RoomUserInfos } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 import { JwtGuard } from 'src/auth/guards/guards.jwtGuard';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -98,6 +98,13 @@ export class ChatController {
 	async leaveRoom(@Req() req: Request) {
 		await this.chatService.leaveRoom((req as any).user.id, (req as any).params.roomId);
 		return {message: 'You left the room'};
+	}
+	
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	async muteUser(@Body() data: MuteDto, @Req() req: Request) {
+		const loggedUserId = (req as any).user.id;
+		return await this.chatService.muteUser(loggedUserId, data);
 	}
 
 	@ApiBearerAuth()

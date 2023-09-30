@@ -1,6 +1,6 @@
 import { ChannelsConversationHistoryType } from "@/types/channelsConversation";
 
-export default function ChannelConversations(
+export default function SingleChannelConversationHistory(
   props: ChannelsConversationHistoryType
 ) {
   const { avatars } = props;

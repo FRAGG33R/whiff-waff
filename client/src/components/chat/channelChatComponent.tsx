@@ -3,7 +3,7 @@ import CreateChannel from "./createChannel";
 import ExploreChannels from "./exploreChannels";
 import { channelAtom } from "@/context/RecoilAtoms";
 import { channelType } from "@/types/chatType";
-import ChannelConversations from "./channelsConversation";
+import SingleChannelConversationHistory from "./channelsConversation";
 
 export default function ChannelChatComponent(props: {
   channels: channelType[];
@@ -25,7 +25,7 @@ export default function ChannelChatComponent(props: {
           props.channels.map((item: channelType, index: number) => {
             return (
               <Fragment key={index}>
-                <ChannelConversations
+                <SingleChannelConversationHistory
 				  selected={false}
                   key={index}
                   lastUser={item.message[item.message.length - 1]?.roomSender.user.userName}

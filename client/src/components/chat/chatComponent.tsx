@@ -8,7 +8,12 @@ import ChannelToggleSwitch from "../ui/buttons/channelToggleSwitch";
 import { io } from "socket.io-client";
 import { useRecoilState } from "recoil";
 import { channelAtom, chatAtom, loggedUserAtom } from "@/context/RecoilAtoms";
-import { channelType, conversationType, messageType } from "@/types/chatType";
+import {
+  channelMessageType,
+  channelType,
+  conversationType,
+  messageType,
+} from "@/types/chatType";
 import Conversation from "./conversation";
 import { loggedUserType } from "@/types/userType";
 import { useRouter } from "next/router";
@@ -18,6 +23,8 @@ import { IconMessageOff } from "@tabler/icons-react";
 import IndividualChatComponent from "./individualChatComponent";
 import ChannelChatComponent from "./channelChatComponent";
 import ChannelBar from "./channelBar";
+import { Channel } from "diagnostics_channel";
+import ChannelConversation from "./channelConversation";
 
 export default function ChatComponent() {
   const [chat] = useRecoilState(chatAtom);
@@ -26,10 +33,14 @@ export default function ChatComponent() {
   const [socket, setSocket] = useState<any>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
-  const [conversations, setConversations] = useState<conversationType[]>(chat as conversationType[]);
+  const [conversations, setConversations] = useState<conversationType[]>(
+    chat as conversationType[]
+  );
   const [selectedConversatoin, setSelectedConversation] =
     useState<conversationType | null>(null);
-  const [selectedChannel, setSelectedChannel] = useState<channelType | null>(null);
+  const [selectedChannel, setSelectedChannel] = useState<channelType | null>(
+    null
+  );
 
   const [messageContent, setMessageContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Chat");
@@ -90,26 +101,66 @@ export default function ChatComponent() {
             newConversation,
           ]);
         } catch (err: any) {
-          router.push("/404");
+			try {
+				const res = await api.get(`/chat/room/Conversations/${router.query.chatId}`, {
+					headers: {
+					  Authorization: `Bearer ${token}`,
+					},
+				  });
+				  console.log('+++', res.data);
+				//   setSelectedChannel((prev: channelType | null) => {
+				// 	const newMessages: channelMessageType[] = res.data.roomConversation.map(
+				// 	  (item: any) => {
+				// 		return {
+				// 		  roomSender: {
+				// 			user: {
+				// 			  id: item.user.id,
+				// 			  userName: item.user.userName,
+				// 			},
+				// 		  },
+				// 		  message: item.message.content,
+				// 		  type: item.message.type,
+				// 		  date: item.message.date,
+				// 		  isError: false,
+				// 		};
+				// 	  }
+				// 	);
+				// 	return {
+				// 	  roomChat: channel.roomChat,
+				// 	  message: newMessages,
+				// 	  avatars: channel.avatars,
+				// 	};
+				//   });
+			}
+			catch (error: any) {
+				router.push("/404");
+			}
         }
       }
+    } else {
+      // if the active tab is channels
+      const channelName = router.query.chatId;
+      try {
+        const res = await api.get(`chat/room/Conversations`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log(res.data.Conversationdata.roomsConversations);
+        setChannel(res.data.Conversationdata.roomsConversations);
+		setSelectedChannel((prev : channelType | null) => {
+			const channel = res.data.Conversationdata.roomsConversations.find((item : channelType) => item.roomChat.name === channelName);
+			console.log('-------------------- :', channel);
+			if (channel) {
+				return channel;
+			}
+			return null;
+		});
+		
+      } catch (error: any) {
+		console.log(error.response);
+      }
     }
-	else {
-		// if the active tab is channels
-		const channelName = router.query.chatId;
-		try {
-			const res = await api.get(`chat/room/Conversations`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			console.log(res.data.Conversationdata.roomsConversations);
-			setChannel(res.data.Conversationdata.roomsConversations);
-			
-		} catch (error : any) {
-			console.log(error.response);
-		}
-	}
   };
 
   const handleNewMessage = (
@@ -150,7 +201,6 @@ export default function ChatComponent() {
   };
 
   const handleSelectedChannel = async (channel: channelType) => {
-	console.log("selected channel : ", channel.roomChat.name);
     try {
       const res = await api.get(
         `/chat/room/Conversations/${channel.roomChat.id}`,
@@ -162,17 +212,33 @@ export default function ChatComponent() {
           },
         }
       );
-	setSelectedChannel((prev : channelType | null) => {
-		return {
-			roomChat : channel.roomChat,
-			message : res.data.roomConversation.message,
-			avatars : channel.avatars
-		}
-	});
-      console.log("res : ", res.data.roomConversation);
-      router.push(`/chat/${channel.roomChat.name}`);
+      setSelectedChannel((prev: channelType | null) => {
+        const newMessages: channelMessageType[] = res.data.roomConversation.map(
+          (item: any) => {
+            return {
+              roomSender: {
+                user: {
+                  id: item.user.id,
+                  userName: item.user.userName,
+                },
+              },
+              message: item.message.content,
+              type: item.message.type,
+              date: item.message.date,
+              isError: false,
+            };
+          }
+        );
+        return {
+          roomChat: channel.roomChat,
+          message: newMessages,
+          avatars: channel.avatars,
+        };
+      });
+      router.push(`/chat/${channel.roomChat.id}`);
     } catch (error) {}
-  }
+  };
+
   const handleSelectedConversation = async (conversation: conversationType) => {
     console.log("conversation : ", conversation.receiver.userName);
     try {
@@ -264,18 +330,18 @@ export default function ChatComponent() {
   }, []);
 
   useEffect(() => {
-	const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     else {
       setToken(token);
       findSelectedConversation(token);
-	  setLoaded(true);
+      setLoaded(true);
     }
   }, [activeTab]);
 
   useEffect(() => {
-	console.log("selected channel : ", selectedChannel);
-  }, [selectedChannel])
+    console.log("selected channel : ", selectedChannel);
+  }, [selectedChannel]);
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
@@ -307,7 +373,10 @@ export default function ChatComponent() {
                 selectedConversation={selectedConversatoin!}
               />
             ) : (
-              <ChannelChatComponent channels={channel as channelType[]} handleSelectedChannel={handleSelectedChannel}/>
+              <ChannelChatComponent
+                channels={channel as channelType[]}
+                handleSelectedChannel={handleSelectedChannel}
+              />
             )}
           </div>
           <div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
@@ -328,7 +397,15 @@ export default function ChatComponent() {
             <div className="w-full md:w-full flex itmes-center h-full md:max-h-[957px] justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
               <div className="w-full h-full flex flex-col items-center justify-between space-y-2">
                 {selectedConversatoin ? (
-                  <Conversation conversation={selectedConversatoin} />
+                  <>
+                    {activeTab === "Chat" ? (
+                      <Conversation conversation={selectedConversatoin} />
+                    ) : (
+						<>
+						 { selectedChannel && <ChannelConversation conversation={selectedChannel} />}
+						</>
+                    )}
+                  </>
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center space-y-2 py-12 font-poppins font-medium text-sm 2xl:text-xl">
                     <IconMessageOff

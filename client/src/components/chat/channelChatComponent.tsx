@@ -1,9 +1,17 @@
+import { Fragment } from "react";
 import CreateChannel from "./createChannel";
 import ExploreChannels from "./exploreChannels";
-import ChannelsConversation from "./channelsConversation";
-import { channelDummy } from "@/types/dummy";
+import { channelAtom } from "@/context/RecoilAtoms";
+import { channelType } from "@/types/chatType";
+import ChannelConversations from "./channelsConversation";
 
-export default function ChannelChatComponent() {
+export default function ChannelChatComponent(props: {
+  channels: channelType[];
+  handleSelectedChannel : Function
+}) {
+
+  console.log("from component", props.channels);
+
   return (
     <div className="w-full h-full px-2 lg:px-4 space-y-2 xl:space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
       <div className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]">
@@ -12,15 +20,24 @@ export default function ChannelChatComponent() {
       <div className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]">
         <ExploreChannels />
       </div>
-      {channelDummy.map((item, index: number) => (
-        <ChannelsConversation
-          key={index}
-          lastUser={item.userName}
-          channelName={item.channelName}
-          lastMessage={item.lastMessage}
-          avatars={item.avatars || []}
-        />
-      ))}
+      <>
+        {props.channels.length > 0 &&
+          props.channels.map((item: channelType, index: number) => {
+            return (
+              <Fragment key={index}>
+                <ChannelConversations
+				  selected={false}
+                  key={index}
+                  lastUser={item.message[item.message.length - 1]?.roomSender.user.userName}
+                  channelName={item.roomChat.name}
+                  lastMessage={item.message[item.message.length - 1]?.message}
+                  avatars={item.avatars}
+				  onClick={() => props.handleSelectedChannel(item)}
+                />
+              </Fragment>
+            );
+          })}
+      </>
     </div>
   );
 }

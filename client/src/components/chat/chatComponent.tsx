@@ -7,8 +7,8 @@ import { IconSend } from "@tabler/icons-react";
 import ChannelToggleSwitch from "../ui/buttons/channelToggleSwitch";
 import { io } from "socket.io-client";
 import { useRecoilState } from "recoil";
-import { chatAtom, loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
-import { conversationType, messageType } from "@/types/chatType";
+import { channelAtom, chatAtom, loggedUserAtom } from "@/context/RecoilAtoms";
+import { channelType, conversationType, messageType } from "@/types/chatType";
 import Conversation from "./conversation";
 import { loggedUserType } from "@/types/userType";
 import { useRouter } from "next/router";
@@ -17,17 +17,20 @@ import toast, { Toaster } from "react-hot-toast";
 import { IconMessageOff } from "@tabler/icons-react";
 import IndividualChatComponent from "./individualChatComponent";
 import ChannelChatComponent from "./channelChatComponent";
+import ChannelBar from "./channelBar";
 
 export default function ChatComponent() {
   const [chat] = useRecoilState(chatAtom);
+  const [channel, setChannel] = useRecoilState(channelAtom);
   const [loggedUser] = useRecoilState(loggedUserAtom);
   const [socket, setSocket] = useState<any>();
+  const [loaded, setLoaded] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
-  const [conversations, setConversations] = useState<conversationType[]>(
-    chat as conversationType[]
-  );
+  const [conversations, setConversations] = useState<conversationType[]>(chat as conversationType[]);
   const [selectedConversatoin, setSelectedConversation] =
     useState<conversationType | null>(null);
+  const [selectedChannel, setSelectedChannel] = useState<channelType | null>(null);
+
   const [messageContent, setMessageContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Chat");
   const router = useRouter();
@@ -37,58 +40,76 @@ export default function ChatComponent() {
   };
 
   const findSelectedConversation = async (token: string) => {
-    if (router.query.chatId === (loggedUser as loggedUserType).userName) {
-      setSelectedConversation(
-        (chat as conversationType[]).length > 0
-          ? (chat as conversationType[])[0]
-          : null
+    if (activeTab === "Chat") {
+      if (router.query.chatId === (loggedUser as loggedUserType).userName) {
+        setSelectedConversation(
+          (chat as conversationType[]).length > 0
+            ? (chat as conversationType[])[0]
+            : null
+        );
+        return;
+      }
+      const conversation = (chat as conversationType[]).find(
+        (item: conversationType) =>
+          item.receiver.userName === router.query.chatId
       );
-      return;
-    }
-    const conversation = (chat as conversationType[]).find(
-      (item: conversationType) => item.receiver.userName === router.query.chatId
-    );
-    if (conversation) {
-      setSelectedConversation((prev: conversationType | null) => {
-        return {
-          receiver: conversation.receiver,
-          messages: conversation.messages,
-        };
-      });
-    } else {
-      try {
-        const res = await api.get(`/users/profile/${router.query.chatId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        // throw an exception when the user not a friend of the logged user and router.back() to the previous page
-        const userData = res.data.response.user;
-        const newConversation: conversationType = {
-          receiver: {
-            id: userData.id,
-            userName: userData.userName,
-            email: userData.email,
-            avatar: userData.avatar,
-          },
-          messages: [],
-        };
+      if (conversation) {
         setSelectedConversation((prev: conversationType | null) => {
           return {
-            receiver: newConversation.receiver,
-            messages: [],
+            receiver: conversation.receiver,
+            messages: conversation.messages,
           };
         });
-        console.log("newConversation : ", newConversation);
-        setConversations((prev: conversationType[]) => [
-          ...prev,
-          newConversation,
-        ]);
-        // router.push(`/chat/${userData.userName}`);
-      } catch (err: any) {
-        router.push("/404");
+      } else {
+        try {
+          const res = await api.get(`/users/profile/${router.query.chatId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          // throw an exception when the user not a friend of the logged user and router.back() to the previous page
+          const userData = res.data.response.user;
+          const newConversation: conversationType = {
+            receiver: {
+              id: userData.id,
+              userName: userData.userName,
+              email: userData.email,
+              avatar: userData.avatar,
+            },
+            messages: [],
+          };
+          setSelectedConversation((prev: conversationType | null) => {
+            return {
+              receiver: newConversation.receiver,
+              messages: [],
+            };
+          });
+          console.log("newConversation : ", newConversation);
+          setConversations((prev: conversationType[]) => [
+            ...prev,
+            newConversation,
+          ]);
+        } catch (err: any) {
+          router.push("/404");
+        }
       }
     }
+	else {
+		// if the active tab is channels
+		const channelName = router.query.chatId;
+		try {
+			const res = await api.get(`chat/room/Conversations`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			console.log(res.data.Conversationdata.roomsConversations);
+			setChannel(res.data.Conversationdata.roomsConversations);
+			
+		} catch (error : any) {
+			console.log(error.response);
+		}
+	}
   };
 
   const handleNewMessage = (
@@ -128,6 +149,30 @@ export default function ChatComponent() {
     setMessageContent(value);
   };
 
+  const handleSelectedChannel = async (channel: channelType) => {
+	console.log("selected channel : ", channel.roomChat.name);
+    try {
+      const res = await api.get(
+        `/chat/room/Conversations/${channel.roomChat.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              token.length > 0 ? token : localStorage.getItem("token")
+            }`,
+          },
+        }
+      );
+	setSelectedChannel((prev : channelType | null) => {
+		return {
+			roomChat : channel.roomChat,
+			message : res.data.roomConversation.message,
+			avatars : channel.avatars
+		}
+	});
+      console.log("res : ", res.data.roomConversation);
+      router.push(`/chat/${channel.roomChat.name}`);
+    } catch (error) {}
+  }
   const handleSelectedConversation = async (conversation: conversationType) => {
     console.log("conversation : ", conversation.receiver.userName);
     try {
@@ -202,13 +247,6 @@ export default function ChatComponent() {
     });
   };
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) router.push("/login");
-    else {
-      setToken(token);
-      findSelectedConversation(token);
-    }
-
     const socket = io("http://34.173.232.127:6080/", {
       extraHeaders: {
         authorization: `Bearer ${token}`,
@@ -225,6 +263,20 @@ export default function ChatComponent() {
     };
   }, []);
 
+  useEffect(() => {
+	const token = localStorage.getItem("token");
+    if (!token) router.push("/login");
+    else {
+      setToken(token);
+      findSelectedConversation(token);
+	  setLoaded(true);
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+	console.log("selected channel : ", selectedChannel);
+  }, [selectedChannel])
+
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
       <Toaster position="top-right" />
@@ -239,7 +291,7 @@ export default function ChatComponent() {
             avatar={(loggedUser as loggedUserType).avatar}
           />
         </div>
-        <div className="w-full h-[92%] md:h-[91%] flex flex-row space-x-2 md:space-x-10 overflow-y-hidden overflow-x-hidden">
+        <div className="w-full h-[96%] md:h-[91%] flex flex-row space-x-2 md:space-x-10 overflow-y-hidden overflow-x-hidden">
           <div className="h-full min-w-[60px] max-w-[400px] w-1/4 md:w-1/3 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] flex flex-col items-center justify-start  space-y-6">
             <div className="hidden w-full px-4 h-28 md:flex justify-center items-center">
               <ChannelToggleSwitch
@@ -255,21 +307,25 @@ export default function ChatComponent() {
                 selectedConversation={selectedConversatoin!}
               />
             ) : (
-              <ChannelChatComponent />
+              <ChannelChatComponent channels={channel as channelType[]} handleSelectedChannel={handleSelectedChannel}/>
             )}
           </div>
           <div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
             <div className="w-full h-16 md:h-24 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] ">
-              {selectedConversatoin && (
+              {selectedConversatoin && activeTab === "Chat" && (
                 <UserBar
                   userName={selectedConversatoin?.receiver.userName}
                   email={selectedConversatoin.receiver.email}
                   avatar={selectedConversatoin.receiver.avatar}
                 />
               )}
+              {selectedConversatoin && activeTab === "Channels" && (
+                <ChannelBar
+                  channelName={selectedConversatoin?.receiver.userName}
+                />
+              )}
             </div>
-			{/* for under 300px max-h-[480px] */}
-            <div className="w-full md:w-full flex itmes-center h-full  md:max-h-[957px] justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+            <div className="w-full md:w-full flex itmes-center h-full md:max-h-[957px] justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
               <div className="w-full h-full flex flex-col items-center justify-between space-y-2">
                 {selectedConversatoin ? (
                   <Conversation conversation={selectedConversatoin} />

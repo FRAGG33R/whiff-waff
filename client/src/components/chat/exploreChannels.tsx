@@ -3,11 +3,9 @@ import Image from "next/image";
 import EXPLORE from "../../../public/EXPLORE.svg";
 import Descovery from "../../../public/Discovery.svg";
 import {
-  Button,
   Dialog,
   DialogHeader,
   DialogBody,
-  DialogFooter,
 } from "@material-tailwind/react";
 import ModelChannel from "./modelChannel";
 const ExploreChannels = () => {

@@ -17,21 +17,21 @@ import { api } from "../axios/instance";
 import PendingButton from "../ui/buttons/pendingButton";
 
 export default function ProfileInformations() {
-  const router = useRouter();
-  const [user, setUser] = useRecoilState(userAtom);
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
-  const [userState, setUserState] = useState<userType>(user as userType);
-  const matchStatistics: matchStatistics[] = [
-    {
-      title: "Total Matches",
-      value: Number(userState.stat.wins) + Number(userState.stat.loses),
-      avatar: totalMatches,
-    },
-    { title: "Total Wins", value: userState.stat.wins, avatar: totalWins },
-    { title: "Total Loses", value: userState.stat.loses, avatar: totalLoses },
-  ];
+	const [user, setUser] = useRecoilState(userAtom);
+	const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+	const [userState, setUserState] = useState<userType>(user as userType);
+	const matchStatistics: matchStatistics[] = [
+		{
+			title: "Total Matches",
+			value: Number(userState.stat.wins) + Number(userState.stat.loses),
+			avatar: totalMatches,
+		},
+		{ title: "Total Wins", value: userState.stat.wins, avatar: totalWins },
+		{ title: "Total Loses", value: userState.stat.loses, avatar: totalLoses },
+	];
+	const router = useRouter();
 
-  console.log("userState => ", user);
+//   console.log("userState => ", user);
   const handleConnect = async () => {
     const token = localStorage.getItem("token");
     console.log("token => ", token);
@@ -79,6 +79,7 @@ export default function ProfileInformations() {
           },
         }
       );
+	  setUserState({ ...userState, status: "BLOCKED" });
       console.log("response : ", res.data);
     } catch (error) {
       console.log(error);
@@ -103,6 +104,8 @@ export default function ProfileInformations() {
         }
       );
       console.log("response : ", res.data);
+	  setUserState({ ...userState, status: "UNFRIEND" });
+
     } catch (error) {
       console.log(error);
     }

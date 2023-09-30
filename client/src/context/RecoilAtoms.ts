@@ -2,7 +2,7 @@ import { createContext } from "react";
 import {loggedUserType, userType} from "@/types/userType";
 import { atom } from "recoil";
 import {matchHistoryType} from '@/types/userType'
-import { conversationType } from "@/types/chatType";
+import { channelType, conversationType } from "@/types/chatType";
 
 export const userContext = createContext<userType | undefined>(undefined);
 
@@ -35,6 +35,13 @@ export const loggedUserFriendsAtom = atom({
 export const chatContext = createContext<conversationType[] | undefined>(undefined);
 
 export const chatAtom = atom({
-	key: `loggedUserFriends-${Math.random()}`,
+	key: `chat-${Math.random()}`,
+	default: {},
+});
+
+export const channelContext = createContext<channelType[] | undefined>(undefined);
+
+export const channelAtom = atom({
+	key: `channel-${Math.random()}`,
 	default: {},
 });

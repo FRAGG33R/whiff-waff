@@ -59,7 +59,10 @@ export class ChatGateway implements OnGatewayConnection {
 		}
 	}
 
-	async handelRoomMessage(@MessageBody(new CustomWebSocketValidationPipe()) dto: dtoRoomChat, @ConnectedSocket() client: Socket) {
-		// const isMember = await this.chatService.getRoomInfosById(dto.roomId, (client as any).user.id);
+	@UseGuards(GuardsService)
+	@SubscribeMessage('room')
+	async handelRoomMessage(@MessageBody(new CustomWebSocketValidationPipe()) dto: dtoIndividualChat, @ConnectedSocket() client: Socket) {
+		const existsRoom = await this.chatService.getRoomInfosById(dto.receiverId);
+		console.log(existsRoom);
 	}
 }

@@ -461,11 +461,6 @@ export class ChatService {
 		return roomsConversations;
 	}
 
-
-
-
-
-
 	//=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=
 	async getRoomConversations(loggedUserId: string) {
 		try {
@@ -483,7 +478,8 @@ export class ChatService {
 				delete element.messages;
 			});
 			roomsConversations = await this.structreRoomdata(roomsConversations);
-			(roomsConversations[0] as any).message = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomChat.id, { nbElements: 10, nbPage: 0 } as any);
+			if (roomsConversations.length > 0)
+				(roomsConversations[0] as any).message = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomChat.id, { nbElements: 10, nbPage: 0 } as any);
 			// roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
 			return roomsConversations;
 		} catch (error) {

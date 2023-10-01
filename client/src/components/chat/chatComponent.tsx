@@ -95,7 +95,6 @@ export default function ChatComponent() {
               messages: [],
             };
           });
-          console.log("newConversation : ", newConversation);
           setConversations((prev: conversationType[]) => [
             ...prev,
             newConversation,
@@ -107,30 +106,29 @@ export default function ChatComponent() {
 					  Authorization: `Bearer ${token}`,
 					},
 				  });
-				  console.log('+++', res.data);
-				//   setSelectedChannel((prev: channelType | null) => {
-				// 	const newMessages: channelMessageType[] = res.data.roomConversation.map(
-				// 	  (item: any) => {
-				// 		return {
-				// 		  roomSender: {
-				// 			user: {
-				// 			  id: item.user.id,
-				// 			  userName: item.user.userName,
-				// 			},
-				// 		  },
-				// 		  message: item.message.content,
-				// 		  type: item.message.type,
-				// 		  date: item.message.date,
-				// 		  isError: false,
-				// 		};
-				// 	  }
-				// 	);
-				// 	return {
-				// 	  roomChat: channel.roomChat,
-				// 	  message: newMessages,
-				// 	  avatars: channel.avatars,
-				// 	};
-				//   });
+				  setSelectedChannel((prev: channelType | null) => {
+					const newMessages: channelMessageType[] = res.data.roomConversation.map(
+					  (item: any) => {
+						return {
+						  roomSender: {
+							user: {
+							  id: item.user.id,
+							  userName: item.user.userName,
+							},
+						  },
+						  message: item.message.content,
+						  type: item.message.type,
+						  date: item.message.date,
+						  isError: false,
+						};
+					  }
+					);
+					return {
+					  roomChat: res.data.roomConversation.roomChat,
+					  message: newMessages,
+					  avatars: res.data.roomConversation.avatars,
+					};
+				  });
 			}
 			catch (error: any) {
 				router.push("/404");
@@ -138,7 +136,6 @@ export default function ChatComponent() {
         }
       }
     } else {
-      // if the active tab is channels
       const channelName = router.query.chatId;
       try {
         const res = await api.get(`chat/room/Conversations`, {
@@ -146,19 +143,15 @@ export default function ChatComponent() {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(res.data.Conversationdata.roomsConversations);
         setChannel(res.data.Conversationdata.roomsConversations);
 		setSelectedChannel((prev : channelType | null) => {
-			const channel = res.data.Conversationdata.roomsConversations.find((item : channelType) => item.roomChat.name === channelName);
-			console.log('-------------------- :', channel);
+			const channel = res.data.Conversationdata.roomsConversations.find((item : channelType) => item.roomChat.id === channelName);
 			if (channel) {
 				return channel;
 			}
-			return null;
+			return res.data.Conversationdata.roomsConversations[0];
 		});
-		
       } catch (error: any) {
-		console.log(error.response);
       }
     }
   };

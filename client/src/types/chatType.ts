@@ -1,3 +1,4 @@
+
 interface receivertype {
   id: string;
   avatar: string;

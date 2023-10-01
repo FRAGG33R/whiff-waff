@@ -23,7 +23,6 @@ import { IconMessageOff } from "@tabler/icons-react";
 import IndividualChatComponent from "./individualChatComponent";
 import ChannelChatComponent from "./channelChatComponent";
 import ChannelBar from "./channelBar";
-import { Channel } from "diagnostics_channel";
 import ChannelConversation from "./channelConversation";
 
 export default function ChatComponent() {
@@ -100,39 +99,40 @@ export default function ChatComponent() {
             newConversation,
           ]);
         } catch (err: any) {
-			try {
-				const res = await api.get(`/chat/room/Conversations/${router.query.chatId}`, {
-					headers: {
-					  Authorization: `Bearer ${token}`,
-					},
-				  });
-				  setSelectedChannel((prev: channelType | null) => {
-					const newMessages: channelMessageType[] = res.data.roomConversation.map(
-					  (item: any) => {
-						return {
-						  roomSender: {
-							user: {
-							  id: item.user.id,
-							  userName: item.user.userName,
-							},
-						  },
-						  message: item.message.content,
-						  type: item.message.type,
-						  date: item.message.date,
-						  isError: false,
-						};
-					  }
-					);
-					return {
-					  roomChat: res.data.roomConversation.roomChat,
-					  message: newMessages,
-					  avatars: res.data.roomConversation.avatars,
-					};
-				  });
-			}
-			catch (error: any) {
-				router.push("/404");
-			}
+          try {
+            const res = await api.get(
+              `/chat/room/Conversations/${router.query.chatId}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            setSelectedChannel((prev: channelType | null) => {
+              const newMessages: channelMessageType[] =
+                res.data.roomConversation.map((item: any) => {
+                  return {
+                    roomSender: {
+                      user: {
+                        id: item.user.id,
+                        userName: item.user.userName,
+                      },
+                    },
+                    message: item.message.content,
+                    type: item.message.type,
+                    date: item.message.date,
+                    isError: false,
+                  };
+                });
+              return {
+                roomChat: res.data.roomConversation.roomChat,
+                message: newMessages,
+                avatars: res.data.roomConversation.avatars,
+              };
+            });
+          } catch (error: any) {
+            router.push("/404");
+          }
         }
       }
     } else {
@@ -144,15 +144,16 @@ export default function ChatComponent() {
           },
         });
         setChannel(res.data.Conversationdata.roomsConversations);
-		setSelectedChannel((prev : channelType | null) => {
-			const channel = res.data.Conversationdata.roomsConversations.find((item : channelType) => item.roomChat.id === channelName);
-			if (channel) {
-				return channel;
-			}
-			return res.data.Conversationdata.roomsConversations[0];
-		});
-      } catch (error: any) {
-      }
+        setSelectedChannel((prev: channelType | null) => {
+          const channel = res.data.Conversationdata.roomsConversations.find(
+            (item: channelType) => item.roomChat.id === channelName
+          );
+          if (channel) {
+            return channel;
+          }
+          return res.data.Conversationdata.roomsConversations[0];
+        });
+      } catch (error: any) {}
     }
   };
 
@@ -305,6 +306,7 @@ export default function ChatComponent() {
       return prev;
     });
   };
+
   useEffect(() => {
     const socket = io("http://34.173.232.127:6080/", {
       extraHeaders: {
@@ -366,10 +368,16 @@ export default function ChatComponent() {
                 selectedConversation={selectedConversatoin!}
               />
             ) : (
-              <ChannelChatComponent
-                channels={channel as channelType[]}
-                handleSelectedChannel={handleSelectedChannel}
-              />
+              <>
+                {selectedChannel !== null &&
+                  selectedChannel.roomChat !== undefined && (
+                    <ChannelChatComponent
+                      channels={channel as channelType[]}
+                      handleSelectedChannel={handleSelectedChannel}
+                      selectedChannel={selectedChannel!}
+                    />
+                  )}
+              </>
             )}
           </div>
           <div className="h-full w-full space-y-2 md:space-y-10 flex items-start justify-start flex-col">
@@ -381,32 +389,46 @@ export default function ChatComponent() {
                   avatar={selectedConversatoin.receiver.avatar}
                 />
               )}
-              {selectedConversatoin && activeTab === "Channels" && (
-                <ChannelBar
-                  channelName={selectedConversatoin?.receiver.userName}
-                />
-              )}
+              {selectedChannel !== null &&
+                selectedChannel.roomChat !== undefined &&
+                activeTab === "Channels" && (
+                  <ChannelBar
+                    channelName={selectedChannel?.roomChat?.name || ""}
+                    avatars={selectedChannel?.avatars!}
+                    channelId={selectedChannel?.roomChat.id!}
+                  />
+                )}
             </div>
             <div className="w-full md:w-full flex itmes-center h-full md:max-h-[957px] justify-center py-4 lg:py-10 px-4 lg:px-10 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
               <div className="w-full h-full flex flex-col items-center justify-between space-y-2">
-                {selectedConversatoin ? (
+                {activeTab === "Chat" ? (
                   <>
-                    {activeTab === "Chat" ? (
+                    {selectedConversatoin ? (
                       <Conversation conversation={selectedConversatoin} />
                     ) : (
-						<>
-						 { selectedChannel && <ChannelConversation conversation={selectedChannel} />}
-						</>
+                      <div className="w-full h-full flex flex-col items-center justify-center space-y-2 py-12 font-poppins font-medium text-sm 2xl:text-xl">
+                        <IconMessageOff
+                          stroke={2}
+                          className="h-4 w-4 md:h-8 md:w-8"
+                        />
+                        <div className="text-center">No messages</div>
+                      </div>
                     )}
                   </>
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center space-y-2 py-12 font-poppins font-medium text-sm 2xl:text-xl">
-                    <IconMessageOff
-                      stroke={2}
-                      className="h-4 w-4 md:h-8 md:w-8"
-                    />
-                    <div className="text-center">No messages</div>
-                  </div>
+                  <>
+                    {selectedChannel ? (
+                      <ChannelConversation conversation={selectedChannel} />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center space-y-2 py-12 font-poppins font-medium text-sm 2xl:text-xl">
+                        <IconMessageOff
+                          stroke={2}
+                          className="h-4 w-4 md:h-8 md:w-8"
+                        />
+                        <div className="text-center">No messages</div>
+                      </div>
+                    )}
+                  </>
                 )}
                 {selectedConversatoin && (
                   <div className="h-16 md:h-24 w-full flex items-end justify-center">

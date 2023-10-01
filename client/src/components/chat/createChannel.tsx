@@ -66,7 +66,7 @@ const CreateChannel = () => {
 			console.log('res : ', res.data);
 		} catch (error : any ) {
 			if (error.response)
-				console.log(error.response.data);
+				console.log(error.response.data.message);
 			setErrorMessage(error.message);
 			setTimeout(() => {
 				setErrorMessage("");

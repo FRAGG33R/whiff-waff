@@ -39,6 +39,8 @@ export interface individualChatComponentType {
 
 export interface channelBarType {
   channelName: string;
+  channelId : string;
+  avatars : string[];
 }
 
 export interface roomType {

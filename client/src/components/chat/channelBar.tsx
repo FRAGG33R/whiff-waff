@@ -1,16 +1,32 @@
 
-import { IconTrash, IconDeviceGamepad2 } from "@tabler/icons-react";
+import { IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { channelBarType } from "@/types/chatType";
 import { IconSettings } from '@tabler/icons-react';
+import { api } from "../axios/instance";
+import { RenderAvatars } from "./renderAvatars";
 
 export default function ChannelBar(props: channelBarType) {
   const router = useRouter();
 
-  const handleRemoveChannel = () => {
-    console.log("remove channel");
-  };
+  const handleDeleteChannel = async () => {
+	try {
+		const res = await api.post(`/chat/room/delete/`, {
+			channelId : props.channelId
+		},{
+			headers : {
+				Authorization : `Bearer ${localStorage.getItem("token")}`
+			},
+		},);
+		console.log('res : ', res.data);
+	} catch (error : any) {
+
+	}
+  }
+  const handleOpenSettings = async () => {
+
+  }
   return (
     <div className="w-full h-full flex items-center justify-center px-2 md:px-6 py-2 md:py-4">
       <div className="h-full w-full flex flex-row items-center justify-between">
@@ -19,6 +35,7 @@ export default function ChannelBar(props: channelBarType) {
             className="w-12 md:w-16 h-full rounded-[12px] tooltip tooltip-left"
             data-tip="fragger"
           >
+			<RenderAvatars avatars={props.avatars} />
             {/* <img
               src={props.avatar}
               className="w-full h-full rounded-[12px]"
@@ -35,7 +52,7 @@ export default function ChannelBar(props: channelBarType) {
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={handleRemoveChannel}
+            onClick={handleOpenSettings}
             className="w-10 md:w-14 h-10 md:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
           >
             <IconSettings className="w-6 md:w-8 h-6 md:h-8" />
@@ -43,7 +60,7 @@ export default function ChannelBar(props: channelBarType) {
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={handleRemoveChannel}
+            onClick={handleDeleteChannel}
             className="w-10 md:w-14 h-10 md:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
           >
             <IconTrash className="w-6 md:w-8 h-6 md:h-8" />

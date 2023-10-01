@@ -1,16 +1,15 @@
 import { Fragment } from "react";
 import CreateChannel from "./createChannel";
 import ExploreChannels from "./exploreChannels";
-import { channelAtom } from "@/context/RecoilAtoms";
 import { channelType } from "@/types/chatType";
 import SingleChannelConversationHistory from "./channelsConversation";
 
 export default function ChannelChatComponent(props: {
   channels: channelType[];
   handleSelectedChannel : Function
+  selectedChannel : channelType
 }) {
 
-  console.log("from component", props.channels);
 
   return (
     <div className="w-full h-full px-2 lg:px-4 space-y-2 xl:space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
@@ -26,7 +25,7 @@ export default function ChannelChatComponent(props: {
             return (
               <Fragment key={index}>
                 <SingleChannelConversationHistory
-				  selected={false}
+				  selected={item.roomChat.id === props.selectedChannel.roomChat.id}
                   key={index}
                   lastUser={item.message[item.message.length - 1]?.roomSender.user.userName}
                   channelName={item.roomChat.name}

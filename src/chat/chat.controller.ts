@@ -10,6 +10,7 @@ const conversationEndpoint = 'individualConversations'
 const individualConversation = 'individualConversations/:receiverId'
 const roomConversation = 'room/Conversations/:roomId'
 const roomConversations = 'room/Conversations'
+const rooms = 'rooms'
 const joinRoom = 'room/join'
 const leaveRoom = 'room/leave/:roomId'
 const updateRoom = 'room/update'
@@ -133,5 +134,11 @@ export class ChatController {
 		const Conversationdata = { roomsConversations, blockedUsers }
 		return { loggedUser, Conversationdata };
 	}
-
+	
+	
+	@UseGuards(JwtGuard)
+	@Get(roomConversations)
+	async exploreChannles() {
+		return await this.chatService.exploreChannels();
+	}
 }

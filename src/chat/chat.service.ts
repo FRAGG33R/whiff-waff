@@ -136,7 +136,7 @@ export class ChatService {
 				take: (data as any).nbElements,
 				skip: skip,
 				orderBy: {
-					date: 'desc',
+					date: 'asc',
 				},
 				distinct: ['senderId', 'receiverId'],
 			})
@@ -894,6 +894,42 @@ export class ChatService {
 				throw new ForbiddenException('Only administrators are authorized to delete the room.');
 			if (error.type === 'owner')
 				throw new ForbiddenException('The owner cannot be banned from the room.');
+			throw new InternalServerErrorException(error);
+		}
+	}
+
+	async exploreChannels() {
+		try {
+			return await this.prismaService.join.findMany({
+				select: {
+					roomChat: {
+						select: {
+							id: true,
+							name: true,
+						}
+					},
+					messages: {
+						select: {
+							roomSender: {
+								select: {
+									user: {
+										select: {
+											id: true,
+											userName: true
+										}
+									}
+								}
+							},
+							message: true,
+							date: true,
+						},
+						orderBy: {
+							date: 'desc'
+						}
+					}
+				},
+			})
+		} catch (error) {
 			throw new InternalServerErrorException(error);
 		}
 	}

@@ -226,7 +226,7 @@ export class ChatService {
 					}
 				})
 				if (alreadyExists) {
-					if (alreadyExists.statut === UserStatus.BANNED)
+					if (alreadyExists.status === UserStatus.BANNED)
 						throw { type: 'banned' }
 					throw { type: 'alreadyExists' }
 				}
@@ -279,7 +279,7 @@ export class ChatService {
 			data: {
 				userId: loggedUserId,
 				roomChatId: roomId,
-				statut: typeUser
+				status: typeUser
 			}
 		})
 	}
@@ -319,7 +319,7 @@ export class ChatService {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, roomId);
 			if (!existRoom)
 				throw { type: 'notFound' }
-			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+			if (existRoom.status !== UserStatus.ADMIN && existRoom.status !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
 			if (existRoom.roomChat.type !== ChatRoomType.PRIVATE)
 				throw { type: 'notPrivate' }
@@ -353,7 +353,7 @@ export class ChatService {
 	async getJoinedRoomByIds(adminId: string, roomId: string) {
 		const room = await this.prismaService.join.findUnique({
 			select: {
-				statut: true,
+				status: true,
 				mutedAt: true,
 				mutedAmout: true,
 				roomChat: {
@@ -582,7 +582,7 @@ export class ChatService {
 					}
 				},
 				where: {
-					AND: [{ statut: { not: UserStatus.BANNED } }, { roomChatId: roomId }],
+					AND: [{ status: { not: UserStatus.BANNED } }, { roomChatId: roomId }],
 				},
 			})
 			return users;
@@ -653,7 +653,7 @@ export class ChatService {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.channelId);
 			if (!existRoom)
 				throw { type: 'notFound' }
-			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+			if (existRoom.status !== UserStatus.ADMIN && existRoom.status !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
 			if (data.channelPassword) {
 				if (existRoom.roomChat.type === ChatRoomType.PRIVATE && ((!data.channelType || data.channelType === ChatRoomType.PRIVATE) && data.channelPassword))
@@ -687,7 +687,7 @@ export class ChatService {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, roomId);
 			if (!existRoom)
 				throw { type: 'notFound' }
-			if (existRoom.statut !== UserStatus.OWNER)
+			if (existRoom.status !== UserStatus.OWNER)
 				throw { type: 'notOwner' }
 			return await this.prismaService.roomChat.delete({
 				where: {
@@ -708,10 +708,10 @@ export class ChatService {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.channelId);
 			if (!existRoom)
 				throw { type: 'notFound' }
-			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+			if (existRoom.status !== UserStatus.ADMIN && existRoom.status !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
 			const userStatus = await this.getJoinedRoomByIds(data.invitedId, data.channelId);
-			if (userStatus.statut === UserStatus.OWNER)
+			if (userStatus.status === UserStatus.OWNER)
 				throw { type: 'owner' }
 			const kickedUser = await this.prismaService.join.delete({
 				where: {
@@ -738,10 +738,10 @@ export class ChatService {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.channelId);
 			if (!existRoom)
 				throw { type: 'notFound' }
-			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+			if (existRoom.status !== UserStatus.ADMIN && existRoom.status !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
 			const userStatus = await this.getJoinedRoomByIds(data.invitedId, data.channelId);
-			if (userStatus.statut === UserStatus.OWNER)
+			if (userStatus.status === UserStatus.OWNER)
 				throw { type: 'owner' }
 			const bannedUser = await this.prismaService.join.update({
 				where: {
@@ -751,7 +751,7 @@ export class ChatService {
 					}
 				},
 				data: {
-					statut: UserStatus.BANNED
+					status: UserStatus.BANNED
 				}
 			});
 			return bannedUser;
@@ -782,14 +782,14 @@ export class ChatService {
 			let newAdmin = await this.prismaService.join.findFirst({
 				where: {
 					roomChatId: roomId,
-					statut: UserStatus.ADMIN
+					status: UserStatus.ADMIN
 				}
 			});
 			if (!newAdmin)
 				newAdmin = await this.prismaService.join.findFirst({
 					where: {
 						roomChatId: roomId,
-						statut: UserStatus.DEFLAULT
+						status: UserStatus.DEFLAULT
 					}
 				});
 			if (!newAdmin)
@@ -807,7 +807,7 @@ export class ChatService {
 						}
 					},
 					data: {
-						statut: UserStatus.OWNER
+						status: UserStatus.OWNER
 					}
 				});
 			return leavedRoom;
@@ -825,10 +825,10 @@ export class ChatService {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.roomId);
 			if (!existRoom)
 				throw { type: 'notFound' }
-			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+			if (existRoom.status !== UserStatus.ADMIN && existRoom.status !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
 			const userStatus = await this.getJoinedRoomByIds(data.userId, data.roomId);
-			if (userStatus.statut === UserStatus.OWNER)
+			if (userStatus.status === UserStatus.OWNER)
 				throw { type: 'owner' }
 			const newUserStatus = await this.prismaService.join.update({
 				where: {
@@ -838,7 +838,7 @@ export class ChatService {
 					}
 				},
 				data: {
-					statut: data.newStatus
+					status: data.newStatus
 				},
 			});
 			return newUserStatus;
@@ -862,12 +862,12 @@ export class ChatService {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.roomId);
 			if (!existRoom)
 				throw { type: 'notFound' }
-			if (existRoom.statut !== UserStatus.ADMIN && existRoom.statut !== UserStatus.OWNER)
+			if (existRoom.status !== UserStatus.ADMIN && existRoom.status !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
 			const userStatus = await this.getJoinedRoomByIds(data.userId, data.roomId);
-			if (userStatus.statut === UserStatus.OWNER)
+			if (userStatus.status === UserStatus.OWNER)
 				throw { type: 'owner' }
-			const muteUser = (data.mute) ? UserStatus.MUTED : userStatus.statut;
+			const muteUser = (data.mute) ? UserStatus.MUTED : userStatus.status;
 			if (!data.mute) {
 				delete data.duration;
 				delete (data as any).mutedAat;
@@ -880,7 +880,7 @@ export class ChatService {
 					}
 				},
 				data: {
-					statut: muteUser,
+					status: muteUser,
 					mutedAmout: Number(data.duration),
 					mutedAt: BigInt((data as any).mutedAat)
 				}

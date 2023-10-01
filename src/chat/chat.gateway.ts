@@ -48,7 +48,7 @@ export class ChatGateway implements OnGatewayConnection {
 			receiver.forEach(element => {
 				let sended: boolean = client.to(element).emit('message', dto);
 				if (!sended) {
-					this.logger.error('emit method faild to send message');
+					this.logger.error('emit method faild to send message in message event');
 					throw new WsException('internal server error');
 				}
 			});
@@ -66,15 +66,10 @@ export class ChatGateway implements OnGatewayConnection {
 		const existsRoom = await this.chatService.getUsersInRoomById(dto.receiverId);
 		if (!existsRoom || existsRoom.length == 0)
 			throw new WsException('room not found');
-		const statusUser = await this.chatService.getJoinedRoomByIds((client as any).user.id, dto.receiverId);//TODO muted users change statut to status
-		if (statusUser && statusUser.statut == UserStatus.MUTED) {
-			console.log('amount : ', statusUser.mutedAmout);
-			console.log('muted at : ', statusUser.mutedAt);
-			console.log('duration : ', BigInt(statusUser.mutedAmout) + BigInt(statusUser.mutedAt));
+		const statusUser = await this.chatService.getJoinedRoomByIds((client as any).user.id, dto.receiverId);//TODO muted users change status to status
+		if (statusUser && statusUser.status == UserStatus.MUTED) {
 			if (Date.now() < (BigInt(statusUser.mutedAmout) + BigInt(statusUser.mutedAt)))
 				throw new WsException('user is muted');
-			else
-				console.log('user is unmuted');
 		}
 		for (let i = 0; i < existsRoom.length; i++) {
 			const checkBlocked = await this.chatService.checkBlocked((client as any).user.id, existsRoom[i].user.id);

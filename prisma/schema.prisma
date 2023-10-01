@@ -81,7 +81,7 @@ model InvitedRoomChat {
 model Join {
     roomChatId String     @map("room_chat_id")
     userId     String     @map("user_id")
-    statut     UserStatus
+    status     UserStatus
     messages   Message[]
     roomChat   RoomChat   @relation(fields: [roomChatId], references: [id], onDelete: Cascade)
     user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)

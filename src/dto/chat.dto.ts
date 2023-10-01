@@ -87,10 +87,6 @@ export class MuteDto {
 	@ApiProperty()
 	@IsNotEmpty()
 	duration: number;
-
-	@ApiProperty()
-	@IsNotEmpty()
-	mutedAat: number;
 }
 
 export class dtoIndividualChat {

@@ -6,6 +6,7 @@ import { CustomWebSocketValidationPipe } from 'src/shared/pipes/pipes.customVali
 import { GuardsService } from './guards/guards.service';
 import { dtoIndividualChat, dtoRoomChat } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
+import { FriendshipStatus, UserStatus } from '@prisma/client';
 
 const chatGateway = 'ChatGateway';
 @WebSocketGateway(6080, {
@@ -43,7 +44,7 @@ export class ChatGateway implements OnGatewayConnection {
 		const checkFriendship = await this.chatService.checkFriendship((client as any).user.id, dto.receiverId);
 		if (!checkFriendship)
 			throw new WsException('user not a friend');
-		if (receiver) {
+		if (receiver && receiver.length > 0) {
 			receiver.forEach(element => {
 				let sended: boolean = client.to(element).emit('message', dto);
 				if (!sended) {
@@ -62,7 +63,33 @@ export class ChatGateway implements OnGatewayConnection {
 	@UseGuards(GuardsService)
 	@SubscribeMessage('room')
 	async handelRoomMessage(@MessageBody(new CustomWebSocketValidationPipe()) dto: dtoIndividualChat, @ConnectedSocket() client: Socket) {
-		const existsRoom = await this.chatService.getRoomInfosById(dto.receiverId);
-		console.log(existsRoom);
+		const existsRoom = await this.chatService.getUsersInRoomById(dto.receiverId);
+		if (!existsRoom || existsRoom.length == 0)
+			throw new WsException('room not found');
+		const statusUser = await this.chatService.getJoinedRoomByIds((client as any).user.id, dto.receiverId);//TODO muted users change statut to status
+		if (statusUser && statusUser.statut == UserStatus.MUTED) {
+			console.log('amount : ', statusUser.mutedAmout);
+			console.log('muted at : ', statusUser.mutedAt);
+			console.log('duration : ', BigInt(statusUser.mutedAmout) + BigInt(statusUser.mutedAt));
+			if (Date.now() < (BigInt(statusUser.mutedAmout) + BigInt(statusUser.mutedAt)))
+				throw new WsException('user is muted');
+			else
+				console.log('user is unmuted');
+		}
+		for (let i = 0; i < existsRoom.length; i++) {
+			const checkBlocked = await this.chatService.checkBlocked((client as any).user.id, existsRoom[i].user.id);
+			if ((!checkBlocked || checkBlocked.status != FriendshipStatus.BLOCKED) && existsRoom[i].user.id != (client as any).user.id) {
+				const receiver = this.loggedUsers.get(existsRoom[i].user.id);
+				if (receiver && receiver.length > 0) {
+					receiver.forEach(element => {
+						let sended: boolean = client.to(element).emit('room', dto);
+						if (!sended) {
+							this.logger.error('emit method faild to send message');
+							throw new WsException('internal server error');
+						}
+					});
+				}
+			}
+		};
 	}
 }

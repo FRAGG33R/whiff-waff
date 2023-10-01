@@ -16,7 +16,7 @@ const updateRoom = 'room/update'
 const deleteRoom = 'room/delete'
 const inviteRoom = 'room/invite'
 const kickRoom = 'room/kick'
-const banRoom = 'room/ban'
+const muteRoom = 'room/mute'
 const RoomUserStatus = 'room/userStatus'
 @Controller(chatController)
 export class ChatController {
@@ -63,7 +63,7 @@ export class ChatController {
 
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
-	@Delete(deleteRoom)
+	@Post(deleteRoom)
 	async deleteRoom(@Body() data: RoomDeleteInfos, @Req() req: Request) {
 		const loggedUserId = (req as any).user.id;
 		return await this.chatService.deleteRoom(loggedUserId, data.channelId);
@@ -86,23 +86,26 @@ export class ChatController {
 
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
-	@Delete(kickRoom)
+	@Post(kickRoom)
 	async kickUserFromRoom(@Body() data: Invitation, @Req() req: Request) {
 		const loggedUserId = (req as any).user.id;
 		return await this.chatService.kickUserFromRoom(loggedUserId, data);
-	}	
+	}
 
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
-	@Delete(leaveRoom)
+	@Post(leaveRoom)
 	async leaveRoom(@Req() req: Request) {
 		await this.chatService.leaveRoom((req as any).user.id, (req as any).params.roomId);
-		return {message: 'You left the room'};
+		return { message: 'You left the room' };
 	}
-	
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
+	@Post(muteRoom)
 	async muteUser(@Body() data: MuteDto, @Req() req: Request) {
+		(data as any).mutedAat = Date.now();
+		data.duration = data.duration * 60000;
 		const loggedUserId = (req as any).user.id;
 		return await this.chatService.muteUser(loggedUserId, data);
 	}
@@ -115,9 +118,9 @@ export class ChatController {
 		data.nbPage = (!data.nbPage) ? data.nbPage = undefined : Number(data.nbPage);
 		const loggedUserId = (req as any).user.id;
 		const roomId = (req as any).params.roomId;
-		const roomConversation =  await this.chatService.getRoomIndividualConversationById(loggedUserId, roomId, data);
+		const roomConversation = await this.chatService.getRoomIndividualConversationById(loggedUserId, roomId, data);
 		const blockedUsers = await this.chatService.getBlckedUsers(loggedUserId);
-		return {roomConversation, blockedUsers}
+		return { roomConversation, blockedUsers }
 	}
 
 	@UseGuards(JwtGuard)
@@ -127,8 +130,8 @@ export class ChatController {
 		const loggedUserId = (req as any).user.id;
 		const roomsConversations = await this.chatService.getRoomConversations(loggedUserId);
 		const blockedUsers = await this.chatService.getBlckedUsers(loggedUserId);
-		const Conversationdata = {roomsConversations, blockedUsers}
-		return {loggedUser, Conversationdata};
+		const Conversationdata = { roomsConversations, blockedUsers }
+		return { loggedUser, Conversationdata };
 	}
 
 }

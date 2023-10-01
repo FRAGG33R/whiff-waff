@@ -52,6 +52,20 @@ export class ChatService {
 			return false;
 		return true;
 	}
+	async checkBlocked(sender: string, receiver: string): Promise<any> {
+		return await this.prismaService.friendship.findFirst({
+			where: {
+				OR:
+					[{
+						AND: [{ senderId: sender },
+						{ receivedId: receiver }]
+					}, {
+						AND: [{ senderId: receiver },
+						{ receivedId: sender }]
+					}]
+			}
+		});
+	}
 
 	private formatConversationResponse(sender: string, conversationdata: any, refactorType: string): IndividualConversationResponse | AllUserConversationsResponse {
 		let messages: Message[] = [];
@@ -340,6 +354,8 @@ export class ChatService {
 		const room = await this.prismaService.join.findUnique({
 			select: {
 				statut: true,
+				mutedAt: true,
+				mutedAmout: true,
 				roomChat: {
 					select: {
 						type: true
@@ -553,6 +569,27 @@ export class ChatService {
 
 
 
+	async getUsersInRoomById(roomId: string) {
+		try {
+			const users = await this.prismaService.join.findMany({
+				select: {
+					user: {
+						select: {
+							id: true,
+							userName: true,
+							avatar: true,
+						}
+					}
+				},
+				where: {
+					AND: [{ statut: { not: UserStatus.BANNED } }, { roomChatId: roomId }],
+				},
+			})
+			return users;
+		} catch (error) {
+
+		}
+	}
 
 	async getRoomInfosById(roomId: string) {
 		try {
@@ -575,12 +612,14 @@ export class ChatService {
 					id: roomId
 				}
 			})
-			let avatars: string[] = [];
-			newRoom.joins.forEach(element => {
-				avatars.push(element.user.avatar);
-			});
-			delete newRoom.joins;
-			(newRoom as any).avatars = avatars;
+			if (newRoom) {
+				let avatars: string[] = [];
+				newRoom.joins.forEach(element => {
+					avatars.push(element.user.avatar);
+				});
+				delete newRoom.joins;
+				(newRoom as any).avatars = avatars;
+			}
 			return newRoom;
 		} catch (error) {
 			throw new InternalServerErrorException(error);
@@ -816,6 +855,10 @@ export class ChatService {
 
 	async muteUser(loggedUserId: string, data: MuteDto) {
 		try {
+			if (!data.mute) {
+				delete data.duration;
+				delete (data as any).mutedAat;
+			}
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.roomId);
 			if (!existRoom)
 				throw { type: 'notFound' }
@@ -827,7 +870,7 @@ export class ChatService {
 			const muteUser = (data.mute) ? UserStatus.MUTED : userStatus.statut;
 			if (!data.mute) {
 				delete data.duration;
-				delete data.mutedAat;
+				delete (data as any).mutedAat;
 			}
 			const mutedUser = await this.prismaService.join.update({
 				where: {
@@ -838,10 +881,11 @@ export class ChatService {
 				},
 				data: {
 					statut: muteUser,
-					mutedAmout: data.duration,
-					mutedAt: data.mutedAat
+					mutedAmout: Number(data.duration),
+					mutedAt: BigInt((data as any).mutedAat)
 				}
 			});
+			mutedUser.mutedAt = mutedUser.mutedAt.toString() as any;
 			return mutedUser;
 		} catch (error) {
 			if (error.type === 'notFound')

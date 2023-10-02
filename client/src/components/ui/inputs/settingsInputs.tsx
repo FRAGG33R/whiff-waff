@@ -35,7 +35,7 @@ const UserInput: React.FC<InputProps> = ({
         <label className="text-[0.6rem] sm:text-[0.9rem] md:text-[0.8rem] lg:text-[1rem] xl:text-[1rem] 2xl:text-[1rem] 3xl:text-[1.2rem] ">  {label}</label>
       </div>
       <input
-     
+	  	autoComplete="new-password"
         type={type}
         placeholder={placeholder}
         onKeyDown={handleKeyDown}

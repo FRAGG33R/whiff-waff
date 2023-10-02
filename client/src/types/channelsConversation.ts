@@ -3,6 +3,8 @@ export interface ChannelsConversationHistoryType {
 	lastMessage : string,
     lastUser: string;
 	avatars: string[];
+	selected :boolean
+	onClick: () => void;
 }
 
 export interface ModelChannelsType{

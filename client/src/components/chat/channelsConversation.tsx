@@ -105,7 +105,7 @@ export default function ConversationChannels(
     <div
       className="h-16 md:h-[5rem] xl:h-[6.4rem] w-full cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px] flex items-center justify-center flex-row md:space-x-2 2xl:space-x-4 px-2"
     >
-      <div className="w-10 h-10 lg:w-14 lg:h-14 2xl:w-16 2xl:h-16 3xl:w-20 3xl:h-20 flex rounded-[12px] 2xl:rounded-[20px]">
+      <div className="w-10 h-10 lg:w-14 lg:h-14 2xl:w-16 2xl:h-16 3xl:w-20 3xl:h-20 flex rounded-[12px] 2xl:rounded-[20px] tooltip" data-tip={props.channelName}>
         {renderAvatars()}
       </div>
       <div className="flex flex-col space-y-[3px] xl:w-32 2xl:w-60">

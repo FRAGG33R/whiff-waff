@@ -11,8 +11,11 @@ import UserInput from "../ui/inputs/settingsInputs";
 import { KeyboardEvent } from "react";
 import { useRouter } from "next/router";
 import { api } from "../axios/instance";
+import { channelType } from "@/types/chatType";
+import { useRecoilState } from "recoil";
+import { channelAtom } from "@/context/RecoilAtoms";
 
-const CreateChannel = () => {
+const CreateChannel = (props : { selectedChannel : channelType , setSelectedChannel : Function }) => {
 
   const [open, setOpen] = useState(false);
   const [channelName, setChannelName] = useState("");
@@ -21,6 +24,7 @@ const CreateChannel = () => {
   const [errorChannel, setErrorChannel] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [channel, setChannel] = useRecoilState(channelAtom);
   const router = useRouter();
 
   const handleOpen = () => setOpen(!open);
@@ -36,9 +40,6 @@ const CreateChannel = () => {
 	if (!token)
 		router.push("/login");
 	else {
-		console.log("create channel");
-		console.log('channel name', channelName);
-		console.log('channel passowrd', password);
 		try {
 			if (channelName === "") {
 				setErrorChannel(true);
@@ -64,6 +65,18 @@ const CreateChannel = () => {
 				},
 			});
 			console.log('res : ', res.data);
+			const newChannel : channelType = {
+				roomChat : {
+					id : res.data.id,
+					name : res.data.name,
+				},
+				avatars : res.data.avatars,
+				message : [],
+			}
+			console.log('selectedChannel ** : ', props.selectedChannel);
+			setChannel((prev : channelType[]) => [...prev, newChannel]);
+			props.setSelectedChannel(newChannel);
+			setOpen(false);
 		} catch (error : any ) {
 			if (error.response)
 				console.log(error.response.data.message);

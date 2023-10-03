@@ -41,6 +41,8 @@ export interface channelBarType {
   channelName: string;
   channelId : string;
   avatars : string[];
+  selectedChannel : channelType;
+  setSelectedChannel : Function;
 }
 
 export interface roomType {

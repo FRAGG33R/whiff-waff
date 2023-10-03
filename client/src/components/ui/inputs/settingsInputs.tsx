@@ -6,6 +6,9 @@ const UserInput: React.FC<InputProps> = ({
   isError = false,
   setError,
   placeholder,
+
+
+  
   isDisabled = false,
   type = "text",
   lableColor = "#FF0000",

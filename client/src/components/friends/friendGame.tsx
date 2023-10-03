@@ -49,7 +49,7 @@ export default function FriendGame({
   };
 
   const handleMessage = () => {
-    router.push("/chat");
+    router.push(`/chat/${friends.userName}`);
   };
   const handleBlock = async () => {
     try {

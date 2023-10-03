@@ -30,7 +30,6 @@ const friendsComponent = () => {
   useEffect(() => {
     setFriendState(friendData as User[]);
   }, [friendData]);
-
   const fetchFriendData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -44,13 +43,14 @@ const friendsComponent = () => {
             Authorization: `Bearer ${token}`,
           },
         }
-      );
-      const userId = (loggedUserFriends as any).userName;
-      const accepted = res.data.response.friends.acceptedFriends;
-      const filteredAccepted = accepted
-        .filter((friend: any) => friend.receiver.userName === userId)
-        .map((friends: any) => friends.sender);
-      setFriendData(filteredAccepted);
+        );
+        const userId = (loggedUserFriends as any).userName;
+        const accepted = res.data.response.friends.acceptedFriends;
+        const filteredAccepted = accepted
+        .filter((friend: any) => friend.receiver.userName === userId || friend.sender.userName === userId)
+        .map((friends: any) => friends.receiver.userName === userId ? friends.sender : friends.receiver);
+        setFriendData(filteredAccepted);
+
       setFriendState(filteredAccepted);
     } catch (error) {
       console.log(error);
@@ -82,13 +82,12 @@ const friendsComponent = () => {
           )}
         </div>
 
-        {friendState.length !== 0 && (
+        
           <Pagination
             max={Math.ceil((friendState as any).elementsNumber / 7)}
             active={active}
             setActive={setActive}
           />
-        )}
       </div>
     </div>
   );

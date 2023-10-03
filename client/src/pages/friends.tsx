@@ -43,6 +43,7 @@ export const getServerSideProps = withIronSessionSsr(
           },
         }
       );
+      
       const accepted = res.data.response.friends.acceptedFriends;
       const pending = res.data.response.friends.pendingFriends;
       const filteredAccepted = accepted

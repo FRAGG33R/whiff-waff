@@ -2,12 +2,16 @@ import { useState } from "react";
 import FriendsComponent from "./friendsComponent";
 import FriendRequeste from "./friendRequeste";
 
+
 const TabSwitch = () => {
   const [activeTab, setActiveTab] = useState(1);
+
+
 
   const handleTabClick = (tabNumber: number) => {
     setActiveTab(tabNumber);
   };
+
 
   return (
     <div className="flex items-start justify-start h-[1050px] w-full flex-col space-y-4">
@@ -30,7 +34,7 @@ const TabSwitch = () => {
         <div className=" w-full h-[90%]  bg-CarbonGrey bg-opacity-10  rounded-xl flex flex-col justify-center">
           <div className={` w-full h-full b
           tab-content ${activeTab !== 1 ? "hidden" : ""}`}>
-            <FriendsComponent/>
+            <FriendsComponent />
           </div>
           <div className={`w-full h-full tab-content ${activeTab !== 2 ? "hidden" : ""}`}>
             <FriendRequeste/>

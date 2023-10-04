@@ -1,17 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import EXPLORE from "../../../public/EXPLORE.svg";
 import Descovery from "../../../public/Discovery.svg";
-import {
-  Dialog,
-  DialogHeader,
-  DialogBody,
-} from "@material-tailwind/react";
+import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import ModelChannel from "./modelChannel";
+import { useRouter } from "next/router";
+import { api } from "../axios/instance";
+
 const ExploreChannels = () => {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
-  const handleOpen = () => setOpen(!open);
   const dummyArray1 = [
     {
       channelName: "3assker6",
@@ -61,6 +60,32 @@ const ExploreChannels = () => {
       ],
     },
   ];
+  
+  const handleOpen = () => {
+	setOpen(!open);
+  };
+
+  const fetchData = async (token: string) => {
+    try {
+      const res = await api.get("/chat/room", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("res : ", res.data);
+
+    } catch (error: any) {
+      console.log("error : ", error);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) router.push("/login");
+    // else
+	// fetchData(token);
+  }, []);
+
   return (
     <div className="w-full flex flex-row  gap-2 justify-center xl:justify-start ">
       <button
@@ -78,33 +103,33 @@ const ExploreChannels = () => {
         </div>
       </button>
       <Dialog
-        className="bg-[#6C7FA7]  h-[600px] w-[200px] rounded-[20px]"
+        className="bg-RhinoBlue  h-[600px] w-[200px] rounded-[20px]"
         open={open}
         handler={handleOpen}
         size="xs"
       >
         <DialogHeader className="text-Mercury font-teko flex items-center justify-center gap-3 ">
-        <Image
-          src={Descovery}
-          alt="information icon"
-          className="w-[8%] h-[8%] "
-        />
-        <div className=" 2xl:w-[80%] flex items-center justify-start font-teko font-semibold  text-3xl text-Mercury ">
-          {" "}
-           Channels
-        </div>
+          <Image
+            src={Descovery}
+            alt="information icon"
+            className="w-[8%] h-[8%] "
+          />
+          <div className=" 2xl:w-[80%] flex items-center justify-start font-teko font-semibold  text-3xl text-Mercury ">
+            {" "}
+            Channels
+          </div>
         </DialogHeader>
         <DialogBody className="h-[510px] flex flex-col justify-center items-center">
-        <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar  scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-              {dummyArray1.map((item, index) => (
-                <ModelChannel
-                  key={index}
-                  channelName={item.channelName}
-                  channelType={item.channelType}
-                  avatars={item.avatars || []}
-                />
-              ))}
-            </div>
+          <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
+            {dummyArray1.map((item, index) => (
+              <ModelChannel
+                key={index}
+                channelName={item.channelName}
+                channelType={item.channelType}
+                avatars={item.avatars || []}
+              />
+            ))}
+          </div>
         </DialogBody>
       </Dialog>
     </div>

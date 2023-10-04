@@ -135,7 +135,6 @@ export class ChatController {
 		return { loggedUser, Conversationdata };
 	}
 	
-	
 	@UseGuards(JwtGuard)
 	@Get(roomConversations)
 	async exploreChannles() {

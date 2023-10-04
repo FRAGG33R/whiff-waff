@@ -25,7 +25,10 @@ export class ChatGateway implements OnGatewayConnection {
 			GuardsService.validateToken(client.handshake.headers?.authorization, this.configService.get('JWT_SECRET')) : false;
 		const existsUser = (validUser) ? await this.guardService.validate(validUser) : false;
 		if (!existsUser)
+		{
+			client.emit('exception', 'User not allowed to connect');
 			client.disconnect();
+		}
 		else if (this.loggedUsers) {
 			if (!this.loggedUsers.has((validUser as any).id))
 				this.loggedUsers.set((validUser as any).id, [client.id]);

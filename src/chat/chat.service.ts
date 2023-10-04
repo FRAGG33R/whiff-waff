@@ -656,7 +656,7 @@ export class ChatService {
 			if (existRoom.status !== UserStatus.ADMIN && existRoom.status !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
 			if (data.channelPassword) {
-				if (existRoom.roomChat.type === ChatRoomType.PRIVATE && ((!data.channelType || data.channelType === ChatRoomType.PRIVATE) && data.channelPassword))
+				if (existRoom.roomChat.type === ChatRoomType.PRIVATE)
 					throw { type: 'Privateforbiden' }
 				data.channelType = ChatRoomType.PROTECTED;
 			}

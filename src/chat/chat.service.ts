@@ -900,37 +900,35 @@ export class ChatService {
 
 	async exploreChannels() {
 		try {
-			return await this.prismaService.join.findMany({
+			return await this.prismaService.roomChat.findMany({
 				select: {
-					roomChat: {
-						select: {
-							id: true,
-							name: true,
-						}
-					},
-					messages: {
-						select: {
-							roomSender: {
-								select: {
-									user: {
-										select: {
-											id: true,
-											userName: true
-										}
-									}
-								}
-							},
-							message: true,
-							date: true,
-						},
-						orderBy: {
-							date: 'desc'
-						}
-					}
+					id: true,
+					name: true,
+					type: true,
 				},
 			})
 		} catch (error) {
 			throw new InternalServerErrorException(error);
 		}
+	}
+
+	async getUsersOfRoom(roomId: string) {
+		return await this.prismaService.join.findMany({
+			select: {
+				user: {
+					select: {
+						id: true,
+						userName: true,
+						avatar: true,
+					}
+				},
+				status: true,
+				mutedAmout: true,
+				mutedAt: true,
+			},
+			where: {
+				roomChatId: roomId,
+			}
+		});
 	}
 }

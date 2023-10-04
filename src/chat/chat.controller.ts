@@ -10,7 +10,8 @@ const conversationEndpoint = 'individualConversations'
 const individualConversation = 'individualConversations/:receiverId'
 const roomConversation = 'room/Conversations/:roomId'
 const roomConversations = 'room/Conversations'
-const rooms = 'rooms'
+const exploreChannels = 'exploreChannels'
+const usersOfRoom = 'usersOfRoom'
 const joinRoom = 'room/join'
 const leaveRoom = 'room/leave/:roomId'
 const updateRoom = 'room/update'
@@ -123,7 +124,8 @@ export class ChatController {
 		const blockedUsers = await this.chatService.getBlckedUsers(loggedUserId);
 		return { roomConversation, blockedUsers }
 	}
-
+	
+	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Get(roomConversations)
 	async getRoomConversations(@Req() req: Request) {
@@ -135,9 +137,17 @@ export class ChatController {
 		return { loggedUser, Conversationdata };
 	}
 	
+	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
-	@Get(roomConversations)
+	@Get(exploreChannels)
 	async exploreChannles() {
 		return await this.chatService.exploreChannels();
+	}
+
+	@ApiBearerAuth()
+	@UseGuards(JwtGuard)
+	@Get(usersOfRoom)
+	async getUsersOfRoom(@Body() data: RoomDeleteInfos) {
+		return await this.chatService.getUsersOfRoom(data.channelId);
 	}
 }

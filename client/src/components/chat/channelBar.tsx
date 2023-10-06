@@ -3,15 +3,18 @@ import { IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/router";
 import { motion } from "framer-motion";
 import { channelBarType, channelType } from "@/types/chatType";
-import { IconSettings, IconDoorExit } from '@tabler/icons-react';
+import { IconDoorExit } from '@tabler/icons-react';
 import { api } from "../axios/instance";
 import { RenderAvatars } from "./renderAvatars";
 import { useRecoilState } from "recoil";
 import { channelAtom } from "@/context/RecoilAtoms";
+import { useState } from "react";
+import ChannelSettings from "./channelSetting";
 
 export default function ChannelBar(props: channelBarType) {
   const router = useRouter();
   const [channel, setChannel] = useRecoilState(channelAtom);
+  const [opneSettings, setOpenSettings] = useState(false);
 
   const handleDeleteChannel = async () => {
 	try {
@@ -33,6 +36,7 @@ export default function ChannelBar(props: channelBarType) {
   }
 
   const handleOpenSettings = async () => {
+	setOpenSettings(!opneSettings);
 
   }
   const handleLeaveChannel = async () => {
@@ -55,14 +59,15 @@ export default function ChannelBar(props: channelBarType) {
           </div>
         </div>
         <div className="h-full min-w-1 flex flex-row gap-4 items-center justify-center">
-          <motion.div
+          {/* <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleOpenSettings}
             className="w-10 md:w-14 h-10 md:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
           >
             <IconSettings className="w-6 md:w-8 h-6 md:h-8" />
-          </motion.div>
+          </motion.div> */}
+		  <ChannelSettings selectedChannel={props.selectedChannel}/>
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}

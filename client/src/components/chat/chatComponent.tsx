@@ -230,7 +230,7 @@ export default function ChatComponent() {
           avatars: channel.avatars,
         };
       });
-      router.push(`/chat/${channel.roomChat.id}`);
+    //   router.push(`/chat/${channel.roomChat.id}`);
     } catch (error) {}
   };
 
@@ -283,61 +283,59 @@ export default function ChatComponent() {
 
   const handleException = (error: any) => {
     console.log("socket error : ", error.message);
-    toast.error(error.message, {
-      style: {
-        borderRadius: "12px",
-        padding: "12px",
-        background: "#6C7FA7",
-        color: "#fff",
-        fontFamily: "Poppins",
-        fontSize: "18px",
-      },
-    });
-    //setIsError(true);
-    //update the laset message on the selected conversation to be an error message
-    setSelectedConversation((prev: conversationType | null) => {
-      if (prev) {
-        const newMessages: messageType[] = [...prev.messages];
-        newMessages[newMessages.length - 1].isError = true;
-        return {
-          receiver: prev.receiver,
-          messages: newMessages,
-        };
-      }
-      return prev;
-    });
+    // toast.error(error.message, {
+    //   style: {
+    //     borderRadius: "12px",
+    //     padding: "12px",
+    //     background: "#6C7FA7",
+    //     color: "#fff",
+    //     fontFamily: "Poppins",
+    //     fontSize: "18px",
+    //   },
+    // });
+    // //setIsError(true);
+    // //update the laset message on the selected conversation to be an error message
+    // setSelectedConversation((prev: conversationType | null) => {
+    //   if (prev) {
+    //     const newMessages: messageType[] = [...prev.messages];
+
+    //     newMessages[newMessages.length - 1].isError = true;
+    //     return {
+    //       receiver: prev.receiver,
+    //       messages: newMessages,
+    //     };
+    //   }
+    //   return prev;
+    // });
   };
 
-  useEffect(() => {
-    const socket = io("http://34.173.232.127:6080/", {
-      extraHeaders: {
-        authorization: `Bearer ${token}`,
-      },
-    });
-    socket.on("connect", handleConnection);
-    socket.on("exception", handleException);
-    socket.on("message", handleReceivedMessage);
-    setSocket(socket);
-    return () => {
-      socket.off("connect", handleConnection);
-      socket.off("message", handleReceivedMessage);
-      socket.off("exception", handleException);
-    };
-  }, []);
+	useEffect(() => {
+	  const socket = io("http://34.173.232.127:6080/", {
+		  extraHeaders: {
+			  authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+		socket.on("connect", handleConnection);
+		socket.on("exception", handleException);
+		socket.on("message", handleReceivedMessage);
+		setSocket(socket);
+		return () => {
+			socket.off("connect", handleConnection);
+			socket.off("message", handleReceivedMessage);
+			socket.off("exception", handleException);
+		};
+	}, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) router.push("/login");
-    else {
-      setToken(token);
-      findSelectedConversation(token);
-      setLoaded(true);
-    }
-  }, [activeTab]);
-
-  useEffect(() => {
-    console.log("selected channel : ", selectedChannel);
-  }, [selectedChannel]);
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (!token) router.push("/login");
+		else {
+		  setToken(token);
+		  findSelectedConversation(token);
+		  setLoaded(true);
+		}
+	  }, [activeTab]);
+	
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">

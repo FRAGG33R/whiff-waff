@@ -13,7 +13,7 @@ const roomConversations = 'room/Conversations'
 const exploreChannels = 'exploreChannels'
 const usersOfRoom = 'usersOfRoom/:roomId'
 const joinRoom = 'room/join'
-const leaveRoom = 'room/leave/:roomId'
+const leaveRoom = 'room/leave'
 const updateRoom = 'room/update'
 const deleteRoom = 'room/delete'
 const inviteRoom = 'room/invite'
@@ -97,8 +97,8 @@ export class ChatController {
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(leaveRoom)
-	async leaveRoom(@Req() req: Request) {
-		await this.chatService.leaveRoom((req as any).user.id, (req as any).params.roomId);
+	async leaveRoom(@Req() req: Request, @Body() data: RoomDeleteInfos) {
+		await this.chatService.leaveRoom((req as any).user.id, data.channelId);
 		return { message: 'You left the room' };
 	}
 

@@ -1,14 +1,20 @@
 import { SingleMembreType } from "@/types/singleConversationHistory";
+import { useRouter } from "next/router";
 import React from "react";
 import { motion } from "framer-motion";
 import Silence from "../../../public/mute.svg";
 import SettingDrop from "../../../public/drop.svg";
 import Image from "next/image";
-import { useRouter } from "next/router";
 
 const ModelSettings = (props: SingleMembreType) => {
   const router = useRouter();
 
+  const handleMute = async () => {
+  }
+  const handleSettings = async  () => {
+
+  }
+	
   return (
     <div
       onClick={() => {}}
@@ -30,15 +36,16 @@ const ModelSettings = (props: SingleMembreType) => {
           <div className="lg:text-xl 2xl:text-3xl tracking-wider font-teko text-Mercury">
             {props.userName}
           </div>
-          <div className="font-light font-teko text-white/60 2xl:text-md 3xl:text-xl">
-            {props.admin ? "Admin" : ""}
+          <div className="font-light font-teko text-white/60 2xl:text-md 3xl:text-xl lowercase">
+            {props.type === "DEFLAULT" ? "" : props.type}
           </div>
         </div>
-        {props.member && (
+        {props.type === "MEMBER" && (
           <div className="min-w-1 h-full flex flex-row items-center justify-center gap-2">
             <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+			  onClick={handleMute}
               className="w-8 h-8 md:w-10 md:h-10 3xl:w-12 3xl:h-12 flex items-center justify-center bg-HokiCl/[50%] rounded-[10px] 2xl:rounded-[18px]"
             >
               <Image
@@ -50,6 +57,7 @@ const ModelSettings = (props: SingleMembreType) => {
             <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+			  onClick={handleSettings}
               className="w-8 h-8 md:w-10 md:h-10 3xl:w-12 3xl:h-12 flex items-center justify-center  rounded-[10px] 2xl:rounded-[18px]"
             >
               <Image

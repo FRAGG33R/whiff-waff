@@ -1,4 +1,3 @@
-
 interface receivertype {
   id: string;
   avatar: string;
@@ -39,10 +38,10 @@ export interface individualChatComponentType {
 
 export interface channelBarType {
   channelName: string;
-  channelId : string;
-  avatars : string[];
-  selectedChannel : channelType;
-  setSelectedChannel : Function;
+  channelId: string;
+  avatars: string[];
+  selectedChannel: channelType;
+  setSelectedChannel: Function;
 }
 
 export interface roomType {
@@ -54,4 +53,15 @@ export interface channelType {
   roomChat: roomType;
   message: channelMessageType[];
   avatars: string[];
+}
+
+export interface channelUsersType {
+  user: {
+    id: string;
+    userName: string;
+    avatar: string;
+  };
+  status: string;
+  mutedAmout: string;
+  mutedAt: string;
 }

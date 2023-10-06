@@ -73,6 +73,7 @@ export default function ChatComponent() {
         });
       } else {
         try {
+			
           const res = await api.get(`/users/profile/${router.query.chatId}`, {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -1,21 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import UserInput from "../ui/inputs/settingsInputs";
 import { KeyboardEvent } from "react";
 import { motion } from "framer-motion";
 import { IconSettings } from "@tabler/icons-react";
-import { channelType } from "@/types/chatType";
+import { channelType, channelUsersType } from "@/types/chatType";
 import Setting from "../../../public/settings.svg";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import ModelSettings from "./modelSettings";
 import Image from "next/image";
 import { api } from "../axios/instance";
 import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from "next/router";
 
 const ChannelSettings = (props: { selectedChannel: channelType }) => {
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState("");
   const [errorPassword, setErrorPassword] = useState(false);
+  const [channelUsers, setChannelUsers] = useState<channelUsersType[]>([]);
+  const router = useRouter();
+  const dummyArray1 = [
+    {
+      membre: false,
+      admin: true,
+      userName: "machlouj",
+      avatars:
+        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
+    },
+    {
+      membre: true,
+      admin: false,
+      userName: "kamal",
+      avatars:
+        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
+    },
+    {
+      membre: true,
+      admin: false,
+      userName: "ayoub",
+      avatars:
+        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
+    },
+    {
+      membre: true,
+      admin: false,
+      userName: "yakoub",
+      avatars:
+        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
+    },
+    {
+      membre: true,
+      admin: false,
+      userName: "houssam",
+      avatars:
+        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
+    },
+  ];
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -64,43 +104,25 @@ const ChannelSettings = (props: { selectedChannel: channelType }) => {
     }
   };
 
-  const dummyArray1 = [
-    {
-      membre: false,
-      admin: true,
-      userName: "machlouj",
-      avatars:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-    },
-    {
-      membre: true,
-      admin: false,
-      userName: "kamal",
-      avatars:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-    },
-    {
-      membre: true,
-      admin: false,
-      userName: "ayoub",
-      avatars:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-    },
-    {
-      membre: true,
-      admin: false,
-      userName: "yakoub",
-      avatars:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-    },
-    {
-      membre: true,
-      admin: false,
-      userName: "houssam",
-      avatars:
-        "https://images-ext-1.discordapp.net/external/qYoh4EfH4xvcxE8fNS1clj01IfXfVP6CjPdaDMeEDzU/%3Fixlib%3Drb-4.0.3%26ixid%3DM3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%253D%253D%26auto%3Dformat%26fit%3Dcrop%26w%3D5360%26q%3D80/https/images.unsplash.com/photo-1672478503001-d6c68cda3d8d?width=1638&height=1638",
-    },
-  ];
+  const getUsers = async (token: string) => {
+    try {
+      const res = await api.get(`/chat/usersOfRoom/${props.selectedChannel.roomChat.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res.data);
+	  setChannelUsers(res.data);
+    } catch (error: any) {
+      console.log(error.response.data);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) router.push("/login");
+    else getUsers(token);
+  }, []);
 
   return (
     <div>
@@ -148,13 +170,12 @@ const ChannelSettings = (props: { selectedChannel: channelType }) => {
           </div>
           <div className="w-full h-[500px] rounded-[12px] flex items-center justify-center">
             <div className="w-full h-[400px] px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-              {dummyArray1.map((item, index) => (
+              {channelUsers.map((item : channelUsersType, index : number) => (
                 <ModelSettings
                   key={index}
-                  userName={item.userName}
-                  avatar={item.avatars}
-                  admin={item.admin}
-                  member={item.membre}
+                  userName={item.user.userName}
+                  avatar={item.user.avatar}
+				  type={item.status}
                 />
               ))}
             </div>

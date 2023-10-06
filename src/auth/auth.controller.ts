@@ -40,7 +40,6 @@ export class AuthController {
 	@UseGuards(LocalGuard)
 	@Post(signinAuthEndPoint)
 	signIn(@Body() dto: SignInDto, @Req() req: Request) {
-		
 		return (req.user);
 	}
 

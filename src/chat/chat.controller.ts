@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ConversationDto, Invitation, MuteDto, RoomDeleteInfos, RoomInfos, RoomUpdateInfos, RoomUserInfos } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 import { JwtGuard } from 'src/auth/guards/guards.jwtGuard';
@@ -11,7 +11,7 @@ const individualConversation = 'individualConversations/:receiverId'
 const roomConversation = 'room/Conversations/:roomId'
 const roomConversations = 'room/Conversations'
 const exploreChannels = 'exploreChannels'
-const usersOfRoom = 'usersOfRoom'
+const usersOfRoom = 'usersOfRoom/:roomId'
 const joinRoom = 'room/join'
 const leaveRoom = 'room/leave/:roomId'
 const updateRoom = 'room/update'
@@ -147,7 +147,7 @@ export class ChatController {
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Get(usersOfRoom)
-	async getUsersOfRoom(@Body() data: RoomDeleteInfos) {
-		return await this.chatService.getUsersOfRoom(data.channelId);
+	async getUsersOfRoom(@Param('roomId') roomId: string) {
+		return await this.chatService.getUsersOfRoom(roomId);
 	}
 }

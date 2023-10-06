@@ -4,7 +4,7 @@ import { GuardsService } from 'src/chat/guards/guards.service';
 
 
 
-@WebSocketGateway(6080, {
+@WebSocketGateway(8888, {
 	cors: {
 		origin: "*"
 	}

@@ -10,7 +10,6 @@ import { api } from "../axios/instance";
 const ExploreChannels = () => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-
   const dummyArray1 = [
     {
       channelName: "3assker6",
@@ -67,13 +66,12 @@ const ExploreChannels = () => {
 
   const fetchData = async (token: string) => {
     try {
-      const res = await api.get("/chat/room", {
+      const res = await api.get("/chat/exploreChannels", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       console.log("res : ", res.data);
-
     } catch (error: any) {
       console.log("error : ", error);
     }
@@ -82,8 +80,8 @@ const ExploreChannels = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
-    // else
-	// fetchData(token);
+    else
+	fetchData(token);
   }, []);
 
   return (

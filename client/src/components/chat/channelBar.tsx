@@ -30,12 +30,13 @@ export default function ChannelBar(props: channelBarType) {
         }
       );
       console.log("res : ", res.data);
-      setChannel((prev: channelType[]) => {
-        return prev.filter(
-          (item: channelType) => item.roomChat.id !== props.channelId
-        );
-      });
-      props.setSelectedChannel((channel as channelType[])[0]);
+	  setChannel((prev: channelType[]) => {
+		const updatedChannels = prev.filter(
+		  (item: channelType) => item.roomChat.id !== props.selectedChannel.roomChat.id
+		);
+		props.setSelectedChannel(updatedChannels[0]);
+		return updatedChannels;
+	});
     } catch (error: any) {
       console.log(error.response.data);
       toast.error(error.response.data, {
@@ -55,6 +56,7 @@ export default function ChannelBar(props: channelBarType) {
   const handleOpenSettings = async () => {
     setOpenSettings(!opneSettings);
   };
+  
   const handleLeaveChannel = async () => {
     const token = localStorage.getItem("token");
     console.log("toke :", token);
@@ -71,14 +73,15 @@ export default function ChannelBar(props: channelBarType) {
             Authorization: `Bearer ${token}`,
           },
         }
-      );
-	  setChannel((prev: channelType[]) => {
-        return prev.filter(
-          (item: channelType) => item.roomChat.id !== props.channelId
-        );
-      });
-	  if ((channel as channelType[]).length > 0)
-      	props.setSelectedChannel((channel as channelType[])[0]);
+	);
+	setChannel((prev: channelType[]) => {
+		const updatedChannels = prev.filter(
+		  (item: channelType) => item.roomChat.id !== props.selectedChannel.roomChat.id
+		);
+		props.setSelectedChannel(updatedChannels[0]);
+		return updatedChannels;
+	});
+
     } catch (error: any) {
       console.log(error.response.data);
     }

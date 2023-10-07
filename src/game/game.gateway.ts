@@ -3,6 +3,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket, SocketType } from 'dgram';
 import { GuardsService } from 'src/chat/guards/guards.service';
 import { GameService } from './game.service';
+import Matter, { Vector, Body } from 'matter-js';
 
 
 
@@ -58,7 +59,7 @@ export class GameGateway implements OnGatewayConnection {
 		game.id1 = (client as any).id;
 		game.id2 = data.id;
 		this.inviteFriendsArray.push(game);
-		// socket.emit('notification', { data: 'notification' });
+		socket?.emit('notification', { data: 'notification' });
 	}
 
 	@SubscribeMessage('left')
@@ -69,9 +70,10 @@ export class GameGateway implements OnGatewayConnection {
 	@SubscribeMessage('start')
 	async start(@ConnectedSocket() client: any, @MessageBody() data: { id: string, type: string }) {
 		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === client.id || element.id1 === client.id);
-		if (index >= 0 && this.inviteFriendsArray[index].ready) {
-			this.inviteFriendsArray[index].getPlayer1().emit('start', { data: 'start' });
-			this.inviteFriendsArray[index].getPlayer2().emit('start', { data: 'start' });
+		if (index >= 0) {
+			this.inviteFriendsArray[index].getPlayer1()?.emit('start', { data: 'start' });
+			this.inviteFriendsArray[index].getPlayer2()?.emit('start', { data: 'start' });
+			this.inviteFriendsArray[index].spownBall();
 		}
 	}
 
@@ -81,5 +83,20 @@ export class GameGateway implements OnGatewayConnection {
 		console.log('disconnect');
 		this.connectedUsers.delete((validUser as any).id);
 		// client.emit('status', { status: 'offline' });
+	}
+
+	@SubscribeMessage('move')
+	async move(@ConnectedSocket() client: any, @MessageBody('position') position: Vector) {
+		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === client.id || element.id1 === client.id);
+		if (index >= 0) {
+			let game: GameService = this.inviteFriendsArray[index];
+			console.log(client.id, game.id1, game.id2,);
+			if (client.id === game.id1){
+				console.log(position);
+				Body.setPosition(game.p1, position);
+			}
+			else
+				Body.setPosition(game.p2, position);
+		}
 	}
 }

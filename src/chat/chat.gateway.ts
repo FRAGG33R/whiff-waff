@@ -9,7 +9,7 @@ import { ChatService } from './chat.service';
 import { FriendshipStatus, UserStatus } from '@prisma/client';
 
 const chatGateway = 'ChatGateway';
-@WebSocketGateway( {
+@WebSocketGateway(8889, {
 	cors: {
 		origin: "*"
 	}

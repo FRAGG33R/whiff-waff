@@ -3,11 +3,12 @@ import { GameGateway } from './game.gateway';
 import { GameService } from './game.service';
 import { GameController } from './game.controller';
 import { GuardsModule } from 'src/chat/guards/guards.module';
+import { Socket } from 'dgram';
 
 @Module({
 	imports: [GuardsModule],
-	providers: [GameGateway, GameService],
+	providers: [GameGateway],
 	controllers: [GameController],
-	exports: [GameService, GameGateway],
+	exports: [GameGateway],
 })
 export class GameModule { }

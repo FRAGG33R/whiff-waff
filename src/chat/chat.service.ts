@@ -900,13 +900,31 @@ export class ChatService {
 
 	async exploreChannels() {
 		try {
-			return await this.prismaService.roomChat.findMany({
+			const data = await this.prismaService.roomChat.findMany({
 				select: {
 					id: true,
 					name: true,
 					type: true,
+					joins: {
+						select: {
+							user: {
+								select: {
+									avatar: true,
+								}
+							}
+						}
+					}
 				},
 			})
+			data.forEach(element => {
+				let avatars: any[] = [];
+				element.joins.forEach((element: any) => {
+					avatars.push(element.user.avatar);
+				});
+				(element as any).avatars = avatars;
+				delete element.joins;
+			})
+			return data;
 		} catch (error) {
 			throw new InternalServerErrorException(error);
 		}

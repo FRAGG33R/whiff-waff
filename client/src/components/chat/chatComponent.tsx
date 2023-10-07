@@ -336,7 +336,6 @@ export default function ChatComponent() {
 		  setLoaded(true);
 		}
 	  }, [activeTab]);
-	
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">

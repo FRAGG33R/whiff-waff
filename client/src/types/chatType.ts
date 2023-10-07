@@ -65,3 +65,12 @@ export interface channelUsersType {
   mutedAmout: string;
   mutedAt: string;
 }
+
+
+export interface expoloreChannelListType {
+	id : string,
+	name : string,
+	type : string, 
+	avatars : string[]
+}
+

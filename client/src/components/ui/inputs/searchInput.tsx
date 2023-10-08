@@ -28,12 +28,6 @@ const SearchInput: React.FC<searchInputProps> = () => {
       setLoaded(true);
     }
   };
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-		handleNavigation(searchResult[0].userName);
-    }
-  };
   const handleNavigation = async (userName : string) => {
 	await router.push(`/profile/${userName}`)
 	if (router.pathname === `/profile/[id]`) router.reload();
@@ -50,7 +44,6 @@ const SearchInput: React.FC<searchInputProps> = () => {
       <input
         type={"search"}
         name={"search"}
-		onKeyDown={handleKeyDown}
         placeholder={"Search for everything..."}
         onChange={(e) => {
           handleSearch(e.target.value);

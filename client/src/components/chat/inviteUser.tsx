@@ -3,33 +3,92 @@ import { IconUserPlus } from "@tabler/icons-react";
 import searchIcon from "../../../public/searchIcon.svg";
 import Image from "next/image";
 import {
-  Button,
   Dialog,
   DialogHeader,
   DialogBody,
-  DialogFooter,
 } from "@material-tailwind/react";
 import SearchInput from "../ui/inputs/searchInput";
 import PrimaryButton from "../ui/buttons/primaryButton";
-const InviteUser = () => {
-  const [open, setOpen] = useState(false);
+import { motion } from "framer-motion";
+import UserInput from "../ui/inputs/userInput";
+import { KeyboardEvent } from "react";
+import { api } from "../axios/instance";
+import { useRouter } from "next/router";
+import toast, { Toaster } from "react-hot-toast";
+import { channelType } from "@/types/chatType";
 
+const InviteUser = (props : {selectedChannel : channelType}) => {
+  const [open, setOpen] = useState(false);
+  const [user, setUser] = useState("");
+  const [userNameError, setUserNameError] = useState(false);
+  const router = useRouter();
+
+  const handleInvite = async () => {
+	console.log("user : ", user);
+	if (user.length < 1) {
+	  toast.error("Username must be at least 1 characters", {
+		style: {
+		  borderRadius: "12px",
+		  padding: "12px",
+		  background: "#6C7FA7",
+		  color: "#fff",
+		  fontFamily: "Poppins",
+		  fontSize: "18px",
+		},
+	  });
+	  return ;
+	}
+	const req = {
+		userName : user,
+		channelId: props.selectedChannel.roomChat.id,
+	};
+	try {
+		console.log('req : ', req);
+	  const res = await api.post("/chat/room/invite", req, {
+		headers: {
+		  Authorization: `Bearer ${localStorage.getItem("token")}`,
+		},
+	  });
+	  console.log(res.data);
+	} catch (err: any) {
+	  console.log(err.response.data.message);
+	  toast.error(err.response.data.message, {
+		style: {
+		  borderRadius: "12px",
+		  padding: "12px",
+		  background: "#6C7FA7",
+		  color: "#fff",
+		  fontFamily: "Poppins",
+		  fontSize: "18px",
+		},
+	  });
+	}
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+		handleInvite();
+    }
+  };
   const handleOpen = () => setOpen(!open);
-  const handleInvite = () => {};
+
   return (
-    <div className="w-full flex flex-row  gap-2 ">
-      <button
+    <div className="min-w-1 flex flex-row gap-2">
+	  <motion.div
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         onClick={handleOpen}
-        className="flex items-center justify-start gap-2"
+        className="w-10 md:w-14 h-10 md:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
       >
-        <IconUserPlus className="w-[90%] 2xl:w-[23%] h-full" />
-      </button>
+        <IconUserPlus className="w-6 md:w-8 h-6 md:h-8" />
+      </motion.div>
       <Dialog
-        className="bg-[#6C7FA7]  h-[300px] w-[200px] rounded-[20px]"
+        className="bg-RhinoBlue h-[300px] w-[200px] rounded-[20px]"
         open={open}
         handler={handleOpen}
         size="xs"
       >
+        <Toaster position="top-right" />
         <DialogHeader className="text-Mercury font-teko flex items-center justify-center gap-3 ">
           <IconUserPlus className="w-[6%] h-[6%]" />
           <div className=" 2xl:w-[80%] flex items-center justify-start font-teko font-semibold  text-3xl text-Mercury ">
@@ -37,27 +96,24 @@ const InviteUser = () => {
             Add User
           </div>
         </DialogHeader>
-        <DialogBody className="h-[200px] flex flex-col justify-center items-center ">
-          <div className="h-[70px] w-full flex  justify-center items-center">
-            <div className="hidden h-full w-[70%]  md:flex flex-row items-center bg-[#606060]  bg-opacity-80 rounded-[12px] md:rounded-[20px]">
-              <SearchInput
-                onSearch={() => {}}
-                placeholder="Search for everything..."
-              />
-            </div>
-            <button
-              onClick={() => {
-                setOpen((prev) => !prev);
-                handleInvite();
-              }}
-              className="flex h-full min-w-[15%] w-[15%] md:hidden items-center justify-center bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]"
-            >
-              <Image src={searchIcon} alt="search icon" className="w-5" />
-            </button>
-          </div>
-          <div className="h-[100px] w-full flex  justify-center items-center">
+        <DialogBody className="h-[200px] flex flex-col justify-center items-center space-y-4">
+			<div className="min-w-1 flex items-center justify-center">
+			<UserInput
+				handleKeyDown={handleKeyDown}
+				placeholder="*********"
+				type="text"
+				label="Username"
+				lableColor="bg-RhinoBlue"
+				width="xl"
+				regExp={/^.{1,}$/}
+				isError={userNameError}
+				isDisabled={false}
+				value={user}
+				setError={setUserNameError}
+				setValue={setUser}
+				/>
+			</div>
             <PrimaryButton text="Invite" onClick={handleInvite} />
-          </div>
         </DialogBody>
       </Dialog>
     </div>

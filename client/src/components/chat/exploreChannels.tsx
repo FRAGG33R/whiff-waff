@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, KeyboardEvent } from "react";
 import Image from "next/image";
 import EXPLORE from "../../../public/EXPLORE.svg";
 import Descovery from "../../../public/Discovery.svg";
@@ -7,65 +7,88 @@ import ModelChannel from "./modelChannel";
 import { useRouter } from "next/router";
 import { api } from "../axios/instance";
 import { channelType, expoloreChannelListType } from "@/types/chatType";
-import toast, {Toaster} from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useRecoilState } from "recoil";
 import { channelAtom } from "@/context/RecoilAtoms";
+import UserInput from "../ui/inputs/userInput";
+import PrimaryButton from "../ui/buttons/primaryButton";
 
-const ExploreChannels = (props : {selectedChannel : channelType, setSelectedChannel : Function}) => {
+const ExploreChannels = (props: {
+  selectedChannel: channelType;
+  setSelectedChannel: Function;
+}) => {
   const [open, setOpen] = useState(false);
   const [channel, setChannel] = useRecoilState(channelAtom);
-  const [exploreChannelList, setExploreChannelList] = useState<expoloreChannelListType[]>([]);
+  const [displayPassword, setDisplayPassword] = useState<boolean>(false);
+  const [exploreChannelList, setExploreChannelList] = useState<
+    expoloreChannelListType[]
+  >([]);
+  const [password, setPassword] = useState<string>("");
+  const [errorPassword, setErrorPassword] = useState(false);
+  const [item, setItem] = useState<expoloreChannelListType>({} as any);
   const router = useRouter();
 
-  const handleOpen = () => {
-	setOpen(!open);
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+		handleJoinChannel(item);
+    }
   };
 
-  const handleJoinChannel =  async (item : expoloreChannelListType) => {
-	console.log("join channel");
-	const token = localStorage.getItem("token");
-	if (!token){
-		router.push("/login");
-		return;
-	}
-	try {
-		const req = {
-			channelName : item.name,
-			channelPassword : "",
-		}
-		console.log('request |  : ', req);
-		const res = await api.post("/chat/room/join", req, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		});
-		console.log('res : ', res.data);
-		const newChannel : channelType = {
-			roomChat : {
-				id : res.data.id,
-				name : res.data.name,
-			},
-			avatars : res.data.avatars,
-			message : [],
-		}
-		console.log('selectedChannel ** : ', props.selectedChannel);
-		setChannel((prev : channelType[]) => [...prev, newChannel]);
-		props.setSelectedChannel(newChannel);
-		setOpen(false);
-	} catch (error : any ) {
-		console.log('error : ', error.response.data.message);
-			toast.error(error.response.data.message, {
-				style: {
-				  borderRadius: "12px",
-				  padding: "12px",
-				  background: "#6C7FA7",
-				  color: "#fff",
-				  fontFamily: "Poppins",
-				  fontSize: "18px",
-				},
-			  });
-	}
-  }
+  const handleOpen = () => {
+    setOpen(!open);
+    setDisplayPassword(false);
+  };
+
+  const handleJoinChannel = async (item: expoloreChannelListType) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+    try {
+      var req;
+      if (password.length > 0)
+        req = {
+          channelName: item.name,
+          channelPassword: password,
+        };
+      else
+        req = {
+          channelName: item.name,
+        };
+      console.log("request |  : ", req);
+      const res = await api.post("/chat/room/join", req, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("res : ", res.data);
+      const newChannel: channelType = {
+        roomChat: {
+          id: res.data.id,
+          name: res.data.name,
+        },
+        avatars: res.data.avatars,
+        message: [],
+      };
+      console.log("selectedChannel ** : ", props.selectedChannel);
+      setChannel((prev: channelType[]) => [...prev, newChannel]);
+      props.setSelectedChannel(newChannel);
+      setOpen(false);
+    } catch (error: any) {
+      console.log("error : ", error.response.data.message);
+      toast.error(error.response.data.message, {
+        style: {
+          borderRadius: "12px",
+          padding: "12px",
+          background: "#6C7FA7",
+          color: "#fff",
+          fontFamily: "Poppins",
+          fontSize: "18px",
+        },
+      });
+    }
+  };
 
   const fetchData = async (token: string) => {
     try {
@@ -74,19 +97,17 @@ const ExploreChannels = (props : {selectedChannel : channelType, setSelectedChan
           Authorization: `Bearer ${token}`,
         },
       });
-	  setExploreChannelList(res.data);
+      setExploreChannelList(res.data);
     } catch (error: any) {
       console.log("error : ", error);
     }
   };
 
   useEffect(() => {
-	if (open === false )
-		return;
+    if (open === false) return;
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
-    else
-	fetchData(token);
+    else fetchData(token);
   }, [open]);
 
   return (
@@ -111,7 +132,7 @@ const ExploreChannels = (props : {selectedChannel : channelType, setSelectedChan
         handler={handleOpen}
         size="xs"
       >
-      <Toaster position="top-right" />
+        <Toaster position="top-right" />
         <DialogHeader className="text-Mercury font-teko flex items-center justify-center gap-3 ">
           <Image
             src={Descovery}
@@ -125,15 +146,48 @@ const ExploreChannels = (props : {selectedChannel : channelType, setSelectedChan
         </DialogHeader>
         <DialogBody className="h-[510px] flex flex-col justify-center items-center">
           <div className="w-full h-full px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-            {exploreChannelList.map((item, index) => (
-              <ModelChannel
-                key={index}
-                channelName={item.name}
-                channelType={item.type}
-                avatars={item.avatars || []}
-				handleJoinChannel={() => handleJoinChannel(item)}
-              />
-            ))}
+            {displayPassword === false ? (
+              <>
+                {exploreChannelList.map((item, index) => (
+                  <ModelChannel
+                    key={index}
+                    channelName={item.name}
+                    channelType={item.type}
+                    avatars={item.avatars || []}
+                    handleJoinChannel={() => {
+						setItem(item);
+                      if (item.type === "PROTECTED") setDisplayPassword(true);
+					  else
+                      handleJoinChannel(item);
+                    }}
+                  />
+                ))}
+              </>
+            ) : (
+              <div className="w-full h-full flex flex-col space-y-4 items-center justify-center">
+                <div className=" flex items-center justify-center">
+                  <UserInput
+                    handleKeyDown={handleKeyDown}
+                    placeholder="*********"
+                    type="password"
+                    label="Password"
+                    lableColor="bg-RhinoBlue"
+                    width="xl"
+                    regExp={/^.{1,}$/}
+                    isError={errorPassword}
+                    isDisabled={false}
+                    value={password}
+                    setError={setErrorPassword}
+                    setValue={setPassword}
+                  />
+                </div>
+                <PrimaryButton
+                  onKeyDown={() => {}}
+                  text="Confirm"
+                  onClick={() => handleJoinChannel(item)}
+                />
+              </div>
+            )}
           </div>
         </DialogBody>
       </Dialog>

@@ -29,7 +29,7 @@ const CreateChannel = (props : { selectedChannel : channelType , setSelectedChan
 
   const handleOpen = () => setOpen(!open);
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {	
     if (e.key === "Enter") {
 		handleCreateChannel();
     }
@@ -97,7 +97,7 @@ const CreateChannel = (props : { selectedChannel : channelType , setSelectedChan
   }, [open]);
 
   return (
-    <div className="w-full flex flex-row gap-2  justify-center xl:justify-start">
+    <div className="w-full flex flex-row gap-2 justify-center xl:justify-start">
       <button
         onClick={handleOpen}
         className="flex items-center justify-start  gap-2"
@@ -135,20 +135,20 @@ const CreateChannel = (props : { selectedChannel : channelType , setSelectedChan
 			  />
           </div>
           <div>
-            <UserInput
-              handleKeyDown={handleKeyDown}
-              placeholder="*********"
-              type="password"
-              label="Password"
-              lableColor="bg-RhinoBlue"
-              width="xl"
-              regExp={/^.{4,}$/}
-              isError={errorPassword}
-              isDisabled={false}
-              value={password} 
-              setError={setErrorPassword}
-              setValue={setPassword}
-			  />
+		<UserInput
+			handleKeyDown={handleKeyDown}
+			placeholder="*********"
+			type="password"
+			label="Password"
+			lableColor="bg-RhinoBlue"
+			width="xl"
+			regExp={/^.{4,}$/}
+			isError={errorPassword}
+			isDisabled={false}
+			value={password} 
+			setError={setErrorPassword}
+			setValue={setPassword}
+			/>
           </div>
 			<div className="text-red-500 text-lg -my-4">{errorMessage}</div>
           <div className="w-40 sm:w-52 md:w-52 lg:w-72">
@@ -167,7 +167,7 @@ const CreateChannel = (props : { selectedChannel : channelType , setSelectedChan
         </DialogBody>
         <div className="w-[320px] gap-1 px-4 md:gap-4 flex items-center justify-center">
           <SecondaryButton text="Cancel" onClick={handleOpen} />
-          <PrimaryButton onKeyDown={handleCreateChannel} text="Confirm" onClick={handleCreateChannel} />
+		<PrimaryButton onKeyDown={handleCreateChannel} text="Confirm" onClick={handleCreateChannel} />
         </div>
       </Dialog>
     </div>

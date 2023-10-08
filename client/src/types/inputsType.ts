@@ -2,7 +2,8 @@ import React from "react";
 
 export interface searchInputProps {
     placeholder: string;
-    onSearch: (value: string) => void;
+    onSearch: () => void;
+
 }
 
 export interface InputProps {

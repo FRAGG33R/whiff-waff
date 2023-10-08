@@ -44,7 +44,7 @@ const TabSwitch = () => {
     
         .tab-link {
             cursor: pointer;
-            position: relative;
+            position: relative;  
           }
   
           .tab-link::after {

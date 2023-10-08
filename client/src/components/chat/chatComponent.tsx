@@ -27,6 +27,7 @@ import ChannelConversation from "./channelConversation";
 
 export default function ChatComponent() {
   const [chat] = useRecoilState(chatAtom);
+
   const [channel, setChannel] = useRecoilState(channelAtom);
   const [loggedUser] = useRecoilState(loggedUserAtom);
   const [socket, setSocket] = useState<any>();

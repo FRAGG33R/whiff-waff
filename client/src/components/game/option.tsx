@@ -38,8 +38,8 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
   const [advenced, setAdvenced] = useState(false);
   const [time, setTime] = useState(false);
   const [defi, setDefi] = useState(false);
-  const name = "hssam";
-  console.log((userData as userType).userName);
+  const name = "fdf";
+  console.log("userNmae: ",(loggedUser as userType).userName);
   const [open, setDialogOpen] = useState(false);
   const [isFindingPlayer, setIsFindingPlayer] = useState(true);
 
@@ -234,7 +234,7 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
             </div>
             <div className="w-full 2xl:h-[110px] h-[100px] md:h-[100px] flex items-center justify-center">
               <PrimaryButton text="Play" onClick={handleOpen} />
-              {userData && (userData as userType).userName === name ? (
+              {userData && (loggedUser as userType).userName === name ? (
                 <>
                   <Dialog
                     className=" bg-CarbonGrey bg-opacity-30 h-[400px] w-[200px]"

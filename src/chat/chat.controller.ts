@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ConversationDto, Invitation, MuteDto, RoomDeleteInfos, RoomInfos, RoomUpdateInfos, RoomUserInfos } from 'src/dto/chat.dto';
+import { ConversationDto, Kick,Invit, MuteDto, RoomDeleteInfos, RoomInfos, RoomUpdateInfos, RoomUserInfos } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 import { JwtGuard } from 'src/auth/guards/guards.jwtGuard';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -74,9 +74,9 @@ export class ChatController {
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(inviteRoom)
-	async inviteRoom(@Body() data: Invitation, @Req() req: Request) {
+	async inviteRoom(@Body() data: Invit, @Req() req: Request) {
 		const loggedUserId = (req as any).user.id;
-		await this.chatService.sendInvitation(loggedUserId, data.channelId, data.invitedId);
+		await this.chatService.sendInvitation(loggedUserId, data.channelId, data.userName);
 	}
 
 	@ApiBearerAuth()
@@ -89,7 +89,7 @@ export class ChatController {
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Post(kickRoom)
-	async kickUserFromRoom(@Body() data: Invitation, @Req() req: Request) {
+	async kickUserFromRoom(@Body() data: Kick, @Req() req: Request) {
 		const loggedUserId = (req as any).user.id;
 		return await this.chatService.kickUserFromRoom(loggedUserId, data);
 	}
@@ -124,7 +124,7 @@ export class ChatController {
 		const blockedUsers = await this.chatService.getBlckedUsers(loggedUserId);
 		return { roomConversation, blockedUsers }
 	}
-	
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Get(roomConversations)
@@ -136,7 +136,7 @@ export class ChatController {
 		const Conversationdata = { roomsConversations, blockedUsers }
 		return { loggedUser, Conversationdata };
 	}
-	
+
 	@ApiBearerAuth()
 	@UseGuards(JwtGuard)
 	@Get(exploreChannels)

@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable, InternalServerErrorException, NotFoundE
 import { FriendshipStatus, ChatRoomType, UserStatus } from '@prisma/client';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { AllUserConversationsResponse, IndividualConversationResponse, Message } from 'src/custom_types/custom_types.Individual-chat';
-import { ConversationDto, Invitation, MuteDto, RoomInfos, RoomUpdateInfos, RoomUserInfos, dtoIndividualChat } from 'src/dto/chat.dto';
+import { ConversationDto, Invit, Kick, MuteDto, RoomInfos, RoomUpdateInfos, RoomUserInfos, dtoIndividualChat } from 'src/dto/chat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import * as ErrorCode from '../shared/constants/constants.code-error';
@@ -314,8 +314,16 @@ export class ChatService {
 
 
 
-	async sendInvitation(loggedUserId: string, roomId: string, invitedId: string) {
+	async sendInvitation(loggedUserId: string, roomId: string, userName: string) {
 		try {
+			const existsUser = await this.prismaService.user.findUnique({
+				where: {
+					userName: userName
+				}
+			});
+			if (!existsUser)
+				throw { type: 'notFound' }
+			const invitedId = existsUser.id;
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, roomId);
 			if (!existRoom)
 				throw { type: 'notFound' }
@@ -477,7 +485,6 @@ export class ChatService {
 		return roomsConversations;
 	}
 
-	//=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=
 	async getRoomConversations(loggedUserId: string) {
 		try {
 			let roomsConversations = await this.getRoomsInfos(loggedUserId);
@@ -703,7 +710,7 @@ export class ChatService {
 		}
 	}
 
-	async kickUserFromRoom(loggedUserId: string, data: Invitation) {
+	async kickUserFromRoom(loggedUserId: string, data: Kick) {
 		try {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.channelId);
 			if (!existRoom)
@@ -733,7 +740,7 @@ export class ChatService {
 		}
 	}
 
-	async banUserFromRoom(loggedUserId: string, data: Invitation) {
+	async banUserFromRoom(loggedUserId: string, data: Kick) {
 		try {
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, data.channelId);
 			if (!existRoom)

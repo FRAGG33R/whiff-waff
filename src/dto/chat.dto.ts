@@ -61,10 +61,19 @@ export class RoomDeleteInfos {
 	@IsNotEmpty()
 	channelId: string;
 }
-export class Invitation {
+export class Invit {
 	@ApiProperty()
 	@IsNotEmpty()
-	invitedId: ChatRoomType;
+	userName: string;
+
+	@ApiProperty()
+	@IsNotEmpty()
+	channelId: string;
+}
+export class Kick {
+	@ApiProperty()
+	@IsNotEmpty()
+	invitedId: string;
 
 	@ApiProperty()
 	@IsNotEmpty()

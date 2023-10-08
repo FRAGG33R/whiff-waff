@@ -196,9 +196,9 @@ enum Mode {
 }
 
 enum Map {
-    BASIC
-    INTERMEDIATE
-    ADVANCED
+    Beginner
+    Intermediate
+    Advanced
 
     @@map("map")
 }

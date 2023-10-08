@@ -3,11 +3,18 @@ import { withIronSessionSsr } from "iron-session/next";
 import '@/app/globals.css'
 import { api } from "@/components/axios/instance";
 import { useRecoilState } from "recoil";
-import { userAtom } from "@/context/RecoilAtoms";
+
+import {
+	loggedUserAtom,
+	userAtom,
+  } from "@/context/RecoilAtoms";
 
 const Game = (props : {data : any}) => {
 	const [userData, setUserData] = useRecoilState(userAtom);
+	const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
 	setUserData(props.data.response.user);
+	setLoggedUser((props.data as any).response.loggedUser);
+	
 
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
@@ -27,6 +34,7 @@ export const getServerSideProps = withIronSessionSsr(
 			Authorization: `Bearer ${token}`,
 		  },
 		});
+		console.log(res.data);
 		return {
 		  props: { data: res.data},
 		};

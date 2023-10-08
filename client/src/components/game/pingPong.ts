@@ -139,9 +139,10 @@ class PingPongTable {
 	}
 
 	update(data: { p1: Vector, p2: Vector, ball: Vector }): void {
-		Body.setPosition(this.p1, data.p1);
-		Body.setPosition(this.p2, data.p2);
-		Body.setPosition(this.ball, data.ball);
+		console.log("data", data.ball);
+		Body.setPosition(this.p1, {x: this.map(data.p1.x, 0, 600, 0, this.width), y: this.map(data.p1.y, 0, 800, 0, this.height)});
+		Body.setPosition(this.p2, {x: this.map(data.p2.x, 0, 600, 0, this.width), y: this.map(data.p2.y, 0, 800, 0, this.height)});
+		Body.setPosition(this.ball, {x: data.ball.x * this.scaleFactor, y: data.ball.y * this.scaleFactor});
 	}
 
   stopRendering(): void {

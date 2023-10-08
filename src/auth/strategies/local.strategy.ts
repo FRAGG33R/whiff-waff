@@ -10,10 +10,14 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 		super({ usernameField: 'email' });
 	}
 
-	async validate(email: string, password: string): Promise<string> {
+	async validate(email: string, password: string): Promise<{id: string, twoFa: boolean} | string> {
 		const user = await this.authService.validateUser(email, password);
 		if (!user) {
 			throw new ForbiddenException('Incorrect email or password')
+		}
+		const EnableOTP = await this.authService.checkOTP(email);
+		if (EnableOTP){
+			return {id: user.id, twoFa: true};
 		}
 		return (user);
 	}

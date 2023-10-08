@@ -20,6 +20,11 @@ model User {
     password                  String?           @map("password_hash")
     twoFactorAuth             Boolean           @map("two_factor_auth")
     verfiedEmail              Boolean           @map("verfied_email")
+    otpDisable                Boolean           @default(false)
+    otpEnable                 Boolean           @default(false)
+    otpValidate               Boolean           @default(false)
+    otpSecret                 String?
+    otpAuthurl                String?
     status                    PlayerStatus
     stat                      Stats?
     sentNotification          Notification[]    @relation("sendNotfication")

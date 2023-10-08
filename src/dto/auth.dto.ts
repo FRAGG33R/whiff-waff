@@ -55,3 +55,11 @@ export class SignInDto {
 	@IsNotEmpty()
 	password: string;
 }
+
+export class TwoAuthDto {
+	@IsNotEmpty()
+	id:	string;
+
+	@IsNotEmpty()
+	pin: string
+}

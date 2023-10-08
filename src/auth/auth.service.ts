@@ -1,5 +1,5 @@
-import { ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { SignUpDto } from 'src/dto';
+import { ForbiddenException, HttpStatus,HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { SignUpDto , TwoAuthDto} from 'src/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -13,6 +13,10 @@ import * as  values from 'src/shared/constants/constants.values';
 import * as os from 'os';
 import * as env from 'src/shared/constants/constants.name-variables'
 import * as path from 'src/shared/constants/constants.paths'
+import * as OTPAuth from "otpauth";
+import * as speakeasy from "speakeasy";
+import * as qrCode from 'qrcode';
+import * as fs from 'fs';
 
 const authService = 'AuthService';
 @Injectable()
@@ -114,5 +118,223 @@ export class AuthService {
 		} catch (error) {
 			throw new InternalServerErrorException();
 		}
+	}
+	async TwoAuthGen(userId: string) {
+		// let checkId = await this.prismaService.user.findFirst({
+        //     where: {
+        //         id: userId,
+        //     },
+        // });
+		// if (!checkId){
+        //     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        // }
+
+		const Secret = (): string => {
+			const random = speakeasy.generateSecret({ length: 20 });
+			return random.base32;
+		  };
+
+		// const otpSecret = Secret();
+
+		// const genAuth = new OTPAuth.TOTP({
+		// 	issuer: "ACME",
+  		// 	label: "AzureDiamond",
+		// 	algorithm: "SHA1",
+		// 	digits: 6,
+		// 	period: 30,
+		// 	secret: otpSecret, 
+		//   });
+		// // console.log(genAuth);
+		
+		// const otpAuthurl = genAuth.toString();
+		// const qrCodeImageBuffer = await qrCode.toDataURL(otpAuthurl);
+		// await this.prismaService.user.update({
+        //     where: {
+        //         id: userId,
+        //     },
+        //     data: {
+        //         otpAuthurl,
+        //         otpSecret,
+        //     }
+        // });
+		// // console.log(otpSecret);
+		// return `<img src="${qrCodeImageBuffer}" alt="QR Code" />`;
+        // return qrCodeImageBuffer;
+		const existUser = await this.prismaService.user.findFirst({
+			where: {
+			  id: userId,
+			},
+		  });
+	  
+		  if (!existUser) {
+			throw new HttpException('NOT FOUND USER', HttpStatus.NOT_FOUND);
+		  }
+		  const base32Secret = Secret();
+		  const totp = new OTPAuth.TOTP({
+			issuer: 'TENSORCODE',
+			label: 'TensorCodeTwoFactorAuth',
+			algorithm: 'SHA1',
+			digits: 6,
+			period: 30,
+			secret: base32Secret,
+		  });
+		  const uri = totp.toString();
+	  
+		  await this.prismaService.user.update({
+			where: {
+			  id: userId,
+			},
+			data: {
+			  otpAuthurl: uri,
+			  otpSecret: base32Secret,
+			},
+		  });
+	  
+		  return {
+			otp_url: uri,
+			otp_secret: base32Secret,
+		  };
+	}
+
+	async TwoAuthVer(dto: TwoAuthDto){
+		const userId = await this.prismaService.user.findFirst({
+			where: {
+			  id: dto.id,
+			},
+		  });
+	  
+		  if (!userId) {
+			throw new HttpException('NOT FOUND USER', HttpStatus.NOT_FOUND);
+		  }
+
+		  if (userId.otpEnable){
+			return userId.otpEnable;
+		  }
+		  const totp = new OTPAuth.TOTP({
+			issuer: 'TENSORCODE',
+			label: 'TensorCodeTwoFactorAuth',
+			algorithm: 'SHA1',
+			digits: 6,
+			period: 30,
+			secret: userId.otpSecret,
+		  });
+	  
+		  const validate = totp.validate({ token: dto.pin });
+	  
+		  if (validate === null) {
+			throw new HttpException('INVALID PIN', HttpStatus.BAD_REQUEST);
+		  }
+	  
+		  const enable = await this.prismaService.user.update({
+			where: {
+			  id: dto.id,
+			},
+			data: {
+			  otpEnable: true,
+			},
+		  });
+		  return {
+			otp_enabled: enable.otpEnable,
+		  };
+	}
+
+	async TwoAuthValid(dto: TwoAuthDto){
+
+		const userId = await this.prismaService.user.findFirst({
+			where: {
+			  id: dto.id,
+			},
+		  });
+	  
+		if (!userId) {
+			throw new HttpException('NOT FOUND USER', HttpStatus.NOT_FOUND);
+		}
+
+		const totp = new OTPAuth.TOTP({
+			issuer: 'TENSORCODE',
+			label: 'TensorCodeTwoFactorAuth',
+			algorithm: 'SHA1',
+			digits: 6,
+			period: 30,
+			secret: userId.otpSecret,
+		});
+	  
+		const validate = totp.validate({ token: dto.pin });
+	  
+		if (validate === null) {
+			throw new HttpException('INVALID PIN', HttpStatus.BAD_REQUEST);
+		}
+	  
+		const enable = await this.prismaService.user.update({
+			where: {
+			  id: dto.id,
+			},
+			data: {
+			  otpValidate: true,
+			},
+		});
+		if (!enable.otpValidate){
+			throw new HttpException('Invalid pin', HttpStatus.BAD_REQUEST);
+		}
+		const user = await this.userService.findUserById(dto.id);
+		const token = await this.signToken({ id: user.id, email: user.email, user: user.userName }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
+		return {token};
+	}
+
+
+	async TwoAuthDisable(dto: TwoAuthDto){
+		let checkId = await this.prismaService.user.findFirst({
+            where: {
+                id: dto.id,
+            },
+        });
+		if (!checkId){
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+
+		const disable = await this.prismaService.user.update({
+			where:{
+				id: dto.id,
+			},
+			data: {
+				 otpEnable: false,
+				 otpValidate: false,
+			}
+		})
+		return {
+			otpEnable: disable.otpEnable,
+			otpValidate: disable.otpValidate
+		};		
+	}
+	
+	async TwoAuthEnable(dto: TwoAuthDto){
+		let checkId = await this.prismaService.user.findFirst({
+			where:{
+				id: dto.id,
+			},
+		});
+		if (!checkId){
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		}
+		const enable = await this.prismaService.user.update({
+			where:{
+				id: dto.id,
+			},
+			data: {
+				otpEnable : true,
+			}
+		})
+	}
+
+	async checkOTP(email: string){
+		const check = await this.prismaService.user.findUnique({
+			where:{
+				email: email,
+			}
+		});
+		if (check.otpEnable){
+			return true;
+		}
+		return false;
 	}
 }

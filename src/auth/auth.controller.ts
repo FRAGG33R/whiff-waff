@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards, Get, Req, Res, HttpCode, HttpStatus, Logger } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignInDto, SignUpDto } from 'src/dto';
+import { SignInDto, SignUpDto, TwoAuthDto } from 'src/dto';
 import { LocalStrategy } from './strategies/local.strategy';
 import { Request, Response } from 'express';
 import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -16,7 +16,11 @@ const signupAuthEndPoint = 'signup'
 const signinAuthEndPoint = 'signin'
 const signin42AuthEndPoint = 'signin/42'
 const verifiedAuthEndPoint = 'verified/:token'
-
+const generateTwoFactorAuth = 'generate-2fa/:id'
+const verifyTwoFactorAuth = 'verify-2fa'
+const validTwoFactorAuth = 'valid-2fa'
+const enableTwoFactorAuth = 'enable-2fa'
+const disableTwoFactorAuth = 'disable-2fa'
 const authController = 'authController';
 const fourtyTwoCode = 'code'
 const token = 'token'
@@ -74,5 +78,29 @@ export class AuthController {
 	async verfyEmail(@Req() req: Request, @Res() res: Response) {//TODO html injection
 		const loginUrl = await this.authService.verfyEmail(req.params.token);//TODO reject email
 		res.redirect((loginUrl).toString());
+	}
+	@Get(generateTwoFactorAuth)
+	async TwoAuthGen(@Req() req: Request) {
+		return (this.authService.TwoAuthGen(req.params.id));
+	}
+
+	@Post(verifyTwoFactorAuth)
+	async TwoAuthVer(@Body() dto: TwoAuthDto){
+		return (this.authService.TwoAuthVer(dto));
+	}
+
+	@Post(validTwoFactorAuth)
+	async TwoAuthValid(@Body() dto: TwoAuthDto){
+		return (this.authService.TwoAuthValid(dto));
+	}
+
+
+	@Post(disableTwoFactorAuth)
+	async TwoAuthDisable(@Body() dto: TwoAuthDto){
+		return (this.authService.TwoAuthDisable(dto));
+	}
+	@Post(enableTwoFactorAuth)
+	async TwoAuthEnable(@Body() dto: TwoAuthDto){
+		return (this.authService.TwoAuthEnable(dto));
 	}
 }

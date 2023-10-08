@@ -120,46 +120,14 @@ export class AuthService {
 		}
 	}
 	async TwoAuthGen(userId: string) {
-		// let checkId = await this.prismaService.user.findFirst({
-        //     where: {
-        //         id: userId,
-        //     },
-        // });
-		// if (!checkId){
-        //     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-        // }
+		
 
 		const Secret = (): string => {
 			const random = speakeasy.generateSecret({ length: 20 });
 			return random.base32;
 		  };
 
-		// const otpSecret = Secret();
-
-		// const genAuth = new OTPAuth.TOTP({
-		// 	issuer: "ACME",
-  		// 	label: "AzureDiamond",
-		// 	algorithm: "SHA1",
-		// 	digits: 6,
-		// 	period: 30,
-		// 	secret: otpSecret, 
-		//   });
-		// // console.log(genAuth);
-		
-		// const otpAuthurl = genAuth.toString();
-		// const qrCodeImageBuffer = await qrCode.toDataURL(otpAuthurl);
-		// await this.prismaService.user.update({
-        //     where: {
-        //         id: userId,
-        //     },
-        //     data: {
-        //         otpAuthurl,
-        //         otpSecret,
-        //     }
-        // });
-		// // console.log(otpSecret);
-		// return `<img src="${qrCodeImageBuffer}" alt="QR Code" />`;
-        // return qrCodeImageBuffer;
+        
 		const existUser = await this.prismaService.user.findFirst({
 			where: {
 			  id: userId,
@@ -179,7 +147,7 @@ export class AuthService {
 			secret: base32Secret,
 		  });
 		  const uri = totp.toString();
-	  
+		  const qrCodeImageBuffer = await qrCode.toDataURL(uri);
 		  await this.prismaService.user.update({
 			where: {
 			  id: userId,
@@ -190,10 +158,7 @@ export class AuthService {
 			},
 		  });
 	  
-		  return {
-			otp_url: uri,
-			otp_secret: base32Secret,
-		  };
+		  return qrCodeImageBuffer;
 	}
 
 	async TwoAuthVer(dto: TwoAuthDto){

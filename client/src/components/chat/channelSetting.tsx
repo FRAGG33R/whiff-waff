@@ -65,27 +65,6 @@ const ChannelSettings = (props: { selectedChannel: channelType, channelUsers : c
       });
     }
   };
-
-//   const getUsers = async (token: string) => {
-//     try {
-//       const res = await api.get(`/chat/usersOfRoom/${props.selectedChannel.roomChat.id}`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       });
-//       console.log(res.data);
-// 	  setChannelUsers(res.data);
-//     } catch (error: any) {
-//       console.log(error.response.data);
-//     }
-//   };
-
-//   useEffect(() => {
-//     const token = localStorage.getItem("token");
-//     if (!token) router.push("/login");
-//     else getUsers(token);
-//   }, []);
-
   return (
     <div>
       <motion.div

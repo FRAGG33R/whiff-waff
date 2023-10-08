@@ -9,17 +9,18 @@ import { useRecoilState } from "recoil";
 import { channelAtom } from "@/context/RecoilAtoms";
 import { useState, useEffect } from "react";
 import ChannelSettings from "./channelSetting";
-import toast, { Toaster } from "react-hot-toast";
 import { channelUsersType } from "@/types/chatType";
 import { loggedUserAtom } from "@/context/RecoilAtoms";
 import { loggedUserType } from "@/types/userType";
+import InviteUser from "./inviteUser";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ChannelBar(props: channelBarType) {
   const [channel, setChannel] = useRecoilState(channelAtom);
   const [opneSettings, setOpenSettings] = useState(false);
   const [channelUsers, setChannelUsers] = useState<channelUsersType[]>([]);
   const [displaySettings, setDisplaySettings] = useState<boolean>(false);
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [loggedUser] = useRecoilState(loggedUserAtom);
   const router = useRouter();
 
   const handleDeleteChannel = async () => {
@@ -124,12 +125,12 @@ export default function ChannelBar(props: channelBarType) {
   }, [props.selectedChannel]);
 
   return (
-    <div className="w-full h-full flex items-center justify-center px-2 md:px-6 py-2 md:py-4">
+    <div className="w-full h-full flex items-center justify-center px-2 md:px-6 py-2 md:py-2">
       <Toaster position="top-right" />
       <div className="h-full w-full flex flex-row items-center justify-between">
         <div className="h-full min-w-1 flex flex-row items-center justify-center gap-2 md:gap-6">
           <div
-            className="w-12 md:w-16 h-full rounded-[12px] tooltip tooltip-left"
+            className="w-12 md:w-16 h-[90%] rounded-[12px] tooltip tooltip-left"
             data-tip="fragger"
           >
             <RenderAvatars avatars={props.avatars} />
@@ -142,10 +143,13 @@ export default function ChannelBar(props: channelBarType) {
         </div>
         <div className="h-full min-w-1 flex flex-row gap-4 items-center justify-center">
           {displaySettings === true && (
-            <ChannelSettings
-              selectedChannel={props.selectedChannel}
-              channelUsers={channelUsers}
-            />
+            <>
+              <ChannelSettings
+                selectedChannel={props.selectedChannel}
+                channelUsers={channelUsers}
+              />
+			<InviteUser selectedChannel={props.selectedChannel} />
+            </>
           )}
           <motion.div
             whileHover={{ scale: 1.1 }}

@@ -221,7 +221,7 @@ export class UsersService {
 					scoreRight: true
 				},
 				where: {
-					OR: [{ leftUserId: idUser }, { RightUserId: idUser }],
+					OR: [{ leftUserId: idUser }, { rightUserId: idUser }],
 					accepted: true
 				},
 				skip: page * elementsNumer,
@@ -231,7 +231,7 @@ export class UsersService {
 				throw new NotFoundException(message.USER_NOT_FOUND);
 			const gamesNumber = await this.prismaService.gameHistory.count({
 				where: {
-					OR: [{ leftUserId: idUser }, { RightUserId: idUser }],
+					OR: [{ leftUserId: idUser }, { rightUserId: idUser }],
 					accepted: true
 				},
 			})

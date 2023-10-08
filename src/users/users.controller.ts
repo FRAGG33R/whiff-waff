@@ -47,7 +47,8 @@ export class UsersController {
 		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_GAMES;
 		const user = req.user;
 		const historyGame = await this.userService.getHistoryGame((user as any).id, values.NUMBER_OF_FIRST_PAGE, elementsNumer);
-		return new ResponseInfo(HttpStatus.OK, { user, historyGame, elementsNumber: historyGame.length });
+		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
+		return new ResponseInfo(HttpStatus.OK, { user, historyGame, elementsNumber: historyGame.length, loggedUser });
 	}
 
 	@ApiBearerAuth()

@@ -322,7 +322,7 @@ export class ChatService {
 				}
 			});
 			if (!existsUser)
-				throw { type: 'notFound' }
+				throw { type: 'userNotFound' }
 			const invitedId = existsUser.id;
 			const existRoom = await this.getJoinedRoomByIds(loggedUserId, roomId);
 			if (!existRoom)
@@ -344,18 +344,19 @@ export class ChatService {
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'userNotFound')
+				throw new NotFoundException('User does not exist');
 			if (error.type === 'notAdmin')
 				throw new ForbiddenException('Only administrators are authorized to send invitations.')
 			if (error.type === 'alreadyExists')
 				throw new ForbiddenException('User already invited')
 			if (error.type === 'notPrivate')
-				throw new ForbiddenException('The channel should be in a private type')
+				throw new ForbiddenException('The channel should be  private')
 			if (error instanceof PrismaClientKnownRequestError)
 				if (error.code === ErrorCode.FOREIGN_KEY_CONSTRAINT_CODE)
 					throw new NotFoundException(message.UNEXISTING_ID)
 			throw new InternalServerErrorException();
 		}
-
 	}
 
 	async getJoinedRoomByIds(adminId: string, roomId: string) {

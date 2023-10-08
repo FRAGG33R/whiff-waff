@@ -73,23 +73,23 @@ export class GameService {
 				stoped = true;
 			}
 			if (this.sccor1 > this.sccor2 && this.sccor1 == 5) {
-				this.player1?.emit('gameOver', { p1: 'won', p2: 'lost'});
-				this.player2?.emit('gameOver', { p1: 'won', p2: 'lost'});
+				this.player1?.emit('gameOver', { p1: 'won', p2: 'lost' });
+				this.player2?.emit('gameOver', { p1: 'won', p2: 'lost' });
 				Runner.stop(this.runner);
 			} else if (this.sccor2 > this.sccor1 && this.sccor2 == 5) {
 				Runner.stop(this.runner);
-				this.player1?.emit('gameOver', { p2: 'won', p1: 'lost'});
-				this.player2?.emit('gameOver', { p2: 'won', p1: 'lost'});
+				this.player1?.emit('gameOver', { p2: 'won', p1: 'lost' });
+				this.player2?.emit('gameOver', { p2: 'won', p1: 'lost' });
 			}
-			if (stoped){
+			if (stoped) {
 				setTimeout(() => {
 					this.spownBall();
 				}, 1000);
 			}
 		});
-		
+
 		Events.on(this.engine, 'afterUpdate', () => {
-			this.player1.emit('update', { ball: this.ball?.position, p1: this.p1.position, p2: this.p2.position, score1: this.sccor1, score2: this.sccor2});
+			this.player1.emit('update', { ball: this.ball?.position, p1: this.p1.position, p2: this.p2.position, score1: this.sccor1, score2: this.sccor2 });
 		});
 	}
 

@@ -124,11 +124,11 @@ model Play {
 model GameHistory {
     id          String  @id @default(uuid())
     leftUserId  String  @map("left_user_id")
-    RightUserId String  @map("right_user_id")
+    rightUserId String  @map("right_user_id")
     scoreLeft   Int     @map("score_left")
     scoreRight  Int     @map("score_right")
     accepted    Boolean
-    game        Play    @relation(fields: [leftUserId, RightUserId], references: [leftUserId, rightUserId], onDelete: Cascade)
+    game        Play    @relation(fields: [leftUserId, rightUserId], references: [leftUserId, rightUserId], onDelete: Cascade)
 
     @@map("game_history")
 }

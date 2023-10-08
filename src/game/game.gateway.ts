@@ -5,7 +5,14 @@ import { GuardsService } from 'src/chat/guards/guards.service';
 import { GameService } from './game.service';
 import Matter, { Vector, Body } from 'matter-js';
 
-
+interface RandomGame {
+	game: GameService;
+	p1: string;
+	p2: string;
+	map: string;
+	mode: string;
+	started: boolean;
+}
 
 @WebSocketGateway(8888, {
 	cors: {
@@ -17,7 +24,15 @@ export class GameGateway implements OnGatewayConnection {
 	constructor(private readonly configService: ConfigService, private readonly guardService: GuardsService) { }
 
 	inviteFriendsArray: GameService[] = [];
+	queueArray: RandomGame[] = [];
 	connectedUsers: Map<string, Socket> = new Map<string, Socket>();
+
+	findRandomGame(map: string, mode: string, started: boolean): RandomGame | null {
+		let index: number = this.queueArray.findIndex((element: RandomGame) => element.map === map && element.mode === mode && element.started === started);
+		if (index >= 0)
+			return this.queueArray[index];
+		return (null);
+	}
 
 	async handleConnection(@ConnectedSocket() client: any) {
 		const validUser = (client.handshake.headers.authorization) ?
@@ -34,7 +49,7 @@ export class GameGateway implements OnGatewayConnection {
 	}
 
 	@SubscribeMessage('play')
-	async play(@ConnectedSocket() client: Socket, @MessageBody() data: { map: string, host: boolean, mode: string, type: string, id: string }) {
+	async play(@ConnectedSocket() client: Socket, @MessageBody() data: { map: string, mode: string, type: string, id: string }) {
 		if (data.type === 'friend') {
 			let socket: any = this.connectedUsers.get((client as any).id);
 			let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === socket.id);
@@ -46,7 +61,24 @@ export class GameGateway implements OnGatewayConnection {
 				this.inviteFriendsArray[index].ready = true;
 			}
 		} else {
-
+			let gameInfo: RandomGame | null = this.findRandomGame(data.map, data.mode, false);
+			if (gameInfo === null) {
+				gameInfo = {
+					game: new GameService(client),
+					p1: (client as any).id,
+					p2: '',
+					map: data.map,
+					mode: data.mode,
+					started: false
+				};
+				this.queueArray.push(gameInfo);
+			} else {
+				gameInfo.game.setPlayer2(client);
+				gameInfo.p2 = (client as any).id;
+				gameInfo.started = true;
+				gameInfo.game.getPlayer1().emit('joined', { data: 'joined' });
+				gameInfo.game.getPlayer2().emit('joined', { data: 'joined' });
+			}
 		}
 	}
 
@@ -91,7 +123,7 @@ export class GameGateway implements OnGatewayConnection {
 		if (index >= 0) {
 			let game: GameService = this.inviteFriendsArray[index];
 			console.log(client.id, game.id1, game.id2,);
-			if (client.id === game.id1){
+			if (client.id === game.id1) {
 				console.log(position);
 				Body.setPosition(game.p1, position);
 			}

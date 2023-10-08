@@ -21,13 +21,21 @@ export class SaveGameService {
 			throw new InternalServerErrorException(error);
 		}
 	}
-
-
+	
+	
 	async setHistory(data: any) {
 		try {
-			
+			return await this.prismaSErvice.gameHistory.create({
+				data : {
+					leftUserId: data.leftUserId,
+					rightUserId: data.rightUserId,
+					scoreLeft: data.scoreLeft,
+					scoreRight: data.scoreRight,
+					accepted: data.accepted
+				}
+			});
 		} catch (error) {
-			
-		}
+			throw new InternalServerErrorException(error);
+		}	
 	}
 }

@@ -15,5 +15,18 @@ export class GameDto {
 
 	@IsNotEmpty()
 	gameMap: string;
+	
+}
 
+export class GameHistoryDto {
+	@IsNotEmpty()
+	leftUserId: string;
+	@IsNotEmpty()
+    rightUserId: string;
+	@IsNotEmpty()
+    scoreLeft:   number;
+	@IsNotEmpty()
+    scoreRight:  number;
+	@IsNotEmpty()
+    accepted:    Boolean;
 }

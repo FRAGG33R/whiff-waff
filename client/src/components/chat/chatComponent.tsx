@@ -54,6 +54,7 @@ export default function ChatComponent() {
     console.log("all conversations", chat);
     if (activeTab === "Chat") {
       if (router.query.chatId === (loggedUser as loggedUserType).userName) {
+        
         setSelectedConversation(
           (chat as conversationType[]).length > 0
             ? (chat as conversationType[])[0]

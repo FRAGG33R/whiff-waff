@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use, useEffect } from "react";
 import Beginner from "./../../../public/Beginner.svg";
 import Intermediare from "./../../../public/Intermediare.svg";
 import Advanced from "./../../../public/Advenced.svg";
@@ -11,6 +11,9 @@ import { loggedUserAtom } from "@/context/RecoilAtoms";
 import { useRecoilState } from "recoil";
 import { userType } from "./../../types/userType";
 import { userDataAtom } from "@/atom/atomStateuser";
+import { useRouter } from "next/router";
+
+
 import {
   Button,
   Dialog,
@@ -32,13 +35,13 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
     image:
       "https://cdn.intra.42.fr/users/e91ca4bc18567a537339d354852ecce1/hlalouli.jpg",
   });
+  const router = useRouter();
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const [beginner, setBeginner] = useState(false);
   const [inrermediare, setInrermediare] = useState(false);
   const [advenced, setAdvenced] = useState(false);
   const [time, setTime] = useState(false);
   const [defi, setDefi] = useState(false);
-  const name = "fdf";
   console.log("userNmae: ",(loggedUser as userType).userName);
   const [open, setDialogOpen] = useState(false);
   const [isFindingPlayer, setIsFindingPlayer] = useState(true);
@@ -94,7 +97,8 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
       console.log("Select a map and a mode to play");
     }
   };
-
+    const name = router.query.gameId;
+    console.log("name: ",name);
   return (
     <div className="w-full 2xl:h-[960px] flex  flex-col gap-4 md:gap-6  ">
       <div className=" w-full 2xl:h-[100px] flex  flex-col items-center justify-center ">

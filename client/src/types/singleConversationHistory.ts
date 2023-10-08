@@ -10,6 +10,5 @@ export interface SingleConversationHistoryType {
 export interface SingleMembreType {
 	userName : string,
 	avatar : string,
-	admin : boolean,
-	member : boolean,
+	type : string,
 }

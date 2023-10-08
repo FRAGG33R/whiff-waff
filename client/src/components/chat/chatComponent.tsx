@@ -19,7 +19,7 @@ import { loggedUserType } from "@/types/userType";
 import { useRouter } from "next/router";
 import { api } from "../axios/instance";
 import toast, { Toaster } from "react-hot-toast";
-import { IconMessageOff } from "@tabler/icons-react";
+import { IconMessageOff, IconMessagesOff } from "@tabler/icons-react";
 import IndividualChatComponent from "./individualChatComponent";
 import ChannelChatComponent from "./channelChatComponent";
 import ChannelBar from "./channelBar";
@@ -51,6 +51,7 @@ export default function ChatComponent() {
   };
 
   const findSelectedConversation = async (token: string) => {
+    console.log("all conversations", chat);
     if (activeTab === "Chat") {
       if (router.query.chatId === (loggedUser as loggedUserType).userName) {
         setSelectedConversation(
@@ -73,6 +74,7 @@ export default function ChatComponent() {
         });
       } else {
         try {
+			
           const res = await api.get(`/users/profile/${router.query.chatId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -100,40 +102,40 @@ export default function ChatComponent() {
             newConversation,
           ]);
         } catch (err: any) {
-          try {
-            const res = await api.get(
-              `/chat/room/Conversations/${router.query.chatId}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-            setSelectedChannel((prev: channelType | null) => {
-              const newMessages: channelMessageType[] =
-                res.data.roomConversation.map((item: any) => {
-                  return {
-                    roomSender: {
-                      user: {
-                        id: item.user.id,
-                        userName: item.user.userName,
-                      },
-                    },
-                    message: item.message.content,
-                    type: item.message.type,
-                    date: item.message.date,
-                    isError: false,
-                  };
-                });
-              return {
-                roomChat: res.data.roomConversation.roomChat,
-                message: newMessages,
-                avatars: res.data.roomConversation.avatars,
-              };
-            });
-          } catch (error: any) {
-            router.push("/404");
-          }
+          //   try {
+          //     const res = await api.get(
+          //       `/chat/room/Conversations/${router.query.chatId}`,
+          //       {
+          //         headers: {
+          //           Authorization: `Bearer ${token}`,
+          //         },
+          //       }
+          //     );
+          //     setSelectedChannel((prev: channelType | null) => {
+          //       const newMessages: channelMessageType[] =
+          //         res.data.roomConversation.map((item: any) => {
+          //           return {
+          //             roomSender: {
+          //               user: {
+          //                 id: item.user.id,
+          //                 userName: item.user.userName,
+          //               },
+          //             },
+          //             message: item.message.content,
+          //             type: item.message.type,
+          //             date: item.message.date,
+          //             isError: false,
+          //           };
+          //         });
+          //       return {
+          //         roomChat: res.data.roomConversation.roomChat,
+          //         message: newMessages,
+          //         avatars: res.data.roomConversation.avatars,
+          //       };
+          //     });
+          //   } catch (error: any) {
+          router.push("/404");
+          //   }
         }
       }
     } else {
@@ -230,7 +232,7 @@ export default function ChatComponent() {
           avatars: channel.avatars,
         };
       });
-      router.push(`/chat/${channel.roomChat.id}`);
+    //   router.push(`/chat/${channel.roomChat.id}`);
     } catch (error) {}
   };
 
@@ -283,61 +285,58 @@ export default function ChatComponent() {
 
   const handleException = (error: any) => {
     console.log("socket error : ", error.message);
-    toast.error(error.message, {
-      style: {
-        borderRadius: "12px",
-        padding: "12px",
-        background: "#6C7FA7",
-        color: "#fff",
-        fontFamily: "Poppins",
-        fontSize: "18px",
-      },
-    });
-    //setIsError(true);
-    //update the laset message on the selected conversation to be an error message
-    setSelectedConversation((prev: conversationType | null) => {
-      if (prev) {
-        const newMessages: messageType[] = [...prev.messages];
-        newMessages[newMessages.length - 1].isError = true;
-        return {
-          receiver: prev.receiver,
-          messages: newMessages,
-        };
-      }
-      return prev;
-    });
+    // toast.error(error.message, {
+    //   style: {
+    //     borderRadius: "12px",
+    //     padding: "12px",
+    //     background: "#6C7FA7",
+    //     color: "#fff",
+    //     fontFamily: "Poppins",
+    //     fontSize: "18px",
+    //   },
+    // });
+    // //setIsError(true);
+    // //update the laset message on the selected conversation to be an error message
+    // setSelectedConversation((prev: conversationType | null) => {
+    //   if (prev) {
+    //     const newMessages: messageType[] = [...prev.messages];
+
+    //     newMessages[newMessages.length - 1].isError = true;
+    //     return {
+    //       receiver: prev.receiver,
+    //       messages: newMessages,
+    //     };
+    //   }
+    //   return prev;
+    // });
   };
 
-  useEffect(() => {
-    const socket = io("http://34.173.232.127:6080/", {
-      extraHeaders: {
-        authorization: `Bearer ${token}`,
-      },
-    });
-    socket.on("connect", handleConnection);
-    socket.on("exception", handleException);
-    socket.on("message", handleReceivedMessage);
-    setSocket(socket);
-    return () => {
-      socket.off("connect", handleConnection);
-      socket.off("message", handleReceivedMessage);
-      socket.off("exception", handleException);
-    };
-  }, []);
+	useEffect(() => {
+	  const socket = io("http://34.173.232.127:6080/", {
+		  extraHeaders: {
+			  authorization: `Bearer ${localStorage.getItem("token")}`,
+			},
+		});
+		socket.on("connect", handleConnection);
+		socket.on("exception", handleException);
+		socket.on("message", handleReceivedMessage);
+		setSocket(socket);
+		return () => {
+			socket.off("connect", handleConnection);
+			socket.off("message", handleReceivedMessage);
+			socket.off("exception", handleException);
+		};
+	}, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) router.push("/login");
-    else {
-      setToken(token);
-      findSelectedConversation(token);
-      setLoaded(true);
-    }
-  }, [activeTab]);
-
-  useEffect(() => {
-    console.log("selected channel : ", selectedChannel);
-  }, [selectedChannel]);
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (!token) router.push("/login");
+		else {
+		  setToken(token);
+		  findSelectedConversation(token);
+		  setLoaded(true);
+		}
+	  }, [activeTab]);
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
@@ -370,14 +369,12 @@ export default function ChatComponent() {
               />
             ) : (
               <>
-                {selectedChannel !== null &&
-                  selectedChannel.roomChat !== undefined && (
-                    <ChannelChatComponent
-                      channels={channel as channelType[]}
-                      handleSelectedChannel={handleSelectedChannel}
-                      selectedChannel={selectedChannel!}
-                    />
-                  )}
+                  <ChannelChatComponent
+                    channels={channel as channelType[]}
+                    handleSelectedChannel={handleSelectedChannel}
+                    selectedChannel={selectedChannel!}
+					setSelectedChannel={setSelectedChannel}
+                  />
               </>
             )}
           </div>
@@ -390,13 +387,15 @@ export default function ChatComponent() {
                   avatar={selectedConversatoin.receiver.avatar}
                 />
               )}
-              {selectedChannel !== null &&
-                selectedChannel.roomChat !== undefined &&
+              {selectedChannel &&
+                selectedChannel.roomChat &&
                 activeTab === "Channels" && (
                   <ChannelBar
                     channelName={selectedChannel?.roomChat?.name || ""}
                     avatars={selectedChannel?.avatars!}
                     channelId={selectedChannel?.roomChat.id!}
+					setSelectedChannel={setSelectedChannel}
+					selectedChannel={selectedChannel}
                   />
                 )}
             </div>
@@ -431,7 +430,7 @@ export default function ChatComponent() {
                     )}
                   </>
                 )}
-                {selectedConversatoin && (
+                {(selectedConversatoin || selectedChannel) && (
                   <div className="h-16 md:h-24 w-full flex items-end justify-center">
                     <form
                       className="w-full min-h-1"

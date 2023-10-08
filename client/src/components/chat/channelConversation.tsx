@@ -1,5 +1,5 @@
 import { loggedUserAtom } from "@/context/RecoilAtoms";
-import { channelMessageType, channelType, conversationType, messageType } from "@/types/chatType";
+import { channelMessageType, channelType  } from "@/types/chatType";
 import { loggedUserType } from "@/types/userType";
 import { useEffect, useRef } from "react";
 import { useRecoilState } from "recoil";
@@ -8,7 +8,7 @@ import { IconExclamationCircle } from '@tabler/icons-react';
 export default function ChannelConversation(props  : {conversation : channelType}) 
 {
   const conversationRef = useRef(null);
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [loggedUser] = useRecoilState(loggedUserAtom);
 
   const getTime = (fullDate : string) => {
 	const date = new Date(Number(fullDate));

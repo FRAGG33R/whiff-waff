@@ -33,16 +33,7 @@ export const getServerSideProps = withIronSessionSsr(
           Authorization: `Bearer ${token}`,
         },
       });
-	//   const userName = params.chatId;
-	//   const conversation = res.data.allConversation.find((conversation: any) => conversation.receiver.userName === userName);
-	//   if (!conversation && userName !== res.data.loggedUser.userName) {
-	// 	  return {
-	// 		  redirect: {
-	// 			  destination: "/404",
-	// 			  permanent: false,
-	// 		  },
-	// 	  };
-	//   }
+	  console.log("res.data: indiv", res.data);
       return {
         props: { data: res.data },
       };

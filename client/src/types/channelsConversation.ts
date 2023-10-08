@@ -1,3 +1,5 @@
+import { channelType } from "./chatType";
+
 export interface ChannelsConversationHistoryType {
 	channelName : string, 
 	lastMessage : string,
@@ -11,4 +13,5 @@ export interface ModelChannelsType{
 	channelName : string, 
 	avatars: string[];
 	channelType: string;
+	handleJoinChannel: () => void;
 }

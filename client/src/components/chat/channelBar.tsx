@@ -7,13 +7,19 @@ import { api } from "../axios/instance";
 import { RenderAvatars } from "./renderAvatars";
 import { useRecoilState } from "recoil";
 import { channelAtom } from "@/context/RecoilAtoms";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChannelSettings from "./channelSetting";
 import toast, { Toaster } from "react-hot-toast";
+import { channelUsersType } from "@/types/chatType";
+import { loggedUserAtom } from "@/context/RecoilAtoms";
+import { loggedUserType } from "@/types/userType";
 
 export default function ChannelBar(props: channelBarType) {
   const [channel, setChannel] = useRecoilState(channelAtom);
   const [opneSettings, setOpenSettings] = useState(false);
+  const [channelUsers, setChannelUsers] = useState<channelUsersType[]>([]);
+  const [displaySettings, setDisplaySettings] = useState<boolean>(false);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const router = useRouter();
 
   const handleDeleteChannel = async () => {
@@ -30,13 +36,14 @@ export default function ChannelBar(props: channelBarType) {
         }
       );
       console.log("res : ", res.data);
-	  setChannel((prev: channelType[]) => {
-		const updatedChannels = prev.filter(
-		  (item: channelType) => item.roomChat.id !== props.selectedChannel.roomChat.id
-		);
-		props.setSelectedChannel(updatedChannels[0]);
-		return updatedChannels;
-	});
+      setChannel((prev: channelType[]) => {
+        const updatedChannels = prev.filter(
+          (item: channelType) =>
+            item.roomChat.id !== props.selectedChannel.roomChat.id
+        );
+        props.setSelectedChannel(updatedChannels[0]);
+        return updatedChannels;
+      });
     } catch (error: any) {
       console.log(error.response.data);
       toast.error(error.response.data, {
@@ -50,13 +57,12 @@ export default function ChannelBar(props: channelBarType) {
         },
       });
     }
-
   };
 
   const handleOpenSettings = async () => {
     setOpenSettings(!opneSettings);
   };
-  
+
   const handleLeaveChannel = async () => {
     const token = localStorage.getItem("token");
     console.log("toke :", token);
@@ -73,19 +79,49 @@ export default function ChannelBar(props: channelBarType) {
             Authorization: `Bearer ${token}`,
           },
         }
-	);
-	setChannel((prev: channelType[]) => {
-		const updatedChannels = prev.filter(
-		  (item: channelType) => item.roomChat.id !== props.selectedChannel.roomChat.id
-		);
-		props.setSelectedChannel(updatedChannels[0]);
-		return updatedChannels;
-	});
-
+      );
+      setChannel((prev: channelType[]) => {
+        const updatedChannels = prev.filter(
+          (item: channelType) =>
+            item.roomChat.id !== props.selectedChannel.roomChat.id
+        );
+        props.setSelectedChannel(updatedChannels[0]);
+        return updatedChannels;
+      });
     } catch (error: any) {
       console.log(error.response.data);
     }
   };
+
+  const getUsers = async (token: string) => {
+    try {
+      const res = await api.get(
+        `/chat/usersOfRoom/${props.selectedChannel.roomChat.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(res.data);
+      setDisplaySettings(false);
+      res.data.map((item: channelUsersType) => {
+        if (item.user.userName === (loggedUser as loggedUserType).userName) {
+          if (item.status === "OWNER" || item.status === "ADMIN")
+            setDisplaySettings(true);
+        }
+      });
+      setChannelUsers(res.data);
+    } catch (error: any) {
+      console.log(error.response.data);
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) router.push("/login");
+    else getUsers(token);
+  }, [props.selectedChannel]);
 
   return (
     <div className="w-full h-full flex items-center justify-center px-2 md:px-6 py-2 md:py-4">
@@ -105,7 +141,12 @@ export default function ChannelBar(props: channelBarType) {
           </div>
         </div>
         <div className="h-full min-w-1 flex flex-row gap-4 items-center justify-center">
-          <ChannelSettings selectedChannel={props.selectedChannel} />
+          {displaySettings === true && (
+            <ChannelSettings
+              selectedChannel={props.selectedChannel}
+              channelUsers={channelUsers}
+            />
+          )}
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}

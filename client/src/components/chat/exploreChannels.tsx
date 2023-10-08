@@ -6,13 +6,16 @@ import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import ModelChannel from "./modelChannel";
 import { useRouter } from "next/router";
 import { api } from "../axios/instance";
-import { expoloreChannelListType } from "@/types/chatType";
+import { channelType, expoloreChannelListType } from "@/types/chatType";
 import toast, {Toaster} from "react-hot-toast";
+import { useRecoilState } from "recoil";
+import { channelAtom } from "@/context/RecoilAtoms";
 
-const ExploreChannels = () => {
+const ExploreChannels = (props : {selectedChannel : channelType, setSelectedChannel : Function}) => {
   const [open, setOpen] = useState(false);
-  const router = useRouter();
+  const [channel, setChannel] = useRecoilState(channelAtom);
   const [exploreChannelList, setExploreChannelList] = useState<expoloreChannelListType[]>([]);
+  const router = useRouter();
 
   const handleOpen = () => {
 	setOpen(!open);
@@ -37,17 +40,17 @@ const ExploreChannels = () => {
 			},
 		});
 		console.log('res : ', res.data);
-		// const newChannel : channelType = {
-		// 	roomChat : {
-		// 		id : res.data.id,
-		// 		name : res.data.name,
-		// 	},
-		// 	avatars : res.data.avatars,
-		// 	message : [],
-		// }
-		// console.log('selectedChannel ** : ', props.selectedChannel);
-		// setChannel((prev : channelType[]) => [...prev, newChannel]);
-		// props.setSelectedChannel(newChannel);
+		const newChannel : channelType = {
+			roomChat : {
+				id : res.data.id,
+				name : res.data.name,
+			},
+			avatars : res.data.avatars,
+			message : [],
+		}
+		console.log('selectedChannel ** : ', props.selectedChannel);
+		setChannel((prev : channelType[]) => [...prev, newChannel]);
+		props.setSelectedChannel(newChannel);
 		setOpen(false);
 	} catch (error : any ) {
 		console.log('error : ', error.response.data.message);

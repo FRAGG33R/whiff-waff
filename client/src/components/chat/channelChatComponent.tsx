@@ -18,7 +18,7 @@ export default function ChannelChatComponent(props: {
         <CreateChannel selectedChannel={props.selectedChannel} setSelectedChannel={props.setSelectedChannel} />
       </div>
       <div className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]">
-        <ExploreChannels />
+        <ExploreChannels selectedChannel={props.selectedChannel} setSelectedChannel={props.setSelectedChannel}/>
       </div>
      {props.channels.length > 0 && props.selectedChannel ? <>
         {props.channels.length > 0 &&

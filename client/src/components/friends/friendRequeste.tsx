@@ -10,6 +10,7 @@ import { userDataAtom} from "../../atom/atomStateuser";
 import { userType } from "./../../types/userType";
 import axios from "axios";
 import { IconFriendsOff } from "@tabler/icons-react";
+import { api } from "../axios/instance";
 const friendRequeste = () => {
   const [active, setActive] = useState(1);
   const [pendingFriends, setPendingFriends] = useRecoilState(pandingDataAtom);
@@ -25,7 +26,7 @@ const friendRequeste = () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const res = await axios.get(`http://34.173.232.127/api/v1/users/friends?page=${active - 1}&elementsNumber=${7}`,
+      const res = await api.get(`/users/friends?page=${active - 1}&elementsNumber=${7}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

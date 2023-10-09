@@ -15,6 +15,7 @@ import { userType } from "./../../types/userType";
 import { userAtom } from "@/context/RecoilAtoms";
 import { on } from "events";
 import ValidationAlert from "../ui/alerts/validationAlert";
+import { api } from "../axios/instance";
 
 const InformationsSetting = () => {
   const [selected, setSelected] = useState(false);
@@ -131,8 +132,8 @@ const InformationsSetting = () => {
       }
     }
     try {
-      const req = await axios.patch(
-        " http://34.173.232.127/api/v1/users/settings/",
+      const req = await api.patch(
+        "/users/settings/",
         formData,
         {
           headers: {

@@ -6,10 +6,21 @@ import {
     DialogBody,
     DialogFooter
   } from "@material-tailwind/react";
+  import { useRecoilState } from "recoil";
+import { userDataAtom } from "@/atom/atomStateuser";
+import { loggedUserAtom } from "@/context/RecoilAtoms";
+import { userType } from "./../../types/userType";
+import { useRouter } from "next/router";
 import { ModelProps } from '@/types/model';
   
 
 const Model:React.FC<ModelProps> = ({ showModal, setShowModal , text}) => {
+  const router = useRouter();
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const handleCancle = () => {
+    router.push("/profile/" + (loggedUser as userType).userName);
+    setShowModal(false);
+  };
   return (
     <div>
 
@@ -24,7 +35,7 @@ const Model:React.FC<ModelProps> = ({ showModal, setShowModal , text}) => {
           <DialogBody className="h-[210px] flex flex-col justify-center items-center" >
             <div className=" font-poppins font-medium text-[1.5rem]">
               <p className="flex flex-col ">
-                <span className="text-Mercury">{text}</span>
+                <span className="text-Mercury"> {text}</span>
               </p>
             </div>
           </DialogBody>
@@ -32,7 +43,7 @@ const Model:React.FC<ModelProps> = ({ showModal, setShowModal , text}) => {
             <Button
               variant="text"
               color="white"
-              onClick={() => setShowModal(false)} 
+              onClick={handleCancle} 
               className="mr-1 border-[3px] rounded-[20px] border-CarbonGrey"
             >
               <span>Cancel</span>

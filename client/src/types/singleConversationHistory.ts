@@ -1,3 +1,5 @@
+import { channelType } from "./chatType";
+
 export interface SingleConversationHistoryType {
 	userName : string, 
 	lastMessage : string,
@@ -11,4 +13,6 @@ export interface SingleMembreType {
 	userName : string,
 	avatar : string,
 	type : string,
+	userId : string,
+	selectedChannel : channelType
 }

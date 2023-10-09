@@ -115,8 +115,10 @@ const ChannelSettings = (props: { selectedChannel: channelType, channelUsers : c
                 <ModelSettings
                   key={index}
                   userName={item.user.userName}
-			avatar={item.user.avatar}
+				  userId={item.user.id}
+				  avatar={item.user.avatar}
 				  type={item.status}
+				  selectedChannel={props.selectedChannel}
                 />
               ))}
             </div>

@@ -15,7 +15,6 @@ const Game = (props : {data : any}) => {
 	setUserData(props.data.response.user);
 	setLoggedUser((props.data as any).response.loggedUser);
 	
-
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       <GamePage />

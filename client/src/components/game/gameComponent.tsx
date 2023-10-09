@@ -9,7 +9,6 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 import { idAtom, scoreIdAtom, socketAtom } from "@/context/RecoilAtoms";
 import toast, { Toaster } from "react-hot-toast";
 import { scoreIdType } from "@/types/userType";
-import { Socket } from "dgram";
 
 interface GameProps {
   map: string;
@@ -31,6 +30,8 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
   const [id, setId] = useState<string>("");
   const [userId, setUserId] = useRecoilState(idAtom);
   const [userScore, setUserScore] = useRecoilState(scoreIdAtom);
+  const [globalSocket, setGlobalSocket] = useRecoilState(socketAtom);  
+  const [hardsocket, setHardSocket] = useState<any>(globalSocket);
   const router = useRouter();
   
     let theme = 0;
@@ -43,6 +44,8 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
     }
     const usrId = router.query.gameId;
   useEffect(() => {
+  
+      
      const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     else {
@@ -74,7 +77,18 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
     socket.on("start", () => {
       setOpen(false);
     });
-   
+    globalSocket.on("notify", () => {
+      toast.success("Your opponent has left the game", {
+        style: {
+          borderRadius: "12px",
+          padding: "12px",
+          background: "#6C7FA7",
+          color: "#fff",
+          fontFamily: "Poppins",
+          fontSize: "18px",
+        },
+      });
+    });
     // socket?.on(event, function(data) => {
     //   toast.("", {
     //     style: {

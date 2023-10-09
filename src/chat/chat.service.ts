@@ -359,6 +359,7 @@ export class ChatService {
 		}
 	}
 
+	
 	async getJoinedRoomByIds(adminId: string, roomId: string) {
 		const room = await this.prismaService.join.findUnique({
 			select: {
@@ -425,9 +426,7 @@ export class ChatService {
 			roomConversation.forEach(element => {
 				element.date = element.date.toString() as any;
 			})
-			const data =  await this.fromatIndividualRoom(loggedUserId, roomConversation);
-			
-			return {data};
+			return this.fromatIndividualRoom(loggedUserId, roomConversation);
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
@@ -470,6 +469,7 @@ export class ChatService {
 		}
 	}
 
+
 	async fromatIndividualRoom(loggedUserId: string, roomsConversations: any) {
 		let message: Message;
 		roomsConversations.forEach((element: any) => {
@@ -506,7 +506,7 @@ export class ChatService {
 			roomsConversations = await this.structreRoomdata(roomsConversations);
 			if (roomsConversations.length > 0)
 				(roomsConversations[0] as any).message = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomChat.id, { nbElements: 10, nbPage: 0 } as any);
-			roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
+			// roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
 			return roomsConversations;
 		} catch (error) {
 			throw new InternalServerErrorException(error);

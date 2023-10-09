@@ -426,7 +426,8 @@ export class ChatService {
 				element.date = element.date.toString() as any;
 			})
 			const data =  await this.fromatIndividualRoom(loggedUserId, roomConversation);
-			return {data, type: existsRoom.roomChat.type};
+			
+			return {data};
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
@@ -505,7 +506,7 @@ export class ChatService {
 			roomsConversations = await this.structreRoomdata(roomsConversations);
 			if (roomsConversations.length > 0)
 				(roomsConversations[0] as any).message = await this.getRoomIndividualConversationById(loggedUserId, roomsConversations[0].roomChat.id, { nbElements: 10, nbPage: 0 } as any);
-			// roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
+			roomsConversations = this.formmatRoomConversations(loggedUserId, roomsConversations);
 			return roomsConversations;
 		} catch (error) {
 			throw new InternalServerErrorException(error);

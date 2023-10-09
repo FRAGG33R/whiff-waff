@@ -6,10 +6,11 @@ import { GuardsModule } from 'src/chat/guards/guards.module';
 import { Socket } from 'dgram';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { SaveGameService } from './game.saveService';
+import { GameGatewayStatus } from './game.gatewayStatus';
 
 @Module({
 	imports: [GuardsModule, PrismaModule],
-	providers: [GameGateway, SaveGameService],
+	providers: [GameGateway, SaveGameService, GameGatewayStatus],
 	controllers: [GameController],
 	exports: [GameGateway, SaveGameService],
 })

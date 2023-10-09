@@ -3,12 +3,12 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { GuardsService } from 'src/chat/guards/guards.service';
 import { GameService } from './game.service';
 
-@WebSocketGateway(8889, {
+@WebSocketGateway(8887, {
 	cors: {
 		origin: "*"
 	}
 })
-export class GameGateway implements OnGatewayConnection {
+export class GameGatewayStatus implements OnGatewayConnection {
 
 	constructor(private readonly configService: ConfigService, private readonly guardService: GuardsService) { }
 
@@ -16,6 +16,7 @@ export class GameGateway implements OnGatewayConnection {
 	private readonly connectedUsers: Map<string, string> = new Map<string, string>();
 
 	async handleConnection(@ConnectedSocket() client: any) {
+		console.log('hello thre');
 		const validUser = (client.handshake.headers.authorization) ?
 			GuardsService.validateToken(client.handshake.headers?.authorization, this.configService.get('JWT_SECRET')) : false;
 		const existsUser: any = (validUser) ? await this.guardService.validate(validUser) : false;

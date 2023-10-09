@@ -90,6 +90,7 @@ export class GameGateway implements OnGatewayConnection {
 
 	@SubscribeMessage('notify')
 	async notify(@ConnectedSocket() client: Socket, @MessageBody() data: { id: string, type: string }) {
+		console.log(data);
 		let socket: any = this.connectedUsers.get(data.id);
 		let game: GameService = new GameService(client, "map");
 		game.setPlayer1(client);

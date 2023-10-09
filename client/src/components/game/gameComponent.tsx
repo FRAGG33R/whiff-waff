@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import PingPongTable from "./pingPong";
 import { io } from "socket.io-client";
 import { Body, Vector } from "matter-js";
 import ModelGame from "./modelGame";
 import Model from "./model";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import { idAtom, scoreIdAtom, socketAtom } from "@/context/RecoilAtoms";
+import { scoreIdType } from "@/types/userType";
 
 interface GameProps {
   map: string;
@@ -12,6 +15,7 @@ interface GameProps {
   event: string;
 }
 let tableInstance: PingPongTable | null = null;
+
 
 const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
   const [wSize, setwSize] = useState<number[]>([0, 0]);
@@ -23,8 +27,14 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [msg, setmessage] = useState<string>("");
   const [id, setId] = useState<string>("");
-  const router = useRouter();
+  const [userId, setUserId] = useRecoilState(idAtom);
+  const [userScore, setUserScore] = useRecoilState(scoreIdAtom);
+  // const globalSocket= useContext(SocketContext);
 
+  // console.log("globalSocket", globalSocket);
+  
+  const router = useRouter();
+  
     let theme = 0;
     if (map === "Beginner") {
       theme = 0;
@@ -40,7 +50,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
     else {
       setToken(token);
     }
-    const socket = io("http://e3r10p16.1337.ma:3389", {
+    const socket = io("http://e3r10p16.1337.ma:8888", {
       extraHeaders: {
         authorization:
           "Bearer "  + token,
@@ -74,9 +84,10 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
         ball: Vector;
         score1: number;
         score2: number;
-      }) {
-        // console.log(data);
+      }) {                                                                                    
         tableInstance?.update(data);
+        setUserScore({score1: data.score1, score2: data.score2});
+        console.log("score: ",(userScore as scoreIdType).score1, (userScore as scoreIdType).score2);
       }
       );
     socket.on("left", () => {
@@ -85,7 +96,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
     socket.on('joined', (data: {username: string}) => {
       setIsFindingPlayer(false);
       setId(data.username);
-      console.log("iduser: ",data.username);
+      setUserId(data.username);
       
     })
     socket.on("gameOver", (data: { msg: string }) => {

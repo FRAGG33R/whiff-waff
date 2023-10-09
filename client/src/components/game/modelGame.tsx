@@ -175,10 +175,10 @@ const ModelGame = ({
                 <div className="w-[40%] h-[200px] flex flex-row  items-center justify-center ">
                   <div
                     className="3xl:w-[30%] 2xl:w-[40%] xl:w-full lg:w-full h-[80%] flex items-center justify-center tooltip  "
-                    data-tip={`${Game.userName}  ${Game.level}`}
+                    data-tip={`${user?.userName}  ${user?.stat.level}`}
                   >
                     <img
-                      src={Game.image}
+                      src={user?.avatar}
                       alt="profile picture"
                       className="  2xl:w-16  h-12 md:h-16 rounded-[12px] md:rounded-[20px]"
                     />

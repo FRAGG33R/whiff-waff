@@ -51,3 +51,8 @@ export interface loggedUserType {
 	userName : string,
 	level : Number
 }
+
+export interface scoreIdType {
+  score1 : number
+  score2 : number
+}

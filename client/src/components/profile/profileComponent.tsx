@@ -18,8 +18,7 @@ export default function ProfileComponent()
 {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
-	const [loggedUser] = useRecoilState(loggedUserAtom);
- 
+  const [loggedUser] = useRecoilState(loggedUserAtom);
 
   // useEffect(() => {
   //   const token = localStorage.getItem('token');

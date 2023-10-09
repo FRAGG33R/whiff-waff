@@ -89,16 +89,16 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
     }
     else if (loggedUser && (loggedUser as userType).userName !== name) {
       selectedEvent = "notify";
-      toast.success("playe with me", {
-        style: {
-          borderRadius: "12px",
-          padding: "12px",
-          background: "#6C7FA7",
-          color: "#fff",
-          fontFamily: "Poppins",
-          fontSize: "18px",
-        },
-      });
+    //   toast.success("playe with me", {
+    //     style: {
+    //       borderRadius: "12px",
+    //       padding: "12px",
+    //       background: "#6C7FA7",
+    //       color: "#fff",
+    //       fontFamily: "Poppins",
+    //       fontSize: "18px",
+    //     },
+    //   });
     }
     if (selectedMap && selectedMode) {
       onPlay(selectedMap, selectedMode, selectedEvent);

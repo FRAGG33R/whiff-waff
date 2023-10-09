@@ -8,6 +8,7 @@ import Model from "./model";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { idAtom, scoreIdAtom, socketAtom } from "@/context/RecoilAtoms";
 import { scoreIdType } from "@/types/userType";
+import { useSocket } from "@/context/socket";
 
 interface GameProps {
   map: string;
@@ -29,12 +30,21 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
   const [id, setId] = useState<string>("");
   const [userId, setUserId] = useRecoilState(idAtom);
   const [userScore, setUserScore] = useRecoilState(scoreIdAtom);
+  const globalSocket = useSocket();
+  const router = useRouter();
+  const s = useSocket();
+  
   // const globalSocket= useContext(SocketContext);
 
   // console.log("globalSocket", globalSocket);
   
-  const router = useRouter();
   
+  useEffect(() => {
+	if (s) {
+		console.log('s :', s);
+	}
+	}, [s]);
+
     let theme = 0;
     if (map === "Beginner") {
       theme = 0;
@@ -44,6 +54,8 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
       theme = 2;
     }
     const usrId = router.query.gameId;
+	
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
@@ -73,6 +85,10 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
     socket.on("status", () => {
       console.log("online");
     });
+	(s as any).on("notify", () => {
+		alert("9alwa!!!!")
+	})
+
     socket.on("start", () => {
       setOpen(false);
     });

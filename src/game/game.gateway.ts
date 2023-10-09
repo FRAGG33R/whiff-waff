@@ -15,7 +15,7 @@ interface RandomGame {
 	started: boolean;
 }
 
-@WebSocketGateway(3389, {
+@WebSocketGateway(8888, {
 	cors: {
 		origin: "*"
 	}

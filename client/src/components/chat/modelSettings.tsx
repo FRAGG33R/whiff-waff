@@ -1,29 +1,31 @@
 import { SingleMembreType } from "@/types/singleConversationHistory";
 import { useRouter } from "next/router";
-import React from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import Silence from "../../../public/mute.svg";
 import SettingDrop from "../../../public/drop.svg";
 import Image from "next/image";
+import MuteDropDown from "../ui/dropDowns/muteDropDown";
 
 const ModelSettings = (props: SingleMembreType) => {
   const router = useRouter();
+  const [openMuteDropDown, setOpenMuteDropDown] = useState<boolean>(false);
+  const [muteDuration, setMuteDuration] = useState<number>(0);
 
   const handleMute = async () => {
-  }
-  const handleSettings = async  () => {
+    setOpenMuteDropDown(!openMuteDropDown);
+  };
+  const handleSettings = async () => {};
 
-  }
-	
   return (
     <div
       onClick={() => {}}
       className={`h-12 md:h-[4.7rem] xl:h-[5.3rem] 3xl:h-[6.4rem] w-full cursor-pointer bg-HokiCl bg-opacity-30 hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px] flex items-center justify-start flex-row space-x-2 2xl:space-x-4 px-2`}
     >
       <motion.div
-	  whileHover={{ scale: 1.05 }}
-	  whileTap={{ scale: 0.95 }}
-	  className="h-8 w-8 md:h-12 md:w-12 lg:w-14 lg:h-14 2xl:w-20 2xl:h-16 3xl:w-24 3xl:h-20 bg-HokiCl rounded-[6px] md:rounded-[12px] 2xl:rounded-[15px]">
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="h-8 w-8 md:h-12 md:w-12 lg:w-14 lg:h-14 2xl:w-20 2xl:h-16 3xl:w-24 3xl:h-20 bg-HokiCl rounded-[6px] md:rounded-[12px] 2xl:rounded-[15px]"
+      >
         <img
           alt="user avatar"
           className="w-full h-full rounded-[6px] md:rounded-[12px] 2xl:rounded-[15px]"
@@ -40,24 +42,13 @@ const ModelSettings = (props: SingleMembreType) => {
             {props.type === "DEFLAULT" ? "" : props.type}
           </div>
         </div>
-        {props.type === "MEMBER" && (
+        {props.type === "DEFLAULT" && (
           <div className="min-w-1 h-full flex flex-row items-center justify-center gap-2">
+            <MuteDropDown setMuteDurition={setMuteDuration} roomId={props.selectedChannel.roomChat.id} userId={props.userId}/>
             <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-			  onClick={handleMute}
-              className="w-8 h-8 md:w-10 md:h-10 3xl:w-12 3xl:h-12 flex items-center justify-center bg-HokiCl/[50%] rounded-[10px] 2xl:rounded-[18px]"
-            >
-              <Image
-                src={Silence}
-                alt="information icon"
-                className="w-[60%] h-[60%]"
-              />
-            </motion.div>
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-			  onClick={handleSettings}
+              onClick={handleSettings}
               className="w-8 h-8 md:w-10 md:h-10 3xl:w-12 3xl:h-12 flex items-center justify-center  rounded-[10px] 2xl:rounded-[18px]"
             >
               <Image

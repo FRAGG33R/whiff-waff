@@ -425,7 +425,8 @@ export class ChatService {
 			roomConversation.forEach(element => {
 				element.date = element.date.toString() as any;
 			})
-			return this.fromatIndividualRoom(loggedUserId, roomConversation);
+			const data =  await this.fromatIndividualRoom(loggedUserId, roomConversation);
+			return {data, type: existsRoom.roomChat.type};
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');
@@ -518,6 +519,7 @@ export class ChatService {
 					select: {
 						id: true,
 						name: true,
+						type: true,
 					}
 				},
 				messages: {

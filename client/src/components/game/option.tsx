@@ -12,6 +12,7 @@ import { useRecoilState } from "recoil";
 import { userType } from "./../../types/userType";
 import { userDataAtom } from "@/atom/atomStateuser";
 import { useRouter } from "next/router";
+import toast, { Toaster } from "react-hot-toast";
 
 interface OptionProps {
   onPlay: (map: string, mode: string, event: string) => void;
@@ -86,17 +87,25 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
     if (loggedUser && (loggedUser as userType).userName === name) {
       selectedEvent = "play";
     }
-    setDialogOpen(!open);
-    // setDialogOpen(false);
+    else if (loggedUser && (loggedUser as userType).userName !== name) {
+      selectedEvent = "notify";
+      toast.success("playe with me", {
+        style: {
+          borderRadius: "12px",
+          padding: "12px",
+          background: "#6C7FA7",
+          color: "#fff",
+          fontFamily: "Poppins",
+          fontSize: "18px",
+        },
+      });
+    }
     if (selectedMap && selectedMode) {
       onPlay(selectedMap, selectedMode, selectedEvent);
     } else {
       console.log("Select a map and a mode to play");
     }
   };
-    
-    
-    console.log("name: ",name);
     
   return (
     <div className="w-full 2xl:h-[960px] flex  flex-col gap-4 md:gap-6  ">
@@ -237,7 +246,7 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
             </div>
             <div className="w-full 2xl:h-[110px] h-[100px] md:h-[100px] flex items-center justify-center">
               <PrimaryButton text="Play" onClick={handlePlay} />
-                
+              <Toaster position="top-right" />
             </div>
           </div>
         </div>

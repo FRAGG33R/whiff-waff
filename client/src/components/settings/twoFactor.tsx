@@ -8,6 +8,7 @@ import SecondaryButton from "../ui/buttons/secondaryButton";
 import Qrcode from "./Qrcode";
 import axios from "axios";
 import { KeyboardEvent } from "react";
+import { api } from "../axios/instance";
 const TwoFactor = () => {
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
@@ -39,8 +40,8 @@ const TwoFactor = () => {
 
     try {
       const jwtToken = localStorage.getItem("token");
-      const response = await axios.patch(
-        "http://34.173.232.127/api/v1/settings/",
+      const response = await api.patch(
+        "/settings/",
         { result },
         {
           headers: {

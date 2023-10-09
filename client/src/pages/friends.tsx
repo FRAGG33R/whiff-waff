@@ -11,6 +11,7 @@ import { User, UserFriend } from "./../types/userFriendType";
 import { parseJwtSsr } from "@/lib/jwtTokenSsr";
 import { loggedUserFriendsAtom } from "@/context/RecoilAtoms";
 import { userType } from "@/types/userType";
+import { api } from "@/components/axios/instance";
 
 export default function Friends(props: { data: userType; props: UserFriend }) {
   const [userDataFriend, setUserDataFriend] = useRecoilState(friendDataAtom);
@@ -35,8 +36,8 @@ export const getServerSideProps = withIronSessionSsr(
       console.log("req.session.token.token: ", req.session.token.token);
       const userId = parseJwtSsr(token).id;
 
-      const res = await axios.get(
-        "http://34.173.232.127/api/v1/users/friends",
+      const res = await api.get(
+        "/users/friends",
         {
           headers: {
             Authorization: `Bearer ${token}`,

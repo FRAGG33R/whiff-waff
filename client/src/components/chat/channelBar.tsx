@@ -17,7 +17,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 export default function ChannelBar(props: channelBarType) {
   const [channel, setChannel] = useRecoilState(channelAtom);
-  const [opneSettings, setOpenSettings] = useState(false);
+  const [openSettings, setOpenSettings] = useState(false);
   const [channelUsers, setChannelUsers] = useState<channelUsersType[]>([]);
   const [displaySettings, setDisplaySettings] = useState<boolean>(false);
   const [loggedUser] = useRecoilState(loggedUserAtom);
@@ -47,7 +47,7 @@ export default function ChannelBar(props: channelBarType) {
       });
     } catch (error: any) {
       console.log(error.response.data);
-      toast.error(error.response.data, {
+      toast.error(error.response.data.message, {
         style: {
           borderRadius: "12px",
           padding: "12px",
@@ -61,7 +61,7 @@ export default function ChannelBar(props: channelBarType) {
   };
 
   const handleOpenSettings = async () => {
-    setOpenSettings(!opneSettings);
+    setOpenSettings(!openSettings);
   };
 
   const handleLeaveChannel = async () => {
@@ -122,7 +122,7 @@ export default function ChannelBar(props: channelBarType) {
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     else getUsers(token);
-  }, [props.selectedChannel]);
+  }, [props.selectedChannel, openSettings]);
 
   return (
     <div className="w-full h-full flex items-center justify-center px-2 md:px-6 py-2 md:py-2">
@@ -145,6 +145,8 @@ export default function ChannelBar(props: channelBarType) {
           {displaySettings === true && (
             <>
               <ChannelSettings
+			    open={openSettings}
+				setOpen={handleOpenSettings}
                 selectedChannel={props.selectedChannel}
                 channelUsers={channelUsers}
               />

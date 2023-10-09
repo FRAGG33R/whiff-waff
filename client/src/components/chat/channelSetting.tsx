@@ -13,8 +13,12 @@ import { api } from "../axios/instance";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
 
-const ChannelSettings = (props: { selectedChannel: channelType, channelUsers : channelUsersType[] }) => {
-  const [open, setOpen] = useState(false);
+const ChannelSettings = (props: {
+  selectedChannel: channelType;
+  channelUsers: channelUsersType[];
+  open: boolean;
+  setOpen: Function;
+}) => {
   const [password, setPassword] = useState("");
   const [errorPassword, setErrorPassword] = useState(false);
   const router = useRouter();
@@ -25,7 +29,8 @@ const ChannelSettings = (props: { selectedChannel: channelType, channelUsers : c
     }
   };
 
-  const handleOpen = () => setOpen(!open);
+  const handleOpen = () => props.setOpen(!open);
+
   const handleSave = async () => {
     if (password.length < 4) {
       toast.error("Password must be at least 4 characters", {
@@ -65,6 +70,7 @@ const ChannelSettings = (props: { selectedChannel: channelType, channelUsers : c
       });
     }
   };
+
   return (
     <div>
       <motion.div
@@ -77,7 +83,7 @@ const ChannelSettings = (props: { selectedChannel: channelType, channelUsers : c
       </motion.div>
       <Dialog
         className="bg-RhinoBlue h-[800px] w-[200px] rounded-[20px]"
-        open={open}
+        open={props.open}
         handler={handleOpen}
         size="xs"
       >
@@ -111,16 +117,24 @@ const ChannelSettings = (props: { selectedChannel: channelType, channelUsers : c
           </div>
           <div className="w-full h-[500px] rounded-[12px] flex items-center justify-center">
             <div className="w-full h-[400px] px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
-              {props.channelUsers.map((item : channelUsersType, index : number) => (
-                <ModelSettings
-                  key={index}
-                  userName={item.user.userName}
-				  userId={item.user.id}
-				  avatar={item.user.avatar}
-				  type={item.status}
-				  selectedChannel={props.selectedChannel}
-                />
-              ))}
+              {props.channelUsers.map(
+                (item: channelUsersType, index: number) => (
+                  <>
+                    {item.status === "BANNED" ? (
+                      <></>
+                    ) : (
+                      <ModelSettings
+                        key={index}
+                        userName={item.user.userName}
+                        userId={item.user.id}
+                        avatar={item.user.avatar}
+                        type={item.status}
+                        selectedChannel={props.selectedChannel}
+                      />
+                    )}
+                  </>
+                )
+              )}
             </div>
           </div>
         </DialogBody>

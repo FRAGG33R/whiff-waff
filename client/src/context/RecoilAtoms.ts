@@ -3,6 +3,7 @@ import {loggedUserType, scoreIdType, userType} from "@/types/userType";
 import { atom } from "recoil";
 import {matchHistoryType} from '@/types/userType'
 import { channelType, conversationType } from "@/types/chatType";
+import { Socket } from "socket.io-client";
 
 export const userContext = createContext<userType | undefined>(undefined);
 
@@ -60,7 +61,7 @@ export const scoreIdAtom = atom({
 	default: {},
 });
 
-export const socketContext = createContext<any | null>(null);
+export const socketContext = createContext<Socket | null>(null);
 
 export const socketAtom = atom({
 	key: `socket-${Math.random()}`,

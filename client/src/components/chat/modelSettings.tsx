@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import SettingDrop from "../../../public/drop.svg";
 import Image from "next/image";
 import MuteDropDown from "../ui/dropDowns/muteDropDown";
+import UserChannelDropDown from "../ui/dropDowns/userChannelDropDown";
 
 const ModelSettings = (props: SingleMembreType) => {
   const router = useRouter();
@@ -45,7 +46,7 @@ const ModelSettings = (props: SingleMembreType) => {
         {props.type === "DEFLAULT" && (
           <div className="min-w-1 h-full flex flex-row items-center justify-center gap-2">
             <MuteDropDown setMuteDurition={setMuteDuration} roomId={props.selectedChannel.roomChat.id} userId={props.userId}/>
-            <motion.div
+            {/* <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={handleSettings}
@@ -56,7 +57,8 @@ const ModelSettings = (props: SingleMembreType) => {
                 alt="dropdown icon"
                 className="w-[60%] h-[60%]"
               />
-            </motion.div>
+            </motion.div> */}
+			<UserChannelDropDown setMuteDurition={setMuteDuration} roomId={props.selectedChannel.roomChat.id} userId={props.userId}/>
           </div>
         )}
       </div>

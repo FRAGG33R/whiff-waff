@@ -8,7 +8,6 @@ import { api } from "@/components/axios/instance";
 const MuteDropDown = (props : {setMuteDurition : Function, userId : string, roomId : string}) => {
 	const router = useRouter();
 	const handleMute = async (duration : number) => {
-
 		console.log(duration);
 		const token = localStorage.getItem("token");
 		if (!token) {

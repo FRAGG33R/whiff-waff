@@ -3,7 +3,7 @@ import { Socket } from 'dgram';
 import Matter, { Engine, Render, Bodies, World, Runner, Events, IEventCollision, Vector } from 'matter-js';
 import { SocketReadyState } from 'net';
 import { PrismaService } from 'src/prisma/prisma.service';
-
+import { Map } from '@prisma/client'
 @Injectable()
 export class GameService {
 
@@ -32,6 +32,8 @@ export class GameService {
 	sccor1: number = 0;
 	sccor2: number = 0;
 
+	serve: boolean = true;
+
 	obsts_data: { x: number, y: number, width: number, height: number }[] = [
 		{ x: 0, y: 200, width: 100, height: 100 },
 		{ x: 600, y: 600, width: 100, height: 100 },
@@ -39,7 +41,8 @@ export class GameService {
 		{ x: 0, y: 600, width: 100, height: 100 },
 	];
 
-	constructor(player1: Socket) {
+	constructor(player1: Socket, tableOptions: string) {
+		this.tableOptions = tableOptions;
 		this.runner = Runner.create();
 		this.player1 = player1;
 		this.player2 = null;
@@ -54,9 +57,9 @@ export class GameService {
 			Bodies.rectangle(0, this.height / 2, 10, this.height, { isStatic: true, label: "left" }),
 			Bodies.rectangle(this.width, this.height / 2, 10, this.height, { isStatic: true, label: "right" }),
 		];
-		if (this.tableOptions != "beginner") {
+		if (this.tableOptions != Map.Beginner) {
 			this.obsts_data.forEach((data: { x: number, y: number, width: number, height: number }, index: number) => {
-				if ((index < 2 && this.tableOptions == "intermidiate") || this.tableOptions == "advanced")
+				if ((index < 2 && this.tableOptions == Map.Intermediate) || this.tableOptions == Map.Advanced)
 					this.obstacles.push(Bodies.rectangle(data.x, data.y, data.width, data.height, { isStatic: true }));
 			});
 		}
@@ -74,13 +77,13 @@ export class GameService {
 				stoped = true;
 			}
 			if (this.sccor1 > this.sccor2 && this.sccor1 == 5) {
-				this.player1?.emit('gameOver', { p1: 'won', p2: 'lost' });
-				this.player2?.emit('gameOver', { p1: 'won', p2: 'lost' });
+				this.player1?.emit('gameOver', { msg: 'You won'});
+				this.player2?.emit('gameOver', { msg: 'You lost' });
 				Runner.stop(this.runner);
 			} else if (this.sccor2 > this.sccor1 && this.sccor2 == 5) {
 				Runner.stop(this.runner);
-				this.player1?.emit('gameOver', { p2: 'won', p1: 'lost' });
-				this.player2?.emit('gameOver', { p2: 'won', p1: 'lost' });
+				this.player2?.emit('gameOver', { msg: 'You won'});
+				this.player1?.emit('gameOver', { msg: 'You lost'});
 			}
 			if (stoped) {
 				setTimeout(() => {
@@ -90,7 +93,7 @@ export class GameService {
 		});
 
 		Events.on(this.engine, 'afterUpdate', () => {
-			this.player1.emit('update', { ball: this.ball?.position, p1: this.p1.position, p2: this.p2.position, score1: this.sccor1, score2: this.sccor2 });
+			this.player1?.emit('update', { ball: this.ball?.position, p1: this.p1.position, p2: this.p2.position, score1: this.sccor1, score2: this.sccor2 });
 			this.player2?.emit('update', { ball: this.reverseVector(this.ball?.position), p1: this.reverseVector(this.p1.position), p2: this.reverseVector(this.p2.position), score1: this.sccor2, score2: this.sccor1 });
 		});
 	}
@@ -116,7 +119,15 @@ export class GameService {
 	}
 
 	spownBall(): void {
-		this.ball = Bodies.circle(this.width / 2, this.height / 2, 15, { friction: 0, restitution: 1, inertia: Infinity, density: 0.1, frictionAir: 0, force: { x: 1.9, y: 1.6 }, label: "ball" });
+		let forceX: number = -1.9;
+		let foceY: number = -1.6;
+		if (this.serve){
+			forceX = 1.9;
+			foceY = 1.6;
+			this.serve = !this.serve;
+		}else
+			this.serve = !this.serve;
+		this.ball = Bodies.circle(this.width / 2, this.height / 2, 15, { friction: 0, restitution: 1, inertia: Infinity, density: 0.071, frictionAir: 0, force: { x: forceX, y: foceY }, label: "ball" });
 		World.add(this.world, this.ball);
 	}
 

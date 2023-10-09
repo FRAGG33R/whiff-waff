@@ -957,7 +957,9 @@ export class ChatService {
 			}
 		});
 		users.forEach(element => {
-			element.mutedAt = element.mutedAt.toString() as any;
+			if (element.mutedAt)
+				element.mutedAt = element.mutedAt.toString() as any;
 		})
+		return users;
 	}
 }

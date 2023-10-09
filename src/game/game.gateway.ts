@@ -26,7 +26,7 @@ export class GameGateway implements OnGatewayConnection {
 
 	inviteFriendsArray: GameService[] = [];
 	queueArray: RandomGame[] = [];
-	connectedUsers: Map<string, { socket: Socket, id: string }> = new Map<string, { socket: Socket, id: string }>();
+	connectedUsers: Map<string, { socket: Socket, id: string, username: string }> = new Map<string, { socket: Socket, id: string, username: string }>();
 
 	findRandomGame(map: string, mode: string, started: boolean): RandomGame | null {
 		let index: number = this.queueArray.findIndex((element: RandomGame) => element.map === map && element.mode === mode && element.started === started);
@@ -41,11 +41,12 @@ export class GameGateway implements OnGatewayConnection {
 		const existsUser: any = (validUser) ? await this.guardService.validate(validUser) : false;
 		if (!existsUser || this.connectedUsers.has((validUser as any).id) === true) {
 			client.emit('exception', 'User not allowed to connect');
-			this.connectedUsers.set(client.id, { id: '', socket: client })
+			this.connectedUsers.set(client.id, { id: '', socket: client, username: ''})
 			client.disconnect();
 		}
-		else
-			this.connectedUsers.set(client.id, { id: (validUser as any).id, socket: client });
+		else{
+			this.connectedUsers.set(client.id, { id: (validUser as any).id, socket: client, username: (validUser as any).user});
+		}
 		// client.emit('status', { status: 'online' });
 		console.log('connect');
 	}
@@ -66,7 +67,7 @@ export class GameGateway implements OnGatewayConnection {
 			let gameInfo: RandomGame | null = this.findRandomGame(data.map, data.mode, false);
 			if (gameInfo === null) {
 				gameInfo = {
-					game: new GameService(client),
+					game: new GameService(client, data.map),
 					p1: (client as any).id,
 					p2: '',
 					map: data.map,
@@ -80,8 +81,8 @@ export class GameGateway implements OnGatewayConnection {
 				gameInfo.game.ready = true;
 				gameInfo.p2 = (client as any).id;
 				gameInfo.started = true;
-				gameInfo.game.getPlayer1().emit('joined', { data: 'joined' });
-				gameInfo.game.getPlayer2().emit('joined', { data: 'joined' });
+				gameInfo.game.getPlayer1().emit('joined', { username: this.connectedUsers.get(gameInfo.p2).username});
+				gameInfo.game.getPlayer2().emit('joined', { username: this.connectedUsers.get(gameInfo.p1).username});
 				gameInfo.game.id2 = gameInfo.p2;
 			}
 		}
@@ -90,7 +91,7 @@ export class GameGateway implements OnGatewayConnection {
 	@SubscribeMessage('notify')
 	async notify(@ConnectedSocket() client: Socket, @MessageBody() data: { id: string, type: string }) {
 		let socket: any = this.connectedUsers.get(data.id);
-		let game: GameService = new GameService(client);
+		let game: GameService = new GameService(client, "map");
 		game.setPlayer1(client);
 		game.setPlayer2(null);
 		game.id1 = (client as any).id;
@@ -148,15 +149,14 @@ export class GameGateway implements OnGatewayConnection {
 			if (game.game.getPlayer1() === null && game.game.getPlayer2() === null)
 				this.queueArray.splice(index, 1);
 		}
+		console.log("disconnected ", client.id)
 	}
 
 	@SubscribeMessage('move')
 	async move(@ConnectedSocket() client: any, @MessageBody('position') position: Vector) {
-		console.log("hello there", position);
 		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === client.id || element.id1 === client.id);
 		if (index >= 0) {
 			let game: GameService = this.inviteFriendsArray[index];
-			console.log(client.id, game.id1, game.id2,);
 			if (client.id === game.id1) {
 				console.log(position);
 				Body.setPosition(game.p1, position);
@@ -168,9 +168,9 @@ export class GameGateway implements OnGatewayConnection {
 		if (index >= 0) {
 			let game: RandomGame = this.queueArray[index];
 			if (client.id === game.p1)
-				Body.setPosition(game.game.p1, position);
+				Body.setPosition(game.game.p1, {x: position.x, y: game.game.p1.position.y});
 			else
-				Body.setPosition(game.game.p2, position);
+				Body.setPosition(game.game.p2, {x: game.game.width - position.x, y: game.game.p2.position.y});
 		}
 	}
 }

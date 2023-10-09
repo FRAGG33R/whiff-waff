@@ -2,9 +2,8 @@ import { SingleMembreType } from "@/types/singleConversationHistory";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import SettingDrop from "../../../public/drop.svg";
-import Image from "next/image";
 import MuteDropDown from "../ui/dropDowns/muteDropDown";
+import UserChannelDropDown from "../ui/dropDowns/userChannelDropDown";
 
 const ModelSettings = (props: SingleMembreType) => {
   const router = useRouter();
@@ -14,7 +13,6 @@ const ModelSettings = (props: SingleMembreType) => {
   const handleMute = async () => {
     setOpenMuteDropDown(!openMuteDropDown);
   };
-  const handleSettings = async () => {};
 
   return (
     <div
@@ -39,24 +37,13 @@ const ModelSettings = (props: SingleMembreType) => {
             {props.userName}
           </div>
           <div className="font-light font-teko text-white/60 2xl:text-md 3xl:text-xl lowercase">
-            {props.type === "DEFLAULT" ? "" : props.type}
+            {(props.type === "DEFLAULT"  || props.type === "MUTED") ? "" : props.type}
           </div>
         </div>
-        {props.type === "DEFLAULT" && (
+        {(props.type == "DEFLAULT" || props.type == "MUTED") && (
           <div className="min-w-1 h-full flex flex-row items-center justify-center gap-2">
             <MuteDropDown setMuteDurition={setMuteDuration} roomId={props.selectedChannel.roomChat.id} userId={props.userId}/>
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={handleSettings}
-              className="w-8 h-8 md:w-10 md:h-10 3xl:w-12 3xl:h-12 flex items-center justify-center  rounded-[10px] 2xl:rounded-[18px]"
-            >
-              <Image
-                src={SettingDrop}
-                alt="dropdown icon"
-                className="w-[60%] h-[60%]"
-              />
-            </motion.div>
+			<UserChannelDropDown roomId={props.selectedChannel.roomChat.id} userId={props.userId}/>
           </div>
         )}
       </div>

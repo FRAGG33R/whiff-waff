@@ -939,7 +939,7 @@ export class ChatService {
 	}
 
 	async getUsersOfRoom(roomId: string) {
-		return await this.prismaService.join.findMany({
+		const users =  await this.prismaService.join.findMany({
 			select: {
 				user: {
 					select: {
@@ -956,5 +956,8 @@ export class ChatService {
 				roomChatId: roomId,
 			}
 		});
+		users.forEach(element => {
+			element.mutedAt = element.mutedAt.toString() as any;
+		})
 	}
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'dgram';
-import Matter, { Engine, Render, Bodies, World, Runner, Events, IEventCollision } from 'matter-js';
+import Matter, { Engine, Render, Bodies, World, Runner, Events, IEventCollision, Vector } from 'matter-js';
 import { SocketReadyState } from 'net';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -42,6 +42,7 @@ export class GameService {
 	constructor(player1: Socket) {
 		this.runner = Runner.create();
 		this.player1 = player1;
+		this.player2 = null;
 		this.engine = Engine.create({ gravity: { x: 0, y: 0 } });
 		this.world = this.engine.world;
 		this.p2 = Bodies.rectangle(this.width / 2, 50, 100, 10, { isStatic: true });
@@ -90,7 +91,12 @@ export class GameService {
 
 		Events.on(this.engine, 'afterUpdate', () => {
 			this.player1.emit('update', { ball: this.ball?.position, p1: this.p1.position, p2: this.p2.position, score1: this.sccor1, score2: this.sccor2 });
+			this.player2?.emit('update', { ball: this.reverseVector(this.ball?.position), p1: this.reverseVector(this.p1.position), p2: this.reverseVector(this.p2.position), score1: this.sccor2, score2: this.sccor1 });
 		});
+	}
+
+	reverseVector(vector: Vector): Vector {
+		return ({x: this.width - vector.x, y: this.height - vector.y});
 	}
 
 	setPlayer1(player: Socket): void {
@@ -112,5 +118,9 @@ export class GameService {
 	spownBall(): void {
 		this.ball = Bodies.circle(this.width / 2, this.height / 2, 15, { friction: 0, restitution: 1, inertia: Infinity, density: 0.1, frictionAir: 0, force: { x: 1.9, y: 1.6 }, label: "ball" });
 		World.add(this.world, this.ball);
+	}
+
+	stop(): void {
+		Runner.stop(this.runner);
 	}
 }

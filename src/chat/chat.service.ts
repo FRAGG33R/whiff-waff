@@ -511,7 +511,7 @@ export class ChatService {
 		} catch (error) {
 			throw new InternalServerErrorException(error);
 		}
-	} z
+	}
 
 	async getRoomsInfos(loggedUserId: string) {
 		return await this.prismaService.join.findMany({
@@ -532,7 +532,8 @@ export class ChatService {
 										id: true,
 										userName: true
 									}
-								}
+								},
+								status: true,
 							}
 						},
 						message: true,
@@ -557,7 +558,8 @@ export class ChatService {
 						select: {
 							avatar: true,
 						}
-					}
+					},
+					status: true,
 				},
 				where: {
 					roomChatId: roomsConversations[i].roomChat.id,
@@ -565,7 +567,8 @@ export class ChatService {
 			});
 			let avatarsarray = [];
 			avatars.forEach(element => {
-				avatarsarray.push(element.user.avatar);
+				if (element.status !== UserStatus.BANNED.toString())
+					avatarsarray.push(element.user.avatar);
 			});
 			(roomsConversations[i] as any).avatars = avatarsarray;
 		}
@@ -951,10 +954,12 @@ export class ChatService {
 				roomChatId: roomId,
 			}
 		});
-		users.forEach(element => {
-			if (element.mutedAt)
-				element.mutedAt = element.mutedAt.toString() as any;
-		})
+		for (let i = 0; i < users.length; i++) {
+			if (users[i].status === UserStatus.BANNED)
+				delete users[i];
+			else
+				users[i].mutedAt = users[i].mutedAt.toString() as any;
+		}
 		return users;
 	}
 }

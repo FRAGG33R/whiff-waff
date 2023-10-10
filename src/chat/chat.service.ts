@@ -954,11 +954,13 @@ export class ChatService {
 				roomChatId: roomId,
 			}
 		});
-		for (let i = 0; i < users.length; i++) {
-			if (users[i].status === UserStatus.BANNED)
-				delete users[i];
-			else
-				users[i].mutedAt = users[i].mutedAt.toString() as any;
+		if (users.length !== 0) {
+			for (let i = 0; i < users.length; i++) {
+				if (users[i].status === UserStatus.BANNED)
+					delete users[i];
+				else
+					users[i].mutedAt = users[i].mutedAt.toString() as any;
+			}
 		}
 		return users;
 	}

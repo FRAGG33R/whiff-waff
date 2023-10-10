@@ -14,15 +14,20 @@ import { loggedUserType, userType } from "@/types/userType";
 import { useRecoilState } from "recoil";
 import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
 import { localApi } from "@/components/axios/instance";
+import { useSocket } from "@/context/socket";
 
 const ProfileDropDown = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loggedUser] = useRecoilState(loggedUserAtom);
   const router = useRouter();
+  const s = useSocket();
 
   const LogOut = async () => {
     localStorage.removeItem("token");
     try {
+      (s as any).disconnect();
+      console.log("disconnected");
+      
       const res = await localApi.delete("/saveToken");
       router.push("/login");
     } catch (err) {

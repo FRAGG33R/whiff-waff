@@ -13,13 +13,9 @@ import {
   socketAtom,
 } from "@/context/RecoilAtoms";
 import toast, { Toaster } from "react-hot-toast";
-import { ToastContainer } from "react-toastify";
 import { dataGameType, scoreIdType } from "@/types/userType";
 import { useSocket } from "@/context/socket";
-import { IconButton } from "@material-tailwind/react";
-import { parse } from "path";
 import { parseJwt } from "@/lib/jwtToken";
-import { log } from "console";
 
 interface GameProps {
   map: string;
@@ -45,9 +41,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
   const router = useRouter();
 
   const usrId = router.query.gameId;
-  const handleClick = () => {
-    router.push("/game" + usrId);
-  };
+
   const s = useSocket();
   let theme = 0;
   if (map === "Beginner") {
@@ -57,9 +51,8 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
   } else {
     theme = 2;
   }
-  const userName = parseJwt(localStorage.getItem("token") as any).user; 
+  const userName = parseJwt(localStorage.getItem("token") as any).user;
   useEffect(() => {
-
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     else {
@@ -72,9 +65,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
     });
     setSocket(socket);
     socket.on("connect", function () {
-      console.log("Connected");
       socket.emit("message", { test: "test" }, (data: any) => {
-        console.log(data);
       });
       socket.emit(event, {
         mode: mode,
@@ -82,25 +73,27 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
         type: (gameData as dataGameType).type,
         id: usrId,
       });
-      if (event === "notify" && (gameData as dataGameType).type !== "friend"){
-        (s as any).emit("notification", { username: usrId, inviter: userName, map: map, mode: mode });
+      if (event === "notify" && (gameData as dataGameType).type !== "friend") {
+        (s as any).emit("notification", {
+          username: usrId,
+          inviter: userName,
+          map: map,
+          mode: mode,
+        });
         setId(usrId as string);
         setUserId(usrId as string);
       }
-      setGameData({type: ""});
+      setGameData({ type: "" });
     });
     socket.on("exception", function () {
-      console.log("socket error : " + socket.id);
     });
     socket.on(event, (data: { username: string }) => {
       setId(data.username);
       setUserId(data.username);
     });
     socket.on("disconnect", function () {
-      console.log("disconnected");
     });
     socket.on("status", () => {
-      console.log("online");
     });
 
     socket.on(
@@ -126,7 +119,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
       setUserId(data.username);
     });
     socket.on("start", () => {
-      setOpen(false);
+      setOpen((curr) => !curr);
     });
     socket.on("gameOver", (data: { msg: string }) => {
       setmessage(data.msg);
@@ -156,12 +149,11 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
     if (tableInstance != null) {
       tableInstance.stopRendering();
     }
-    if (  (gameData as dataGameType).type === "friend") {
+    if ((gameData as dataGameType).type === "friend") {
       map = (gameData as dataGameType).map;
       mode = (gameData as dataGameType).mode;
     }
     tableInstance = new PingPongTable(map, theme, socket, myref.current!);
-    console.log(socket);
     return () => {
       tableInstance?.stopRendering();
       tableInstance = null;
@@ -181,8 +173,13 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
         isFindingPlayer={isFindingPlayer}
         id={id}
       />
-      <Model showModal={showModal} setShowModal={setShowModal} text={msg} />
-      <ToastContainer position="top-right" onClick={handleClick} />
+      <Model
+        showModal={showModal}
+        setShowModal={setShowModal}
+        text={msg}
+        socket={socket}
+      />
+      <Toaster position="top-right" />
     </div>
   );
 };

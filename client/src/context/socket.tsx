@@ -28,7 +28,6 @@ export const SocketProvider = ({ children }: any) => {
       },
     });
     newSocket.on("notification", function (data: { username: string, map: string, mode: string, type: string, inviter: string}) {
-      console.log("notification", data);
       setUserName(data.inviter);
       setData({map: data.map, mode: data.mode, type: 'friend', inviter: data.inviter, username: data.username});
           toast.success(data.inviter + " challanges you to a GAME", {

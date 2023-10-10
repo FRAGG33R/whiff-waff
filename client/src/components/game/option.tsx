@@ -196,31 +196,15 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
               </div>
             </button>
           </div>
-          <div className="w-[80%] 2xl:w-[80%]  xl:w-[60%] lg:w-[60%] md:w-[60%] 2xl:h-full xl:h-[40%] lg:h-[40%] md:h-[40%] h-[40%] flex flex-col items-center justify-start gap-6 ">
+          <div className="w-[80%] 2xl:w-[80%]  xl:w-[60%] lg:w-[60%] md:w-[60%] 2xl:h-full xl:h-[40%] lg:h-[40%] md:h-[40%] h-[40%] flex flex-col items-center justify-center ">
             <div className="w-full 2xl:h-[80px] flex items-center justify-start  font-teko text-[#FFFFFF] text-[2rem] md:text-[3rem] lg:text-[3rem] 2xl:text-[3rem] ">
               Mode
             </div>
-            <div className="w-full xl:h-[100px] lg:h-[100px] md:h-[100px] 2xl:h-[110px] h-[100px] flex flex-row items-center justify-start space-x-4 sm:space-x-8 md:space-x-10 lg:space-x-12 xl:space-x-16 2xl:space-x-16 ">
-              <button
-                className={`w-[45%] xl:h-[100px] lg:h-[100px] md:h-[100px] 2xl:h-[110px] h-[80px] flex flex-row items-center justify-center rounded-3xl bg-[#606060] bg-opacity-10 gap-2  
-            ${time ? "bg-red-500" : "bg-[#606060]"}`}
-                onClick={handleTime}
-              >
-                <div className="w-[50%] 2xl:h-[90px] flex items-center justify-start ">
-                  <span
-                    className="font-teko text-[#E4E5E7] text-[1.5rem] md:text-[2rem] lg:text-[2.5rem] 2xl:text-[2rem] 3xl:text-[4rem]"
-                    style={{ textShadow: "3px 5px 25px #D2386D" }}
-                  >
-                    Time
-                  </span>
-                </div>
+            <div className="w-full xl:h-[100px] lg:h-[100px] md:h-[100px] 2xl:h-[110px] h-[100px] flex  items-center justify-center space-x-4 sm:space-x-8 md:space-x-10 lg:space-x-12 xl:space-x-16 2xl:space-x-16 ">
+           
 
-                <div className="w-[40%] 2xl:h-[90px] flex items-center justify-center ">
-                  <Image src={Time} alt="time" width={60} />
-                </div>
-              </button>
               <button
-                className={`w-[45%] xl:h-[100px]  lg:h-[100px] md:h-[100px] 2xl:h-[110px] h-[80px] flex flex-row items-center justify-center rounded-3xl bg-[#606060] bg-opacity-10 gap-2 
+                className={`w-full xl:h-[100px]  lg:h-[100px] md:h-[100px] 2xl:h-[110px] h-[60px] flex flex-row items-center justify-center rounded-3xl bg-[#606060] bg-opacity-10 gap-2 
             ${defi ? "bg-red-500" : "bg-[#606060]"}`}
                 onClick={handleDefi}
               >
@@ -238,7 +222,7 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
                 </div>
               </button>
             </div>
-            <div className="w-full 2xl:h-[110px] h-[100px] md:h-[100px] flex items-center justify-center">
+            <div className="w-full 2xl:h-[110px] h-[100px] md:h-[100px] flex items-center justify-center ">
               <PrimaryButton text="Play" onClick={handlePlay} />
               <Toaster position="top-right" />
             </div>

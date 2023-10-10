@@ -542,10 +542,11 @@ export class ChatService {
 					orderBy: {
 						date: 'desc'
 					}
-				}
+				},
+				
 			},
 			where: {
-				userId: loggedUserId
+				AND: [{ status: { not: UserStatus.BANNED } }, { userId: loggedUserId }],
 			},
 		})
 	}

@@ -13,16 +13,17 @@ export interface messageType {
 }
 
 export interface channelMessageType {
-  roomSender: {
-    user: {
-      id: string;
-      userName: string;
+    roomSender: {
+      user: {
+        id: string;
+        userName: string;
+      };
     };
-  };
-  message: string;
-  type: "receiver" | "sender";
-  date: string;
-  isError: boolean;
+    message: string;
+    type: "receiver" | "sender";
+    date: string;
+    isError: boolean;
+
 }
 
 export interface conversationType {
@@ -66,11 +67,9 @@ export interface channelUsersType {
   mutedAt: string;
 }
 
-
 export interface expoloreChannelListType {
-	id : string,
-	name : string,
-	type : string, 
-	avatars : string[]
+  id: string;
+  name: string;
+  type: string;
+  avatars: string[];
 }
-

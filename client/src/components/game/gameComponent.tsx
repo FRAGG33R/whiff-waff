@@ -85,10 +85,6 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
     socket.on("status", () => {
       console.log("online");
     });
-	(s as any).on("notify", () => {
-		alert("9alwa!!!!")
-	})
-
     socket.on("start", () => {
       setOpen(false);
     });

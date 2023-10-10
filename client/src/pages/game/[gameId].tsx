@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 import {
 	loggedUserAtom,
 	userAtom,
-  } from "@/context/RecoilAtoms";
+} from "@/context/RecoilAtoms";
 
 const Game = (props : {data : any}) => {
 	const [userData, setUserData] = useRecoilState(userAtom);

@@ -6,11 +6,11 @@ import { SocketProvider } from "@/context/socket";
 const MyApp = ({ Component, pageProps }: AppProps) => {
 
   return (
-    <SocketProvider>
       <RecoilRoot>
+    <SocketProvider>
         <Component {...pageProps} />
-      </RecoilRoot>
     </SocketProvider>
+      </RecoilRoot>
   );
 };
 

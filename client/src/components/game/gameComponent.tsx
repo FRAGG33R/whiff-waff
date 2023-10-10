@@ -6,9 +6,20 @@ import { Body, Vector } from "matter-js";
 import ModelGame from "./modelGame";
 import Model from "./model";
 import { useRecoilState, useResetRecoilState } from "recoil";
-import { idAtom, scoreIdAtom, socketAtom } from "@/context/RecoilAtoms";
+import {
+  dataGameAtom,
+  idAtom,
+  scoreIdAtom,
+  socketAtom,
+} from "@/context/RecoilAtoms";
 import toast, { Toaster } from "react-hot-toast";
-import { scoreIdType } from "@/types/userType";
+import { ToastContainer } from "react-toastify";
+import { dataGameType, scoreIdType } from "@/types/userType";
+import { useSocket } from "@/context/socket";
+import { IconButton } from "@material-tailwind/react";
+import { parse } from "path";
+import { parseJwt } from "@/lib/jwtToken";
+import { log } from "console";
 
 interface GameProps {
   map: string;
@@ -17,8 +28,7 @@ interface GameProps {
 }
 let tableInstance: PingPongTable | null = null;
 
-
-const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
+const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
   const [wSize, setwSize] = useState<number[]>([0, 0]);
   const myref = useRef<HTMLDivElement>(null);
   const [socket, setSocket] = useState<any>();
@@ -30,31 +40,34 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
   const [id, setId] = useState<string>("");
   const [userId, setUserId] = useRecoilState(idAtom);
   const [userScore, setUserScore] = useRecoilState(scoreIdAtom);
-  const [globalSocket, setGlobalSocket] = useRecoilState(socketAtom);  
-  const [hardsocket, setHardSocket] = useState<any>(globalSocket);
+  const [gameData, setGameData] = useRecoilState(dataGameAtom);
+
   const router = useRouter();
-  
-    let theme = 0;
-    if (map === "Beginner") {
-      theme = 0;
-    } else if (map === "Intermediate") {
-      theme = 1;
-    } else {
-      theme = 2;
-    }
-    const usrId = router.query.gameId;
+
+  const usrId = router.query.gameId;
+  const handleClick = () => {
+    router.push("/game" + usrId);
+  };
+  const s = useSocket();
+  let theme = 0;
+  if (map === "Beginner") {
+    theme = 0;
+  } else if (map === "Intermediate") {
+    theme = 1;
+  } else {
+    theme = 2;
+  }
+  const userName = parseJwt(localStorage.getItem("token") as any).user; 
   useEffect(() => {
-  
-      
-     const token = localStorage.getItem("token");
+
+    const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     else {
       setToken(token);
     }
     const socket = io("http://e3r10p16.1337.ma:8888", {
       extraHeaders: {
-        authorization:
-          "Bearer "  + token,
+        authorization: "Bearer " + token,
       },
     });
     setSocket(socket);
@@ -63,10 +76,25 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
       socket.emit("message", { test: "test" }, (data: any) => {
         console.log(data);
       });
-      socket.emit(event, {mode: mode, map: map, type: event, id: usrId})
+      socket.emit(event, {
+        mode: mode,
+        map: map,
+        type: (gameData as dataGameType).type,
+        id: usrId,
+      });
+      if (event === "notify" && (gameData as dataGameType).type !== "friend"){
+        (s as any).emit("notification", { username: usrId, inviter: userName, map: map, mode: mode });
+        setId(usrId as string);
+        setUserId(usrId as string);
+      }
+      setGameData({type: ""});
     });
     socket.on("exception", function () {
       console.log("socket error : " + socket.id);
+    });
+    socket.on(event, (data: { username: string }) => {
+      setId(data.username);
+      setUserId(data.username);
     });
     socket.on("disconnect", function () {
       console.log("disconnected");
@@ -74,32 +102,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
     socket.on("status", () => {
       console.log("online");
     });
-    socket.on("start", () => {
-      setOpen(false);
-    });
-    globalSocket.on("notify", () => {
-      toast.success("Your opponent has left the game", {
-        style: {
-          borderRadius: "12px",
-          padding: "12px",
-          background: "#6C7FA7",
-          color: "#fff",
-          fontFamily: "Poppins",
-          fontSize: "18px",
-        },
-      });
-    });
-    // socket?.on(event, function(data) => {
-    //   toast.("", {
-    //     style: {
-    //       borderRadius: "12px",
-    //       padding: "12px",
-    //       background: "#6C7FA7",
-    //       color: "#fff",
-    //       fontFamily: "Poppins",
-    //       fontSize: "18px",
-    //     },
-    // });
+
     socket.on(
       "update",
       function (data: {
@@ -108,33 +111,35 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
         ball: Vector;
         score1: number;
         score2: number;
-      }) {                                                                                    
+      }) {
         tableInstance?.update(data);
-        setUserScore({score1: data.score1, score2: data.score2});
+        setUserScore({ score1: data.score1, score2: data.score2 });
       }
-      );
+    );
     socket.on("left", () => {
-     
-    })
-    socket.on('joined', (data: {username: string}) => {
+      setmessage("Your opponent left the game , you won");
+      setShowModal(true);
+    });
+    socket.on("joined", (data: { username: string }) => {
       setIsFindingPlayer(false);
       setId(data.username);
       setUserId(data.username);
-      
-    })
+    });
+    socket.on("start", () => {
+      setOpen(false);
+    });
     socket.on("gameOver", (data: { msg: string }) => {
-      setmessage(data.msg)
+      setmessage(data.msg);
       setShowModal(true);
     });
     function handleResize() {
       setwSize([window.innerWidth, window.innerHeight]);
     }
     window.addEventListener("resize", handleResize);
-    document.addEventListener('mousemove', (event) => {
+    document.addEventListener("mousemove", (event) => {
       tableInstance?.move(event);
-    })
-    if (tableInstance)
-      tableInstance.socket = socket;
+    });
+    if (tableInstance) tableInstance.socket = socket;
     return () => {
       socket.disconnect();
       if (tableInstance) {
@@ -151,12 +156,16 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
     if (tableInstance != null) {
       tableInstance.stopRendering();
     }
-    tableInstance = new PingPongTable(map, theme, socket, myref.current!);
-    console.log(socket)
-    return () => {
-        tableInstance?.stopRendering();
-        tableInstance = null;
+    if (  (gameData as dataGameType).type === "friend") {
+      map = (gameData as dataGameType).map;
+      mode = (gameData as dataGameType).mode;
     }
+    tableInstance = new PingPongTable(map, theme, socket, myref.current!);
+    console.log(socket);
+    return () => {
+      tableInstance?.stopRendering();
+      tableInstance = null;
+    };
   }, [wSize, socket]);
 
   return (
@@ -164,9 +173,16 @@ const GameComponent: React.FC<GameProps> = ({ map, mode , event}) => {
       className="flex items-center justify-center w-full h-full rounded-lg"
       ref={myref}
     >
-      <ModelGame socket={socket} open={open} setOpen={setOpen} event={event} isFindingPlayer={isFindingPlayer} id={id}/>
-      <Model showModal={showModal} setShowModal={setShowModal} text={msg}/>
-      <Toaster position="top-right" />
+      <ModelGame
+        socket={socket}
+        open={open}
+        setOpen={setOpen}
+        event={event}
+        isFindingPlayer={isFindingPlayer}
+        id={id}
+      />
+      <Model showModal={showModal} setShowModal={setShowModal} text={msg} />
+      <ToastContainer position="top-right" onClick={handleClick} />
     </div>
   );
 };

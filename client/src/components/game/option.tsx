@@ -7,7 +7,7 @@ import Defi from "./../../../public/Defi.svg";
 import PrimaryButton from "../../components/ui/buttons/primaryButton";
 import Image from "next/image";
 import { useState } from "react";
-import { loggedUserAtom } from "@/context/RecoilAtoms";
+import { dataGameAtom, loggedUserAtom } from "@/context/RecoilAtoms";
 import { useRecoilState } from "recoil";
 import { userType } from "./../../types/userType";
 import { userDataAtom } from "@/atom/atomStateuser";
@@ -37,7 +37,11 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
   console.log("userNmae: ",(loggedUser as userType).userName);
   const [open, setDialogOpen] = useState(false);
   const [isFindingPlayer, setIsFindingPlayer] = useState(true);
+  const [data, setData] = useRecoilState(dataGameAtom);
 
+
+  console.log("data: ", data);
+  
   const handleOpen = () => {
     setDialogOpen(!open);
   };
@@ -89,16 +93,6 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
     }
     else if (loggedUser && (loggedUser as userType).userName !== name) {
       selectedEvent = "notify";
-    //   toast.success("playe with me", {
-    //     style: {
-    //       borderRadius: "12px",
-    //       padding: "12px",
-    //       background: "#6C7FA7",
-    //       color: "#fff",
-    //       fontFamily: "Poppins",
-    //       fontSize: "18px",
-    //     },
-    //   });
     }
     if (selectedMap && selectedMode) {
       onPlay(selectedMap, selectedMode, selectedEvent);

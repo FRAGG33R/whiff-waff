@@ -19,24 +19,7 @@ export default function ProfileComponent()
 {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
-  const [loggedUser] = useRecoilState(loggedUserAtom);
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   if (!token) router.push('/login');
-  //   else {
-  //     setToken(token);
-  //   }
-
-  //   const socket1 = io('http://e3r10p16.1337.ma:8887', {
-  //     extraHeaders: {
-  //       authorization: 'Bearer ' + token,
-  //     },
-  //   });
-  //   setSocket(socket1);
-  //   console.log('socket1', socket1);
-  // }, []);
-  
+  const [loggedUser] = useRecoilState(loggedUserAtom);  
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 xl:gap-10 flex-row text-white pt-2 overflow-hidden">

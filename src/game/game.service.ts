@@ -7,7 +7,8 @@ import { Map } from '@prisma/client'
 @Injectable()
 export class GameService {
 
-
+	user1ID: string;
+	user2ID: string;
 	id1: string;
 	id2: string;
 	player1: Socket;
@@ -33,6 +34,7 @@ export class GameService {
 	sccor2: number = 0;
 
 	serve: boolean = true;
+	isRunning: boolean = true;
 
 	obsts_data: { x: number, y: number, width: number, height: number }[] = [
 		{ x: 0, y: 200, width: 100, height: 100 },
@@ -42,6 +44,7 @@ export class GameService {
 	];
 
 	constructor(player1: Socket, tableOptions: string) {
+
 		this.tableOptions = tableOptions;
 		this.runner = Runner.create();
 		this.player1 = player1;
@@ -79,11 +82,13 @@ export class GameService {
 			if (this.sccor1 > this.sccor2 && this.sccor1 == 5) {
 				this.player1?.emit('gameOver', { msg: 'You won'});
 				this.player2?.emit('gameOver', { msg: 'You lost' });
-				Runner.stop(this.runner);
+				this.stop();
+				// DOTO : add score to db
 			} else if (this.sccor2 > this.sccor1 && this.sccor2 == 5) {
-				Runner.stop(this.runner);
+				this.stop();
 				this.player2?.emit('gameOver', { msg: 'You won'});
 				this.player1?.emit('gameOver', { msg: 'You lost'});
+				// DOTO : add score to db
 			}
 			if (stoped) {
 				setTimeout(() => {
@@ -119,6 +124,11 @@ export class GameService {
 	}
 
 	spownBall(): void {
+		if (!this.isRunning){
+			this.isRunning = !this.isRunning;
+			Runner.run(this.runner, this.engine);
+			return;
+		}
 		let forceX: number = -1.9;
 		let foceY: number = -1.6;
 		if (this.serve){
@@ -133,5 +143,6 @@ export class GameService {
 
 	stop(): void {
 		Runner.stop(this.runner);
+		this.isRunning = false;
 	}
 }

@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, WebSocketGateway, WsException } from '@nestjs/websockets';
 import { GuardsService } from 'src/chat/guards/guards.service';
 import { GameService } from './game.service';
 import { EventService } from './game.emitter';
@@ -18,7 +18,6 @@ export class GameGatewayStatus implements OnGatewayConnection {
 	private readonly connectedUsers: Map<string, string> = new Map<string, string>();
 
 	async handleConnection(@ConnectedSocket() client: any) {
-		console.log('hello thre');
 		const validUser = (client.handshake.headers.authorization) ?
 			GuardsService.validateToken(client.handshake.headers?.authorization, this.configService.get('JWT_SECRET')) : false;
 		const existsUser: any = (validUser) ? await this.guardService.validate(validUser) : false;
@@ -27,30 +26,15 @@ export class GameGatewayStatus implements OnGatewayConnection {
 			client.disconnect();
 		}
 		else if (this.connectedUsers) {
-			if (!this.connectedUsers.has((validUser as any).id))
-				this.connectedUsers.set((validUser as any).id, client.id);
+			this.connectedUsers.set((validUser as any).user, client.id);
 		}
-
-
-		console.log('connect');
 	}
 
-	@SubscribeMessage('notifyUser')
-	async notify(@MessageBody() data: { id: string }, @ConnectedSocket() client: any) {
-
-		// let index = this.connectedUsers.get(data.id);
-		// if (index) {
-		// 	client.to(index).emit('notify', 'are you ready for a game ?');
-		// }
-		// console.log('la9la9la9');
-
+	@SubscribeMessage('notification')
+	async notify(@MessageBody() data: { username: string, inviter: string, map: string, mode: string }, @ConnectedSocket() client: any) {
+		let socketId: string = this.connectedUsers.get(data.username);
+		if (!socketId || "" === socketId)
+			throw new WsException('your friend is not connected');
+		client.to(socketId).emit('notification', { username: data.username, inviter: data.inviter, map: data.map, mode: data.mode });
 	}
-
-	@OnEvent('notifyUser')
-	notifyUser() {
-		const ter = this.connectedUsers.get('079b818f-a287-41ed-a9bc-9877527592a3');
-	}
-
-
-
 }

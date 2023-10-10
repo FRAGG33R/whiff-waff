@@ -7,6 +7,7 @@ import Matter, { Vector, Body } from 'matter-js';
 import { User } from '@prisma/client';
 import { EventService } from './game.emitter';
 import { GameGatewayStatus } from './game.gatewayStatus';
+import e from 'express';
 
 interface RandomGame {
 	game: GameService;
@@ -15,6 +16,7 @@ interface RandomGame {
 	map: string;
 	mode: string;
 	started: boolean;
+	gameId?: string;
 }
 
 @WebSocketGateway(8888, {
@@ -46,65 +48,63 @@ export class GameGateway implements OnGatewayConnection {
 			this.connectedUsers.set(client.id, { id: '', socket: client, username: '' })
 			client.disconnect();
 		}
-		else {
+		else
 			this.connectedUsers.set(client.id, { id: (validUser as any).id, socket: client, username: (validUser as any).user });
-		}
-		// client.emit('status', { status: 'online' });
-		console.log('connect');
 	}
 
 	@SubscribeMessage('play')
-	async play(@ConnectedSocket() client: Socket, @MessageBody() data: { map: string, mode: string, type: string, id: string }) {
-		if (data.type === 'friend') {
-			let socket: any = this.connectedUsers.get((client as any).id);
-			let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === socket.id);
-			if (index < 0)
-				client.emit('exception', 'You have no invitations');
-			else {
-				this.inviteFriendsArray[index].setPlayer2(socket);
-				this.inviteFriendsArray[index].getPlayer1().emit('joined', { data: 'joined' });
-				this.inviteFriendsArray[index].ready = true;
-			}
+	async play(@ConnectedSocket() client: Socket, @MessageBody() data: { map: string, mode: string, type: string }) {
+		let username: string = this.connectedUsers.get((client as any).id)?.username;
+		let id: string = this.connectedUsers.get((client as any).id)?.id;
+		let gameInfo: RandomGame | null = this.findRandomGame(data.map, 'data.mode', false);
+		if (gameInfo === null) {
+			gameInfo = {
+				game: new GameService(client, data.map),
+				p1: (client as any).id,
+				p2: '',
+				map: data.map,
+				mode: 'data.mode',
+				started: false,
+				gameId: username
+			};
+			gameInfo.game.id1 = username;
+			gameInfo.game.user1ID = id;
+			this.queueArray.push(gameInfo);
+			console.log("length: ", this.queueArray.length);
 		} else {
-			let gameInfo: RandomGame | null = this.findRandomGame(data.map, data.mode, false);
-			if (gameInfo === null) {
-				gameInfo = {
-					game: new GameService(client, data.map),
-					p1: (client as any).id,
-					p2: '',
-					map: data.map,
-					mode: data.mode,
-					started: false
-				};
-				gameInfo.game.id1 = gameInfo.p1;
-				this.queueArray.push(gameInfo);
-			} else {
-				gameInfo.game.setPlayer2(client);
-				gameInfo.game.ready = true;
-				gameInfo.p2 = (client as any).id;
-				gameInfo.started = true;
-				gameInfo.game.getPlayer1().emit('joined', { username: this.connectedUsers.get(gameInfo.p2).username });
-				gameInfo.game.getPlayer2().emit('joined', { username: this.connectedUsers.get(gameInfo.p1).username });
-				gameInfo.game.id2 = gameInfo.p2;
-			}
+			gameInfo.game.setPlayer2(client);
+			gameInfo.game.ready = true;
+			gameInfo.p2 = (client as any).id;
+			gameInfo.started = true;
+			gameInfo.gameId += " " + username;
+			gameInfo.game.getPlayer1().emit('joined', { username: username });
+			gameInfo.game.getPlayer2().emit('joined', { username: gameInfo.game.id1 });
+			gameInfo.game.id2 = username;
+			gameInfo.game.user2ID = id;
 		}
 	}
 
 	@SubscribeMessage('notify')
-	async notify(@ConnectedSocket() client: Socket, @MessageBody() data: { id: string, type: string }) {
-		console.log('comming data : ', data);
-
-		let socket: any = this.connectedUsers.get(data.id);
-		let game: GameService = new GameService(client, "map");
-		game.setPlayer1(client);
-		game.setPlayer2(null);
-		game.id1 = (client as any).id;
-		game.id2 = data.id;
-		this.inviteFriendsArray.push(game);
-		// socket?.emit('notification', { data: 'notification' });
-		console.log('notify');
-		this.zeb.notifyUser();
-		this.eventService.emitter.emit('notifyUser', { data: 'notification' });
+	async notify(@ConnectedSocket() client: Socket, @MessageBody() data: { id: string, type: string, mode: string, map: string }) {
+		let username: string = this.connectedUsers.get((client as any).id)?.username;
+		let index = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === username && element.id1 === data.id);
+		if (index >= 0) {
+			let game: GameService = this.inviteFriendsArray[index];
+			game.setPlayer2(client);
+			game.ready = true;
+			game.user2ID = this.connectedUsers.get((client as any).id)?.id;
+			game.getPlayer1().emit('joined', { username: game.id2 });
+			game.getPlayer2().emit('joined', { username: game.id1 });
+		}
+		else {
+			let game: GameService = new GameService(client, data.map);
+			game.setPlayer1(client);
+			game.setPlayer2(null);
+			game.id1 = username;
+			game.id2 = data.id;
+			game.user1ID = this.connectedUsers.get((client as any).id)?.id;
+			this.inviteFriendsArray.push(game);
+		}
 	}
 
 	@SubscribeMessage('left')
@@ -114,62 +114,65 @@ export class GameGateway implements OnGatewayConnection {
 
 	@SubscribeMessage('start')
 	async start(@ConnectedSocket() client: any, @MessageBody() data: { type: string }) {
-		console.log(data.type);
-		if (data.type === 'friend') {
-			let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === client.id || element.id1 === client.id);
-			if (index >= 0) {
-				this.inviteFriendsArray[index].getPlayer2()?.emit('start', { data: 'start' });
-				this.inviteFriendsArray[index].getPlayer1()?.emit('start', { data: 'start' });
-				this.inviteFriendsArray[index].spownBall();
-			}
-		} else {
-			let index: number = this.queueArray.findIndex((element: RandomGame) => (element.p1 === client.id || element.p2 === client.id) && (element.game.ready === true));
-			if (index >= 0) {
-				this.queueArray[index].game.getPlayer2()?.emit('start', { data: 'start' });
-				this.queueArray[index].game.getPlayer1()?.emit('start', { data: 'start' });
-				this.queueArray[index].game.spownBall();
-			}
+		let username: string = this.connectedUsers.get((client as any).id)?.username;
+		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => (element.id2 === username || element.id1 === username) && element.ready === true);
+		let game: GameService;
+		if (index >= 0) {
+			game = this.inviteFriendsArray[index];
+			game.getPlayer2()?.emit('start', { data: 'start' });
+			game.getPlayer1()?.emit('start', { data: 'start' });
+			game.spownBall();
+			return;
+		}
+		index = this.queueArray.findIndex((element: RandomGame) => (element.p1 === client.id || element.p2 === client.id) && (element.game.ready === true));
+		if (index >= 0) {
+			game = this.queueArray[index].game;
+			game.getPlayer2()?.emit('start', { data: 'start' });
+			game.getPlayer1()?.emit('start', { data: 'start' });
+			game.spownBall();
 		}
 	}
 
 	async handleDisconnect(client: any) {
+		let username: string = this.connectedUsers.get((client as any).id)?.username;
 		this.connectedUsers.delete(client.id);
-		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === client.id || element.id1 === client.id);
+		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === username || element.id1 === username);
 		if (index >= 0) {
 			let game: GameService = this.inviteFriendsArray[index];
 			game.getPlayer1()?.emit('left', { msg: "your friend has left the game" });
 			game.getPlayer2()?.emit('left', { msg: "your friend has left the game" });
 			game.stop();
-			if (client.id === game.id1) game.setPlayer1(null);
-			else if (client.id === game.id2) game.setPlayer2(null);
-			if (game.getPlayer1() === null && game.getPlayer2() === null)
-				this.inviteFriendsArray.splice(index, 1);
+			if (username === game.id1)
+				game.getPlayer2()?.disconnect();
+			else if (username === game.id2)
+				game.getPlayer1()?.disconnect();
+			this.inviteFriendsArray.splice(index, 1);
 		}
-		index = this.queueArray.findIndex((element: RandomGame) => element.p1 === client.id || element.p2 === client.id);
+		index = this.queueArray.findIndex((element: RandomGame) => element.game.id1 === username || element.game.id2 === username);
 		if (index >= 0) {
-			let game: RandomGame = this.queueArray[index];
-			game.game.getPlayer1()?.emit('left', { msg: "your friend has left the game" });
-			game.game.getPlayer2()?.emit('left', { msg: "your friend has left the game" });
-			game.game.stop();
-			if (client.id === game.game.id1) game.game.setPlayer1(null);
-			else if (client.id === game.game.id2) game.game.setPlayer2(null);
-			if (game.game.getPlayer1() === null && game.game.getPlayer2() === null)
-				this.queueArray.splice(index, 1);
+			let game: GameService = this.queueArray[index].game;
+			game.getPlayer1()?.emit('left', { msg: "your friend has left the game" });
+			game.getPlayer2()?.emit('left', { msg: "your friend has left the game" });
+			game.stop();
+			if (username === game.id1)
+				game.getPlayer2().disconnect;
+			else if (username === game.id2)
+				game.getPlayer1().disconnect();
+			this.queueArray.splice(index, 1);
 		}
-		console.log("disconnected ", client.id)
 	}
 
 	@SubscribeMessage('move')
 	async move(@ConnectedSocket() client: any, @MessageBody('position') position: Vector) {
-		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === client.id || element.id1 === client.id);
+		let username: string = this.connectedUsers.get((client as any).id)?.username;
+		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === username || element.id1 === username);
 		if (index >= 0) {
 			let game: GameService = this.inviteFriendsArray[index];
-			if (client.id === game.id1) {
-				console.log(position);
-				Body.setPosition(game.p1, position);
+			if (username === game.id1) {
+				Body.setPosition(game.p1, { x: position.x, y: game.p1.position.y });
 			}
 			else
-				Body.setPosition(game.p2, position);
+				Body.setPosition(game.p2, { x: game.width - position.x, y: game.p2.position.y });
 		}
 		index = this.queueArray.findIndex((element: RandomGame) => element.p1 === client.id || element.p2 === client.id);
 		if (index >= 0) {
@@ -181,3 +184,4 @@ export class GameGateway implements OnGatewayConnection {
 		}
 	}
 }
+

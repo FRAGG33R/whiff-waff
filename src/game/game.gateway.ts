@@ -59,7 +59,7 @@ export class GameGateway implements OnGatewayConnection {
 		let gameInfo: RandomGame | null = this.findRandomGame(data.map, 'data.mode', false);
 		if (gameInfo === null) {
 			gameInfo = {
-				game: new GameService(client, data.map),
+				game: new GameService(),
 				p1: (client as any).id,
 				p2: '',
 				map: data.map,
@@ -67,6 +67,8 @@ export class GameGateway implements OnGatewayConnection {
 				started: false,
 				gameId: username
 			};
+			gameInfo.game.setPlayer1(client);
+			gameInfo.game.tableOptions = data.map;
 			gameInfo.game.id1 = username;
 			gameInfo.game.user1ID = id;
 			this.queueArray.push(gameInfo);
@@ -97,7 +99,8 @@ export class GameGateway implements OnGatewayConnection {
 			game.getPlayer2().emit('joined', { username: game.id1 });
 		}
 		else {
-			let game: GameService = new GameService(client, data.map);
+			let game: GameService = new GameService();
+			game.tableOptions = data.map;
 			game.setPlayer1(client);
 			game.setPlayer2(null);
 			game.id1 = username;

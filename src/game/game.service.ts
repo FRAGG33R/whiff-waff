@@ -43,11 +43,10 @@ export class GameService {
 		{ x: 0, y: 600, width: 100, height: 100 },
 	];
 
-	constructor(player1: Socket, tableOptions: string) {
-
-		this.tableOptions = tableOptions;
+	constructor() {
+		this.tableOptions = '';
 		this.runner = Runner.create();
-		this.player1 = player1;
+		this.player1 = null;
 		this.player2 = null;
 		this.engine = Engine.create({ gravity: { x: 0, y: 0 } });
 		this.world = this.engine.world;

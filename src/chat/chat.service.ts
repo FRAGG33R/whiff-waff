@@ -359,7 +359,7 @@ export class ChatService {
 		}
 	}
 
-	
+
 	async getJoinedRoomByIds(adminId: string, roomId: string) {
 		const room = await this.prismaService.join.findUnique({
 			select: {
@@ -574,12 +574,6 @@ export class ChatService {
 	//=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=
 
 
-
-
-
-
-
-
 	async getUsersInRoomById(roomId: string) {
 		try {
 			const users = await this.prismaService.join.findMany({
@@ -636,10 +630,6 @@ export class ChatService {
 			throw new InternalServerErrorException(error);
 		}
 	}
-
-
-
-
 
 	formmatRoomConversations(loggedUserId: string, roomsConversations: any) {
 		roomsConversations.forEach((element: any, index: number) => {
@@ -722,6 +712,8 @@ export class ChatService {
 			if (existRoom.status !== UserStatus.ADMIN && existRoom.status !== UserStatus.OWNER)
 				throw { type: 'notAdmin' }
 			const userStatus = await this.getJoinedRoomByIds(data.invitedId, data.channelId);
+			if (!userStatus)
+				throw { type: 'notFound' }
 			if (userStatus.status === UserStatus.OWNER)
 				throw { type: 'owner' }
 			const kickedUser = await this.prismaService.join.delete({
@@ -942,7 +934,7 @@ export class ChatService {
 	}
 
 	async getUsersOfRoom(roomId: string) {
-		const users =  await this.prismaService.join.findMany({
+		const users = await this.prismaService.join.findMany({
 			select: {
 				user: {
 					select: {

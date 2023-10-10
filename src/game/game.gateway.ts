@@ -5,6 +5,8 @@ import { GuardsService } from 'src/chat/guards/guards.service';
 import { GameService } from './game.service';
 import Matter, { Vector, Body } from 'matter-js';
 import { User } from '@prisma/client';
+import { EventService } from './game.emitter';
+import { GameGatewayStatus } from './game.gatewayStatus';
 
 interface RandomGame {
 	game: GameService;
@@ -22,7 +24,7 @@ interface RandomGame {
 })
 export class GameGateway implements OnGatewayConnection {
 
-	constructor(private readonly configService: ConfigService, private readonly guardService: GuardsService) { }
+	constructor(private readonly configService: ConfigService, private readonly guardService: GuardsService, private readonly eventService: EventService, private zeb: GameGatewayStatus) { }
 
 	inviteFriendsArray: GameService[] = [];
 	queueArray: RandomGame[] = [];
@@ -41,11 +43,11 @@ export class GameGateway implements OnGatewayConnection {
 		const existsUser: any = (validUser) ? await this.guardService.validate(validUser) : false;
 		if (!existsUser || this.connectedUsers.has((validUser as any).id) === true) {
 			client.emit('exception', 'User not allowed to connect');
-			this.connectedUsers.set(client.id, { id: '', socket: client, username: ''})
+			this.connectedUsers.set(client.id, { id: '', socket: client, username: '' })
 			client.disconnect();
 		}
-		else{
-			this.connectedUsers.set(client.id, { id: (validUser as any).id, socket: client, username: (validUser as any).user});
+		else {
+			this.connectedUsers.set(client.id, { id: (validUser as any).id, socket: client, username: (validUser as any).user });
 		}
 		// client.emit('status', { status: 'online' });
 		console.log('connect');
@@ -81,8 +83,8 @@ export class GameGateway implements OnGatewayConnection {
 				gameInfo.game.ready = true;
 				gameInfo.p2 = (client as any).id;
 				gameInfo.started = true;
-				gameInfo.game.getPlayer1().emit('joined', { username: this.connectedUsers.get(gameInfo.p2).username});
-				gameInfo.game.getPlayer2().emit('joined', { username: this.connectedUsers.get(gameInfo.p1).username});
+				gameInfo.game.getPlayer1().emit('joined', { username: this.connectedUsers.get(gameInfo.p2).username });
+				gameInfo.game.getPlayer2().emit('joined', { username: this.connectedUsers.get(gameInfo.p1).username });
 				gameInfo.game.id2 = gameInfo.p2;
 			}
 		}
@@ -90,7 +92,8 @@ export class GameGateway implements OnGatewayConnection {
 
 	@SubscribeMessage('notify')
 	async notify(@ConnectedSocket() client: Socket, @MessageBody() data: { id: string, type: string }) {
-		console.log(data);
+		console.log('comming data : ', data);
+
 		let socket: any = this.connectedUsers.get(data.id);
 		let game: GameService = new GameService(client, "map");
 		game.setPlayer1(client);
@@ -98,7 +101,10 @@ export class GameGateway implements OnGatewayConnection {
 		game.id1 = (client as any).id;
 		game.id2 = data.id;
 		this.inviteFriendsArray.push(game);
-		socket?.emit('notification', { data: 'notification' });
+		// socket?.emit('notification', { data: 'notification' });
+		console.log('notify');
+		this.zeb.notifyUser();
+		this.eventService.emitter.emit('notifyUser', { data: 'notification' });
 	}
 
 	@SubscribeMessage('left')
@@ -169,9 +175,9 @@ export class GameGateway implements OnGatewayConnection {
 		if (index >= 0) {
 			let game: RandomGame = this.queueArray[index];
 			if (client.id === game.p1)
-				Body.setPosition(game.game.p1, {x: position.x, y: game.game.p1.position.y});
+				Body.setPosition(game.game.p1, { x: position.x, y: game.game.p1.position.y });
 			else
-				Body.setPosition(game.game.p2, {x: game.game.width - position.x, y: game.game.p2.position.y});
+				Body.setPosition(game.game.p2, { x: game.game.width - position.x, y: game.game.p2.position.y });
 		}
 	}
 }

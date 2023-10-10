@@ -149,6 +149,7 @@ export default function ChannelBar(props: channelBarType) {
 				setOpen={handleOpenSettings}
                 selectedChannel={props.selectedChannel}
                 channelUsers={channelUsers}
+				setChannelUsers={setChannelUsers}
               />
 			<InviteUser selectedChannel={props.selectedChannel} />
             </>

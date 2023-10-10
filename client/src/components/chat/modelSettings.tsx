@@ -37,13 +37,24 @@ const ModelSettings = (props: SingleMembreType) => {
             {props.userName}
           </div>
           <div className="font-light font-teko text-white/60 2xl:text-md 3xl:text-xl lowercase">
-            {(props.type === "DEFLAULT"  || props.type === "MUTED") ? "" : props.type}
+            {props.type === "DEFLAULT" || props.type === "MUTED"
+              ? ""
+              : props.type}
           </div>
         </div>
         {(props.type == "DEFLAULT" || props.type == "MUTED") && (
           <div className="min-w-1 h-full flex flex-row items-center justify-center gap-2">
-            <MuteDropDown setMuteDurition={setMuteDuration} roomId={props.selectedChannel.roomChat.id} userId={props.userId}/>
-			<UserChannelDropDown roomId={props.selectedChannel.roomChat.id} userId={props.userId}/>
+            <MuteDropDown
+              setMuteDurition={setMuteDuration}
+              roomId={props.selectedChannel.roomChat.id}
+              userId={props.userId}
+            />
+            <UserChannelDropDown
+              roomId={props.selectedChannel.roomChat.id}
+              userId={props.userId}
+              channelUsers={props.channelUsers}
+              setChannelUsers={props.setChannelUsers}
+            />
           </div>
         )}
       </div>

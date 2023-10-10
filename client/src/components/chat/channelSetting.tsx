@@ -18,6 +18,7 @@ const ChannelSettings = (props: {
   channelUsers: channelUsersType[];
   open: boolean;
   setOpen: Function;
+  setChannelUsers: Function;
 }) => {
   const [password, setPassword] = useState("");
   const [errorPassword, setErrorPassword] = useState(false);
@@ -130,6 +131,8 @@ const ChannelSettings = (props: {
                         avatar={item.user.avatar}
                         type={item.status}
                         selectedChannel={props.selectedChannel}
+						channelUsers={props.channelUsers}
+						setChannelUsers={props.setChannelUsers}
                       />
                     )}
                   </>

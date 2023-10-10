@@ -142,11 +142,13 @@ export default function ChatComponent() {
     } else {
       const channelName = router.query.chatId;
       try {
+		console.log('try');
         const res = await api.get(`chat/room/Conversations`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
+		console.log('res - : ', res.data);
         setChannel(res.data.Conversationdata.roomsConversations);
         setSelectedChannel((prev: channelType | null) => {
           const channel = res.data.Conversationdata.roomsConversations.find(
@@ -157,7 +159,9 @@ export default function ChatComponent() {
           }
           return res.data.Conversationdata.roomsConversations[0];
         });
-      } catch (error: any) {}
+      } catch (error: any) {
+		console.log("error : ", error.response.data);
+	  }
     }
   };
 

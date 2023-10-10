@@ -5,10 +5,13 @@ import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { api } from "@/components/axios/instance";
+import { channelUsersType } from "@/types/chatType";
 
 const UserChannelDropDown = (props: {
   userId: string;
   roomId: string;
+  channelUsers: channelUsersType[];
+  setChannelUsers : Function;
 }) => {
   const router = useRouter();
 
@@ -46,8 +49,32 @@ const UserChannelDropDown = (props: {
 		}
   }
   const handleKick = async () => {
-
+		const token = localStorage.getItem("token");
+		if (!token)	{
+			router.push("/login");
+			return;
+		}
+		const req = {
+			invitedId: props.userId,
+			channelId: props.roomId,
+		}
+		console.log("kick user req : ", req)
+		try {
+			const res = await api.post("/chat/room/kick", req, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			//remove user from channelUsers
+			props.setChannelUsers((prev : channelUsersType[]) => {
+				const updatedUsers = prev.filter((item : channelUsersType) => item.user.id !== props.userId);
+				return updatedUsers;
+			});
+		} catch (error : any) {
+			console.log(error.response.data.message);
+		}
   }
+
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
 		<Toaster position="top-right" />

@@ -958,7 +958,7 @@ export class ChatService {
 			for (let i = 0; i < users.length; i++) {
 				if (users[i].status === UserStatus.BANNED)
 					delete users[i];
-				else
+				else if (users[i].mutedAt)
 					users[i].mutedAt = users[i].mutedAt.toString() as any;
 			}
 		}

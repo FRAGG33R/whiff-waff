@@ -129,7 +129,7 @@ export class ChatController {
 	@UseGuards(JwtGuard)
 	@Get(roomConversations)
 	async getRoomConversations(@Req() req: Request) {
-		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
+		const loggedUser: any = { id: (req as any).user.id, avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const loggedUserId = (req as any).user.id;
 		const roomsConversations = await this.chatService.getRoomConversations(loggedUserId);
 		const blockedUsers = await this.chatService.getBlckedUsers(loggedUserId);

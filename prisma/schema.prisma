@@ -95,7 +95,7 @@ model Join {
     @@id([userId, roomChatId])
     @@map("join")
 }
-
+// TODO: add date to message
 model Message {
     id         String @id @default(uuid())
     message    String

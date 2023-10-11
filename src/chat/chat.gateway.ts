@@ -7,6 +7,7 @@ import { GuardsService } from './guards/guards.service';
 import { dtoIndividualChat, dtoRoomChat } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 import { FriendshipStatus, UserStatus } from '@prisma/client';
+import { UsersService } from 'src/users/users.service';
 
 const chatGateway = 'ChatGateway';
 @WebSocketGateway(8889, {
@@ -14,11 +15,10 @@ const chatGateway = 'ChatGateway';
 		origin: "*"
 	}
 })
-
 export class ChatGateway implements OnGatewayConnection {
 	private readonly loggedUsers: Map<string, string[]> = new Map<string, string[]>();
 	logger = new Logger(chatGateway);
-	constructor(private readonly configService: ConfigService, private readonly guardService: GuardsService, private readonly chatService: ChatService) { }
+	constructor(private readonly configService: ConfigService, private readonly guardService: GuardsService, private readonly chatService: ChatService, private readonly userService: UsersService) { }
 
 	async handleConnection(client: Socket) {
 		const validUser = (client.handshake.headers.authorization) ?
@@ -78,8 +78,20 @@ export class ChatGateway implements OnGatewayConnection {
 			if ((!checkBlocked || checkBlocked.status != FriendshipStatus.BLOCKED) && existsRoom[i].user.id != (client as any).user.id) {
 				const receiver = this.loggedUsers.get(existsRoom[i].user.id);
 				if (receiver && receiver.length > 0) {
+					let resPonse: any;
+					const user = await this.userService.findUserById((client as any).user.id);
+					resPonse = {
+						roomSender: {
+							user: {
+								id: user.id,
+								userName: user.userName
+							}
+						},
+						message: dto.content,
+						date: dto.currentDate
+					}
 					receiver.forEach(element => {
-						let sended: boolean = client.to(element).emit('room', dto);
+						let sended: boolean = client.to(element).emit('room', resPonse);
 						if (!sended) {
 							this.logger.error('emit method faild to send message');
 							throw new WsException('internal server error');

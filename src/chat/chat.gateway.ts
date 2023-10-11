@@ -70,7 +70,8 @@ export class ChatGateway implements OnGatewayConnection {
 		if (!existsRoom || existsRoom.length == 0)
 			throw new WsException('room not found');
 		const statusUser = await this.chatService.getJoinedRoomByIds((client as any).user.id, dto.receiverId);
-		
+		if (!statusUser)
+			throw new WsException('user not in room');
 		// statusUser.mutedAt = (statusUser.mutedAt) ? statusUser.mutedAt.toString() as any : statusUser.mutedAt;
 		if (statusUser && statusUser.status == UserStatus.MUTED) {
 			if (Date.now() < (BigInt(statusUser.mutedAmout) + BigInt(statusUser.mutedAt)))

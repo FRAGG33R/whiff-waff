@@ -58,7 +58,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
     else {
       setToken(token);
     }
-    const socket = io("http://34.173.232.127:8888", {
+    const socket = io("http://34.173.232.127:3389", {
       extraHeaders: {
         authorization: "Bearer " + token,
       },
@@ -117,9 +117,10 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
       setIsFindingPlayer(false);
       setId(data.username);
       setUserId(data.username);
+      console.log("player", data.username,);
     });
     socket.on("start", () => {
-      setOpen((curr) => !curr);
+      setOpen(false);
     });
     socket.on("gameOver", (data: { msg: string }) => {
       setmessage(data.msg);

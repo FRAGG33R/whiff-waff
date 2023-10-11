@@ -44,7 +44,7 @@ export class GameGateway implements OnGatewayConnection {
 	}
 
 	findRandomGame(map: string, mode: string, started: boolean): RandomGame | null {
-		let index: number = this.queueArray.findIndex((element: RandomGame) => element.map === map && element.mode === mode && element.started === started);
+		let index: number = this.queueArray.findIndex((element: RandomGame) => element.map === map && element.mode === mode && element.started === started && element.p2 === '');
 		if (index >= 0)
 			return this.queueArray[index];
 		return (null);
@@ -58,7 +58,7 @@ export class GameGateway implements OnGatewayConnection {
 		let gameInfo: RandomGame | null = this.findRandomGame(data.map, 'data.mode', false);
 		if (gameInfo === null) {
 			gameInfo = {
-				game: new GameService(),
+				game: new GameService(client, data.map),
 				p1: (client as any).id,
 				p2: '',
 				map: data.map,
@@ -71,7 +71,6 @@ export class GameGateway implements OnGatewayConnection {
 			gameInfo.game.id1 = username;
 			gameInfo.game.user1ID = id;
 			this.queueArray.push(gameInfo);
-			console.log("length: ", this.queueArray.length);
 		} else {
 			gameInfo.game.setPlayer2(client);
 			gameInfo.game.ready = true;
@@ -79,7 +78,7 @@ export class GameGateway implements OnGatewayConnection {
 			gameInfo.started = true;
 			gameInfo.gameId += " " + username;
 			gameInfo.game.getPlayer1().emit('joined', { username: username });
-			gameInfo.game.getPlayer2().emit('joined', { username: gameInfo.game.id1 });
+			client.emit('joined', { username: gameInfo.game.id1 });
 			gameInfo.game.id2 = username;
 			gameInfo.game.user2ID = id;
 		}
@@ -90,6 +89,7 @@ export class GameGateway implements OnGatewayConnection {
 		let username: string = this.connectedUsers.get((client as any).id)?.username;
 		let index = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === username && element.id1 === data.id);
 		if (index >= 0) {
+			console.log("username: " + username + " inviter: " + data.id);
 			let game: GameService = this.inviteFriendsArray[index];
 			game.setPlayer2(client);
 			game.ready = true;
@@ -98,7 +98,7 @@ export class GameGateway implements OnGatewayConnection {
 			game.getPlayer2().emit('joined', { username: game.id1 });
 		}
 		else {
-			let game: GameService = new GameService();
+			let game: GameService = new GameService(client, data.map);
 			game.tableOptions = data.map;
 			game.setPlayer1(client);
 			game.setPlayer2(null);
@@ -144,23 +144,26 @@ export class GameGateway implements OnGatewayConnection {
 			game.getPlayer1()?.emit('left', { msg: "your friend has left the game" });
 			game.getPlayer2()?.emit('left', { msg: "your friend has left the game" });
 			game.stop();
+			this.inviteFriendsArray.splice(index, 1);
 			if (username === game.id1)
 				game.getPlayer2()?.disconnect();
 			else if (username === game.id2)
 				game.getPlayer1()?.disconnect();
-			this.inviteFriendsArray.splice(index, 1);
 		}
-		index = this.queueArray.findIndex((element: RandomGame) => element.game.id1 === username || element.game.id2 === username);
+		index = this.queueArray.findIndex((element: RandomGame) => (element.p1 === client.id || element.p2 === client.id));
 		if (index >= 0) {
 			let game: GameService = this.queueArray[index].game;
 			game.getPlayer1()?.emit('left', { msg: "your friend has left the game" });
 			game.getPlayer2()?.emit('left', { msg: "your friend has left the game" });
 			game.stop();
-			if (username === game.id1)
-				game.getPlayer2().disconnect;
-			else if (username === game.id2)
-				game.getPlayer1().disconnect();
 			this.queueArray.splice(index, 1);
+			if (username === game.id1){
+				game.getPlayer2()?.disconnect;
+				game.setPlayer1(null)
+			}else if (username === game.id2){
+				game.getPlayer1()?.disconnect();
+				game.setPlayer2(null)
+			}
 		}
 	}
 

@@ -40,11 +40,11 @@ export class GameService {
 		{ x: 0, y: 600, width: 100, height: 100 },
 	];
 
-	constructor() {
+	constructor(client: Socket, tableOptions: string) {
 
-		this.tableOptions = '';
+		this.tableOptions = tableOptions;
 		this.runner = Runner.create();
-		this.player1 = null;
+		this.player1 = client;
 		this.player2 = null;
 		this.engine = Engine.create({ gravity: { x: 0, y: 0 } });
 		this.world = this.engine.world;

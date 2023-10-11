@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'dgram';
-import Matter, { Engine, Render, Bodies, World, Runner, Events, IEventCollision, Vector } from 'matter-js';
-import { SocketReadyState } from 'net';
-import { PrismaService } from 'src/prisma/prisma.service';
+import Matter, { Engine, Bodies, World, Runner, Events, IEventCollision, Vector } from 'matter-js';
 import { Map } from '@prisma/client'
-import { SaveGameService } from './game.saveService';
 @Injectable()
 export class GameService {
 
@@ -19,7 +16,6 @@ export class GameService {
 
 	engine: Engine;
 	world: Matter.World;
-	render: Matter.Render;
 	p1: Matter.Body;
 	p2: Matter.Body;
 	ball: Matter.Body;
@@ -45,6 +41,7 @@ export class GameService {
 	];
 
 	constructor() {
+
 		this.tableOptions = '';
 		this.runner = Runner.create();
 		this.player1 = null;
@@ -66,13 +63,14 @@ export class GameService {
 					this.obstacles.push(Bodies.rectangle(data.x, data.y, data.width, data.height, { isStatic: true }));
 			});
 		}
+
 		World.add(this.world, [this.p1, this.p2, ...this.walls, ...this.obstacles]);
 		Runner.run(this.runner, this.engine);
 		Events.on(this.engine, 'collisionStart', (event: IEventCollision<Engine>) => {
 			let stoped: boolean = false;
 			if (event.pairs[0].bodyA.label == "ball" && event.pairs[0].bodyB.label == "bottom" || event.pairs[0].bodyA.label == "bottom" && event.pairs[0].bodyB.label == "ball") {
-				this.sccor2++;
 				World.remove(this.world, this.ball);
+				this.sccor2++;
 				stoped = true;
 			} else if (event.pairs[0].bodyA.label == "ball" && event.pairs[0].bodyB.label == "top" || event.pairs[0].bodyA.label == "top" && event.pairs[0].bodyB.label == "ball") {
 				World.remove(this.world, this.ball);
@@ -85,9 +83,9 @@ export class GameService {
 				this.stop();
 				// DOTO : add score to db
 			} else if (this.sccor2 > this.sccor1 && this.sccor2 == 5) {
-				this.stop();
 				this.player2?.emit('gameOver', { msg: 'You won' });
 				this.player1?.emit('gameOver', { msg: 'You lost' });
+				this.stop();
 				// DOTO : add score to db
 			}
 			if (stoped) {
@@ -130,14 +128,14 @@ export class GameService {
 			return;
 		}
 		let forceX: number = -1.9;
-		let foceY: number = -1.6;
+		let forceY: number = -1.6;
 		if (this.serve) {
 			forceX = 1.9;
-			foceY = 1.6;
+			forceY = 1.6;
 			this.serve = !this.serve;
 		} else
 			this.serve = !this.serve;
-		this.ball = Bodies.circle(this.width / 2, this.height / 2, 15, { friction: 0, restitution: 1, inertia: Infinity, density: 0.071, frictionAir: 0, force: { x: forceX, y: foceY }, label: "ball" });
+		this.ball = Bodies.circle(this.width / 2, this.height / 2, 15, { friction: 0, restitution: 1, inertia: Infinity, density: 0.071, frictionAir: 0, force: { x: forceX, y: forceY }, label: "ball" });
 		World.add(this.world, this.ball);
 	}
 

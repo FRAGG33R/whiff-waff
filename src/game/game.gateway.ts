@@ -3,11 +3,9 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket, SocketType } from 'dgram';
 import { GuardsService } from 'src/chat/guards/guards.service';
 import { GameService } from './game.service';
-import Matter, { Vector, Body } from 'matter-js';
-import { User } from '@prisma/client';
+import { Vector, Body } from 'matter-js';
 import { EventService } from './game.emitter';
 import { GameGatewayStatus } from './game.gatewayStatus';
-import e from 'express';
 
 interface RandomGame {
 	game: GameService;
@@ -32,13 +30,6 @@ export class GameGateway implements OnGatewayConnection {
 	queueArray: RandomGame[] = [];
 	connectedUsers: Map<string, { socket: Socket, id: string, username: string }> = new Map<string, { socket: Socket, id: string, username: string }>();
 
-	findRandomGame(map: string, mode: string, started: boolean): RandomGame | null {
-		let index: number = this.queueArray.findIndex((element: RandomGame) => element.map === map && element.mode === mode && element.started === started);
-		if (index >= 0)
-			return this.queueArray[index];
-		return (null);
-	}
-
 	async handleConnection(@ConnectedSocket() client: any) {
 		const validUser = (client.handshake.headers.authorization) ?
 			GuardsService.validateToken(client.handshake.headers?.authorization, this.configService.get('JWT_SECRET')) : false;
@@ -51,6 +42,14 @@ export class GameGateway implements OnGatewayConnection {
 		else
 			this.connectedUsers.set(client.id, { id: (validUser as any).id, socket: client, username: (validUser as any).user });
 	}
+
+	findRandomGame(map: string, mode: string, started: boolean): RandomGame | null {
+		let index: number = this.queueArray.findIndex((element: RandomGame) => element.map === map && element.mode === mode && element.started === started);
+		if (index >= 0)
+			return this.queueArray[index];
+		return (null);
+	}
+
 
 	@SubscribeMessage('play')
 	async play(@ConnectedSocket() client: Socket, @MessageBody() data: { map: string, mode: string, type: string }) {

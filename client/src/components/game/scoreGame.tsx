@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 import { userDataAtom } from "@/atom/atomStateuser";
 import { useRouter } from "next/router";
 import Expert from "../../../public/Expert_svg.svg";
-import GrandMaster from "../../../public/GrandMaster_svg.svg";
+import GrandMaster from "../../../public/gameGrandMaster.svg";
 import Legend from "../../../public/Legend_svg.svg";
 import ROOKIE from "../../../public/ROOKIE_SVG.svg";
 import Challenger from "../../../public/CHALLENGER.svg";

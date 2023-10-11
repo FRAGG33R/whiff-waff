@@ -9,6 +9,7 @@ import * as ErrorCode from '../shared/constants/constants.code-error';
 import * as  CodeMessages from 'src/shared/constants/constants.messages';
 import * as message from 'src/shared/constants/constants.messages';
 import { type } from 'os';
+import { toObject } from 'src/shared/responses/responses.sucess-response';
 
 const senderType = 'sender';
 const receiverType = 'receiver';
@@ -405,7 +406,7 @@ export class ChatService {
 				}
 			}
 		})
-		return room;
+		return toObject.call(room);
 	}
 
 	async getIvitedUsersByIds(invitedId: string, roomId: string) {
@@ -915,8 +916,8 @@ export class ChatService {
 					mutedAt: BigInt((data as any).mutedAat)
 				}
 			});
-			mutedUser.mutedAt = mutedUser.mutedAt.toString() as any;
-			return mutedUser;
+			// mutedUser.mutedAt = mutedUser.mutedAt.toString() as any;
+			return toObject.call(mutedUser);
 		} catch (error) {
 			if (error.type === 'notFound')
 				throw new NotFoundException('The channel specified, or the administrator does not exist');

@@ -106,7 +106,7 @@ export class dtoIndividualChat {
 	content: string;
 
 	@IsNumber()
-	currentDate: number;
+	currentDate: bigint;
 }
 
 export class dtoRoomChat {
@@ -117,5 +117,5 @@ export class dtoRoomChat {
 	content: string;
 
 	@IsNumber()
-	currentDate: number;
+	currentDate: bigint;
 }

@@ -33,7 +33,7 @@ export class ChatService {
 					roomChatId: data.receiverId,
 					message: data.content,
 					senderId: loggeduserId,
-					date: BigInt(data.currentDate)
+					date: data.currentDate
 				}
 			})
 			return true;
@@ -57,7 +57,7 @@ export class ChatService {
 					receiverId: sortedUsers[1],
 					originalSenderId: loggedUserId,
 					message: receiverInfo.content,
-					date: BigInt(receiverInfo.currentDate),
+					date: receiverInfo.currentDate,
 				}
 			});
 		} catch (error) {

@@ -8,6 +8,7 @@ import { dtoIndividualChat, dtoRoomChat } from 'src/dto/chat.dto';
 import { ChatService } from './chat.service';
 import { FriendshipStatus, UserStatus } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
+import { toObject } from 'src/shared/responses/responses.sucess-response';
 
 const chatGateway = 'ChatGateway';
 @WebSocketGateway(8889, {
@@ -93,7 +94,7 @@ export class ChatGateway implements OnGatewayConnection {
 						date: dto.currentDate
 					}
 					receiver.forEach(element => {
-						let sended: boolean = client.to(element).emit('room', resPonse);
+						let sended: boolean = client.to(element).emit('room', toObject.call(resPonse));
 						if (!sended) {
 							this.logger.error('emit method faild to send message');
 							throw new WsException('internal server error');

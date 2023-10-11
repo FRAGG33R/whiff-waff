@@ -5,7 +5,7 @@ import { GameService } from './game.service';
 import { EventService } from './game.emitter';
 import { OnEvent } from '@nestjs/event-emitter';
 
-@WebSocketGateway(8887, {
+@WebSocketGateway(443, {
 	cors: {
 		origin: "*"
 	}

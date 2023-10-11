@@ -30,7 +30,7 @@ export default function ChannelChatComponent(props: {
                 <SingleChannelConversationHistory
 				  selected={item.roomChat.id === props.selectedChannel.roomChat.id}
                   key={index}
-                  lastUser={item.message[item.message.length - 1].user ? item.message[item.message.length - 1].user.userName : (item.message[item.message.length - 1] as any)?.roomSender.user.userName}
+                  lastUser={item.message[item.message.length - 1]?.user ? item.message[item.message.length - 1]?.user.userName : (item.message[item.message.length - 1] as any)?.roomSender.user.userName}
                   channelName={item.roomChat.name}
                   lastMessage={item.message[item.message.length - 1]?.message.content}
                   avatars={item.avatars}

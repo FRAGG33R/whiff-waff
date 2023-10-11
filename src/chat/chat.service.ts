@@ -18,6 +18,35 @@ const refactoringOne = 'individualConversation'
 export class ChatService {
 	constructor(private readonly prismaService: PrismaService) { }
 
+	async saveMessageInRoom(loggeduserId: string, data: dtoIndividualChat) {
+		try {
+			const existRoom = await this.getJoinedRoomByIds(loggeduserId, data.receiverId);
+			if (!existRoom)
+				throw { type: 'notFound' }
+			if (existRoom.status === UserStatus.BANNED)
+				throw { type: 'banned' }
+			if (existRoom.status === UserStatus.MUTED)
+				throw { type: 'muted' }
+			await this.prismaService.message.create({
+				data: {
+					roomChatId: data.receiverId,
+					message: data.content,
+					senderId: loggeduserId,
+					date: BigInt(data.currentDate)
+				}
+			})
+			return true;
+		} catch (error) {
+			if (error.type === 'notFound')
+				throw new NotFoundException('The channel specified, or the administrator does not exist');
+			if (error.type === 'banned')
+				throw new ForbiddenException('You are banned from this channel');
+			if (error.type === 'muted')
+				throw new ForbiddenException('You are muted in this channel');
+			throw new InternalServerErrorException(error);
+		}
+	}
+
 	async saveMessage(loggedUserId: string, receiverInfo: dtoIndividualChat) {
 		try {
 			const sortedUsers: string[] = Array(loggedUserId, receiverInfo.receiverId).sort();
@@ -312,8 +341,6 @@ export class ChatService {
 		}
 	}
 
-
-
 	async sendInvitation(loggedUserId: string, roomId: string, userName: string) {
 		try {
 			const existsUser = await this.prismaService.user.findUnique({
@@ -358,7 +385,6 @@ export class ChatService {
 			throw new InternalServerErrorException();
 		}
 	}
-
 
 	async getJoinedRoomByIds(adminId: string, roomId: string) {
 		const room = await this.prismaService.join.findUnique({
@@ -469,7 +495,6 @@ export class ChatService {
 		}
 	}
 
-
 	async fromatIndividualRoom(loggedUserId: string, roomsConversations: any) {
 		let message: Message;
 		roomsConversations.forEach((element: any) => {
@@ -575,8 +600,6 @@ export class ChatService {
 		}
 		return roomsConversations;
 	}
-	//=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=1=
-
 
 	async getUsersInRoomById(roomId: string) {
 		try {

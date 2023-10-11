@@ -24,8 +24,7 @@ export class ChatGateway implements OnGatewayConnection {
 		const validUser = (client.handshake.headers.authorization) ?
 			GuardsService.validateToken(client.handshake.headers?.authorization, this.configService.get('JWT_SECRET')) : false;
 		const existsUser = (validUser) ? await this.guardService.validate(validUser) : false;
-		if (!existsUser)
-		{
+		if (!existsUser) {
 			client.emit('exception', 'User not allowed to connect');
 			client.disconnect();
 		}
@@ -88,6 +87,11 @@ export class ChatGateway implements OnGatewayConnection {
 					});
 				}
 			}
-		};
+		}
+		try {
+			await this.chatService.saveMessageInRoom((client as any).user.id, dto);
+		} catch (error) {
+			console.log(error);
+		}
 	}
 }

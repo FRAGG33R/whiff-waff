@@ -4,6 +4,7 @@ import Matter, { Engine, Render, Bodies, World, Runner, Events, IEventCollision,
 import { SocketReadyState } from 'net';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Map } from '@prisma/client'
+import { SaveGameService } from './game.saveService';
 @Injectable()
 export class GameService {
 
@@ -79,14 +80,14 @@ export class GameService {
 				stoped = true;
 			}
 			if (this.sccor1 > this.sccor2 && this.sccor1 == 5) {
-				this.player1?.emit('gameOver', { msg: 'You won'});
+				this.player1?.emit('gameOver', { msg: 'You won' });
 				this.player2?.emit('gameOver', { msg: 'You lost' });
 				this.stop();
 				// DOTO : add score to db
 			} else if (this.sccor2 > this.sccor1 && this.sccor2 == 5) {
 				this.stop();
-				this.player2?.emit('gameOver', { msg: 'You won'});
-				this.player1?.emit('gameOver', { msg: 'You lost'});
+				this.player2?.emit('gameOver', { msg: 'You won' });
+				this.player1?.emit('gameOver', { msg: 'You lost' });
 				// DOTO : add score to db
 			}
 			if (stoped) {
@@ -103,7 +104,7 @@ export class GameService {
 	}
 
 	reverseVector(vector: Vector): Vector {
-		return ({x: this.width - vector.x, y: this.height - vector.y});
+		return ({ x: this.width - vector.x, y: this.height - vector.y });
 	}
 
 	setPlayer1(player: Socket): void {
@@ -123,18 +124,18 @@ export class GameService {
 	}
 
 	spownBall(): void {
-		if (!this.isRunning){
+		if (!this.isRunning) {
 			this.isRunning = !this.isRunning;
 			Runner.run(this.runner, this.engine);
 			return;
 		}
 		let forceX: number = -1.9;
 		let foceY: number = -1.6;
-		if (this.serve){
+		if (this.serve) {
 			forceX = 1.9;
 			foceY = 1.6;
 			this.serve = !this.serve;
-		}else
+		} else
 			this.serve = !this.serve;
 		this.ball = Bodies.circle(this.width / 2, this.height / 2, 15, { friction: 0, restitution: 1, inertia: Infinity, density: 0.071, frictionAir: 0, force: { x: forceX, y: foceY }, label: "ball" });
 		World.add(this.world, this.ball);

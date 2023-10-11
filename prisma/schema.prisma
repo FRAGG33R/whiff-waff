@@ -71,12 +71,12 @@ model RoomChat {
 }
 
 model InvitedRoomChat {
-    adminId       String @map("sender_id")
-    invitedUserId String @map("received_id")
-    roomChatId    String @map("room_chat_id")
-    invitedUser User     @relation("invitedUser", fields: [invitedUserId], references: [id], onDelete: Cascade)
-    admin       User     @relation("admin", fields: [adminId], references: [id], onDelete: Cascade)
-    roomChat    RoomChat @relation(fields: [roomChatId], references: [id], onDelete: Cascade)
+    adminId       String   @map("sender_id")
+    invitedUserId String   @map("received_id")
+    roomChatId    String   @map("room_chat_id")
+    invitedUser   User     @relation("invitedUser", fields: [invitedUserId], references: [id], onDelete: Cascade)
+    admin         User     @relation("admin", fields: [adminId], references: [id], onDelete: Cascade)
+    roomChat      RoomChat @relation(fields: [roomChatId], references: [id], onDelete: Cascade)
 
     @@id([invitedUserId, roomChatId])
     @@map("invited_room_chat")
@@ -95,6 +95,7 @@ model Join {
     @@id([userId, roomChatId])
     @@map("join")
 }
+
 // TODO: add date to message
 model Message {
     id         String @id @default(uuid())

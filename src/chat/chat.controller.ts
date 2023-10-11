@@ -4,6 +4,7 @@ import { ChatService } from './chat.service';
 import { JwtGuard } from 'src/auth/guards/guards.jwtGuard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AllUserConversationsResponse, IndividualConversationResponse } from 'src/custom_types/custom_types.Individual-chat';
+import { toObject } from 'src/shared/responses/responses.sucess-response';
 
 const chatController = 'chat'
 const conversationEndpoint = 'individualConversations'
@@ -33,7 +34,7 @@ export class ChatController {
 		const loggedUserId = (req as any).user.id;
 		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const allConversation = await this.chatService.getAllConversationsById(loggedUserId, data);
-		return { allConversation, loggedUser } as any;
+		return toObject.call({ allConversation, loggedUser } as any);
 	}
 
 	@ApiBearerAuth()
@@ -44,7 +45,7 @@ export class ChatController {
 		data.nbPage = (!data.nbPage) ? data.nbPage = undefined : Number(data.nbPage);
 		const loggedUserId = (req as any).user.id;
 		const receivedId = (req as any).params.receiverId;
-		return await this.chatService.getIndividualConversationById(loggedUserId, receivedId, data);
+		return toObject.call(await this.chatService.getIndividualConversationById(loggedUserId, receivedId, data));
 	}
 
 	@ApiBearerAuth()
@@ -83,7 +84,7 @@ export class ChatController {
 	@UseGuards(JwtGuard)
 	@Patch(RoomUserStatus)
 	async changeUserStatus(@Body() data: RoomUserInfos, @Req() req: Request) {
-		return await this.chatService.changeRoomUserStatus((req as any).user.id, data);
+		return toObject.call(await this.chatService.changeRoomUserStatus((req as any).user.id, data));
 	}
 
 	@ApiBearerAuth()
@@ -91,7 +92,7 @@ export class ChatController {
 	@Post(kickRoom)
 	async kickUserFromRoom(@Body() data: Kick, @Req() req: Request) {
 		const loggedUserId = (req as any).user.id;
-		return await this.chatService.kickUserFromRoom(loggedUserId, data);
+		return toObject.call(await this.chatService.kickUserFromRoom(loggedUserId, toObject.call(data)));
 	}
 
 	@ApiBearerAuth()
@@ -109,7 +110,7 @@ export class ChatController {
 		(data as any).mutedAat = Date.now();
 		data.duration = data.duration * 60000;
 		const loggedUserId = (req as any).user.id;
-		return await this.chatService.muteUser(loggedUserId, data);
+		return toObject.call(await this.chatService.muteUser(loggedUserId, toObject.call(data)));
 	}
 
 	@ApiBearerAuth()
@@ -120,8 +121,8 @@ export class ChatController {
 		data.nbPage = (!data.nbPage) ? data.nbPage = undefined : Number(data.nbPage);
 		const loggedUserId = (req as any).user.id;
 		const roomId = (req as any).params.roomId;
-		const roomConversation = await this.chatService.getRoomIndividualConversationById(loggedUserId, roomId, data);
-		const blockedUsers = await this.chatService.getBlckedUsers(loggedUserId);
+		const roomConversation = toObject.call(await this.chatService.getRoomIndividualConversationById(loggedUserId, roomId, data));
+		const blockedUsers = toObject.call(await this.chatService.getBlckedUsers(loggedUserId));
 		return { roomConversation, blockedUsers }
 	}
 

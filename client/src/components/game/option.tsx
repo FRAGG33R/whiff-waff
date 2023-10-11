@@ -115,8 +115,8 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
         <div className=" w-[80%] 2xl:h-[5px] xl:h-[8px] lg:h-[8px] md:h-[6px] h-[5px] flex items-center bg-GreenishYellow justify-center font-teko " />
       </div>
       <div className=" w-full 2xl:h-[900px] xl:h-[800px] lg:h-[800px] md:h-[800px] h-[800px] flex  justify-center ">
-        <div className="w-full 2xl:h-full flex  flex-col items-center justify-center gap-6 ">
-          <div className="w-[80%] md:w-[60%] xl:w-[60%] lg:w-[60%] 2xl:w-[80%] 2xl:h-full xl:h-[60%] lg:h-[60%] md:h-[60%] h-[60%] flex flex-col items-center justify-center gap-6">
+        <div className="w-full 2xl:h-full flex  flex-col items-center justify-center gap-3">
+          <div className="w-[80%] md:w-[60%] xl:w-[60%] lg:w-[60%] 2xl:w-[80%] 2xl:h-full xl:h-[50%]  lg:h-[60%] md:h-[60%] h-[60%] flex flex-col items-center justify-center gap-4">
             <div className="w-full 2xl:h-[80px] flex items-center justify-start  font-teko text-[#FFFFFF] text-[2rem] md:text-[3rem] lg:text-[3rem] 2xl:text-[3rem] ">
               Maps
             </div>
@@ -201,7 +201,7 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
               </div>
             </button>
           </div>
-          <div className="w-[80%] 2xl:w-[80%]  xl:w-[60%] lg:w-[60%] md:w-[60%] 2xl:h-full xl:h-[40%] lg:h-[40%] md:h-[40%] h-[40%] flex flex-col items-center justify-center ">
+          <div className="w-[80%] 2xl:w-[80%]  xl:w-[60%] lg:w-[60%] md:w-[60%] 2xl:h-full xl:h-[40%] lg:h-[40%] md:h-[40%] h-[40%] flex flex-col items-center justify-start ">
             <div className="w-full 2xl:h-[80px] flex items-center justify-start  font-teko text-[#FFFFFF] text-[2rem] md:text-[3rem] lg:text-[3rem] 2xl:text-[3rem] ">
               Mode
             </div>

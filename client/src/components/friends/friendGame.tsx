@@ -70,6 +70,7 @@ export default function FriendGame({
     } catch (error) {
       console.log(error);
     }
+    router.push("/friends");
   };
 
   const handleDropdownToggle = () => {

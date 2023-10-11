@@ -10,6 +10,7 @@ import { api, localApi } from "@/components/axios/instance";
 import { useEffect } from "react";
 import ValidationAlert from "@/components/ui/alerts/validationAlert";
 import { parseJwt } from "@/lib/parseJwt";
+import TfaModel from "./tfaModel";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
 

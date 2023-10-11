@@ -8,13 +8,16 @@ import {
 	loggedUserAtom,
 	userAtom,
 } from "@/context/RecoilAtoms";
+import { use, useEffect } from "react";
 
 const Game = (props : {data : any}) => {
 	const [userData, setUserData] = useRecoilState(userAtom);
 	const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
-	setUserData(props.data.response.user);
-	setLoggedUser((props.data as any).response.loggedUser);
-	
+
+	useEffect(() => {
+		setUserData(props.data.response.user);
+		setLoggedUser((props.data as any).response.loggedUser);
+	}, [])
   return (
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       <GamePage />
@@ -33,7 +36,6 @@ export const getServerSideProps = withIronSessionSsr(
 			Authorization: `Bearer ${token}`,
 		  },
 		});
-		console.log(res.data);
 		return {
 		  props: { data: res.data},
 		};

@@ -2,12 +2,14 @@ import { useState } from "react";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import { User } from "../../types/userFriendType";
+import { useRouter } from "next/router";
 import axios from "axios";
 import { api } from "../axios/instance";
 
 const RequestePage = ({ req, pendingFriends, setPendingFriends }: { req: User, pendingFriends : User[],  setPendingFriends : Function }) => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const router = useRouter();
 
   let jwtToken: string | null = null;
 
@@ -34,6 +36,7 @@ const RequestePage = ({ req, pendingFriends, setPendingFriends }: { req: User, p
       catch (error) {
         console.log(error);
       }
+      router.push("/friends");
   };
 
   const handleRefuse = async() => {

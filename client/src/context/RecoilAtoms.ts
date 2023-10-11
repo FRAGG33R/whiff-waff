@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import {loggedUserType, scoreIdType, userType} from "@/types/userType";
+import {dataGameType, loggedUserType, scoreIdType, userType} from "@/types/userType";
 import { atom } from "recoil";
 import {matchHistoryType} from '@/types/userType'
 import { channelType, conversationType } from "@/types/chatType";
@@ -65,5 +65,12 @@ export const socketContext = createContext<Socket | null>(null);
 
 export const socketAtom = atom({
 	key: `socket-${Math.random()}`,
+	default: {},
+});
+
+export const dataGameContext = createContext<dataGameType | undefined>(undefined);
+
+export const dataGameAtom = atom({
+	key: `dataGame-${Math.random()}`,
 	default: {},
 });

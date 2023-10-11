@@ -7,15 +7,12 @@ import UserInput from "../ui/inputs/settingsInputs";
 import { useState } from "react";
 import { KeyboardEvent } from "react";
 import SettingsHexaGon from "./settingsHexagon";
-
-import axios from "axios";
 import { useRecoilState } from "recoil";
-import { userDataAtom } from "../../atom/atomStateuser";
 import { userType } from "./../../types/userType";
 import { userAtom } from "@/context/RecoilAtoms";
-import { on } from "events";
 import ValidationAlert from "../ui/alerts/validationAlert";
 import { api } from "../axios/instance";
+import { useRouter } from "next/router";
 
 const InformationsSetting = () => {
   const [selected, setSelected] = useState(false);
@@ -33,6 +30,7 @@ const InformationsSetting = () => {
   const [user, setUser] = useRecoilState(userAtom);
   const [userState, setUserState] = useState<userType>(user as userType);
 
+  const router = useRouter();
   useEffect(() => {
 	
     setUserState(user as userType);
@@ -145,6 +143,7 @@ const InformationsSetting = () => {
     } catch (error) {
       console.log(error);
     }
+    router.push("/profile/" + userName);
   };
   const handleImageUpload = (file: File) => {
     setAvatarImage(file);
@@ -168,8 +167,6 @@ const InformationsSetting = () => {
       <div className="w-full h-[100px] sm:h-[130px] md:h-[160px] lg:h-[240px] xl:h-[240px] 2xl:h-[240px] flex items-center justify-center py-8 pl-2">
            <SettingsHexaGon setErrorFile={setErrorFile} setSelected={setSelected} avatar={userState.avatar} onImageUpload={handleImageUpload} />
       </div>
-      {selected && <ValidationAlert bigText="Image uploaded" smallText="Your profile picture has been updated" />}
-      {errorFile && <ValidationAlert bigText="Error" smallText="Invalid file format or size. Please select an image file (max size: 4MB)." />}
       <div className="w-full h-full flex items-center justify-center flex-col gap-2 md:gap-6 ">
         <div className="w-full h-[14%] md:h-[17%] flex flex-row items-center justify-center gap-5 md:gap-8 lg:gap-10 xl:gap-12 2xl:gap-14">
           {inputFields.map((input) => (

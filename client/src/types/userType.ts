@@ -57,3 +57,11 @@ export interface scoreIdType {
   score1 : number
   score2 : number
 }
+
+export interface dataGameType {
+  type : string,
+  map : string,
+  mode : string,
+  inveter : boolean,
+  userName : string
+}

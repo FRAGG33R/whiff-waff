@@ -32,20 +32,14 @@ const ModelGame = ({
   isFindingPlayer: boolean;
   id: string;
 }) => {
-  const [Game] = useState({
-    userName: "Houssam",
-    userName1: "Aissam",
-    level: 12,
-    level1: 2,
-    image:
-      "https://cdn.intra.42.fr/users/e91ca4bc18567a537339d354852ecce1/hlalouli.jpg",
-  });
+  
   const router = useRouter();
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [userData, setUserData] = useRecoilState(userDataAtom);
   const name = router.query.gameId;
   const [user, setUser] = useState<any>();
   const handleOpen = () => {
+    console.log("event");
     socket.emit("start", { type: event });
   };
   const handleCancle = () => {
@@ -85,7 +79,7 @@ const ModelGame = ({
             handler={function () {}}
           >
             <DialogHeader className=" text-GreenishYellow font-teko flex items-center justify-center text-[2rem] ">
-              Matching Queye
+              Matching Queue
             </DialogHeader>
             <DialogBody className="h-[250px]" divider>
               <div className="w-full flex flex-row items-start justify-center ">

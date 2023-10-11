@@ -15,25 +15,25 @@ export default function ChannelConversation(props  : {conversation : channelType
 	return `${date.getHours()} : ${date.getMinutes()}`
   }
 
-//   useEffect(() => {
-//     const conversationDiv : any = conversationRef.current;
-//     if (conversationDiv) {
-//       conversationDiv.scrollTop = conversationDiv.scrollHeight;
-//     }
-//   }, [props.conversation.message.length]);
+  useEffect(() => {
+    const conversationDiv : any = conversationRef.current;
+    if (conversationDiv) {
+      conversationDiv.scrollTop = conversationDiv.scrollHeight;
+    }
+  }, [props.conversation.message.length]);
   
   return (
     <div ref={conversationRef} className="w-full h-full overflow-y-scroll scrollbar scrollbar-track-rounded-full scroll-smooth scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
       {props.conversation.message.map((item : channelMessageType, index : number) => {
         return (
-          <div key={index} className={`chat ${item.type === "sender" ? 'chat-end text-white' : "chat-start text-black"} `}>
-            <div className={`${item.type === 'sender' ? "bg-HokiCl" : "bg-GreenishYellow"} px-1 md:px-4 w-[150px] md:w-[350px] xl:w-[400px] 2xl:w-[600px] rounded-[12px] py-1 md:py-2 flex flex-col md:space-y-6 items-center justify-center`}>
+          <div key={index} className={`chat ${item.message.type === "sender" ? 'chat-end text-white' : "chat-start text-black"} `}>
+            <div className={`${item.message.type === 'sender' ? "bg-HokiCl" : "bg-GreenishYellow"} px-1 md:px-4 w-[150px] md:w-[350px] xl:w-[400px] 2xl:w-[600px] rounded-[12px] py-1 md:py-2 flex flex-col md:space-y-6 items-center justify-center`}>
               <div className="w-full flex flex-row items-center justify-between font-normal font-teko text-md md:text-2xl">
-                <div>{item.type === "receiver" ? props.conversation.roomChat.name : (loggedUser as loggedUserType).userName}</div>
-                <div>{getTime(item.date)}</div>
+                <div>{item.message.type === "receiver" ? item.user.userName : (loggedUser as loggedUserType).userName}</div>
+                <div>{getTime(item.message.date)}</div>
               </div>
               <div className="font-poppins  w-full  overflow-clip text-sm md:text-lg flex items-cente justify-between">
-                {item.message}
+                {item.message.content}
 				{item.isError && <IconExclamationCircle color="#FF0000" />}
               </div>
             </div>

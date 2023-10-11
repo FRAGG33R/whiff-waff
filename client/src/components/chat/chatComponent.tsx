@@ -29,7 +29,7 @@ export default function ChatComponent() {
   const [chat] = useRecoilState(chatAtom);
 
   const [channel, setChannel] = useRecoilState(channelAtom);
-  const [loggedUser] = useRecoilState(loggedUserAtom);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [socket, setSocket] = useState<any>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
@@ -75,7 +75,6 @@ export default function ChatComponent() {
         });
       } else {
         try {
-			
           const res = await api.get(`/users/profile/${router.query.chatId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -148,7 +147,12 @@ export default function ChatComponent() {
             Authorization: `Bearer ${token}`,
           },
         });
-		console.log('res - : ', res.data);
+		console.log('res ---**--> : ', res.data.loggedUser);
+		setLoggedUser((prev: loggedUserType) => {
+			return {
+				...prev,
+				id: res.data.loggedUser.id,
+			}});
         setChannel(res.data.Conversationdata.roomsConversations);
         setSelectedChannel((prev: channelType | null) => {
           const channel = res.data.Conversationdata.roomsConversations.find(
@@ -168,34 +172,83 @@ export default function ChatComponent() {
   const handleNewMessage = (
     e: FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>
   ) => {
-    e.preventDefault();
-    if (messageContent?.length === 0) {
-      alert("Message should not be empty !");
-      return;
-    }
-    const date = Date.now();
-    const newMessage = {
-      receiverId: selectedConversatoin?.receiver.id,
-      content: messageContent,
-      currentDate: date,
-    };
-    if (selectedConversatoin) {
-      const newSelectedConversation: conversationType = {
-        receiver: selectedConversatoin.receiver,
-        messages: [
-          ...selectedConversatoin?.messages,
-          {
-            content: newMessage.content,
-            type: "sender",
-            date: String(newMessage.currentDate),
-            isError: false,
-          },
-        ],
-      };
-      setSelectedConversation((prev) => newSelectedConversation);
-    }
-    socket.emit("message", newMessage);
+	e.preventDefault();
+	if (messageContent?.length === 0) {
+		toast.error("Message should not be empty !", {
+			style: {
+			borderRadius: "12px",
+			padding: "12px",
+			background: "#6C7FA7",
+			color: "#fff",
+			fontFamily: "Poppins",
+			fontSize: "18px",
+			},
+		});
+		return ;
+	}
+	if (activeTab === 'Chat')
+	{
+		const date = Date.now();
+		const newMessage = {
+		receiverId: selectedConversatoin?.receiver.id,
+		content: messageContent,
+		currentDate: date,
+		};
+		if (selectedConversatoin) {
+		const newSelectedConversation: conversationType = {
+			receiver: selectedConversatoin.receiver,
+			messages: [
+			...selectedConversatoin?.messages,
+			{
+				content: newMessage.content,
+				type: "sender",
+				date: String(newMessage.currentDate),
+				isError: false,
+			},
+			],
+		};
+		setSelectedConversation((prev) => newSelectedConversation);
+		}
+		socket.emit("message", newMessage);
+	}
+	else
+	{
+		console.log('sending a message inside the channel', '{', selectedChannel?.roomChat.name, '}');
+		const date = Date.now();
+			const newMessage = {
+			receiverId: selectedChannel?.roomChat.id,
+			content: messageContent,
+			currentDate: date,
+		};
+		console.log('new room message : ', newMessage);
+		if (selectedChannel) {
+		const newSelectedChannel: channelType = {
+			roomChat: selectedChannel.roomChat,
+			message: [
+			...selectedChannel.message,
+			{
+				user: {
+					id: (loggedUser as loggedUserType).id,
+					userName: (loggedUser as loggedUserType).userName,
+					avatar : (loggedUser as loggedUserType).avatar,
+					email : "",
+				},
+				message: {
+					content: newMessage.content,
+					type: "sender",
+					date: String(newMessage.currentDate),
+				},
+				isError: false,
+			},
+			],
+			avatars: selectedChannel.avatars,
+		};
+		setSelectedChannel((prev) => newSelectedChannel);
+		}
+		socket.emit("room", newMessage);
+	}
     setMessageContent("");
+
   };
 
   const handleChange = (value: string) => {
@@ -214,6 +267,7 @@ export default function ChatComponent() {
           },
         }
       );
+	  console.log('conversation data ** : ', res.data);
       setSelectedChannel((prev: channelType | null) => {
         const newMessages: channelMessageType[] = res.data.roomConversation.map(
           (item: any) => {
@@ -262,7 +316,9 @@ export default function ChatComponent() {
       });
       console.log("res : ", res.data);
       router.push(`/chat/${conversation.receiver.userName}`);
-    } catch (error) {}
+    } catch (error) {
+
+	}
   };
 
   const handleReceivedMessage = (message: any) => {
@@ -284,36 +340,65 @@ export default function ChatComponent() {
     });
   };
 
+  const handleReceivedRoomMessage = (message: any) => {
+    console.log("I received this message: ", message)
+	setSelectedChannel((prev: channelType | null) => {
+	  if (prev) {
+		const newMessage: channelMessageType = {
+			user : {
+				id : message.roomSender.user.id,
+				userName : message.roomSender.user.userName,
+				avatar : "",
+				email : "",
+			},
+			message: {
+				content: message.message,
+				type: "receiver",
+				date: message.date,
+			},
+			isError : false,
+		};
+		console.log('new message : ', newMessage);
+		const newMessages: channelMessageType[] = [...prev.message, newMessage];
+		return {
+		  roomChat: prev.roomChat,
+		  message: newMessages,
+		  avatars: prev.avatars,
+		};
+	  } else return prev;
+	});
+  };
+
   const handleConnection = () => {
     console.log("connection successfuly");
   };
 
   const handleException = (error: any) => {
     console.log("socket error : ", error.message);
-    // toast.error(error.message, {
-    //   style: {
-    //     borderRadius: "12px",
-    //     padding: "12px",
-    //     background: "#6C7FA7",
-    //     color: "#fff",
-    //     fontFamily: "Poppins",
-    //     fontSize: "18px",
-    //   },
-    // });
-    // //setIsError(true);
-    // //update the laset message on the selected conversation to be an error message
-    // setSelectedConversation((prev: conversationType | null) => {
-    //   if (prev) {
-    //     const newMessages: messageType[] = [...prev.messages];
+    toast.error(error.message, {
+      style: {
+        borderRadius: "12px",
+        padding: "12px",
+        background: "#6C7FA7",
+        color: "#fff",
+        fontFamily: "Poppins",
+        fontSize: "18px",
+      },
+    });
+    //setIsError(true);
+    //update the laset message on the selected conversation to be an error message
+    setSelectedConversation((prev: conversationType | null) => {
+      if (prev) {
+        const newMessages: messageType[] = [...prev.messages];
 
-    //     newMessages[newMessages.length - 1].isError = true;
-    //     return {
-    //       receiver: prev.receiver,
-    //       messages: newMessages,
-    //     };
-    //   }
-    //   return prev;
-    // });
+        newMessages[newMessages.length - 1].isError = true;
+        return {
+          receiver: prev.receiver,
+          messages: newMessages,
+        };
+      }
+      return prev;
+    });
   };
 
 	useEffect(() => {
@@ -325,11 +410,14 @@ export default function ChatComponent() {
 		socket.on("connect", handleConnection);
 		socket.on("exception", handleException);
 		socket.on("message", handleReceivedMessage);
+		socket.on("room", handleReceivedRoomMessage);
 		setSocket(socket);
 		return () => {
 			socket.off("connect", handleConnection);
 			socket.off("message", handleReceivedMessage);
+			socket.off("room",	  handleReceivedRoomMessage);
 			socket.off("exception", handleException);
+			socket.disconnect();
 		};
 	}, []);
 
@@ -441,7 +529,7 @@ export default function ChatComponent() {
                       className="w-full min-h-1"
                       onSubmit={handleNewMessage}
                     >
-                      <div className="w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] bg-[#606060]/[12%] focus:bg-[#606060]/[12%] font-poppins flex flex-row items-center justify-center px-2">
+                      <div className="w-10/12 md:w-full h-12 md:h-16 rounded-[12px] md:rounded-[20px] bg-[#606060]/[12%] focus:bg-[#606060]/[12%] font-poppins flex flex-row items-center justify-center px-2">
                         <input
                           type="text"
                           placeholder="Write a message..."

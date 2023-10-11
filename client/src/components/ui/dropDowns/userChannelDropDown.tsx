@@ -11,73 +11,93 @@ const UserChannelDropDown = (props: {
   userId: string;
   roomId: string;
   channelUsers: channelUsersType[];
-  setChannelUsers : Function;
+  setChannelUsers: Function;
 }) => {
   const router = useRouter();
 
   const handleChangeState = async (state: string) => {
-		const token = localStorage.getItem("token");
-		if (!token)	{
-			router.push("/login");
-			return;
-		}
-		const req = {
-			userId: props.userId,
-			roomId: props.roomId,
-			newStatus: state
-		}
-		console.log("change user state req : ", req)
-		try {
-			const res = await api.patch("/chat/room/userStatus", req, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			console.log(res.data);
-		} catch (err: any) {
-			console.log(err.response.data.message);
-			toast.error(err.response.data.message, {
-				style: {
-					borderRadius: "12px",
-					padding: "12px",
-					background: "#6C7FA7",
-					color: "#fff",
-					fontFamily: "Poppins",
-					fontSize: "18px",
-				},
-			});
-		}
-  }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+    const req = {
+      userId: props.userId,
+      roomId: props.roomId,
+      newStatus: state,
+    };
+    console.log("change user state req : ", req);
+    try {
+      const res = await api.patch("/chat/room/userStatus", req, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(res.data);
+      if (state === "BANNED") {
+        props.setChannelUsers((prev: channelUsersType[]) => {
+          const updatedUsers = prev.filter(
+            (item: channelUsersType) => item.user.id !== props.userId
+          );
+          return updatedUsers;
+        });
+      }
+	  else if (state === "ADMIN") {
+		props.setChannelUsers((prev: channelUsersType[]) => {
+		  const updatedUsers = prev.map((item: channelUsersType) => {
+			if (item.user.id === props.userId) {
+			  item.status = "ADMIN";
+			}
+			return item;
+		  });
+		  return updatedUsers;
+		});
+	  }
+    } catch (err: any) {
+      console.log(err.response.data.message);
+      toast.error(err.response.data.message, {
+        style: {
+          borderRadius: "12px",
+          padding: "12px",
+          background: "#6C7FA7",
+          color: "#fff",
+          fontFamily: "Poppins",
+          fontSize: "18px",
+        },
+      });
+    }
+  };
   const handleKick = async () => {
-		const token = localStorage.getItem("token");
-		if (!token)	{
-			router.push("/login");
-			return;
-		}
-		const req = {
-			invitedId: props.userId,
-			channelId: props.roomId,
-		}
-		console.log("kick user req : ", req)
-		try {
-			const res = await api.post("/chat/room/kick", req, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-			//remove user from channelUsers
-			props.setChannelUsers((prev : channelUsersType[]) => {
-				const updatedUsers = prev.filter((item : channelUsersType) => item.user.id !== props.userId);
-				return updatedUsers;
-			});
-		} catch (error : any) {
-			console.log(error.response.data.message);
-		}
-  }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+    const req = {
+      invitedId: props.userId,
+      channelId: props.roomId,
+    };
+    console.log("kick user req : ", req);
+    try {
+      const res = await api.post("/chat/room/kick", req, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      props.setChannelUsers((prev: channelUsersType[]) => {
+        const updatedUsers = prev.filter(
+          (item: channelUsersType) => item.user.id !== props.userId
+        );
+        return updatedUsers;
+      });
+    } catch (error: any) {
+      console.log(error.response.data.message);
+    }
+  };
 
   return (
     <div className="dropdown dropdown-bottom dropdown-end">
-		<Toaster position="top-right" />
+      <Toaster position="top-right" />
       <motion.div
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
@@ -100,7 +120,9 @@ const UserChannelDropDown = (props: {
           <button onClick={() => handleChangeState("BANNED")}>Ban</button>
         </li>
         <li>
-          <button onClick={() => handleChangeState("ADMIN")}>Set as admin</button>
+          <button onClick={() => handleChangeState("ADMIN")}>
+            Set as admin
+          </button>
         </li>
       </ul>
     </div>

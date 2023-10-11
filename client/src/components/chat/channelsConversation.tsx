@@ -1,6 +1,7 @@
 import { ChannelsConversationHistoryType } from "@/types/channelsConversation";
 import { RenderAvatars } from "./renderAvatars";
 import { motion } from "framer-motion";
+import { textLimit } from "@/lib/textLimit";
 export default function SingleChannelConversationHistory(
   props: ChannelsConversationHistoryType
 ) {
@@ -20,10 +21,10 @@ export default function SingleChannelConversationHistory(
       </div>
       <div className="flex flex-col space-y-[3px] xl:w-32 2xl:w-60">
         <div className="lg:text-xl 2xl:text-3xl tracking-wider font-teko hidden md:block">
-          {props.channelName}
+          {textLimit(props.channelName, 11)}
         </div>
         <div className="font-poppins min-h-[20px] font-light text-HokiCl 2xl:text-sm 3xl:text-lg hidden xl:block">
-          {props.lastMessage ? `${props.lastUser}: ${props.lastMessage}` : ""}
+          {textLimit(props.lastMessage ? `${props.lastUser}: ${props.lastMessage}` : "", 26)}
         </div>
       </div>
     </motion.div>

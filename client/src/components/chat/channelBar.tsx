@@ -14,6 +14,7 @@ import { loggedUserAtom } from "@/context/RecoilAtoms";
 import { loggedUserType } from "@/types/userType";
 import InviteUser from "./inviteUser";
 import toast, { Toaster } from "react-hot-toast";
+import { textLimit } from "@/lib/textLimit";
 
 export default function ChannelBar(props: channelBarType) {
   const [channel, setChannel] = useRecoilState(channelAtom);
@@ -104,15 +105,21 @@ export default function ChannelBar(props: channelBarType) {
           },
         }
       );
-      console.log(res.data);
+      console.log('--->', res.data.map((item: channelUsersType) => {
+		if (item !== null && item !== undefined)
+		  return item;
+	  }));
       setDisplaySettings(false);
       res.data.map((item: channelUsersType) => {
-        if (item.user.userName === (loggedUser as loggedUserType).userName) {
+        if (item && (item.user.userName === (loggedUser as loggedUserType).userName)) {
           if (item.status === "OWNER" || item.status === "ADMIN")
             setDisplaySettings(true);
         }
       });
-      setChannelUsers(res.data);
+      setChannelUsers(res.data.map((item: channelUsersType) => {
+		if (item !== null && item !== undefined)
+		  return item;
+	  }));
     } catch (error: any) {
       console.log(error.response.data);
     }
@@ -128,7 +135,7 @@ export default function ChannelBar(props: channelBarType) {
     <div className="w-full h-full flex items-center justify-center px-2 md:px-6 py-2 md:py-2">
       <Toaster position="top-right" />
       <div className="h-full w-full flex flex-row items-center justify-between">
-        <div className="h-full min-w-1 flex flex-row items-center justify-center gap-2 md:gap-6">
+        <div className="h-full min-w-1 flex flex-row items-center justify-center  xl:gap-6">
           <div
             className="w-12 md:w-16 h-[90%] rounded-[12px] tooltip tooltip-left"
             data-tip="fragger"
@@ -136,12 +143,12 @@ export default function ChannelBar(props: channelBarType) {
             <RenderAvatars avatars={props.avatars} />
           </div>
           <div className="min-w-1 h-full hidden md:flex flex-col md:gap-2 items-start justify-center ">
-            <div className="font-teko text-3xl font-meduim tracking-wider">
-              {props.channelName}
+            <div className="font-teko text-2xl xl:text-3xl font-meduim tracking-wider">
+              {textLimit(props.channelName, 30)}
             </div>
           </div>
         </div>
-        <div className="h-full min-w-1 flex flex-row gap-4 items-center justify-center">
+        <div className="h-full min-w-1 flex flex-row gap-2 md:gap-4 items-center justify-center">
           {displaySettings === true && (
             <>
               <ChannelSettings
@@ -158,17 +165,17 @@ export default function ChannelBar(props: channelBarType) {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleDeleteChannel}
-            className="w-10 md:w-14 h-10 md:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
+            className="w-10 xl:w-14 h-10 xl:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
           >
-            <IconTrash className="w-6 md:w-8 h-6 md:h-8" />
+            <IconTrash className="w-5 xl:w-8 h-5 xl:h-8" />
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleLeaveChannel}
-            className="w-10 md:w-14 h-10 md:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
+            className="w-10 xl:w-14 h-10 xl:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
           >
-            <IconDoorExit className="w-6 md:w-8 h-6 md:h-8" />
+            <IconDoorExit className="w-5 xl:w-8 h-5 xl:h-8" />
           </motion.div>
         </div>
       </div>

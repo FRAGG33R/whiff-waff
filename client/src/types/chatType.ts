@@ -12,18 +12,21 @@ export interface messageType {
   isError: boolean;
 }
 
-export interface channelMessageType {
-    roomSender: {
-      user: {
-        id: string;
-        userName: string;
-      };
-    };
-    message: string;
-    type: "receiver" | "sender";
-    date: string;
-    isError: boolean;
 
+
+export interface channelMessageType {
+	user : {
+		id: string;
+		avatar: string;
+		email: string;
+		userName: string;
+	};
+	message: {
+		content: string;
+		date: string;
+		type: string;
+	};
+    isError: boolean;
 }
 
 export interface conversationType {

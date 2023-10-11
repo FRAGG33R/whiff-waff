@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import UserInput from "../ui/inputs/settingsInputs";
 import { KeyboardEvent } from "react";
@@ -78,9 +78,9 @@ const ChannelSettings = (props: {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={handleOpen}
-        className="w-10 md:w-14 h-10 md:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
+        className="w-10 xl:w-14 h-10 xl:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
       >
-        <IconSettings className="w-6 md:w-8 h-6 md:h-8" />
+        <IconSettings className="w-5 xl:w-8 h-5 xl:h-8" />
       </motion.div>
       <Dialog
         className="bg-RhinoBlue h-[800px] w-[200px] rounded-[20px]"
@@ -120,22 +120,26 @@ const ChannelSettings = (props: {
             <div className="w-full h-[400px] px-2 lg:px-4 space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
               {props.channelUsers.map(
                 (item: channelUsersType, index: number) => (
-                  <>
-                    {item.status === "BANNED" ? (
-                      <></>
-                    ) : (
-                      <ModelSettings
-                        key={index}
-                        userName={item.user.userName}
-                        userId={item.user.id}
-                        avatar={item.user.avatar}
-                        type={item.status}
-                        selectedChannel={props.selectedChannel}
-						channelUsers={props.channelUsers}
-						setChannelUsers={props.setChannelUsers}
-                      />
+                  <Fragment key={index  + 1 }>
+                    {item !== null && item !== undefined && (
+                      <>
+                        {item.status === "BANNED" ? (
+                          <></>
+                        ) : (
+                          <ModelSettings
+                            key={index}
+                            userName={item.user.userName}
+                            userId={item.user.id}
+                            avatar={item.user.avatar}
+                            type={item.status}
+                            selectedChannel={props.selectedChannel}
+                            channelUsers={props.channelUsers}
+                            setChannelUsers={props.setChannelUsers}
+                          />
+                        )}
+                      </>
                     )}
-                  </>
+                  </Fragment>
                 )
               )}
             </div>

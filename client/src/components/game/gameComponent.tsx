@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
 import { Body, Vector } from "matter-js";
 import ModelGame from "./modelGame";
 import Model from "./model";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { useRecoilState} from "recoil";
 import {
   dataGameAtom,
   idAtom,
@@ -58,7 +58,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
     else {
       setToken(token);
     }
-    const socket = io("http://e3r10p16.1337.ma:8888", {
+    const socket = io("http://34.173.232.127:8888", {
       extraHeaders: {
         authorization: "Bearer " + token,
       },

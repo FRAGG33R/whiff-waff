@@ -34,14 +34,10 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
   const [advenced, setAdvenced] = useState(false);
   const [time, setTime] = useState(false);
   const [defi, setDefi] = useState(false);
-  console.log("userNmae: ",(loggedUser as userType).userName);
   const [open, setDialogOpen] = useState(false);
   const [isFindingPlayer, setIsFindingPlayer] = useState(true);
   const [data, setData] = useRecoilState(dataGameAtom);
 
-
-  console.log("data: ", data);
-  
   const handleOpen = () => {
     setDialogOpen(!open);
   };
@@ -87,20 +83,29 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
     } else if (defi) {
       selectedMode = "Defi";
     }
-    let selectedEvent: string | undefined = 'notify';
+    let selectedEvent: string | undefined = "notify";
     if (loggedUser && (loggedUser as userType).userName === name) {
       selectedEvent = "play";
-    }
-    else if (loggedUser && (loggedUser as userType).userName !== name) {
+    } else if (loggedUser && (loggedUser as userType).userName !== name) {
       selectedEvent = "notify";
     }
     if (selectedMap && selectedMode) {
       onPlay(selectedMap, selectedMode, selectedEvent);
     } else {
-      console.log("Select a map and a mode to play");
+      toast.success("Select a map and a mode to play", {
+        duration: 5000,
+        style: {
+          borderRadius: "12px",
+          padding: "12px",
+          background: "#6C7FA7",
+          color: "#fff",
+          fontFamily: "Poppins",
+          fontSize: "18px",
+        },
+      });
     }
   };
-    
+
   return (
     <div className="w-full 2xl:h-[960px] flex  flex-col gap-4 md:gap-6  ">
       <div className=" w-full 2xl:h-[100px] flex  flex-col items-center justify-center ">
@@ -201,8 +206,6 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
               Mode
             </div>
             <div className="w-full xl:h-[100px] lg:h-[100px] md:h-[100px] 2xl:h-[110px] h-[100px] flex  items-center justify-center space-x-4 sm:space-x-8 md:space-x-10 lg:space-x-12 xl:space-x-16 2xl:space-x-16 ">
-           
-
               <button
                 className={`w-full xl:h-[100px]  lg:h-[100px] md:h-[100px] 2xl:h-[110px] h-[60px] flex flex-row items-center justify-center rounded-3xl bg-[#606060] bg-opacity-10 gap-2 
             ${defi ? "bg-red-500" : "bg-[#606060]"}`}

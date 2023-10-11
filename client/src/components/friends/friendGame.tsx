@@ -39,7 +39,6 @@ export default function FriendGame({
     { rank: "", image: Challenger },
   ];
   let jwtToken: string | null = null;
-  console.log(friends.stat.rank);
 
   if (typeof window !== "undefined") {
     jwtToken = localStorage.getItem("token");
@@ -68,7 +67,6 @@ export default function FriendGame({
           },
         }
       );
-	  console.log("response : ", res.data);
     } catch (error) {
       console.log(error);
     }

@@ -3,6 +3,7 @@ import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { IconUpload } from "@tabler/icons-react";
 import { ImageUploadProps } from "../../types/uploadType";
+import toast, { Toaster } from "react-hot-toast";
 import ValidationAlert from "../ui/alerts/validationAlert";
 
 const HexaGon: React.FC<HexaGonProps & ImageUploadProps> = ({setErrorFile ,setSelected, avatar, onImageUpload }) => {
@@ -22,6 +23,17 @@ const HexaGon: React.FC<HexaGonProps & ImageUploadProps> = ({setErrorFile ,setSe
     const file = acceptedFiles[0];
     if (file && file.type.startsWith("image/") && file.size <= 4 * 1024 * 1024) {
       setSelectedFile(file);
+      toast.success("Your profile picture has been updated", {
+        duration: 5000,
+        style: {
+          borderRadius: "12px",
+          padding: "12px",
+          background: "#6C7FA7",
+          color: "#fff",
+          fontFamily: "Poppins",
+          fontSize: "18px",
+        },
+      });
       onImageUpload(file);
       setUploadError(null);
       setSelected(true);
@@ -30,6 +42,17 @@ const HexaGon: React.FC<HexaGonProps & ImageUploadProps> = ({setErrorFile ,setSe
         "Invalid file format or size. Please select an image file (max size: 4MB).";
       setUploadError(errorMessage);
       setErrorFile(true);
+      toast.success("Invalid file format or size. Please select an image file (max size: 4MB).", {
+        duration: 5000,
+        style: {
+          borderRadius: "12px",
+          padding: "12px",
+          background: "#6C7FA7",
+          color: "#fff",
+          fontFamily: "Poppins",
+          fontSize: "18px",
+        },
+      });
     }
   }, [onImageUpload]);
 
@@ -69,6 +92,7 @@ const HexaGon: React.FC<HexaGonProps & ImageUploadProps> = ({setErrorFile ,setSe
           <div {...getRootProps()} className={isDragActive ? "bg-gray-100" : ""}>
             <input {...getInputProps()} />
             {selectedFile ? <p>{selectedFile.name}</p> : <IconUpload />}
+            <Toaster position="top-right" />
           </div>
         </div>
       )}

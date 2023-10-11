@@ -33,8 +33,6 @@ const friendRequeste = () => {
         },
       });
       const userId = userState.userName;
-      console.log("datA",res.data);
-      
       const pending = res.data.response.friends.pendingFriends;
       const filteredPending = pending.map(({ sender, status }:any) => ({
         id: sender.id,

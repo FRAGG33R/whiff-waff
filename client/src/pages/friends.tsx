@@ -33,7 +33,6 @@ export const getServerSideProps = withIronSessionSsr(
   async function getServerSideProps({ req }: any) {
     try {
       const token = await req.session.token.token;
-      console.log("req.session.token.token: ", req.session.token.token);
       const userId = parseJwtSsr(token).id;
 
       const res = await api.get(

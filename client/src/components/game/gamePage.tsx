@@ -28,14 +28,6 @@ const GamePage: React.FC = () => {
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const [Game] = useState({
-    userName: "Houssam",
-    userName1: "Aissam",
-    level: 12,
-    level1: 2,
-    image:
-      "https://cdn.intra.42.fr/users/e91ca4bc18567a537339d354852ecce1/hlalouli.jpg",
-  });
 
   const handlePlay = (map: string, mode: string, event: string) => {
     setSelectedMap(map);
@@ -86,9 +78,9 @@ const GamePage: React.FC = () => {
       <div className="h-full w-full space-y-2 xl:space-y-10 pt-2">
         <div className="h-[45px] md:h-[50px] lg:h-[60px] xl:h-[70px] w-full ">
           <NavBar
-            level={String((userData as userType).stat.level)}
-            avatar={(userData as userType).avatar}
-            useName={(userData as userType).userName}
+            level={String((loggedUser as any).level)}
+            avatar={(loggedUser as userType).avatar}
+            useName={(loggedUser as userType).userName}
           />
         </div>
         <div className="w-full h-full overflow-y-scroll xl:overflow-y-auto space-y-2 xl:space-y-4 flex flex-col items-start justify-start scrollbar scrollbar-thumb-GreenishYellow  scrollbar-track-transparent">

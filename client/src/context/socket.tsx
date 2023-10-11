@@ -22,7 +22,7 @@ export const SocketProvider = ({ children }: any) => {
   }
   useEffect(() => {
 
-    const newSocket = io("http://e3r10p16.1337.ma:8887/", {
+    const newSocket = io("http://34.173.232.127:443", {
       extraHeaders: {
         authorization: "Bearer " + localStorage.getItem("token"),
       },

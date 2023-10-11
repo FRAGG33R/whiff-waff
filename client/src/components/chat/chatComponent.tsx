@@ -54,7 +54,6 @@ export default function ChatComponent() {
     console.log("all conversations", chat);
     if (activeTab === "Chat") {
       if (router.query.chatId === (loggedUser as loggedUserType).userName) {
-        
         setSelectedConversation(
           (chat as conversationType[]).length > 0
             ? (chat as conversationType[])[0]
@@ -141,18 +140,19 @@ export default function ChatComponent() {
     } else {
       const channelName = router.query.chatId;
       try {
-		console.log('try');
+        console.log("try");
         const res = await api.get(`chat/room/Conversations`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-		console.log('res ---**--> : ', res.data.loggedUser);
-		setLoggedUser((prev: loggedUserType) => {
-			return {
-				...prev,
-				id: res.data.loggedUser.id,
-			}});
+        console.log("res ---**--> : ", res.data.loggedUser);
+        setLoggedUser((prev: loggedUserType) => {
+          return {
+            ...prev,
+            id: res.data.loggedUser.id,
+          };
+        });
         setChannel(res.data.Conversationdata.roomsConversations);
         setSelectedChannel((prev: channelType | null) => {
           const channel = res.data.Conversationdata.roomsConversations.find(
@@ -164,91 +164,92 @@ export default function ChatComponent() {
           return res.data.Conversationdata.roomsConversations[0];
         });
       } catch (error: any) {
-		console.log("error : ", error.response.data);
-	  }
+        console.log("error : ", error.response.data);
+      }
     }
   };
 
   const handleNewMessage = (
     e: FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>
   ) => {
-	e.preventDefault();
-	if (messageContent?.length === 0) {
-		toast.error("Message should not be empty !", {
-			style: {
-			borderRadius: "12px",
-			padding: "12px",
-			background: "#6C7FA7",
-			color: "#fff",
-			fontFamily: "Poppins",
-			fontSize: "18px",
-			},
-		});
-		return ;
-	}
-	if (activeTab === 'Chat')
-	{
-		const date = Date.now();
-		const newMessage = {
-		receiverId: selectedConversatoin?.receiver.id,
-		content: messageContent,
-		currentDate: date,
-		};
-		if (selectedConversatoin) {
-		const newSelectedConversation: conversationType = {
-			receiver: selectedConversatoin.receiver,
-			messages: [
-			...selectedConversatoin?.messages,
-			{
-				content: newMessage.content,
-				type: "sender",
-				date: String(newMessage.currentDate),
-				isError: false,
-			},
-			],
-		};
-		setSelectedConversation((prev) => newSelectedConversation);
-		}
-		socket.emit("message", newMessage);
-	}
-	else
-	{
-		console.log('sending a message inside the channel', '{', selectedChannel?.roomChat.name, '}');
-		const date = Date.now();
-			const newMessage = {
-			receiverId: selectedChannel?.roomChat.id,
-			content: messageContent,
-			currentDate: date,
-		};
-		console.log('new room message : ', newMessage);
-		if (selectedChannel) {
-		const newSelectedChannel: channelType = {
-			roomChat: selectedChannel.roomChat,
-			message: [
-			...selectedChannel.message,
-			{
-				user: {
-					id: (loggedUser as loggedUserType).id,
-					userName: (loggedUser as loggedUserType).userName,
-					avatar : (loggedUser as loggedUserType).avatar,
-					email : "",
-				},
-				message: {
-					content: newMessage.content,
-					type: "sender",
-					date: String(newMessage.currentDate),
-				},
-				isError: false,
-			},
-			],
-			avatars: selectedChannel.avatars,
-		};
-		setSelectedChannel((prev) => newSelectedChannel);
-		}
-		socket.emit("room", newMessage);
-	}
+    e.preventDefault();
+    if (messageContent?.length === 0) {
+      toast.error("Message should not be empty !", {
+        style: {
+          borderRadius: "12px",
+          padding: "12px",
+          background: "#6C7FA7",
+          color: "#fff",
+          fontFamily: "Poppins",
+          fontSize: "18px",
+        },
+      });
+      return;
+    }
+    if (activeTab === "Chat") {
+      const date = Date.now();
+      const newMessage = {
+        receiverId: selectedConversatoin?.receiver.id,
+        content: messageContent,
+        currentDate: date,
+      };
+      if (selectedConversatoin) {
+        const newSelectedConversation: conversationType = {
+          receiver: selectedConversatoin.receiver,
+          messages: [
+            ...selectedConversatoin?.messages,
+            {
+              content: newMessage.content,
+              type: "sender",
+              date: String(newMessage.currentDate),
+              isError: false,
+            },
+          ],
+        };
+        setSelectedConversation((prev) => newSelectedConversation);
+      }
+      socket.emit("message", newMessage);
+    } else {
+      console.log(
+        "sending a message inside the channel",
+        "{",
+        selectedChannel?.roomChat.name,
+        "}"
+      );
+      const date = Date.now();
+      const newMessage = {
+        receiverId: selectedChannel?.roomChat.id,
+        content: messageContent,
+        currentDate: date,
+      };
+      console.log("new room message : ", newMessage);
+      if (selectedChannel) {
+        const newSelectedChannel: channelType = {
+          roomChat: selectedChannel.roomChat,
+          message: [
+            ...selectedChannel.message,
+            {
+              user: {
+                id: (loggedUser as loggedUserType).id,
+                userName: (loggedUser as loggedUserType).userName,
+                avatar: (loggedUser as loggedUserType).avatar,
+                email: "",
+              },
+              message: {
+                content: newMessage.content,
+                type: "sender",
+                date: String(newMessage.currentDate),
+              },
+              isError: false,
+            },
+          ],
+          avatars: selectedChannel.avatars,
+        };
+        setSelectedChannel((prev) => newSelectedChannel);
+      }
+      socket.emit("room", newMessage);
+    }
     setMessageContent("");
-
   };
 
   const handleChange = (value: string) => {
@@ -267,20 +268,22 @@ export default function ChatComponent() {
           },
         }
       );
-	  console.log('conversation data ** : ', res.data);
+      console.log("conversation data ** : ", res.data);
       setSelectedChannel((prev: channelType | null) => {
         const newMessages: channelMessageType[] = res.data.roomConversation.map(
           (item: any) => {
             return {
-              roomSender: {
-                user: {
-                  id: item.user.id,
-                  userName: item.user.userName,
-                },
+              user: {
+                id: item.user.id,
+                userName: item.user.userName,
+                avatar: item.user.avatar,
+                email: item.user.email,
               },
-              message: item.message.content,
-              type: item.message.type,
-              date: item.message.date,
+              message: {
+                content: item.message.content,
+                type: item.message.type,
+                date: item.message.date,
+              },
               isError: false,
             };
           }
@@ -291,7 +294,7 @@ export default function ChatComponent() {
           avatars: channel.avatars,
         };
       });
-    //   router.push(`/chat/${channel.roomChat.id}`);
+      //   router.push(`/chat/${channel.roomChat.id}`);
     } catch (error) {}
   };
 
@@ -316,9 +319,7 @@ export default function ChatComponent() {
       });
       console.log("res : ", res.data);
       router.push(`/chat/${conversation.receiver.userName}`);
-    } catch (error) {
-
-	}
+    } catch (error) {}
   };
 
   const handleReceivedMessage = (message: any) => {
@@ -341,32 +342,32 @@ export default function ChatComponent() {
   };
 
   const handleReceivedRoomMessage = (message: any) => {
-    console.log("I received this message: ", message)
-	setSelectedChannel((prev: channelType | null) => {
-	  if (prev) {
-		const newMessage: channelMessageType = {
-			user : {
-				id : message.roomSender.user.id,
-				userName : message.roomSender.user.userName,
-				avatar : "",
-				email : "",
-			},
-			message: {
-				content: message.message,
-				type: "receiver",
-				date: message.date,
-			},
-			isError : false,
-		};
-		console.log('new message : ', newMessage);
-		const newMessages: channelMessageType[] = [...prev.message, newMessage];
-		return {
-		  roomChat: prev.roomChat,
-		  message: newMessages,
-		  avatars: prev.avatars,
-		};
-	  } else return prev;
-	});
+    console.log("I received this message: ", message);
+    setSelectedChannel((prev: channelType | null) => {
+      if (prev) {
+        const newMessage: channelMessageType = {
+          user: {
+            id: message.roomSender.user.id,
+            userName: message.roomSender.user.userName,
+            avatar: "",
+            email: "",
+          },
+          message: {
+            content: message.message,
+            type: "receiver",
+            date: message.date,
+          },
+          isError: false,
+        };
+        console.log("new message : ", newMessage);
+        const newMessages: channelMessageType[] = [...prev.message, newMessage];
+        return {
+          roomChat: prev.roomChat,
+          message: newMessages,
+          avatars: prev.avatars,
+        };
+      } else return prev;
+    });
   };
 
   const handleConnection = () => {
@@ -390,7 +391,6 @@ export default function ChatComponent() {
     setSelectedConversation((prev: conversationType | null) => {
       if (prev) {
         const newMessages: messageType[] = [...prev.messages];
-
         newMessages[newMessages.length - 1].isError = true;
         return {
           receiver: prev.receiver,
@@ -401,35 +401,35 @@ export default function ChatComponent() {
     });
   };
 
-	useEffect(() => {
-	  const socket = io("http://34.173.232.127:6080/", {
-		  extraHeaders: {
-			  authorization: `Bearer ${localStorage.getItem("token")}`,
-			},
-		});
-		socket.on("connect", handleConnection);
-		socket.on("exception", handleException);
-		socket.on("message", handleReceivedMessage);
-		socket.on("room", handleReceivedRoomMessage);
-		setSocket(socket);
-		return () => {
-			socket.off("connect", handleConnection);
-			socket.off("message", handleReceivedMessage);
-			socket.off("room",	  handleReceivedRoomMessage);
-			socket.off("exception", handleException);
-			socket.disconnect();
-		};
-	}, []);
+  useEffect(() => {
+    const socket = io("http://34.173.232.127:6080/", {
+      extraHeaders: {
+        authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    socket.on("connect", handleConnection);
+    socket.on("exception", handleException);
+    socket.on("message", handleReceivedMessage);
+    socket.on("room", handleReceivedRoomMessage);
+    setSocket(socket);
+    return () => {
+      socket.off("connect", handleConnection);
+      socket.off("message", handleReceivedMessage);
+      socket.off("room", handleReceivedRoomMessage);
+      socket.off("exception", handleException);
+      socket.disconnect();
+    };
+  }, []);
 
-	useEffect(() => {
-		const token = localStorage.getItem("token");
-		if (!token) router.push("/login");
-		else {
-		  setToken(token);
-		  findSelectedConversation(token);
-		  setLoaded(true);
-		}
-	  }, [activeTab]);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) router.push("/login");
+    else {
+      setToken(token);
+      findSelectedConversation(token);
+      setLoaded(true);
+    }
+  }, [activeTab]);
 
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
@@ -462,12 +462,12 @@ export default function ChatComponent() {
               />
             ) : (
               <>
-                  <ChannelChatComponent
-                    channels={channel as channelType[]}
-                    handleSelectedChannel={handleSelectedChannel}
-                    selectedChannel={selectedChannel!}
-					setSelectedChannel={setSelectedChannel}
-                  />
+                <ChannelChatComponent
+                  channels={channel as channelType[]}
+                  handleSelectedChannel={handleSelectedChannel}
+                  selectedChannel={selectedChannel!}
+                  setSelectedChannel={setSelectedChannel}
+                />
               </>
             )}
           </div>
@@ -487,8 +487,8 @@ export default function ChatComponent() {
                     channelName={selectedChannel?.roomChat?.name || ""}
                     avatars={selectedChannel?.avatars!}
                     channelId={selectedChannel?.roomChat.id!}
-					setSelectedChannel={setSelectedChannel}
-					selectedChannel={selectedChannel}
+                    setSelectedChannel={setSelectedChannel}
+                    selectedChannel={selectedChannel}
                   />
                 )}
             </div>

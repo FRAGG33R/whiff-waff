@@ -50,6 +50,7 @@ export interface loggedUserType {
 	avatar : string,
 	userName : string,
 	level : Number
+	id : string
 }
 
 export interface scoreIdType {

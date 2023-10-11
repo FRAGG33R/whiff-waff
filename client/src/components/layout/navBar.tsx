@@ -43,54 +43,8 @@ export default function NavBar(props: navBarType) {
             {`Level ${props.level}`}
           </div>
         </div>
-        <div className="h-full w-[20%] lg:w-[15%] xl:w-[10%] flex flex-row gap-1 xl:gap-6">
-          <MessageDropDown
-            notifications={[
-              {
-                avatar: "https://i.imgur.com/1Qwk9rX.png",
-                name: "John Doe",
-                message: "Hello there dsafadsfasfsdfadsfasdfas!",
-                time: "2h ago",
-              },
-              {
-                avatar: "https://i.imgur.com/1Qwk9rX.png",
-                name: "John Doe",
-                message: "Hello thereasdfasdfasdfasdfadsfasdfasf !",
-                time: "2h ago",
-              },
-              {
-                avatar: "https://i.imgur.com/1Qwk9rX.png",
-                name: "John Doe",
-                message: "Hello there sadfadsfsdfdsfdfghjk!",
-                time: "2h ago",
-              },
-            ]}
-            content={10}
-          />
-          <NotificationDropDown
-            notifications={[
-              {
-                avatar: "https://i.imgur.com/1Qwk9rX.png",
-                name: "John Doe",
-                message: "Hello there !",
-                time: "2h ago",
-              },
-              {
-                avatar: "https://i.imgur.com/1Qwk9rX.png",
-                name: "John Doe",
-                message: "Hello there !",
-                time: "2h ago",
-              },
-              {
-                avatar: "https://i.imgur.com/1Qwk9rX.png",
-                name: "John Doe",
-                message: "Hello there !",
-                time: "2h ago",
-              },
-            ]}
-            content={4}
-          />
-        </div>
+        {/* <div className="h-full w-[20%] lg:w-[15%] xl:w-[10%] flex flex-row gap-1 xl:gap-6">
+        </div> */}
         <div className="w-32 lg:w-[28%] xl:w-[23%] flex items-center justify-end ">
           <div className="w-full h-full flex items-center justify-end space-x-4">
             <img
@@ -98,7 +52,7 @@ export default function NavBar(props: navBarType) {
               width={90}
               height={90}
               alt="profile icon"
-              className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 border-4 border-DeepRose rounded-[12px] md:rounded-[20px] lg:flex hidden"
+              className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 border-4 border-DeepRose rounded-[12px] md:rounded-[20px] "
             />
             <div className="font-teko  font-medium text-xl md:text-2xl lg:text-3xl xl:text-4xl tracking-wider ">
               {props.useName}

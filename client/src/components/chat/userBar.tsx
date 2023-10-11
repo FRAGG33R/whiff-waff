@@ -9,9 +9,7 @@ export default function UserBar(props: userChatBar) {
   const hanldePlayWithUsere = () => {
     router.push(`/game/${props.userName}`);
   };
-  const handleRemoveConversation = () => {
-    console.log("remove conversation");
-  };
+
   return (
     <div className="w-full h-full flex items-center justify-center px-2 md:px-6 py-2 md:py-4">
       <div className="h-full w-full flex flex-row items-center justify-between">
@@ -43,14 +41,6 @@ export default function UserBar(props: userChatBar) {
             className="w-10 md:w-14 h-10 md:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%]  cursor-pointer"
           >
             <IconDeviceGamepad2 className="w-6 md:w-8 h-6 md:h-8" />
-          </motion.div>
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={handleRemoveConversation}
-            className="w-10 md:w-14 h-10 md:h-14 rounded-[12px] flex items-center justify-center bg-[#606060]/[12%] cursor-pointer"
-          >
-            <IconTrash className="w-6 md:w-8 h-6 md:h-8" />
           </motion.div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { textLimit } from "@/lib/textLimit";
 import { SingleConversationHistoryType } from "@/types/singleConversationHistory";
 import { motion } from "framer-motion";
 
@@ -16,7 +17,7 @@ export default function SingleConversationHistory(
 	  </div>
       <div className="flex flex-col space-y-[3px] xl:w-32 2xl:w-52 3xl:w-60">
         <div className=" lg:text-xl 2xl:text-3xl tracking-wider font-teko hidden md:block">
-          {props.userName}
+          {textLimit(props.userName, 11)}
         </div>
         <div className="font-poppins font-light text-HokiCl md:text-[1vw] xl:text-sm 3xl:text-lg hidden md:block">
           {props.lastMessage !== undefined ? ((props.messagePrefix ? "You : " : "") + (props.lastMessage.length > 15 ? props.lastMessage.substring(0, 15) : props.lastMessage)): ""}

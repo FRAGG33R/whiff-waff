@@ -37,6 +37,7 @@ const SearchInput: React.FC<searchInputProps> = () => {
     const token = localStorage.getItem("token");
     if (token) setToken(token);
     else router.push("/login");
+
   }, []);
 
   return (

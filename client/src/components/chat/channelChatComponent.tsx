@@ -11,9 +11,9 @@ export default function ChannelChatComponent(props: {
   selectedChannel : channelType
   setSelectedChannel : Function
 }) {
-
+	console.log('++', props.channels)
   return (
-    <div className="w-full h-full px-2 lg:px-4 space-y-2 xl:space-y-6 overflow-y-auto scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent">
+    <div className="w-full h-full px-2 lg:px-4 space-y-2 xl:space-y-6 overflow-y-auto overflow-x-hidden scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent ">
       <div className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]">
         <CreateChannel selectedChannel={props.selectedChannel} setSelectedChannel={props.setSelectedChannel} />
       </div>
@@ -28,9 +28,9 @@ export default function ChannelChatComponent(props: {
                 <SingleChannelConversationHistory
 				  selected={item.roomChat.id === props.selectedChannel.roomChat.id}
                   key={index}
-                  lastUser={item.message[item.message.length - 1]?.roomSender.user.userName}
+                  lastUser={item.message[item.message.length - 1].user ? item.message[item.message.length - 1].user.userName : (item.message[item.message.length - 1] as any)?.roomSender.user.userName}
                   channelName={item.roomChat.name}
-                  lastMessage={item.message[item.message.length - 1]?.message}
+                  lastMessage={item.message[item.message.length - 1]?.message.content}
                   avatars={item.avatars}
 				  onClick={() => props.handleSelectedChannel(item)}
                 />

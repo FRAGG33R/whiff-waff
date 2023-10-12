@@ -402,7 +402,7 @@ export default function ChatComponent() {
   };
 
   useEffect(() => {
-    const socket = io("http://34.173.232.127:6080/", {
+    const socket = io("http://e3r10p16.1337.ma:8889/", {
       extraHeaders: {
         authorization: `Bearer ${localStorage.getItem("token")}`,
       },

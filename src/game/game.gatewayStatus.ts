@@ -6,6 +6,11 @@ import { EventService } from './game.emitter';
 import { OnEvent } from '@nestjs/event-emitter';
 
 // to date
+// @WebSocketGateway(9997, {
+// 	cors: {
+// 		origin: "*"
+// 	}
+// })
 @WebSocketGateway(8887, {
 	cors: {
 		origin: "*"

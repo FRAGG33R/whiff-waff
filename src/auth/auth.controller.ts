@@ -1,14 +1,19 @@
-import { Body, Controller, Post, UseGuards, Get, Req, Res, HttpCode, HttpStatus, Logger } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get, Req, Res, HttpCode, HttpStatus, Logger, Patch, UseInterceptors, BadRequestException, UploadedFile } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignInDto, SignUpDto, TwoAuthDto } from 'src/dto';
+import { SignInDto, SignUpDto, TwoAuthDto, UpdateUserDto } from 'src/dto';
 import { LocalStrategy } from './strategies/local.strategy';
 import { Request, Response } from 'express';
-import { ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as values from 'src/shared/constants/constants.values'
+import * as  messages from 'src/shared/constants/constants.messages';
 import { v4 as uuidv4 } from 'uuid';
 import { LocalGuard } from './guards/guards.localGuard';
 import { FourtyTwoGuad } from './guards/guards.fourtyTwoGuard';
+import { JwtGuard } from './guards/guards.jwtGuard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { User } from '@prisma/client';
+import { UsersService } from 'src/users/users.service';
 
 const tagAuthenticationSwagger = 'authentication'
 const AuthControllerEndPoint = 'auth'
@@ -16,7 +21,7 @@ const signupAuthEndPoint = 'signup'
 const signinAuthEndPoint = 'signin'
 const signin42AuthEndPoint = 'signin/42'
 const verifiedAuthEndPoint = 'verified/:token'
-const generateTwoFactorAuth = 'generate-2fa/:id'
+const generateTwoFactorAuth = 'generate-2fa/:userName'
 const verifyTwoFactorAuth = 'verify-2fa'
 const validTwoFactorAuth = 'valid-2fa'
 const enableTwoFactorAuth = 'enable-2fa'
@@ -24,14 +29,17 @@ const disableTwoFactorAuth = 'disable-2fa'
 const authController = 'authController';
 const fourtyTwoCode = 'code'
 const token = 'token'
-
+const dataType = 'multipart/form-data'
 const fourtyTwoCodeDescription = 'The authorization code received from the provider';
 const tokenDescription = 'The verification token received via email'
+const settings = 'settings'
+const fileName = 'avatar'
 @ApiTags(tagAuthenticationSwagger)
 @Controller(AuthControllerEndPoint)
 export class AuthController {
 	logger = new Logger(authController);
 	constructor(private readonly authService: AuthService,
+		private readonly userService: UsersService,
 		private readonly local: LocalStrategy,
 		private readonly prisma: PrismaService,
 	) { };
@@ -51,7 +59,6 @@ export class AuthController {
 		name: fourtyTwoCode,
 		description: fourtyTwoCodeDescription,
 	})
-
 	@UseGuards(FourtyTwoGuad)
 	@Get(signin42AuthEndPoint)
 	@HttpCode(HttpStatus.CREATED)
@@ -70,6 +77,29 @@ export class AuthController {
 		}
 	}
 	
+	@ApiBearerAuth()
+	@ApiConsumes(dataType)
+	@ApiBody({
+		type: UpdateUserDto,
+	})
+	@UseGuards(JwtGuard)
+	@Patch(settings)
+	@UseInterceptors(FileInterceptor(fileName, {
+		fileFilter: (req, file, cb) => {
+			if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+				cb(null, true);
+			} else {
+				cb(new BadRequestException(messages.FILE_TYPE), false);
+			}
+		}
+	}))
+	async updateUserdata(@Body() dto: UpdateUserDto, @Req() req: Request, @UploadedFile() avatar: Express.Multer.File) {
+		const newUser = await this.userService.upDateUserdata((req.user as any).id, dto, avatar);
+		const token = await this.authService.insertIntraUser(newUser);
+		return {newUser: newUser, token: token};
+	}
+
+
 	@ApiParam({
 		name: token,
 		description: tokenDescription,
@@ -81,7 +111,7 @@ export class AuthController {
 	}
 	@Get(generateTwoFactorAuth)
 	async TwoAuthGen(@Req() req: Request) {
-		return (this.authService.TwoAuthGen(req.params.id));
+		return (this.authService.TwoAuthGen(req.params.userName));
 	}
 
 	@Post(verifyTwoFactorAuth)

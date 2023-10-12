@@ -1,5 +1,5 @@
-import { ForbiddenException, HttpStatus,HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { SignUpDto , TwoAuthDto} from 'src/dto';
+import { ForbiddenException, HttpStatus, HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { SignUpDto, TwoAuthDto } from 'src/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -113,191 +113,193 @@ export class AuthService {
 			if (!existsUser) {
 				existsUser = await this.userService.createUser(dto);
 			}
-			const token = await this.signToken({ id: existsUser.id, email: existsUser.email, userName: existsUser.email }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
-			return (token);
+			if (existsUser.twoFactorAuth == true)
+				return {id: existsUser.id, twoFa: true};
+			const token = await this.signToken({ id: existsUser.id, email: existsUser.email, user: existsUser.userName }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
+			return ({token: token});
 		} catch (error) {
 			throw new InternalServerErrorException();
 		}
 	}
+
 	async TwoAuthGen(userId: string) {
-		
+
 
 		const Secret = (): string => {
 			const random = speakeasy.generateSecret({ length: 20 });
 			return random.base32;
-		  };
+		};
 
-        
+
 		const existUser = await this.prismaService.user.findFirst({
 			where: {
-			  id: userId,
+				userName: userId,
 			},
-		  });
-	  
-		  if (!existUser) {
+		});
+
+		if (!existUser) {
 			throw new HttpException('NOT FOUND USER', HttpStatus.NOT_FOUND);
-		  }
-		  const base32Secret = Secret();
-		  const totp = new OTPAuth.TOTP({
-			issuer: 'TENSORCODE',
-			label: 'TensorCodeTwoFactorAuth',
+		}
+		const base32Secret = Secret();
+		const totp = new OTPAuth.TOTP({
+			issuer: 'whiff-whaff',
+			label: existUser.email,
 			algorithm: 'SHA1',
 			digits: 6,
 			period: 30,
 			secret: base32Secret,
-		  });
-		  const uri = totp.toString();
-		  const qrCodeImageBuffer = await qrCode.toDataURL(uri);
-		  await this.prismaService.user.update({
+		});
+		const uri = totp.toString();
+		const qrCodeImageBuffer = await qrCode.toDataURL(uri);
+		await this.prismaService.user.update({
 			where: {
-			  id: userId,
+				id: existUser.id,
 			},
 			data: {
-			  otpAuthurl: uri,
-			  otpSecret: base32Secret,
+				otpAuthurl: uri,
+				otpSecret: base32Secret,
 			},
-		  });
-	  
-		  return qrCodeImageBuffer;
+		});
+		return qrCodeImageBuffer;
 	}
 
-	async TwoAuthVer(dto: TwoAuthDto){
+	async TwoAuthVer(dto: TwoAuthDto) {
 		const userId = await this.prismaService.user.findFirst({
 			where: {
-			  id: dto.id,
+				id: dto.id,
 			},
-		  });
-	  
-		  if (!userId) {
-			throw new HttpException('NOT FOUND USER', HttpStatus.NOT_FOUND);
-		  }
+		});
 
-		  if (userId.otpEnable){
+		if (!userId) {
+			throw new HttpException('NOT FOUND USER', HttpStatus.NOT_FOUND);
+		}
+
+		if (userId.otpEnable) {
 			return userId.otpEnable;
-		  }
-		  const totp = new OTPAuth.TOTP({
-			issuer: 'TENSORCODE',
-			label: 'TensorCodeTwoFactorAuth',
+		}
+		const totp = new OTPAuth.TOTP({
+			issuer: 'whiff-whaff',
+			label: userId.email,
 			algorithm: 'SHA1',
 			digits: 6,
 			period: 30,
 			secret: userId.otpSecret,
-		  });
-	  
-		  const validate = totp.validate({ token: dto.pin });
-	  
-		  if (validate === null) {
+		});
+
+		const validate = totp.validate({ token: dto.pin });
+
+		if (validate === null) {
 			throw new HttpException('INVALID PIN', HttpStatus.BAD_REQUEST);
-		  }
-	  
-		  const enable = await this.prismaService.user.update({
+		}
+
+		const enable = await this.prismaService.user.update({
 			where: {
-			  id: dto.id,
+				id: dto.id,
 			},
 			data: {
-			  otpEnable: true,
+				otpEnable: true,
 			},
-		  });
-		  return {
+		});
+		return {
 			otp_enabled: enable.otpEnable,
-		  };
+		};
 	}
 
-	async TwoAuthValid(dto: TwoAuthDto){
+	async TwoAuthValid(dto: TwoAuthDto) {
 
 		const userId = await this.prismaService.user.findFirst({
 			where: {
-			  id: dto.id,
+				id: dto.id,
 			},
-		  });
-	  
+		});
+
 		if (!userId) {
 			throw new HttpException('NOT FOUND USER', HttpStatus.NOT_FOUND);
 		}
 
 		const totp = new OTPAuth.TOTP({
-			issuer: 'TENSORCODE',
-			label: 'TensorCodeTwoFactorAuth',
+			issuer: 'whiff-whaff',
+			label: userId.email,
 			algorithm: 'SHA1',
 			digits: 6,
 			period: 30,
 			secret: userId.otpSecret,
 		});
-	  
+
 		const validate = totp.validate({ token: dto.pin });
-	  
+
 		if (validate === null) {
 			throw new HttpException('INVALID PIN', HttpStatus.BAD_REQUEST);
 		}
-	  
+
 		const enable = await this.prismaService.user.update({
 			where: {
-			  id: dto.id,
+				id: dto.id,
 			},
 			data: {
-			  otpValidate: true,
+				otpValidate: true,
 			},
 		});
-		if (!enable.otpValidate){
+		if (!enable.otpValidate) {
 			throw new HttpException('Invalid pin', HttpStatus.BAD_REQUEST);
 		}
 		const user = await this.userService.findUserById(dto.id);
 		const token = await this.signToken({ id: user.id, email: user.email, user: user.userName }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
-		return {token};
+		return { token };
 	}
 
 
-	async TwoAuthDisable(dto: TwoAuthDto){
+	async TwoAuthDisable(dto: TwoAuthDto) {
 		let checkId = await this.prismaService.user.findFirst({
-            where: {
-                id: dto.id,
-            },
-        });
-		if (!checkId){
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-        }
+			where: {
+				id: dto.id,
+			},
+		});
+		if (!checkId) {
+			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+		}
 
 		const disable = await this.prismaService.user.update({
-			where:{
+			where: {
 				id: dto.id,
 			},
 			data: {
-				 otpEnable: false,
-				 otpValidate: false,
+				otpEnable: false,
+				otpValidate: false,
 			}
 		})
 		return {
 			otpEnable: disable.otpEnable,
 			otpValidate: disable.otpValidate
-		};		
+		};
 	}
-	
-	async TwoAuthEnable(dto: TwoAuthDto){
+
+	async TwoAuthEnable(dto: TwoAuthDto) {
 		let checkId = await this.prismaService.user.findFirst({
-			where:{
+			where: {
 				id: dto.id,
 			},
 		});
-		if (!checkId){
+		if (!checkId) {
 			throw new HttpException('User not found', HttpStatus.NOT_FOUND);
 		}
 		const enable = await this.prismaService.user.update({
-			where:{
+			where: {
 				id: dto.id,
 			},
 			data: {
-				otpEnable : true,
+				otpEnable: true,
 			}
 		})
 	}
 
-	async checkOTP(email: string){
+	async checkOTP(email: string) {
 		const check = await this.prismaService.user.findUnique({
-			where:{
+			where: {
 				email: email,
 			}
 		});
-		if (check.otpEnable){
+		if (check.otpEnable) {
 			return true;
 		}
 		return false;

@@ -11,6 +11,11 @@ import { UsersService } from 'src/users/users.service';
 import { toObject } from 'src/shared/responses/responses.sucess-response';
 
 const chatGateway = 'ChatGateway';
+// @WebSocketGateway(9998, {
+// 	cors: {
+// 		origin: "*"
+// 	}
+// })
 @WebSocketGateway(8889, {
 	cors: {
 		origin: "*"
@@ -30,8 +35,9 @@ export class ChatGateway implements OnGatewayConnection {
 			client.disconnect();
 		}
 		else if (this.loggedUsers) {
-			if (!this.loggedUsers.has((validUser as any).id))
+			if (!this.loggedUsers.has((validUser as any).id)) {
 				this.loggedUsers.set((validUser as any).id, [client.id]);
+			}
 			else if (!this.loggedUsers.get((validUser as any).id).includes(client.id))
 				this.loggedUsers.get((validUser as any).id).push(client.id);
 		}
@@ -68,14 +74,29 @@ export class ChatGateway implements OnGatewayConnection {
 	async handelRoomMessage(@MessageBody(new CustomWebSocketValidationPipe()) dto: dtoIndividualChat, @ConnectedSocket() client: Socket) {
 		const existsRoom = await this.chatService.getUsersInRoomById(dto.receiverId);
 		if (!existsRoom || existsRoom.length == 0)
-			throw new WsException('room not found');
+		{
+			client.emit('roomException', 'room not found');
+			return ;
+			// throw new WsException('room not found');
+		}
 		const statusUser = await this.chatService.getJoinedRoomByIds((client as any).user.id, dto.receiverId);
 		if (!statusUser)
-			throw new WsException('user not in room');
+		{
+			client.emit('roomException', 'user not in room');
+			return ;
+			// throw new WsException('user not in room');
+		}
 		// statusUser.mutedAt = (statusUser.mutedAt) ? statusUser.mutedAt.toString() as any : statusUser.mutedAt;
 		if (statusUser && statusUser.status == UserStatus.MUTED) {
-			if (Date.now() < (BigInt(statusUser.mutedAmout) + BigInt(statusUser.mutedAt)))
+			if (Date.now() < (BigInt(statusUser.mutedAmout) + BigInt(statusUser.mutedAt))) {
+				client.emit('roomException', 'user is muted');
+				return ;
 				throw new WsException('user is muted');
+			}
+		}
+		else if (statusUser && statusUser.status == UserStatus.BANNED) {
+			client.emit('roomException', 'user is banned');
+			return ;
 		}
 		for (let i = 0; i < existsRoom.length; i++) {
 			const checkBlocked = await this.chatService.checkBlocked((client as any).user.id, existsRoom[i].user.id);

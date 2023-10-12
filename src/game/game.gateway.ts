@@ -17,6 +17,11 @@ interface RandomGame {
 	gameId?: string;
 }
 
+// @WebSocketGateway(9999, {
+// 	cors: {
+// 		origin: "*"
+// 	}
+// })
 @WebSocketGateway(8888, {
 	cors: {
 		origin: "*"
@@ -109,10 +114,10 @@ export class GameGateway implements OnGatewayConnection {
 		}
 	}
 
-	@SubscribeMessage('left')
-	async left(@ConnectedSocket() client: Socket, @MessageBody() data: { id: string, type: string }) {
+	// @SubscribeMessage('left')
+	// async left(@ConnectedSocket() client: Socket, @MessageBody() data: { id: string, type: string }) {
 
-	}
+	// }
 
 	@SubscribeMessage('start')
 	async start(@ConnectedSocket() client: any, @MessageBody() data: { type: string }) {
@@ -157,10 +162,10 @@ export class GameGateway implements OnGatewayConnection {
 			game.getPlayer2()?.emit('left', { msg: "your friend has left the game" });
 			game.stop();
 			this.queueArray.splice(index, 1);
-			if (username === game.id1){
+			if (username === game.id1) {
 				game.getPlayer2()?.disconnect;
 				game.setPlayer1(null)
-			}else if (username === game.id2){
+			} else if (username === game.id2) {
 				game.getPlayer1()?.disconnect();
 				game.setPlayer2(null)
 			}

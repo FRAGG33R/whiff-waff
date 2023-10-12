@@ -9,13 +9,13 @@ import { ResponseInfo } from 'src/shared/responses/responses.sucess-response'
 import * as values from 'src/shared/constants/constants.values'
 import * as  messages from 'src/shared/constants/constants.messages';
 
-const fileName = 'avatar'
+
 const tagUserSwagger = 'users'
 const userEndPoint = 'users'
 const meEndPoint = 'me'
 const profileEndPoint = 'profile/:userName'
 const historyGame = 'historyGame/:userId'
-const settings = 'settings'
+
 const friends = 'friends'
 const friendshipResponse = 'friendshipResponse'
 const search = 'search'
@@ -24,7 +24,7 @@ const numberOfGamesParam = 'elementsNumer'
 const userNamePraram = 'userName'
 const pageParam = 'page'
 const userIDPraram = 'userId'
-const dataType = 'multipart/form-data'
+
 
 const numberOfGamesDescription = 'The amount of elements'
 const userNameDescription = 'The required user\'s username'
@@ -91,26 +91,6 @@ export class UsersController {
 		const elementsNumer = Number(req.query.elementsNumer) || values.NUMBER_OF_GAMES;
 		const historyGame = await this.userService.getHistoryGame(userId, page, elementsNumer);
 		return historyGame;
-	}
-
-	@ApiBearerAuth()
-	@ApiConsumes(dataType)
-	@ApiBody({
-		type: UpdateUserDto,
-	})
-	@UseGuards(JwtGuard)
-	@Patch(settings)
-	@UseInterceptors(FileInterceptor(fileName, {
-		fileFilter: (req, file, cb) => {
-			if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
-				cb(null, true);
-			} else {
-				cb(new BadRequestException(messages.FILE_TYPE), false);
-			}
-		}
-	}))
-	async updateUserdata(@Body() dto: UpdateUserDto, @Req() req: Request, @UploadedFile() avatar: Express.Multer.File) {
-		return await this.userService.upDateUserdata((req.user as any).id, dto, avatar);
 	}
 
 	@ApiBearerAuth()

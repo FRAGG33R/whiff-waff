@@ -138,7 +138,7 @@ export default function ProfileInformations() {
             <div className="w-full h-full flex items-end md:justify-start justify-center font-normal md:font-semibold font-teko text-3xl xl:text-4xl 2xl:text-5xl text-Mercury tracking-wider">
               {userState.userName}
             </div>
-            <div className="w-full min-h-1 flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
+            <div className="w-full min-h-1 flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-4">
               {userState.userName != (loggedUser as loggedUserType).userName ? (
                 <>
                   {userState.status === "PENDING" ? (

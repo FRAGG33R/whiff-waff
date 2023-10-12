@@ -23,7 +23,8 @@ export const SocketProvider = ({ children }: any) => {
     router.push("/game/" + userName);
   };
   useEffect(() => {
-    const newSocket = io("http://e3r10p16.1337.ma:8887", {
+
+    const newSocket = io("http://e3r10p16.1337.ma:8887/", {
       extraHeaders: {
         authorization: "Bearer " + localStorage.getItem("token"),
       },

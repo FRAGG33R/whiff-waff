@@ -19,7 +19,7 @@ import { loggedUserType } from "@/types/userType";
 import { useRouter } from "next/router";
 import { api } from "../axios/instance";
 import toast, { Toaster } from "react-hot-toast";
-import { IconMessageOff, IconMessagesOff } from "@tabler/icons-react";
+import { IconMessageOff } from "@tabler/icons-react";
 import IndividualChatComponent from "./individualChatComponent";
 import ChannelChatComponent from "./channelChatComponent";
 import ChannelBar from "./channelBar";
@@ -79,7 +79,6 @@ export default function ChatComponent() {
               Authorization: `Bearer ${token}`,
             },
           });
-          // throw an exception when the user not a friend of the logged user and router.back() to the previous page
           const userData = res.data.response.user;
           const newConversation: conversationType = {
             receiver: {
@@ -101,40 +100,7 @@ export default function ChatComponent() {
             newConversation,
           ]);
         } catch (err: any) {
-          //   try {
-          //     const res = await api.get(
-          //       `/chat/room/Conversations/${router.query.chatId}`,
-          //       {
-          //         headers: {
-          //           Authorization: `Bearer ${token}`,
-          //         },
-          //       }
-          //     );
-          //     setSelectedChannel((prev: channelType | null) => {
-          //       const newMessages: channelMessageType[] =
-          //         res.data.roomConversation.map((item: any) => {
-          //           return {
-          //             roomSender: {
-          //               user: {
-          //                 id: item.user.id,
-          //                 userName: item.user.userName,
-          //               },
-          //             },
-          //             message: item.message.content,
-          //             type: item.message.type,
-          //             date: item.message.date,
-          //             isError: false,
-          //           };
-          //         });
-          //       return {
-          //         roomChat: res.data.roomConversation.roomChat,
-          //         message: newMessages,
-          //         avatars: res.data.roomConversation.avatars,
-          //       };
-          //     });
-          //   } catch (error: any) {
           router.push("/404");
-          //   }
         }
       }
     } else {
@@ -477,7 +443,7 @@ export default function ChatComponent() {
         </div>
         <div className="w-full h-[96%] md:h-[91%] flex flex-row space-x-2 md:space-x-10 overflow-y-hidden overflow-x-hidden">
           <div className="h-full min-w-[60px] max-w-[400px] w-1/4 md:w-1/3 bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] flex flex-col items-center justify-start  space-y-6">
-            <div className="hidden w-full px-4 h-28 md:flex justify-center items-center">
+            <div className="w-full  md:px-4 h-28 flex justify-center items-center">
               <ChannelToggleSwitch
                 firstValue="Chat"
                 secondValue="Channels"

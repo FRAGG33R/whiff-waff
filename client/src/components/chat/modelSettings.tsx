@@ -4,10 +4,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import MuteDropDown from "../ui/dropDowns/muteDropDown";
 import UserChannelDropDown from "../ui/dropDowns/userChannelDropDown";
+import { useRecoilState } from "recoil";
+import { loggedUserAtom } from "@/context/RecoilAtoms";
+import { loggedUserType } from "@/types/userType";
 
 const ModelSettings = (props: SingleMembreType) => {
   const router = useRouter();
   const [openMuteDropDown, setOpenMuteDropDown] = useState<boolean>(false);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [muteDuration, setMuteDuration] = useState<number>(0);
 
   const handleMute = async () => {
@@ -42,7 +46,7 @@ const ModelSettings = (props: SingleMembreType) => {
               : props.type}
           </div>
         </div>
-        {(props.type == "DEFLAULT" || props.type == "MUTED") && (
+        {(props.type == "DEFLAULT" || props.type == "MUTED" || (props.type == "ADMIN" && props.userName != (loggedUser as loggedUserType).userName)) && (
           <div className="min-w-1 h-full flex flex-row items-center justify-center gap-2">
             <MuteDropDown
               setMuteDurition={setMuteDuration}

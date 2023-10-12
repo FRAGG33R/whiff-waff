@@ -127,6 +127,7 @@ const InformationsSetting = () => {
     if (avatarImage) {
       if (avatarImage !== userData.avatar) {
         formData.append("avatar", avatarImage);
+        console.log(avatarImage);
       }
     }
     try {
@@ -147,7 +148,6 @@ const InformationsSetting = () => {
   };
   const handleImageUpload = (file: File) => {
     setAvatarImage(file);
-  
   };
 
   console.log();

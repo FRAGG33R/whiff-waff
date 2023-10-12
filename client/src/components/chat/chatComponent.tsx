@@ -375,6 +375,8 @@ export default function ChatComponent() {
   };
 
   const handleException = (error: any) => {
+	console.log('individual');
+	
     console.log("socket error : ", error.message);
     toast.error(error.message, {
       style: {
@@ -386,8 +388,6 @@ export default function ChatComponent() {
         fontSize: "18px",
       },
     });
-    //setIsError(true);
-    //update the laset message on the selected conversation to be an error message
     setSelectedConversation((prev: conversationType | null) => {
       if (prev) {
         const newMessages: messageType[] = [...prev.messages];
@@ -401,14 +401,43 @@ export default function ChatComponent() {
     });
   };
 
+  const handleRoomException = (error: any) => {
+	console.log('channel');
+    console.log("socket error : ", error);
+    toast.error(error, {
+      style: {
+        borderRadius: "12px",
+        padding: "12px",
+        background: "#6C7FA7",
+        color: "#fff",
+        fontFamily: "Poppins",
+        fontSize: "18px",
+      },
+    });
+	setSelectedChannel((prev: channelType | null) => {
+		if (prev) {
+			const newMessages: channelMessageType[] = [...prev.message];
+			console.log('---->, ', newMessages[newMessages.length - 1]);
+			newMessages[newMessages.length - 1].isError = true;
+			return {
+				roomChat: prev.roomChat,
+				message: newMessages,
+				avatars: prev.avatars,
+			};
+		}
+		return prev;
+		});
+  };
+
   useEffect(() => {
-    const socket = io("http://34.173.232.127:6080/", {
+    const socket = io("http://e3r10p16.1337.ma:8889/", {
       extraHeaders: {
         authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
     socket.on("connect", handleConnection);
     socket.on("exception", handleException);
+    socket.on("roomException", handleRoomException);
     socket.on("message", handleReceivedMessage);
     socket.on("room", handleReceivedRoomMessage);
     setSocket(socket);
@@ -416,6 +445,7 @@ export default function ChatComponent() {
       socket.off("connect", handleConnection);
       socket.off("message", handleReceivedMessage);
       socket.off("room", handleReceivedRoomMessage);
+	  socket.on("roomException", handleRoomException);
       socket.off("exception", handleException);
       socket.disconnect();
     };

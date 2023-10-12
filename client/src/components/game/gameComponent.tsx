@@ -58,7 +58,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
     else {
       setToken(token);
     }
-    const socket = io("http://34.173.232.127:8888", {
+    const socket = io("http://34.173.232.127:3389", {
       extraHeaders: {
         authorization: "Bearer " + token,
       },

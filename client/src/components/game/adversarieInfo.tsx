@@ -60,6 +60,8 @@ const AdversarieInfo = () => {
         </div>
       </div>
       <div className="w-[80%] md:w-[70%] lg:w-[60%] lg:h-[80px] h-[80px] md:h-[80px]  flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%] ">
+        {
+          user &&
         <div className=" lg:w-[40%] md:w-[40%] sm:w-[40%] w-[50%] h-full flex items-center justify-center  ">
           {rankItems.map((item, index) => (
             <Image
@@ -72,6 +74,9 @@ const AdversarieInfo = () => {
             />
           ))}
         </div>
+        }
+        {
+          user &&
         <div className=" lg:w-[40%] md:w-[40%] sm:w-[40%] sm:flex flex-row justify-center lg:space-x-3  lg:space-y-4  space-x-3 space-y-4 hidden ">
           <Image src={LEVEL} alt="level icon" className=" " width={30} />
           <span className="font-normal font-teko text-[2.3rem]   text-Mercury   ">
@@ -81,18 +86,22 @@ const AdversarieInfo = () => {
             {user?.stat.level}
           </span>
         </div>
+        }
 
         <div className="h-full lg:w-[20%] md:w-[20%] sm:w-[20%] w-[50%] flex flex-row items-center md:space-x-4 2xl:space-x-2  ">
+          { user &&
           <div
             className="h-full w-full flex items-center justify-center tooltip  "
             data-tip={`${user?.userName}  ${user?.stat.level}`}
           >
+  
             <img
               src={user?.avatar}
               alt=""
               className="   h-14 md:h-16 rounded-[12px] md:rounded-[20px]"
             />
           </div>
+          }
         </div>
       </div>
     </div>

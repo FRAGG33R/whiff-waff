@@ -54,7 +54,7 @@ const GamePage: React.FC = () => {
               <p className="flex flex-col ">
                 <span className="text-Mercury">1.  Choose a map and a mode</span>
                 <span className="text-Mercury">2.  Click on play</span> 
-                <span className="text-Mercury">3. Play by Mouse or Keyboard (ArrowLeft, ArrowRight)</span>
+                <span className="text-Mercury">3. Play by Mouse</span>
               </p>
             </div>
           </DialogBody>

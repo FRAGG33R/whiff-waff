@@ -9,17 +9,20 @@ import Qrcode from "./Qrcode";
 import axios from "axios";
 import { KeyboardEvent } from "react";
 import { api } from "../axios/instance";
+import { useRecoilState } from "recoil";
+import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
+import { userDataAtom } from "@/atom/atomStateuser";
+import { userType } from "@/types/userType";
 const TwoFactor = () => {
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
-  const randomCode = useState(generateRandomCode())[0];
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [userData, setUserData] = useRecoilState(userAtom);
+  console.log("loggedUser", (userData as userType).id);
+  console.log("loggedUser", loggedUser);
+  console.log("userData", userData);
 
-  function generateRandomCode() {
-    const min = 100000;
-    const max = 999999;
-    const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-    return randomNumber.toString();
-  }
+  const jwtToken = localStorage.getItem("token");
 
   const handleCancle = () => {
     setCode("");
@@ -34,23 +37,25 @@ const TwoFactor = () => {
   const handleConfirm = async () => {
     let result = false;
 
-    if (code === randomCode && code.match(/^[0-9]{6}$/)) {
-      result = true;
+    if (!code.match(/^[0-9]{6}$/)) {
+      setError(true);
     }
-
+    console.log("code", code);
     try {
-      const jwtToken = localStorage.getItem("token");
-      const response = await api.patch(
-        "/settings/",
-        { result },
+      
+      const response = await api.post(
+        "/auth/verify-2fa",
+        {
+          id: (userData as userType).id,
+          pin: code,
+        } ,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
-
-      console.log("POST request successful:", response.data);
+        console.log("response",response.data);
     } catch (error) {
       console.error("Error sending POST request:", error);
     }
@@ -78,7 +83,7 @@ const TwoFactor = () => {
           </div>
         </div>
         <div className="w-full h-[80%] flex flex-col items-center justify-start gap-3">
-          <Qrcode code={randomCode} />
+          <Qrcode />
           <div className="w-full h-[60%] flex flex-col  justify-start items-center gap-2 md:gap-4">
             <div className="  w-[12rem] sm:w-[13rem]   md:w-[15rem] lg:w-[18rem] xl:w-[22rem] h-[20%]  flex font-poppins text-[0.7rem]   md:text-[0.8rem] sm:text-[0.7rem] lg:text-[1rem] xl:text-[1.3rem]  text-center">
               Enter code from your two-factor authentication app

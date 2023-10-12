@@ -23,6 +23,7 @@ export  interface userType {
   stat: userStatisticsType;
   achievements: userAchievementsType[];
   status : string;
+  otpValidated : boolean;
 }
 
 interface playerType {

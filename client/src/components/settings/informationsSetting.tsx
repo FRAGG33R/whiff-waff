@@ -11,7 +11,7 @@ import { useRecoilState } from "recoil";
 import { userType } from "./../../types/userType";
 import { userAtom } from "@/context/RecoilAtoms";
 import ValidationAlert from "../ui/alerts/validationAlert";
-import { api } from "../axios/instance";
+import { api, localApi } from "../axios/instance";
 import { useRouter } from "next/router";
 
 const InformationsSetting = () => {
@@ -132,7 +132,7 @@ const InformationsSetting = () => {
     }
     try {
       const req = await api.patch(
-        "/users/settings/",
+        "/auth/settings/",
         formData,
         {
           headers: {
@@ -140,7 +140,9 @@ const InformationsSetting = () => {
           },
         }
       );
-      console.log(req.data);
+      const newToken = req.data.token.token;
+      localStorage.setItem("token", newToken);
+      const r = await localApi.post("/saveToken", {  token: newToken});
     } catch (error) {
       console.log(error);
     }

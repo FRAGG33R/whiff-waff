@@ -8,20 +8,23 @@ export const api = axios.create({
 	baseURL: "http://e3r10p16.1337.ma:3001/api/v1",
 });
 
-let hostname;
+// let hostname;
 
-if (typeof window === 'undefined') {
-  const os = require('os');
-  hostname = os.hostname();
-  console.log("Hostname:", `http://${hostname}:3000/api`);
-}
-else
-{
-  hostname = window.location.hostname;
-  console.log("Hostname:", `http://${hostname}:3000/api`);
-}
+// if (typeof window === 'undefined') {
+//   const os = require('os');
+//   hostname = os.hostname();
+//   console.log("Hostname:", `http://${hostname}:3000/api`);
+// }
+// else
+// {
+//   hostname = window.location.hostname;
+//   console.log("Hostname:", `http://${hostname}:3000/api`);
+// }
+
+// export const localApi = axios.create({
+// 	  baseURL: `http://${hostname}:3000/api`,
+// });
 
 export const localApi = axios.create({
-	  baseURL: `http://${hostname}:3000/api`,
+    baseURL: "http://localhost:3000/api",
 });
-

@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from "react";
 import QRCode from "qrcode.react";
+import { api } from "../axios/instance";
+import { useRecoilState } from "recoil";
+import { userType } from "@/types/userType";
+import { userAtom } from "@/context/RecoilAtoms";
+import Image from "next/image";
 
-interface QRCodeProps {
-  code: string;
-}
 
-const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
+
+const QRCodeGenerator = () => {
   const [qrSize, setQRSize] = useState(180);
+  const [user, setUser] = useRecoilState(userAtom);
+  const [userState, setUserState] = useState<userType>(user as userType);
+  const [avatar, setAvatar] = useState<string>("");
 
+  let jwtToken: string | null = null;
+
+  if (typeof window !== "undefined") {
+    jwtToken = localStorage.getItem("token");
+  }
   const updateQRCodeSize = () => {
     const screenWidth = window.innerWidth;
 
@@ -26,7 +37,23 @@ const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
     }
 };
 
+  const fetchCode = async () => {
+   try{
+    const res = await api.get("auth/generate-2fa/" + (userState as userType).userName, {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    });
+    console.log("data",res.data);
+    setAvatar(res.data);
+  } 
+    catch(error){
+      console.log(error);
+    }
+  };
   useEffect(() => {
+    fetchCode();
+    console.log("avatar",avatar);
     updateQRCodeSize(); 
     window.addEventListener("resize", updateQRCodeSize);
 
@@ -41,11 +68,11 @@ const QRCodeGenerator: React.FC<QRCodeProps> = ({ code }) => {
         maxWidth: "300%",
         backgroundColor: "#ffffff",
         borderRadius: "10px",
-        padding: "30px",
+        padding: "20px",
         display: "inline-block"
       }}
     >
-      <QRCode value={code} size={qrSize} />
+      <Image src={avatar} alt="avatar" width={qrSize} height={qrSize} />
     </div>
   );
 };

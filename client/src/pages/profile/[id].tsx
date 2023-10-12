@@ -45,7 +45,8 @@ export const getServerSideProps = withIronSessionSsr(
         props: { data: res.data.response },
       };
     } catch (error: any) {
-      if (error.response)
+		console.log('error : ', error);
+		if (error.response)
         return {
           redirect: {
             destination: "/404",

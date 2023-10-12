@@ -14,7 +14,7 @@ export default function IntraCallback() {
       if (authRes.status === 201) {
         localStorage.setItem("token", authRes.data.token);
         const res = await localApi.post("/saveToken", { token: authRes.data.token });
-		const userName = parseJwt(authRes.data.token).userName;
+		const userName = parseJwt(authRes.data.token).user;
         router.push(`/profile/${userName}`);
       }
     } catch (err) {

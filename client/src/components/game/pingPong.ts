@@ -221,33 +221,6 @@ class PingPongTable {
 	this.mouseConstraint.mouse.position.y = 0;
     Matter.Render.run(this.render);
     Matter.Runner.run(this.runner, this.engine);
-	// document.addEventListener("mousemove", (event) => {
-	// 	const mouseX = event.clientX;
-	// 	console.log(mouseX);
-	// 	const tableWidth = this.width - this.map(10, 0, 600, 0, this.width);
-	// 	const player2HalfWidth = (this.p1.bounds.max.x - this.p1.bounds.min.x) / 2;
-	// 	const minPlayer2X = this.map(10, 0, 600, 0, this.width) + player2HalfWidth;
-	// 	const maxPlayer2X = tableWidth - player2HalfWidth;
-	// 	const clampedX = Math.min(Math.max(mouseX, minPlayer2X), maxPlayer2X);
-	// 	Matter.Body.setPosition(this.p1, { x: clampedX, y: this.p1.position.y });
-	// });
-	console.log(this.render.canvas.offsetLeft, this.dev.offsetLeft);
-    // Matter.Events.on(this.engine, "beforeUpdate", () => {
-    //   let offset = this.map(50, 0, this.width, 0, 600);
-    //   console.log(window.innerWidth);
-    //   if (
-	// 	this.mouse &&
-    //     this.mouse.position.x > offset &&
-    //     this.mouse.position.x < this.width - offset
-    //   ) {
-    //     this.socket?.emit("move", {
-    //       position: {
-    //         x: this.map(this.mouse.position.x, 0, this.width, 0, 600),
-    //         y: 0,
-    //       },
-    //     });
-    //   }
-    // });
   }
 
   move(event: MouseEvent): void{

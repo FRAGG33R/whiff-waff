@@ -13,13 +13,14 @@ const UserChannelDropDown = (props: {
   channelUsers: channelUsersType[];
   setChannelUsers: Function;
 }) => {
+
   const router = useRouter();
 
-  const handleChangeState = async (state: string) => {
+  const handleChangeState = async (state : string) => {
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
-      return;
+      return ;
     }
     const req = {
       userId: props.userId,

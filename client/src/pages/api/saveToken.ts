@@ -3,7 +3,6 @@ import { withIronSessionApiRoute } from "iron-session/next";
 
 export default withIronSessionApiRoute(
   async function handler(req: NextApiRequest, res: NextApiResponse) {
-    
 	try {
       if (req.method === "DELETE") {
         req.session.destroy();
@@ -12,13 +11,12 @@ export default withIronSessionApiRoute(
       } else if (req.method === "POST") {
         const { token } = req.body;
         // console.log('save this :',token);
-		
 		(req.session as any).token = {
           token,
         };
-		// console.log((req.session as any).token)
+		console.log((req.session as any).token)
         await req.session.save();
-		// console.log('saved successfuly !');
+		console.log('saved successfuly ! : ', req.session);
 		res.send({ ok: true });
 		return;
       }

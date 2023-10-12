@@ -16,7 +16,7 @@ export default function Profile(props: { data: userType }) {
   const [matchHistory, setMatchHistory] = useRecoilState(matchHistoryAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [loaded, setLoaded] = useState(false);
-  
+
   useEffect(() => {
     setMatchHistory((props.data as any).gamesData);
     setUser((props.data as any).user);
@@ -36,7 +36,7 @@ export const getServerSideProps = withIronSessionSsr(
     try {
       const token = await req.session.token.token;
       const { id } = params;
-	const res = await api.get(`/users/profile/${id}`, {
+      const res = await api.get(`/users/profile/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

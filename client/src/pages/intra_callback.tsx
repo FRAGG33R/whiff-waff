@@ -13,18 +13,21 @@ export default function IntraCallback() {
       const authRes = await api.get(`/auth/signin/42?code=${code}`);
       if (authRes.status === 201) {
         localStorage.setItem("token", authRes.data.token);
-        await localApi.post("/saveToken", { token: authRes.data.token });
-        router.push(`/profile/${parseJwt(authRes.data.token).userName}`);
+        const res = await localApi.post("/saveToken", { token: authRes.data.token });
+		const userName = parseJwt(authRes.data.token).userName;
+        router.push(`/profile/${userName}`);
       }
     } catch (err) {
       console.log(err);
       localStorage.removeItem("token");
-    //   router.push("/login");
     }
   };
 
   useEffect(() => {
-    if (!code) return;
+    if (!code) {
+	  router.push("/login");
+	  return ;
+	}
     intraAuth();
   }, [code]);
   

@@ -37,7 +37,7 @@ const UserChannelDropDown = (props: {
       if (state === "BANNED") {
         props.setChannelUsers((prev: channelUsersType[]) => {
           const updatedUsers = prev.filter(
-            (item: channelUsersType) => item.user.id !== props.userId
+            (item: channelUsersType) => item?.user?.id !== props.userId
           );
           return updatedUsers;
         });
@@ -45,7 +45,7 @@ const UserChannelDropDown = (props: {
 	  else if (state === "ADMIN") {
 		props.setChannelUsers((prev: channelUsersType[]) => {
 		  const updatedUsers = prev.map((item: channelUsersType) => {
-			if (item.user.id === props.userId) {
+			if (item?.user?.id === props.userId) {
 			  item.status = "ADMIN";
 			}
 			return item;
@@ -86,7 +86,7 @@ const UserChannelDropDown = (props: {
       });
       props.setChannelUsers((prev: channelUsersType[]) => {
         const updatedUsers = prev.filter(
-          (item: channelUsersType) => item.user.id !== props.userId
+          (item: channelUsersType) => item?.user?.id !== props?.userId
         );
         return updatedUsers;
       });

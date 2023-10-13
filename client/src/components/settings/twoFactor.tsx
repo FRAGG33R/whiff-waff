@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use, useEffect } from "react";
 import TowFactorIcon from "../../../public/twoFactorIcon.svg";
 import Image from "next/image";
 import UserInput from "../ui/inputs/settingsInputs";
@@ -15,27 +15,51 @@ import { userDataAtom } from "@/atom/atomStateuser";
 import { userType } from "@/types/userType";
 const TwoFactor = () => {
   const [code, setCode] = useState("");
+  const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState(false);
   const [error, setError] = useState(false);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [userData, setUserData] = useRecoilState(userAtom);
-  console.log("loggedUser", (userData as userType).id);
-  console.log("loggedUser", loggedUser);
-  console.log("userData", userData);
-
+  const [enable, setEnable] = useState(false);
   const jwtToken = localStorage.getItem("token");
 
   const handleCancle = () => {
     setCode("");
     setError(false);
+    setPin("");
+    setPinError(false);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleConfirm();
+      handlePin();
+    }
+  };
+  const handlePin = async () => {
+    if (!pin.match(/^[0-9]{6}$/)) {
+      setPinError(true);
+    }
+    console.log("pin", pin);
+    try {
+      const response = await api.post(
+        "auth/disable-2fa",
+        {
+          id: (userData as userType).id,
+          pin: pin,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+      setEnable(response.data.otpEnable);
+    } catch (error) {
+      console.error("Error sending POST request:", error);
     }
   };
   const handleConfirm = async () => {
-    let result = false;
 
     if (!code.match(/^[0-9]{6}$/)) {
       setError(true);
@@ -55,12 +79,15 @@ const TwoFactor = () => {
           },
         }
       );
-        console.log("response",response.data);
+        setEnable(response.data);
+
     } catch (error) {
       console.error("Error sending POST request:", error);
     }
   };
-  
+  useEffect(() => {
+    setEnable((userData as userType).otpEnable);
+  }, []);
   return (
     <div className="w-full h-full flex flex-col gap-4 md:gap-6  ">
       <div className="w-full h-[6%]  md:h-[10%] flex flex-row items-center space-x-2 md:space-x-4 px-3 md:px-10 md:py-2  ">
@@ -73,6 +100,7 @@ const TwoFactor = () => {
           TWO-FACTOR AUTHENTICATION
         </div>
       </div>
+      {enable === false ? (
       <div className="w-full h-[95%] md:h-[84%] flex flex-col gap-4 ">
         <div className="w-full h-[15%] flex flex-col ">
           <div className="w-full h-[40%] flex justify-center items-center font-poppins text-[0.9rem]  sm:text-xl md:text-2xl lg:text-3xl xl:text-2xl 2xl:text-2xl 3xl:text-4xl text-center font-bold">
@@ -123,7 +151,48 @@ const TwoFactor = () => {
             </div>
           </div>
         </div>
+      </div>)
+      :(
+        <div className=" w-full h-full flex flex-col items-center justify-center">
+          <div className="  w-[70%] h-[20%]  flex font-poppins text-[0.7rem] items-center justify-center   md:text-[0.8rem] sm:text-[0.7rem] lg:text-[1rem] xl:text-[1.3rem]  text-center">
+              Enter code for to disable your two-factor authentication app
+            </div>
+        <div className="w-[12rem] sm:w-[13rem]   md:w-[15rem] xl:w-[60%] h-[20%] md:h-[20%] flex flex-col items-center justify-center gap-2 md:gap-4">
+        <div className="w-[12rem] sm:w-[13rem]  md:w-[15rem] lg:w-[18rem] xl:w-[18rem]   h-[150px] flex flex-col items-center justify-center">
+          <div className="">
+            <UserInput
+              handleKeyDown={handleKeyDown}
+              placeholder="﹡﹡﹡﹡﹡﹡"
+              type="text"
+              label="code"
+              lableColor="bg-[#2c3569] sm:bg-[#2c3569] md:bg-[#2f3268] lg:bg-[#322f65] xl:bg-[#322f65] 2xl:bg-[#322f65] 3xl:bg-[#322f65]"
+              width="code"
+              regExp={/^\d{6}$/}
+              isError={pinError}
+              isDisabled={false}
+              value={pin}
+              setError={setPinError}
+              setValue={setPin}
+            />
+            {error === true && (
+              <p className="text-md  text-red-500   flex items-center justify-center  font-poppins ">
+                Invalide code
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="w-[12rem] sm:w-[13rem] md:w-[15rem] xl:w-[60%] h-[100px] flex flex-row items-center justify-center space-x-2 md:space-x-2 xl:space-x-5 sm:space-x-8 gap-4 md:gap-3">
+          <div className="w-auto sm:w-auto ">
+            <SecondaryButton text="cancel" onClick={handleCancle} />
+          </div>
+          <div className="w-auto sm:w-auto ">
+            <PrimaryButton text="confirm" onClick={handlePin} />
+          </div>
+        </div>
       </div>
+      </div>
+      )
+      }
     </div>
   );
 };

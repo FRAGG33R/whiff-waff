@@ -92,7 +92,7 @@ const GamePage: React.FC = () => {
               <div className="w-full lg:h-[130px] h-[130px] md:h-[130px] xl:hidden flex items-center justify-start  gap-4 ">
                 <LoggedInfo />
               </div>
-              <div className="w-full 2xl:w-full 2xl:h-[960px] lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl ">
+              <div className="w-full 2xl:w-full 2xl:h-[940px] lg:h-[900px] md:h-[900px] h-[900px] flex-row  justify-center items-center xl:h-[900px] bg-CarbonGrey bg-opacity-10  rounded-xl ">
                 {selectedMap && selectedMode && (
                   <GamePing map={selectedMap} mode={selectedMode} event={event} />
                 )}

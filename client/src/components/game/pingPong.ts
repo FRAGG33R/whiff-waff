@@ -104,7 +104,7 @@ class PingPongTable {
     this.ball = Matter.Bodies.circle(
       this.width / 2,
       this.height / 2,
-	  15 * this.scaleFactor,
+	    15 * this.scaleFactor,
       {
         isStatic: true,
         label: "ball",

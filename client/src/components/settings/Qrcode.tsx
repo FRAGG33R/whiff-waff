@@ -72,7 +72,7 @@ const QRCodeGenerator = () => {
         display: "inline-block"
       }}
     >
-      <Image src={avatar} alt="avatar" width={qrSize} height={qrSize} />
+      <img src={avatar} alt="avatar" width={qrSize} height={qrSize} />
     </div>
   );
 };

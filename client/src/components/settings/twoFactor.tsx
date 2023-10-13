@@ -32,10 +32,13 @@ const TwoFactor = () => {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleConfirm();
-      handlePin();
+		if (pin.length > 0)
+			handlePin();
+		else if (code.length > 0)
+      		handleConfirm();
     }
   };
+
   const handlePin = async () => {
     if (!pin.match(/^[0-9]{6}$/)) {
       setPinError(true);
@@ -54,6 +57,7 @@ const TwoFactor = () => {
           },
         }
       );
+	  console.log("response", response.data);
       setEnable(response.data.otpEnable);
     } catch (error) {
       console.error("Error sending POST request:", error);

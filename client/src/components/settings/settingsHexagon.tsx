@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 const HexaGon: React.FC<ImageUploadProps> = ({ avatar, onImageUpload }) => {
   const [selectedFile, setSelectedFile] = useState<any | null>(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
-
   const handleMouseEnter = () => {
     setShowImageUpload(true);
   };

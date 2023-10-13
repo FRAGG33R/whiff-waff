@@ -49,7 +49,7 @@ const TwoFactor = () => {
         "auth/disable-2fa",
         {
           id: (userData as userType).id,
-          pin: pin,
+          pin: :,
         },
         {
           headers: {

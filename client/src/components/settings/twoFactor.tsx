@@ -6,13 +6,12 @@ import { useState } from "react";
 import PrimaryButton from "../ui/buttons/primaryButton";
 import SecondaryButton from "../ui/buttons/secondaryButton";
 import Qrcode from "./Qrcode";
-import axios from "axios";
 import { KeyboardEvent } from "react";
 import { api } from "../axios/instance";
 import { useRecoilState } from "recoil";
 import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
-import { userDataAtom } from "@/atom/atomStateuser";
 import { userType } from "@/types/userType";
+
 const TwoFactor = () => {
   const [code, setCode] = useState("");
   const [pin, setPin] = useState("");
@@ -26,8 +25,6 @@ const TwoFactor = () => {
   const handleCancle = () => {
     setCode("");
     setError(false);
-    // setPin("");
-    // setPinError(false);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

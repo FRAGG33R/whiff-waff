@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import ValidationAlert from "@/components/ui/alerts/validationAlert";
 import { parseJwt } from "@/lib/parseJwt";
 import TfaModel from "./tfaModel";
+import { Console } from "console";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
 
@@ -25,7 +26,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
-
+  const [openTwoFa, setOpenTwoFa] = useState(false);
   const signinArray = [
     {
       label: "Enter your Email",
@@ -220,7 +221,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   }, [router.query]);
   return (
     <div className="min-h-1 min-w-1 z-10 px-6 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
-      <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
+      <TfaModel open={true} setOpen={setOpenTwoFa} />
+	  <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
         <Image src={Logo} alt="Logo" className="" />
         <div className="text-2xl md:text-3xl font-teko font-bold">
           {props.Mode === "signin" ? "Welcome Back !" : "Welcome !"}

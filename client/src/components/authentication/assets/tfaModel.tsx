@@ -5,14 +5,14 @@ import PrimaryButton from "../../ui/buttons/primaryButton";
 import SecondaryButton from "../../ui/buttons/secondaryButton";
 import UserInput from "../../ui/inputs/settingsInputs";
 
-const TfaModel = () => {
+const TfaModel = (props : {open : boolean, setOpen : Function}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [errorPassword, setErrorPassword] = useState(false);
-  const [open, setOpen] = useState(false);
 
-  const handleOpen = () => setOpen(!open);
+
+  const handleOpen = () => props.setOpen(!open);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -20,19 +20,9 @@ const TfaModel = () => {
   };
   const handleConfirm = () => {};
   return (
-    <div>
-      <div className="w-full flex flex-row gap-2 justify-center xl:justify-start">
-        <button
-          onClick={handleOpen}
-          className="flex items-center justify-start  gap-2"
-        >
-          <div className="2xl:w-[80%] 2xl:flex items-center justify-start font-teko font-meduim hidden 2xl:text-3xl 3xl:text-4xl text-[#6C7FA7] text-opacity-50">
-            Create new channel
-          </div>
-        </button>
         <Dialog
           className="bg-RhinoBlue h-[330px] rounded-[20px] flex items-center justify-center flex-col"
-          open={open}
+          open={props.open}
           handler={handleOpen}
           size="xs"
         >
@@ -75,8 +65,6 @@ const TfaModel = () => {
             <PrimaryButton text="Confirm" onClick={handleConfirm} />
           </div>
         </Dialog>
-      </div>
-    </div>
   );
 };
 

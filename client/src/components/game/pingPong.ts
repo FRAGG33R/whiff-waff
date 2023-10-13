@@ -90,21 +90,21 @@ class PingPongTable {
     this.p2 = Matter.Bodies.rectangle(
       this.width / 2,
       this.map(50, 0, 800, 0, this.height),
-      this.map(100, 0, 600, 0, this.width),
+      this.map(120, 0, 600, 0, this.width),
       this.map(10, 0, 800, 0, this.height),
       { isStatic: true, render: { fillStyle: this.theme.playerColor } }
     );
     this.p1 = Matter.Bodies.rectangle(
       this.width / 2,
       this.map(800 - 50, 0, 800, 0, this.height),
-      this.map(100, 0, 600, 0, this.width),
+      this.map(120, 0, 600, 0, this.width),
       this.map(10, 0, 800, 0, this.height),
       { isStatic: true, render: { fillStyle: this.theme.playerColor } }
     );
     this.ball = Matter.Bodies.circle(
       this.width / 2,
       this.height / 2,
-	    15 * this.scaleFactor,
+	  13 * this.scaleFactor,
       {
         isStatic: true,
         label: "ball",
@@ -182,6 +182,18 @@ class PingPongTable {
         width: this.map(100, 0, 600, 0, this.width),
         height: this.map(100, 0, 800, 0, this.height),
       },
+	  {
+		x: 0,
+		y: this.map(400, 0, 800, 0, this.height),
+		width: this.map(30, 0, 600, 0, this.width),
+		height: this.map(50, 0, 800, 0, this.height),
+	  },
+	  {
+		x: this.map(600, 0, 600, 0, this.width),
+		y: this.map(400, 0, 800, 0, this.height),
+		width: this.map(30, 0, 600, 0, this.width),
+		height: this.map(50, 0, 800, 0, this.height),
+	  },
     ];
     if (this.tableOptions != "Beginner") {
       this.obsts_data.forEach(

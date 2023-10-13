@@ -9,12 +9,12 @@ import { parseJwtSsr } from "@/lib/jwtTokenSsr";
 
 export default function Settings(props: { data: any }) {
   const [userData, setUserData] = useRecoilState(userAtom);
-  const [loggedUser , setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
 	  setUserData(props.data.response.user);
-    setLoggedUser(props.data.response.loggedUser);
+	  setLoggedUser(props.data.response.loggedUser)
 	 setLoaded(true);  
   })
   return (
@@ -30,13 +30,12 @@ export const getServerSideProps = withIronSessionSsr(
       const token = await req.session.token.token;
       const userData = parseJwtSsr(token);
 	  console.log('userData : ', userData);
-
       const res = await api.get(`/users/profile/${userData.user}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-	  console.log('res : ', res.data);
+	  console.log('res --> : ', res);
       return {
         props: { data: res.data},
       };

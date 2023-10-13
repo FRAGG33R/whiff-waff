@@ -1,9 +1,8 @@
 import "../app/globals.css";
 
 import FriendsPage from "@/components/friends/friendsPage";
-import axios from "axios";
 import { withIronSessionSsr } from "iron-session/next";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import { friendDataAtom } from "../atom/atomStateFriend";
 import { pandingDataAtom } from "../atom/atomStatePanding";

@@ -10,6 +10,7 @@ const HexaGon: React.FC<HexaGonProps & ImageUploadProps> = ({setErrorFile ,setSe
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
   const acceptedFileTypes = ["image/jpeg", "image/png" ,"image/jpg", ".jpg", ".jpeg", ".png"];
+  
   const handleMouseEnter = () => {
     setShowImageUpload(true);
   };

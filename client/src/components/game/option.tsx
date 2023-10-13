@@ -92,8 +92,8 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
     if (selectedMap && selectedMode) {
       onPlay(selectedMap, selectedMode, selectedEvent);
     } else {
-      toast.success("Select a map and a mode to play", {
-        duration: 5000,
+      toast.error("Select a map and a mode to play", {
+        duration: 3000,
         style: {
           borderRadius: "12px",
           padding: "12px",

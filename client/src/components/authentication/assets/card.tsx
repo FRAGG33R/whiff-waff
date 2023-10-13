@@ -175,7 +175,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
               setNeedsVerification(false);
               router.push("/login");
             }, 2000);
-          } else
+          } else 
 		  {
 			console.log('loged');
             router.push(`/profile/${parseJwt(token).user}`);

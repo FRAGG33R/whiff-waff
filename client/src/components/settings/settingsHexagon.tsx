@@ -1,31 +1,23 @@
-import { HexaGonProps } from "@/types/hexagonSetting";
-import React, { useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import React, { useState } from "react";
 import { IconUpload } from "@tabler/icons-react";
 import { ImageUploadProps } from "../../types/uploadType";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
-const HexaGon: React.FC<HexaGonProps & ImageUploadProps> = ({setErrorFile ,setSelected, avatar, onImageUpload }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+const HexaGon: React.FC<ImageUploadProps> = ({ avatar, onImageUpload }) => {
+  const [selectedFile, setSelectedFile] = useState<any | null>(null);
   const [showImageUpload, setShowImageUpload] = useState(false);
-  const acceptedFileTypes = ["image/jpeg", "image/png" ,"image/jpg", ".jpg", ".jpeg", ".png"];
+
   const handleMouseEnter = () => {
     setShowImageUpload(true);
   };
-  
+
   const handleMouseLeave = () => {
     setShowImageUpload(false);
   };
-  
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    const isImageFileType = /\.(jpg|jpeg|png)$/i.test(file.type);
-    if  (
-      file &&
-      ( file.type.startsWith("image/") ||file.name.endsWith(".jpg") || file.name.endsWith(".jpeg") || file.name.endsWith(".png")) &&
-      file.size <= 4 * 1024 * 1024
-    ) {
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.substr(0, 5) === "image") {
       setSelectedFile(file);
       toast.success("Your profile picture has been updated", {
         duration: 5000,
@@ -39,32 +31,9 @@ const HexaGon: React.FC<HexaGonProps & ImageUploadProps> = ({setErrorFile ,setSe
         },
       });
       onImageUpload(file);
-      setUploadError(null);
-      setSelected(true);
-    } else {
-      const errorMessage =
-        "Invalid file format or size. Please select an image file (max size: 4MB).";
-      setUploadError(errorMessage);
-      setErrorFile(true);
-      toast.success("Invalid file format or size. Please select an image file (max size: 4MB).", {
-        duration: 5000,
-        style: {
-          borderRadius: "12px",
-          padding: "12px",
-          background: "#6C7FA7",
-          color: "#fff",
-          fontFamily: "Poppins",
-          fontSize: "18px",
-        },
-      });
     }
-  }, [onImageUpload]);
+  };
 
-  
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
-    // accept: ["image/*", ".jpg", ".jpeg", ".png"] as any,
-  });
   const renderImage = () => {
     if (selectedFile) {
       return (
@@ -94,18 +63,23 @@ const HexaGon: React.FC<HexaGonProps & ImageUploadProps> = ({setErrorFile ,setSe
       <div className="mask mask-hexagon-2 w-[90%] h-[90%] bg-white text-black flex items-center justify-center">
         {renderImage()}
       </div>
-      {showImageUpload && (
-        <div className="mask mask-hexagon overlay absolute inset-0 flex items-center justify-center -rotate-90 bg-black opacity-80">
-          <div {...getRootProps()} className={isDragActive ? "bg-gray-100" : ""}>
-          <input {...getInputProps()} accept={acceptedFileTypes.join(',')} />
-            {selectedFile ? <p>{selectedFile.name}</p> : <IconUpload />}
-            <Toaster position="top-right" />
-          </div>
+        <div className="mask mask-hexagon overlay absolute inset-0 flex items-center justify-center -rotate-90 hover:bg-black opacity-80">
+          <label htmlFor="image-upload" className="cursor-pointer">
+            <input
+              type="file"
+              id="image-upload"
+              accept="image/jpeg, image/png, image/jpg"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            {
+              showImageUpload && 
+            <IconUpload />
+            }
+          </label>
         </div>
-      )}
     </div>
   );
 };
-
 
 export default HexaGon;

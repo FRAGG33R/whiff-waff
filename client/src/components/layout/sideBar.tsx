@@ -27,9 +27,9 @@ export default function SideBar() {
       </div> 
       <div className="h-[90%] w-full flex flex-col items-center">
         <div className="lg:w-full w-1/2 h-full flex flex-col items-center space-y-12 md:space-y-14">
-          {navigation.map((item, index) => {	
+          {navigation.map((item, index) => {
             let route = `/${item.name}`;
-            if (item.name === "chat" || item.name === "game" || item.name === "profile") {
+			if (item.name === "chat" || item.name === "game" || item.name === "profile") {
               route += `/${(loggedUser as loggedUserType).userName}`;
             }
             return (

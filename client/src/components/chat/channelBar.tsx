@@ -137,8 +137,7 @@ export default function ChannelBar(props: channelBarType) {
       <div className="h-full w-full flex flex-row items-center justify-between">
         <div className="h-full min-w-1 flex flex-row items-center justify-center  xl:gap-6">
           <div
-            className="w-12 md:w-16 h-[90%] rounded-[12px] tooltip tooltip-left"
-            data-tip="fragger"
+            className="w-12 md:w-16 h-[90%] rounded-[12px]"
           >
             <RenderAvatars avatars={props.avatars} />
           </div>
@@ -148,7 +147,8 @@ export default function ChannelBar(props: channelBarType) {
             </div>
           </div>
         </div>
-        <div className="h-full min-w-1 flex flex-row gap-2 md:gap-4 items-center justify-center">
+        <div className="h-full min-w-1 flex flex-row gap-2 md:gap-4 ite
+		ms-center justify-center">
           {displaySettings === true && (
             <>
               <ChannelSettings

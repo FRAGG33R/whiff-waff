@@ -30,14 +30,13 @@ const SearchInput: React.FC<searchInputProps> = () => {
   };
   const handleNavigation = async (userName : string) => {
 	await router.push(`/profile/${userName}`)
-	if (router.pathname === `/profile/[id]`) router.reload();
+	// if (router.pathname === `/profile/[id]`) router.reload();
   }
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) setToken(token);
     else router.push("/login");
-
   }, []);
 
   return (

@@ -7,14 +7,16 @@ import "../app/globals.css";
 export default function IntraCallback() {
   const router = useRouter();
   const { code } = router.query;
-
+  
   const intraAuth = async () => {
     try {
       const authRes = await api.get(`/auth/signin/42?code=${code}`);
+	//   console.log("authRes : ", authRes.data.token.token);
+	  const token = authRes.data.token.token;
       if (authRes.status === 201) {
-        localStorage.setItem("token", authRes.data.token);
-        const res = await localApi.post("/saveToken", { token: authRes.data.token });
-		const userName = parseJwt(authRes.data.token).user;
+        localStorage.setItem("token", token);
+        const res = await localApi.post("/saveToken", { token });
+		const userName = parseJwt(token).user;
         router.push(`/profile/${userName}`);
       }
     } catch (err) {

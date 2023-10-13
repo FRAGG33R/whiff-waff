@@ -160,18 +160,22 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
               password,
             });
         try {
+          console.log('req : ', req);
+          
           setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
+          console.log(res.data);
           const { token, statusCode } = res.data;
+          console.log(token, statusCode);
           localStorage.setItem("token", token);
           const r = await localApi.post("/saveToken", { token }); //storing the token after the user validate the email only
-		  if (statusCode === 201) {
+		  if (props.Mode === "signup") {
             setNeedsVerification((prev) => !prev);
             setTimeout(() => {
               setNeedsVerification(false);
               router.push("/login");
             }, 2000);
-          } else if (statusCode == 200)
+          } else
 		  {
 			console.log('loged');
             router.push(`/profile/${parseJwt(token).user}`);

@@ -117,7 +117,6 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
       setIsFindingPlayer(false);
       setId(data.username);
       setUserId(data.username);
-      console.log("player", data.username,);
     });
     socket.on("start", () => {
       setOpen(false);

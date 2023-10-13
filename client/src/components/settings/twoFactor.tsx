@@ -59,9 +59,6 @@ const TwoFactor = () => {
     } catch (error) {
       console.error("Error sending POST request:", error);
     }
-	// setPin("");
-	// setCode("");
-
   };
 
   const handleConfirm = async () => {
@@ -88,7 +85,6 @@ const TwoFactor = () => {
     } catch (error) {
       console.error("Error sending POST request:", error);
     }
-	// setPin("");
 	setCode("");
   };
 
@@ -165,37 +161,7 @@ const TwoFactor = () => {
               Click to disable your two-factor authentication app
             </div>
         <div className="w-full h-[20%] md:h-[20%] flex flex-col items-center justify-center gap-2 md:gap-4">
-        {/* <div className="w-[12rem] sm:w-[13rem]  md:w-[15rem] lg:w-[18rem] xl:w-[18rem]   h-[150px] flex flex-col items-center justify-center"> */}
-          {/* <div className="">
-            <UserInput
-              handleKeyDown={handleKeyDown}
-              placeholder="﹡﹡﹡﹡﹡﹡"
-              type="text"
-              label="code"
-              lableColor="bg-[#2c3569] sm:bg-[#2c3569] md:bg-[#2f3268] lg:bg-[#322f65] xl:bg-[#322f65] 2xl:bg-[#322f65] 3xl:bg-[#322f65]"
-              width="code"
-              regExp={/^\d{6}$/}
-              isError={pinError}
-              isDisabled={false}
-              value={pin}
-              setError={setPinError}
-              setValue={setPin}
-            />
-            {error === true && (
-              <p className="text-md  text-red-500   flex items-center justify-center  font-poppins ">
-                Invalide code
-              </p>
-            )}
-          </div> */}
-        {/* </div> */}
-        {/* <div className="w-full h-[100px] flex     flex-row items-center justify-center space-x-2 md:space-x-2 xl:space-x-5 sm:space-x-8 gap-4 md:gap-3"> */}
-          {/* <div className="w-auto sm:w-auto ">
-            <SecondaryButton text="cancel" onClick={handleCancle} />
-          </div> */}
-          {/* <div className="w-auto sm:w-auto "> */}
             <PrimaryButton text="Disable" onClick={handlePin} />
-          {/* </div> */}
-        {/* </div> */}
       </div>
      </div>
       )

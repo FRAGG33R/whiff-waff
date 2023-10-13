@@ -7,11 +7,10 @@ import "../app/globals.css";
 export default function IntraCallback() {
   const router = useRouter();
   const { code } = router.query;
-  
+
   const intraAuth = async () => {
     try {
       const authRes = await api.get(`/auth/signin/42?code=${code}`);
-	//   console.log("authRes : ", authRes.data.token.token);
 	  const token = authRes.data.token.token;
       if (authRes.status === 201) {
         localStorage.setItem("token", token);
@@ -34,8 +33,8 @@ export default function IntraCallback() {
   }, [code]);
   
   return (
-    <div className="w-screen h-screen flex items-center justify-center text-black font-extrabold font-teko text-7xl">
-      Waiting
+    <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
+		<span className="loading loading-dots w-10 h-10 md:w-16 md:h-16 text-GreenishYellow"></span>
     </div>
   );
 }

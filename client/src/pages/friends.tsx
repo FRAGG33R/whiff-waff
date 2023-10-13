@@ -8,14 +8,15 @@ import { friendDataAtom } from "../atom/atomStateFriend";
 import { pandingDataAtom } from "../atom/atomStatePanding";
 import { User, UserFriend } from "./../types/userFriendType";
 import { parseJwtSsr } from "@/lib/jwtTokenSsr";
-import { loggedUserFriendsAtom } from "@/context/RecoilAtoms";
+import { loggedUserAtom, loggedUserFriendsAtom } from "@/context/RecoilAtoms";
 import { userType } from "@/types/userType";
 import { api } from "@/components/axios/instance";
+import { SocketProvider } from "@/context/socket";
 
 export default function Friends(props: { data: userType; props: UserFriend }) {
   const [userDataFriend, setUserDataFriend] = useRecoilState(friendDataAtom);
   const [userDataPanding, setUserDataPanding] = useRecoilState(pandingDataAtom);
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserFriendsAtom);
+  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -26,9 +27,12 @@ export default function Friends(props: { data: userType; props: UserFriend }) {
   },);
 
   return (
+    <SocketProvider >
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       {loaded && <FriendsPage />}
     </div>
+
+    </SocketProvider>
   );
 }
 
@@ -46,9 +50,11 @@ export const getServerSideProps = withIronSessionSsr(
           },
         }
       );
-      
+      console.log(res.data.response);
       const accepted = res.data.response.friends.acceptedFriends;
+      console.log("ace",accepted);
       const pending = res.data.response.friends.pendingFriends;
+      console.log("pen",pending);
       const filteredAccepted = accepted
         .filter((friends: any) => friends.receiver.id === userId)
         .map((friends: any) => friends.sender);

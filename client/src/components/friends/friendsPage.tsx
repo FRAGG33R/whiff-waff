@@ -2,12 +2,12 @@ import React from "react";
 import TabSwitch from "./toggleFriend";
 import NavBar from "../layout/navBar";
 import SideBar from "../layout/sideBar";
-import { loggedUserFriendsAtom } from "@/context/RecoilAtoms";
+import { loggedUserAtom, loggedUserFriendsAtom } from "@/context/RecoilAtoms";
 import { useRecoilState } from "recoil";
 import { loggedUserType } from "@/types/userType";
 
 const FriendsPage = () => {
-  const [loggedUserFriends, setloggedUserFriends] = useRecoilState(loggedUserFriendsAtom);
+  const [loggedUserFriends, setloggedUserFriends] = useRecoilState(loggedUserAtom);
 
   return (
     <div className="w-[98%] h-[96%] md:h-[95%] flex items-center justify-start gap-2 md:gap-10 flex-row overflow-y-hidden">

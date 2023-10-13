@@ -7,9 +7,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   return (
       <RecoilRoot>
-    <SocketProvider>
-        <Component {...pageProps} />
-    </SocketProvider>
+          <Component {...pageProps} />
       </RecoilRoot>
   );
 };

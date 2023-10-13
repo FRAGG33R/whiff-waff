@@ -17,6 +17,7 @@ import {
 } from "../../types/userFriendType";
 import axios from "axios";
 import { api } from "../axios/instance";
+import { userType } from "@/types/userType";
 interface RankItem {
   rank: string;
   image: string;
@@ -76,6 +77,7 @@ export default function FriendGame({
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+  console.log("friends", friends);
   return (
     <div
       className={`w-[95%] h-16 md:h-20 flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%]
@@ -128,7 +130,7 @@ export default function FriendGame({
             ))}
           </div>
           <div className="sm:w-1/3 w-12 lg:w-1/5  flex   flex-row space-x-2 space-y-1">
-            {/* {friends.status === "Online" ? ( */}
+            {(friends as userType).status === "ONLINE" ? (
             <Image
               src={Online}
               alt="online"
@@ -136,15 +138,15 @@ export default function FriendGame({
               height={20}
               className="lg:block hidden "
             />
-            {/* ) : friends.status === "Offline" ? ( */}
-            {/* <Image src={Offline} alt="offline" width={20} height={20} className="lg:block hidden " /> */}
-            {/* ) : ( */}
-            {/* <Image src={InGame} alt="InGame" width={20} height={20} className="lg:block hidden " /> */}
-            {/* )} */}
+            ) : (friends as userType).status === "OFFLINE" ? (
+             <Image src={Offline} alt="offline" width={20} height={20} className="lg:block hidden " /> 
+             ) : ( 
+             <Image src={InGame} alt="InGame" width={20} height={20} className="lg:block hidden " /> 
+             )} 
             <span
               className={`font-medium font-teko text-[1.2rem] xl:text-[1rem] 2xl:text-[1.5rem]  text-center tracking-wide text-[#00FF00]"  `}
             >
-              Online
+              {(friends as userType).status}
             </span>
           </div>
         </div>

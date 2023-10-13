@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useLayoutEffect, useState } from "react";
 import io from "socket.io-client";
 import toast, { Toaster } from "react-hot-toast";
 import { Socket } from "socket.io-client";
@@ -22,13 +22,15 @@ export const SocketProvider = ({ children }: any) => {
   const handltoast = () => {
     router.push("/game/" + userName);
   };
-  useEffect(() => {
 
+  useEffect(() => {
+    console.log("path", router.pathname);
     const newSocket = io("http://e3r10p16.1337.ma:8887/", {
       extraHeaders: {
         authorization: "Bearer " + localStorage.getItem("token"),
       },
     });
+    console.log("newSocket", newSocket);
     newSocket.on(
       "notification",
       function (data: {
@@ -39,21 +41,21 @@ export const SocketProvider = ({ children }: any) => {
         inviter: string;
       }) {
         toast.success(
-            <button
-              className="cursror-pointer"
-              onClick={() => {
-                setData({
-                  map: data.map,
-                  mode: data.mode,
-                  type: "friend",
-                  inviter: data.inviter,
-                  username: data.username,
-                });
-                router.push("/game/" + data.inviter);
-              }}
-            >
-              {data.inviter} challanges you to a GAME
-            </button>,
+          <button
+            className="cursror-pointer"
+            onClick={() => {
+              setData({
+                map: data.map,
+                mode: data.mode,
+                type: "friend",
+                inviter: data.inviter,
+                username: data.username,
+              });
+              router.push("/game/" + data.inviter);
+            }}
+          >
+            {data.inviter} challanges you to a GAME
+          </button>,
           {
             duration: 10000,
             style: {
@@ -68,10 +70,8 @@ export const SocketProvider = ({ children }: any) => {
         );
       }
     );
-    setSocket(newSocket);
-    return () => {
-      newSocket.close();
-    };
+    setSocket((prev: any) => newSocket);
+    console.log(" ********** socket connected ********");
   }, []);
 
   return (

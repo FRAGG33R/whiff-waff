@@ -36,19 +36,9 @@ export default function Profile(props: { data: userType }) {
     } catch (error: any) {
       console.log("error : ", error);
       if (error.response)
-        return {
-          redirect: {
-            destination: "/404",
-            permanent: false,
-          },
-        };
+		router.push("/404");
       else
-        return {
-          redirect: {
-            destination: "/login",
-            permanent: false,
-          },
-        };
+		router.push("/login");
     }
   };
 

@@ -26,8 +26,8 @@ const TwoFactor = () => {
   const handleCancle = () => {
     setCode("");
     setError(false);
-    setPin("");
-    setPinError(false);
+    // setPin("");
+    // setPinError(false);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -49,7 +49,7 @@ const TwoFactor = () => {
         "auth/disable-2fa",
         {
           id: (userData as userType).id,
-          pin: pin,
+          pin: "2",
         },
         {
           headers: {
@@ -62,8 +62,9 @@ const TwoFactor = () => {
     } catch (error) {
       console.error("Error sending POST request:", error);
     }
-	setPin("");
-	setCode("");
+	// setPin("");
+	// setCode("");
+
   };
 
   const handleConfirm = async () => {
@@ -90,7 +91,7 @@ const TwoFactor = () => {
     } catch (error) {
       console.error("Error sending POST request:", error);
     }
-	setPin("");
+	// setPin("");
 	setCode("");
   };
 
@@ -164,11 +165,11 @@ const TwoFactor = () => {
       :(
         <div className=" w-full h-full flex flex-col items-center justify-center">
           <div className="  w-[70%] h-[20%]  flex font-poppins text-[0.7rem] items-center justify-center   md:text-[0.8rem] sm:text-[0.7rem] lg:text-[1rem] xl:text-[1.3rem]  text-center">
-              Enter code for to disable your two-factor authentication app
+              Click to disable your two-factor authentication app
             </div>
-        <div className="w-[12rem] sm:w-[13rem]   md:w-[15rem] xl:w-[60%] h-[20%] md:h-[20%] flex flex-col items-center justify-center gap-2 md:gap-4">
-        <div className="w-[12rem] sm:w-[13rem]  md:w-[15rem] lg:w-[18rem] xl:w-[18rem]   h-[150px] flex flex-col items-center justify-center">
-          <div className="">
+        <div className="w-full h-[20%] md:h-[20%] flex flex-col items-center justify-center gap-2 md:gap-4">
+        {/* <div className="w-[12rem] sm:w-[13rem]  md:w-[15rem] lg:w-[18rem] xl:w-[18rem]   h-[150px] flex flex-col items-center justify-center"> */}
+          {/* <div className="">
             <UserInput
               handleKeyDown={handleKeyDown}
               placeholder="﹡﹡﹡﹡﹡﹡"
@@ -188,18 +189,18 @@ const TwoFactor = () => {
                 Invalide code
               </p>
             )}
-          </div>
-        </div>
-        <div className="w-[12rem] sm:w-[13rem] md:w-[15rem] xl:w-[60%] h-[100px] flex flex-row items-center justify-center space-x-2 md:space-x-2 xl:space-x-5 sm:space-x-8 gap-4 md:gap-3">
-          <div className="w-auto sm:w-auto ">
+          </div> */}
+        {/* </div> */}
+        {/* <div className="w-full h-[100px] flex     flex-row items-center justify-center space-x-2 md:space-x-2 xl:space-x-5 sm:space-x-8 gap-4 md:gap-3"> */}
+          {/* <div className="w-auto sm:w-auto ">
             <SecondaryButton text="cancel" onClick={handleCancle} />
-          </div>
-          <div className="w-auto sm:w-auto ">
-            <PrimaryButton text="confirm" onClick={handlePin} />
-          </div>
-        </div>
+          </div> */}
+          {/* <div className="w-auto sm:w-auto "> */}
+            <PrimaryButton text="Disable" onClick={handlePin} />
+          {/* </div> */}
+        {/* </div> */}
       </div>
-      </div>
+     </div>
       )
       }
     </div>

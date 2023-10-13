@@ -109,8 +109,8 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
         setUserScore({ score1: data.score1, score2: data.score2 });
       }
     );
-    socket.on("left", () => {
-      setmessage("Your opponent left the game , you won");
+    socket.on("left", (data: {msg: string}) => {
+      setmessage(data.msg);
       setShowModal(true);
     });
     socket.on("joined", (data: { username: string }) => {

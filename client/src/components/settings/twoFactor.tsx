@@ -58,9 +58,12 @@ const TwoFactor = () => {
     } catch (error) {
       console.error("Error sending POST request:", error);
     }
-  };
-  const handleConfirm = async () => {
+	setPin("");
+	setCode("");
 
+  };
+
+  const handleConfirm = async () => {
     if (!code.match(/^[0-9]{6}$/)) {
       setError(true);
     }
@@ -84,7 +87,10 @@ const TwoFactor = () => {
     } catch (error) {
       console.error("Error sending POST request:", error);
     }
+	setPin("");
+	setCode("");
   };
+
   useEffect(() => {
     setEnable((userData as userType).otpEnable);
   }, []);

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { userDataAtom } from "../../atom/atomStateuser";
 import { userType } from "./../../types/userType";
-import { loggedUserFriendsAtom } from "@/context/RecoilAtoms";
+import { loggedUserAtom, loggedUserFriendsAtom } from "@/context/RecoilAtoms";
 
 import { friendDataAtom } from "../../atom/atomStateFriend";
 import {
@@ -17,7 +17,7 @@ import {
 import axios from "axios";
 import { IconFriendsOff } from "@tabler/icons-react";
 import { api } from "../axios/instance";
-const friendsComponent = () => {
+const friendsComponent = (props : {activeTab : number}) => {
   const [active, setActive] = useState(1);
   const [friendData, setFriendData] = useRecoilState(friendDataAtom);
   const [friendState, setFriendState] = useState<User[]>(friendData as User[]);
@@ -25,12 +25,9 @@ const friendsComponent = () => {
   const [userState, setUserState] = useState<userType>(user as userType);
 
   const [loggedUserFriends, setloggedUserFriends] = useRecoilState(
-    loggedUserFriendsAtom
+    loggedUserAtom
   );
 
-  useEffect(() => {
-    setFriendState(friendData as User[]);
-  }, [friendData]);
   const fetchFriendData = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -51,15 +48,20 @@ const friendsComponent = () => {
         .filter((friend: any) => friend.receiver.userName === userId || friend.sender.userName === userId)
         .map((friends: any) => friends.receiver.userName === userId ? friends.sender : friends.receiver);
         setFriendData(filteredAccepted);
-
-      setFriendState(filteredAccepted);
-    } catch (error) {
+        console.log("ace",filteredAccepted);
+        setFriendState((prev) => {
+          return [...filteredAccepted];
+        });
+      } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
+
     fetchFriendData();
-  }, [active]);
+  }, [active, props.activeTab]);
+
   return (
     <div className="w-full h-[90%] flex items-center rounded-[12px] md:rounded-[20px]  ">
       <div className="w-full h-full  flex flex-col rounded-[12px] md:rounded-[20px] items-center justify-center space-y-10 ">

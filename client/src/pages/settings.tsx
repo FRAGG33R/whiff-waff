@@ -6,6 +6,7 @@ import { api } from "@/components/axios/instance";
 import { loggedUserAtom, userAtom } from "@/context/RecoilAtoms";
 import { useEffect, useState } from "react";
 import { parseJwtSsr } from "@/lib/jwtTokenSsr";
+import { SocketProvider } from "@/context/socket";
 
 export default function Settings(props: { data: any }) {
   const [userData, setUserData] = useRecoilState(userAtom);
@@ -18,9 +19,12 @@ export default function Settings(props: { data: any }) {
 	 setLoaded(true);  
   })
   return (
+    <SocketProvider >
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       {loaded && <SettingPage />}
     </div>
+
+    </SocketProvider>
   );
 }
 

@@ -11,7 +11,7 @@ import { userType } from "./../../types/userType";
 import axios from "axios";
 import { IconFriendsOff } from "@tabler/icons-react";
 import { api } from "../axios/instance";
-const friendRequeste = () => {
+const friendRequeste = (props : {activeTab : number}) => {
   const [active, setActive] = useState(1);
   const [pendingFriends, setPendingFriends] = useRecoilState(pandingDataAtom);
   const [pendingFriendState, setPendingFriendState] = useState<User[]>(pendingFriends as User[]); 
@@ -50,7 +50,7 @@ const friendRequeste = () => {
   useEffect(() => {
     fetchPandingData();
   
-  }, [active]);
+  }, [active, props.activeTab]);
 
 
 

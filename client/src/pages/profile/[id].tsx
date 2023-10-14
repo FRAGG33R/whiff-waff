@@ -10,6 +10,7 @@ import { userType } from "@/types/userType";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import "../../app/globals.css";
+import { SocketProvider } from "@/context/socket";
 
 export default function Profile(props: { data: userType }) {
   const [user, setUser] = useRecoilState(userAtom);
@@ -51,8 +52,10 @@ export default function Profile(props: { data: userType }) {
   }, [router.query.id]);
 
   return (
+    <SocketProvider >
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       {loaded && <ProfileComponent />}
     </div>
+    </SocketProvider>
   );
 }

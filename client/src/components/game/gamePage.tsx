@@ -40,7 +40,7 @@ const GamePage: React.FC = () => {
   }, []);
   return (
     <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row pt-2 overflow-hidden">
-            {showModal && (
+            {/* {showModal && (
         <Dialog
           className="bg-RhinoBlue bg-opacity-80 h-[400px] w-[200px] rounded-[20px]"
           open={showModal}
@@ -69,7 +69,7 @@ const GamePage: React.FC = () => {
             </Button>
           </DialogFooter>
         </Dialog>
-      )}
+      )} */}
       <div
         className="h-full min-w-[40px] w-[30px] md:w-[100px] pt-2"
       >

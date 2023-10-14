@@ -3,7 +3,7 @@ import { withIronSessionSsr } from "iron-session/next";
 import '@/app/globals.css'
 import { api } from "@/components/axios/instance";
 import { useRecoilState } from "recoil";
-
+import { SocketProvider } from "@/context/socket";
 import {
 	loggedUserAtom,
 	userAtom,
@@ -19,9 +19,11 @@ const Game = (props : {data : any}) => {
 		setLoggedUser((props.data as any).response.loggedUser);
 	}, [])
   return (
+	<SocketProvider >
     <div className="flex md:min-h-screen h-screen items-center justify-center text-white bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       <GamePage />
     </div>
+	</SocketProvider>
   )
 }
 

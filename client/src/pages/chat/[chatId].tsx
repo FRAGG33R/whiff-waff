@@ -5,6 +5,7 @@ import { useRecoilState } from "recoil";
 import { chatAtom, loggedUserAtom } from "@/context/RecoilAtoms";
 import { useEffect, useState } from "react";
 import "@/app/globals.css";
+import { SocketProvider } from "@/context/socket";
 
 export default function Chat(props: { data : any }) {
   const [chat, setChat] = useRecoilState(chatAtom);
@@ -18,9 +19,12 @@ export default function Chat(props: { data : any }) {
   });
 
   return (
+    <SocketProvider >
     <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
       {loaded && <ChatComponent />}
     </div>
+
+    </SocketProvider>
   );
 }
 

@@ -19,8 +19,8 @@ export default function IntraCallback() {
         router.push(`/profile/${userName}`);
       }
     } catch (err) {
-      console.log(err);
       localStorage.removeItem("token");
+	  router.push("/login");
     }
   };
 

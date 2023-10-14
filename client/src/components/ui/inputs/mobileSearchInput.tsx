@@ -24,7 +24,6 @@ const MobileSearchInput: React.FC<searchInputProps> = ({ onSearch }) => {
       setSearchResult(res.data.response);
       setLoaded(true);
     } catch (error) {
-      console.log(error);
       setLoaded(true);
     }
   };

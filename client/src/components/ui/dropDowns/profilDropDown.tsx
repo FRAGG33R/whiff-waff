@@ -26,12 +26,11 @@ const ProfileDropDown = () => {
     localStorage.removeItem("token");
     try {
       (s as any).disconnect();
-      console.log("disconnected");
       
       const res = await localApi.delete("/saveToken");
       router.push("/login");
     } catch (err) {
-      console.log("Couldn't distroy user session");
+		router.push("/login");
     }
   };
 

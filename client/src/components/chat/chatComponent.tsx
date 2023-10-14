@@ -27,7 +27,6 @@ import ChannelConversation from "./channelConversation";
 
 export default function ChatComponent() {
   const [chat] = useRecoilState(chatAtom);
-
   const [channel, setChannel] = useRecoilState(channelAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
   const [socket, setSocket] = useState<any>();
@@ -41,7 +40,6 @@ export default function ChatComponent() {
   const [selectedChannel, setSelectedChannel] = useState<channelType | null>(
     null
   );
-
   const [messageContent, setMessageContent] = useState<string>("");
   const [activeTab, setActiveTab] = useState("Chat");
   const router = useRouter();
@@ -51,7 +49,6 @@ export default function ChatComponent() {
   };
 
   const findSelectedConversation = async (token: string) => {
-    console.log("all conversations", chat);
     if (activeTab === "Chat") {
       if (router.query.chatId === (loggedUser as loggedUserType).userName) {
         setSelectedConversation(
@@ -106,27 +103,29 @@ export default function ChatComponent() {
     } else {
       const channelName = router.query.chatId;
       try {
-        console.log("try");
         const res = await api.get(`chat/room/Conversations`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log("res ---**--> : ", res.data.loggedUser);
+		console.log("res : ", res.data);
         setLoggedUser((prev: loggedUserType) => {
           return {
             ...prev,
             id: res.data.loggedUser.id,
           };
         });
+
         setChannel(res.data.Conversationdata.roomsConversations);
         setSelectedChannel((prev: channelType | null) => {
           const channel = res.data.Conversationdata.roomsConversations.find(
             (item: channelType) => item.roomChat.id === channelName
           );
           if (channel) {
+			console.log("channel **  : ", channel)
             return channel;
           }
+		  console.log("room **  : ", res.data.Conversationdata.roomsConversations[0])
           return res.data.Conversationdata.roomsConversations[0];
         });
       } catch (error: any) {
@@ -264,6 +263,7 @@ export default function ChatComponent() {
     } catch (error) {}
   };
 
+  //here
   const handleSelectedConversation = async (conversation: conversationType) => {
     console.log("conversation : ", conversation.receiver.userName);
     try {
@@ -272,7 +272,7 @@ export default function ChatComponent() {
         {
           headers: {
             Authorization: `Bearer ${
-              token.length > 0 ? token : localStorage.getItem("token")
+				localStorage.getItem("token")
             }`,
           },
         }
@@ -428,7 +428,7 @@ export default function ChatComponent() {
   }, [activeTab]);
 
   return (
-    <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden pt-2">
+    <div className="w-[98%] h-[98%] md:h-[97%] flex items-center justify-start gap-2 md:gap-10 flex-row text-white overflow-y-hidden overflow-x-hidden pt-2">
       <Toaster position="top-right" />
       <div className="h-full min-w-[60px] w-[60px] md:w-[100px] pt-2">
         <SideBar />

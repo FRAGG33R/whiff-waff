@@ -29,18 +29,15 @@ export const getServerSideProps = withIronSessionSsr(
     try {
       const token = await req.session.token.token;
       const userData = parseJwtSsr(token);
-	  console.log('userData : ', userData);
       const res = await api.get(`/users/profile/${userData.user}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-	  console.log('res --> : ', res);
       return {
         props: { data: res.data},
       };
     } catch (error: any) {
-		console.log('error : ', error);
       if (error.response)
         return {
           redirect: {

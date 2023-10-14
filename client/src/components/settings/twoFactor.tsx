@@ -40,7 +40,6 @@ const TwoFactor = () => {
     if (!pin.match(/^[0-9]{6}$/)) {
       setPinError(true);
     }
-    console.log("pin", pin);
     try {
       const response = await api.post(
         "auth/disable-2fa",
@@ -54,7 +53,6 @@ const TwoFactor = () => {
           },
         }
       );
-	  console.log("response", response.data);
       setEnable(response.data.otpEnable);
     } catch (error) {
       console.error("Error sending POST request:", error);
@@ -65,7 +63,6 @@ const TwoFactor = () => {
     if (!code.match(/^[0-9]{6}$/)) {
       setError(true);
     }
-    console.log("code", code);
     try {
       
       const response = await api.post(

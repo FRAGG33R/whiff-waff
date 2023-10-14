@@ -24,7 +24,6 @@ const SearchInput: React.FC<searchInputProps> = () => {
       setSearchResult(res.data.response);
       setLoaded(true);
     } catch (error) {
-      console.log(error);
       setLoaded(true);
     }
   };

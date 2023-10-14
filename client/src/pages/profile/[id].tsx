@@ -22,19 +22,17 @@ export default function Profile(props: { data: userType }) {
     if (router.query.id === undefined) return;
     try {
 		setLoaded(false);
-      console.log("router.query.id : ", router.query);
-      const res = await api.get(`/users/profile/${router.query.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("res : ", res.data.response);
+		const res = await api.get(`/users/profile/${router.query.id}`, {
+			headers: {
+			Authorization: `Bearer ${token}`,
+			},
+		});
+		
       setMatchHistory((prev) => res.data.response.gamesData);
       setUser((prev) => res.data.response.user);
       setLoggedUser((prev) => res.data.response.loggedUser);
       setLoaded(true);
     } catch (error: any) {
-      console.log("error : ", error);
       if (error.response)
 		router.push("/404");
       else
@@ -43,7 +41,6 @@ export default function Profile(props: { data: userType }) {
   };
 
   useEffect(() => {
-    console.log("router.query.id : ", router.query.id);
 	const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");

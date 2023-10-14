@@ -30,12 +30,8 @@ export default function ProfileInformations() {
 		{ title: "Total Loses", value: userState.stat.loses, avatar: totalLoses },
 	];
 	const router = useRouter();
-
-//   console.log("userState => ", user);
   const handleConnect = async () => {
     const token = localStorage.getItem("token");
-    console.log("token => ", token);
-    console.log("id => ", (user as userType).id);
     if (!token) router.push("/login");
     try {
       const res = await api.post(
@@ -47,10 +43,8 @@ export default function ProfileInformations() {
           },
         }
       );
-      console.log("response : ", res.data);
       setUserState({ ...userState, status: "PENDING" });
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -64,7 +58,6 @@ export default function ProfileInformations() {
 
   const handleBlock = async () => {
     const token = localStorage.getItem("token");
-    console.log("id => ", (user as userType).id);
     if (!token) router.push("/login");
     try {
       const res = await api.patch(
@@ -80,9 +73,7 @@ export default function ProfileInformations() {
         }
       );
 	  setUserState({ ...userState, status: "BLOCKED" });
-      console.log("response : ", res.data);
     } catch (error) {
-      console.log(error);
     }
   };
 
@@ -90,7 +81,6 @@ export default function ProfileInformations() {
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     try {
-      console.log("id => ", (user as userType).id, "status => ", "UNFRIEND");
       const res = await api.patch(
         "/users/friendshipResponse",
         {
@@ -103,11 +93,10 @@ export default function ProfileInformations() {
           },
         }
       );
-      console.log("response : ", res.data);
 	  setUserState({ ...userState, status: "UNFRIEND" });
 
     } catch (error) {
-      console.log(error);
+
     }
   };
   return (

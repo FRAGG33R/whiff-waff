@@ -27,14 +27,12 @@ const UserChannelDropDown = (props: {
       roomId: props.roomId,
       newStatus: state,
     };
-    console.log("change user state req : ", req);
     try {
       const res = await api.patch("/chat/room/userStatus", req, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(res.data);
       if (state === "BANNED") {
         props.setChannelUsers((prev: channelUsersType[]) => {
           const updatedUsers = prev.filter(
@@ -55,7 +53,6 @@ const UserChannelDropDown = (props: {
 		});
 	  }
     } catch (err: any) {
-      console.log(err.response.data.message);
       toast.error(err.response.data.message, {
         style: {
           borderRadius: "12px",
@@ -78,7 +75,6 @@ const UserChannelDropDown = (props: {
       invitedId: props.userId,
       channelId: props.roomId,
     };
-    console.log("kick user req : ", req);
     try {
       const res = await api.post("/chat/room/kick", req, {
         headers: {
@@ -92,7 +88,6 @@ const UserChannelDropDown = (props: {
         return updatedUsers;
       });
     } catch (error: any) {
-      console.log(error.response.data.message);
     }
   };
 

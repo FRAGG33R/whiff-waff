@@ -52,7 +52,7 @@ const GameComponent: React.FC<GameProps> = ({ map, mode, event }) => {
     theme = 2;
   }
   const userName = parseJwt(localStorage.getItem("token") as any).user;
-  useEffect(() => {
+  useEffect(() => {	
     const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     else {

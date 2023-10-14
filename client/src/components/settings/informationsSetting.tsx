@@ -125,7 +125,6 @@ const InformationsSetting = () => {
     if (avatarImage) {
       if (avatarImage !== userData.avatar) {
         formData.append("avatar", avatarImage);
-        console.log(avatarImage);
       }
     }
     try {
@@ -142,15 +141,12 @@ const InformationsSetting = () => {
       localStorage.setItem("token", newToken);
       const r = await localApi.post("/saveToken", {  token: newToken});
     } catch (error) {
-      console.log(error);
     }
     router.push("/profile/" + userName);
   };
   const handleImageUpload = (file: File) => {
     setAvatarImage(file);
   };
-
-  console.log();
 
   return (
     <div className="w-full h-full flex flex-col gap-4 md:gap-6  ">

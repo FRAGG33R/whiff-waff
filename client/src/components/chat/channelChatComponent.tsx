@@ -42,7 +42,7 @@ export default function ChannelChatComponent(props: {
       </> :
 		<div className="w-full min-h-1 flex flex-col items-center justify-start space-y-2 py-12 font-poppins font-medium text-sm 2xl:text-xl">
 			  <IconMessagesOff stroke={2} className="h-4 w-4 md:h-8 md:w-8" />
-		<div className="text-center">No channels</div>
+		<div className="text-center text-[7px] md:text-xl">No channels</div>
 		</div>}
     </div>
   );

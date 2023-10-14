@@ -13,7 +13,6 @@ const MuteDropDown = (props: {
 }) => {
   const router = useRouter();
   const handleMute = async (duration: number) => {
-    console.log(duration);
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/login");
@@ -26,15 +25,12 @@ const MuteDropDown = (props: {
         mute: true,
         duration: duration * 60,
       };
-      console.log("mute Req : ", req);
       const res = await api.post("/chat/room/mute", req, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("mute res : ", res.data);
     } catch (err: any) {
-      console.log(err.response.data.message);
       toast.error(err.response.data.message, {
         style: {
           borderRadius: "12px",

@@ -19,9 +19,11 @@ export const SocketProvider = ({ children }: any) => {
   const router = useRouter();
   const [userName, setUserName] = useState<string>("");
   const [data, setData] = useRecoilState(dataGameAtom);
+  
   const handltoast = () => {
     router.push("/game/" + userName);
   };
+
   useEffect(() => {
 
     const newSocket = io("http://e3r10p16.1337.ma:8887/", {

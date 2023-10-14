@@ -44,16 +44,13 @@ const QRCodeGenerator = () => {
         Authorization: `Bearer ${jwtToken}`,
       },
     });
-    console.log("data",res.data);
     setAvatar(res.data);
   } 
     catch(error){
-      console.log(error);
     }
   };
   useEffect(() => {
     fetchCode();
-    console.log("avatar",avatar);
     updateQRCodeSize(); 
     window.addEventListener("resize", updateQRCodeSize);
 

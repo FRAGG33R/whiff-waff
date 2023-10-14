@@ -10,18 +10,14 @@ export default withIronSessionApiRoute(
 		return;
       } else if (req.method === "POST") {
         const { token } = req.body;
-        // console.log('save this :',token);
 		(req.session as any).token = {
           token,
         };
-		console.log((req.session as any).token)
         await req.session.save();
-		console.log('saved successfuly ! : ', req.session);
 		res.send({ ok: true });
 		return;
       }
     } catch (error) {
-      console.log("saveToken Error : ", error);
     }
 	res.send({ ok: true });
 	return;

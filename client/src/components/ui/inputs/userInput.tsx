@@ -22,7 +22,6 @@ const UserInput: React.FC<InputProps> = ({
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    console.log("value:  " + value);
     if (regExp.test(value)) setError(false);
     else setError(true);
   };

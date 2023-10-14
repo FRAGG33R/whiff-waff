@@ -22,7 +22,6 @@ const TfaModel = (props: { open: boolean; setOpen: Function; id: string }) => {
         id: props.id,
         pin: pin,
       });
-      console.log("response : ", response.data.token);
 	  localStorage.setItem("token", response.data.token);
 	  const r = await localApi.post("/saveToken", { token : response.data.token });
 	  router.push(`/profile/${parseJwt(response.data.token).user}`);

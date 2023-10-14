@@ -58,13 +58,11 @@ const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
 				channelPassword: password,
 				channelType : (password.length === 0 && isPrivate) ? "PRIVATE" : (password.length === 0 && !isPrivate) ? "PUBLIC" : "PROTECTED"
 			}
-			console.log('request : ', req);
 			const res = await api.post("/chat/room/join", req, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
 			});
-			console.log('res : ', res.data);
 			const newChannel : channelType = {
 				roomChat : {
 					id : res.data.id,
@@ -73,13 +71,10 @@ const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
 				avatars : res.data.avatars,
 				message : [],
 			}
-			console.log('selectedChannel ** : ', props.selectedChannel);
 			setChannel((prev : channelType[]) => [...prev, newChannel]);
 			props.setSelectedChannel(newChannel);
 			setOpen(false);
 		} catch (error : any ) {
-			if (error.response)
-				console.log(error.response.data.message);
 			setErrorMessage(error.message);
 			setTimeout(() => {
 				setErrorMessage("");

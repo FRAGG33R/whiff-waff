@@ -39,7 +39,6 @@ const ModelGame = ({
   const name = router.query.gameId;
   const [user, setUser] = useState<any>();
   const handleOpen = () => {
-    console.log("event");
     socket.emit("start", { type: event });
   };
   const handleCancle = () => {
@@ -62,7 +61,6 @@ const ModelGame = ({
       setUser(res.data.response.user);
     }
     } catch (error) {
-      console.log(error);
     }
   }
   useEffect(() => {

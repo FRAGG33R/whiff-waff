@@ -24,11 +24,17 @@ import IndividualChatComponent from "./individualChatComponent";
 import ChannelChatComponent from "./channelChatComponent";
 import ChannelBar from "./channelBar";
 import ChannelConversation from "./channelConversation";
+import e from "cors";
 
+interface blockedUser {
+id: string;
+  userName: string;
+}
 export default function ChatComponent() {
   const [chat] = useRecoilState(chatAtom);
   const [channel, setChannel] = useRecoilState(channelAtom);
   const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+  const [blockedUsers, setBlockedUsers] = useState<blockedUser[]>([]);
   const [socket, setSocket] = useState<any>();
   const [loaded, setLoaded] = useState<boolean>(false);
   const [token, setToken] = useState<string>("");
@@ -108,7 +114,7 @@ export default function ChatComponent() {
             Authorization: `Bearer ${token}`,
           },
         });
-		console.log("res : ", res.data);
+		setBlockedUsers(res.data.Conversationdata.blockedUsers);
         setLoggedUser((prev: loggedUserType) => {
           return {
             ...prev,
@@ -121,15 +127,29 @@ export default function ChatComponent() {
           const channel = res.data.Conversationdata.roomsConversations.find(
             (item: channelType) => item.roomChat.id === channelName
           );
-          if (channel) {
-			console.log("channel **  : ", channel)
-            return channel;
-          }
-		  console.log("room **  : ", res.data.Conversationdata.roomsConversations[0])
-          return res.data.Conversationdata.roomsConversations[0];
-        });
+		  let newSelectedChannel: channelType;
+          if (channel)
+            newSelectedChannel =  channel;
+		else
+			newSelectedChannel = res.data.Conversationdata.roomsConversations[0];
+			if (newSelectedChannel) {
+			const newMessages: channelMessageType[] = newSelectedChannel.message.filter((item: channelMessageType) => {
+				const user = res.data.Conversationdata.blockedUsers.find((user: blockedUser) => user.id === item.user.id);
+				if (user)
+					return false;
+				return true;
+			});
+			newSelectedChannel = {
+				roomChat: newSelectedChannel.roomChat,
+				message: newMessages,
+				avatars: newSelectedChannel.avatars,
+			};
+			return newSelectedChannel;
+		}
+		return null;
+		});
+		
       } catch (error: any) {
-        console.log("error : ", error.response.data);
       }
     }
   };
@@ -175,19 +195,12 @@ export default function ChatComponent() {
       }
       socket.emit("message", newMessage);
     } else {
-      console.log(
-        "sending a message inside the channel",
-        "{",
-        selectedChannel?.roomChat.name,
-        "}"
-      );
       const date = Date.now();
       const newMessage = {
         receiverId: selectedChannel?.roomChat.id,
         content: messageContent,
         currentDate: date,
       };
-      console.log("new room message : ", newMessage);
       if (selectedChannel) {
         const newSelectedChannel: channelType = {
           roomChat: selectedChannel.roomChat,
@@ -233,39 +246,52 @@ export default function ChatComponent() {
           },
         }
       );
-      console.log("conversation data ** : ", res.data);
-      setSelectedChannel((prev: channelType | null) => {
-        const newMessages: channelMessageType[] = res.data.roomConversation.map(
-          (item: any) => {
-            return {
-              user: {
-                id: item.user.id,
-                userName: item.user.userName,
-                avatar: item.user.avatar,
-                email: item.user.email,
-              },
-              message: {
-                content: item.message.content,
-                type: item.message.type,
-                date: item.message.date,
-              },
-              isError: false,
-            };
-          }
-        );
-        return {
-          roomChat: channel.roomChat,
-          message: newMessages,
-          avatars: channel.avatars,
-        };
-      });
+    //   setSelectedChannel((prev: channelType | null) => {
+    //     const newMessages: channelMessageType[] = res.data.roomConversation.map(
+    //       (item: any) => {
+    //         return {
+    //           user: {
+    //             id: item.user.id,
+    //             userName: item.user.userName,
+    //             avatar: item.user.avatar,
+    //             email: item.user.email,
+    //           },
+    //           message: {
+    //             content: item.message.content,
+    //             type: item.message.type,
+    //             date: item.message.date,
+    //           },
+    //           isError: false,
+    //         };
+    //       }
+    //     );
+    //     return {
+    //       roomChat: channel.roomChat,
+    //       message: newMessages,
+    //       avatars: channel.avatars,
+    //     };
+    //   });
+	//set the messages but without the blocked users messages
+	const newMessages: channelMessageType[] = res.data.roomConversation.filter((item: channelMessageType) => {
+		const user = blockedUsers.find((user: blockedUser) => user.id === item.user.id);
+		if (user)
+			return false;
+		return true;
+	}
+	);
+	setSelectedChannel((prev: channelType | null) => {
+		return {
+			roomChat: channel.roomChat,
+			message: newMessages,
+			avatars: channel.avatars,
+		};
+	}
+	);
       //   router.push(`/chat/${channel.roomChat.id}`);
     } catch (error) {}
   };
 
-  //here
   const handleSelectedConversation = async (conversation: conversationType) => {
-    console.log("conversation : ", conversation.receiver.userName);
     try {
       const res = await api.get(
         `/chat/individualConversations/${conversation.receiver.id}`,
@@ -283,13 +309,11 @@ export default function ChatComponent() {
           messages: res.data.messages,
         };
       });
-      console.log("res : ", res.data);
       router.push(`/chat/${conversation.receiver.userName}`);
     } catch (error) {}
   };
 
   const handleReceivedMessage = (message: any) => {
-    console.log("I received this message: ", message);
     setSelectedConversation((prev: conversationType | null) => {
       if (prev) {
         const newMessage: messageType = {
@@ -308,7 +332,6 @@ export default function ChatComponent() {
   };
 
   const handleReceivedRoomMessage = (message: any) => {
-    console.log("I received this message: ", message);
     setSelectedChannel((prev: channelType | null) => {
       if (prev) {
         const newMessage: channelMessageType = {
@@ -325,7 +348,6 @@ export default function ChatComponent() {
           },
           isError: false,
         };
-        console.log("new message : ", newMessage);
         const newMessages: channelMessageType[] = [...prev.message, newMessage];
         return {
           roomChat: prev.roomChat,
@@ -337,13 +359,9 @@ export default function ChatComponent() {
   };
 
   const handleConnection = () => {
-    console.log("connection successfuly");
   };
 
   const handleException = (error: any) => {
-	console.log('individual');
-	
-    console.log("socket error : ", error.message);
     toast.error(error.message, {
       style: {
         borderRadius: "12px",
@@ -368,8 +386,6 @@ export default function ChatComponent() {
   };
 
   const handleRoomException = (error: any) => {
-	console.log('channel');
-    console.log("socket error : ", error);
     toast.error(error, {
       style: {
         borderRadius: "12px",
@@ -383,7 +399,6 @@ export default function ChatComponent() {
 	setSelectedChannel((prev: channelType | null) => {
 		if (prev) {
 			const newMessages: channelMessageType[] = [...prev.message];
-			console.log('---->, ', newMessages[newMessages.length - 1]);
 			newMessages[newMessages.length - 1].isError = true;
 			return {
 				roomChat: prev.roomChat,

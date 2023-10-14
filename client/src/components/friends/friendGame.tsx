@@ -71,7 +71,6 @@ export default function FriendGame({
         }
       );
     } catch (error) {
-      console.log(error);
     }
     router.push("/friends");
   };
@@ -79,7 +78,7 @@ export default function FriendGame({
   const handleDropdownToggle = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-  console.log("friends", friends);
+  
   return (
     <div
       className={`w-[95%] h-16 md:h-20 flex items-center justify-center rounded-[12px] md:rounded-[20px]  bg-[#0F0F0F]/[32%]

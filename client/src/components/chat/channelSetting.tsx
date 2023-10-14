@@ -56,9 +56,7 @@ const ChannelSettings = (props: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      console.log(res.data);
     } catch (err: any) {
-      console.log(err.response.data.message);
       toast.error(err.response.data.message, {
         style: {
           borderRadius: "12px",

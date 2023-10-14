@@ -34,7 +34,6 @@ const RequestePage = ({ req, pendingFriends, setPendingFriends }: { req: User, p
       )
     }
       catch (error) {
-        console.log(error);
       }
       router.push("/friends");
   };
@@ -55,7 +54,6 @@ const RequestePage = ({ req, pendingFriends, setPendingFriends }: { req: User, p
       );
     }
       catch (error) {
-        console.log(error);
       }
   };
   const handleDropdownToggle = () => {

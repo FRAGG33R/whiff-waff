@@ -24,7 +24,6 @@ const InviteUser = (props : {selectedChannel : channelType}) => {
   const router = useRouter();
 
   const handleInvite = async () => {
-	console.log("user : ", user);
 	if (user.length < 1) {
 	  toast.error("Username must be at least 1 characters", {
 		style: {
@@ -43,15 +42,12 @@ const InviteUser = (props : {selectedChannel : channelType}) => {
 		channelId: props.selectedChannel.roomChat.id,
 	};
 	try {
-		console.log('req : ', req);
 	  const res = await api.post("/chat/room/invite", req, {
 		headers: {
 		  Authorization: `Bearer ${localStorage.getItem("token")}`,
 		},
 	  });
-	  console.log(res.data);
 	} catch (err: any) {
-	  console.log(err.response.data.message);
 	  toast.error(err.response.data.message, {
 		style: {
 		  borderRadius: "12px",

@@ -12,7 +12,7 @@ export default function ChannelChatComponent(props: {
   selectedChannel : channelType
   setSelectedChannel : Function
 }) {
-	console.log('++', props.channels)
+
   return (
     <div className="w-full h-full px-2 lg:px-4 space-y-2 xl:space-y-6 overflow-y-auto overflow-x-hidden scrollbar scrollbar-thumb-GreenishYellow scrollbar-track-transparent ">
       <div className="w-full md:px-4 h-16 md:h-[5rem] xl:h-[6.4rem] flex flex-row cursor-pointer hover:bg-HokiCl/[12%] rounded-[12px] md:rounded-[20px]">

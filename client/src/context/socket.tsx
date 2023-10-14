@@ -27,13 +27,11 @@ export const SocketProvider = ({ children }: any) => {
   useEffect(() => {
     if (socket !== null)
       return ;
-    console.log("path", router.pathname);
     const newSocket = io("http://e3r10p16.1337.ma:8887/", {
       extraHeaders: {
         authorization: "Bearer " + localStorage.getItem("token"),
       },
     });
-    console.log("newSocket", newSocket);
     newSocket.on(
       "notification",
       function (data: {
@@ -74,7 +72,6 @@ export const SocketProvider = ({ children }: any) => {
       }
     );
     setSocket((prev: any) => newSocket);
-    console.log(" ********** socket connected ********");
   }, []);
 
   return (

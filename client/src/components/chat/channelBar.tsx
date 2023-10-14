@@ -37,7 +37,6 @@ export default function ChannelBar(props: channelBarType) {
           },
         }
       );
-      console.log("res : ", res.data);
       setChannel((prev: channelType[]) => {
         const updatedChannels = prev.filter(
           (item: channelType) =>
@@ -47,7 +46,6 @@ export default function ChannelBar(props: channelBarType) {
         return updatedChannels;
       });
     } catch (error: any) {
-      console.log(error.response.data);
       toast.error(error.response.data.message, {
         style: {
           borderRadius: "12px",
@@ -67,7 +65,6 @@ export default function ChannelBar(props: channelBarType) {
 
   const handleLeaveChannel = async () => {
     const token = localStorage.getItem("token");
-    console.log("toke :", token);
     if (!token) {
       router.push("/login");
       return;
@@ -91,7 +88,6 @@ export default function ChannelBar(props: channelBarType) {
         return updatedChannels;
       });
     } catch (error: any) {
-      console.log(error.response.data);
     }
   };
 
@@ -105,10 +101,6 @@ export default function ChannelBar(props: channelBarType) {
           },
         }
       );
-      console.log('--->', res.data.map((item: channelUsersType) => {
-		if (item !== null && item !== undefined)
-		  return item;
-	  }));
       setDisplaySettings(false);
       res.data.map((item: channelUsersType) => {
         if (item && (item.user.userName === (loggedUser as loggedUserType).userName)) {
@@ -121,7 +113,6 @@ export default function ChannelBar(props: channelBarType) {
 		  return item;
 	  }));
     } catch (error: any) {
-      console.log(error.response.data);
     }
   };
 

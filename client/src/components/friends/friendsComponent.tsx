@@ -48,12 +48,10 @@ const friendsComponent = (props : {activeTab : number}) => {
         .filter((friend: any) => friend.receiver.userName === userId || friend.sender.userName === userId)
         .map((friends: any) => friends.receiver.userName === userId ? friends.sender : friends.receiver);
         setFriendData(filteredAccepted);
-        console.log("ace",filteredAccepted);
         setFriendState((prev) => {
           return [...filteredAccepted];
         });
       } catch (error) {
-      console.log(error);
     }
   };
 

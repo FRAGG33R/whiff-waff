@@ -19,8 +19,9 @@ export default function UserBar(props: userChatBar) {
             data-tip="fragger"
           >
             <img
+			  onClick={() => router.push(`/profile/${props.userName}`)}
               src={props.avatar}
-              className="w-full h-full rounded-[12px]"
+              className="w-full h-full rounded-[12px] cursor-pointer"
               alt="user avatar"
             />
           </div>

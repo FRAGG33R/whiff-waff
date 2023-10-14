@@ -56,13 +56,11 @@ const ExploreChannels = (props: {
         req = {
           channelName: item.name,
         };
-      console.log("request |  : ", req);
       const res = await api.post("/chat/room/join", req, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("res : ", res.data);
       const newChannel: channelType = {
         roomChat: {
           id: res.data.id,
@@ -71,12 +69,10 @@ const ExploreChannels = (props: {
         avatars: res.data.avatars,
         message: [],
       };
-      console.log("selectedChannel ** : ", props.selectedChannel);
       setChannel((prev: channelType[]) => [...prev, newChannel]);
       props.setSelectedChannel(newChannel);
       setOpen(false);
     } catch (error: any) {
-      console.log("error : ", error.response.data.message);
       toast.error(error.response.data.message, {
         style: {
           borderRadius: "12px",
@@ -99,7 +95,6 @@ const ExploreChannels = (props: {
       });
       setExploreChannelList(res.data);
     } catch (error: any) {
-      console.log("error : ", error);
     }
   };
 

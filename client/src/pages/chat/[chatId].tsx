@@ -20,10 +20,9 @@ export default function Chat(props: { data : any }) {
 
   return (
     <SocketProvider >
-    <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
-      {loaded && <ChatComponent />}
-    </div>
-
+		<div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-DarkBg via-RhinoBlue to-ViolentViolet">
+		{loaded && <ChatComponent />}
+		</div>
     </SocketProvider>
   );
 }
@@ -33,13 +32,25 @@ export const getServerSideProps = withIronSessionSsr(
     try {
       const token = await req.session.token.token;
       const res = await api.get(`chat/IndividualConversations`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return {
-        props: { data: res.data },
-      };
+		  headers: {
+			  Authorization: `Bearer ${token}`,
+			},
+		});
+		const newConv: any[] = res.data.allConversation.filter((item : any) => {
+			const user = res.data.blockedUsers.find((user: any) => user.id === item.receiver.id);
+			if (user)
+				return false;
+			return true;
+		}
+		);
+		return ( {
+			props : {
+				data : {
+					allConversation : newConv,
+					loggedUser : res.data.loggedUser,
+				}
+			}
+		})
     } catch (error: any) {
       return {
         redirect: {

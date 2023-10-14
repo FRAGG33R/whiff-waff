@@ -28,7 +28,6 @@ export default function Profile(props: { data: userType }) {
 			Authorization: `Bearer ${token}`,
 			},
 		});
-		
       setMatchHistory((prev) => res.data.response.gamesData);
       setUser((prev) => res.data.response.user);
       setLoggedUser((prev) => res.data.response.loggedUser);

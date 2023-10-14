@@ -44,7 +44,6 @@ const friendRequeste = (props : {activeTab : number}) => {
       setPendingFriends(filteredPending as User[]);
 
     } catch (error) {
-      console.log(error);
     }
   };
   useEffect(() => {

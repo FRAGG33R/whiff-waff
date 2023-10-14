@@ -50,11 +50,8 @@ export const getServerSideProps = withIronSessionSsr(
           },
         }
       );
-      console.log(res.data.response);
       const accepted = res.data.response.friends.acceptedFriends;
-      console.log("ace",accepted);
       const pending = res.data.response.friends.pendingFriends;
-      console.log("pen",pending);
       const filteredAccepted = accepted
         .filter((friends: any) => friends.receiver.id === userId)
         .map((friends: any) => friends.sender);

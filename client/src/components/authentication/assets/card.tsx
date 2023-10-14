@@ -163,12 +163,9 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
               password,
             });
         try {
-          console.log('req : ', req);
           setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
-          console.log(res.data);
           const { token, statusCode, id, twoFa } = res.data;
-          console.log(token, statusCode);
           localStorage.setItem("token", token);
           const r = await localApi.post("/saveToken", { token }); //storing the token after the user validate the email only
 		  if (props.Mode === "signup") {
@@ -179,14 +176,12 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
             }, 2000);
           } else if (props.Mode === "signin")
 		  {
-			console.log('twoFa : ', twoFa);
 			if (twoFa === true)
 			{
 				setId(id);
 				setOpenTwoFa(true);
 				return ;
 			}
-			console.log('loged');
             router.push(`/profile/${parseJwt(token).user}`);
           }
         } catch (error: any) {

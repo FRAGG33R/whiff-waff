@@ -35,8 +35,6 @@ export default function MatchComponents() {
         }
       );
       setDisplayedHistory(res.data.historyGame);
-      console.log("res.data.historyGame", res.data.historyGame);
-      
     } catch (error) {}
   };
 

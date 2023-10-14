@@ -300,7 +300,6 @@ class PingPongTable {
     Matter.Runner.stop(this.runner);
     Engine.clear(this.engine);
     this.render.canvas.remove();
-    console.log("stop rendering");
   }
 }
 

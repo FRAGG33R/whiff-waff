@@ -44,7 +44,6 @@ const AdversarieInfo = () => {
         setUser(res.data.response.user);
       }
     } catch (error) {
-      console.log(error);
     }
   };
   useEffect(() => {

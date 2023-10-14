@@ -1,4 +1,3 @@
-
 import SignInComponent from "@/components/authentication/signin/signin";
 import LogintoggleSwitch from "@/components/ui/buttons/loginToggleSwitch";
 import Wave from "@/components/authentication/assets/wave";

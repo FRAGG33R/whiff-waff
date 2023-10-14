@@ -23,6 +23,7 @@ export  interface userType {
   stat: userStatisticsType;
   achievements: userAchievementsType[];
   status : string;
+  otpEnable : boolean;
 }
 
 interface playerType {
@@ -50,4 +51,18 @@ export interface loggedUserType {
 	avatar : string,
 	userName : string,
 	level : Number
+	id : string
+}
+
+export interface scoreIdType {
+  score1 : number
+  score2 : number
+}
+
+export interface dataGameType {
+  type : string,
+  map : string,
+  mode : string,
+  inveter : boolean,
+  userName : string
 }

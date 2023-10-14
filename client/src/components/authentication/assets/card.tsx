@@ -10,6 +10,8 @@ import { api, localApi } from "@/components/axios/instance";
 import { useEffect } from "react";
 import ValidationAlert from "@/components/ui/alerts/validationAlert";
 import { parseJwt } from "@/lib/parseJwt";
+import TfaModel from "./tfaModel";
+import { Console } from "console";
 
 export default function Card(props: { Mode: "signin" | "signup" }) {
 
@@ -24,6 +26,8 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
   const [isValid, setIsValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
+  const [openTwoFa, setOpenTwoFa] = useState(false);
+  const [id, setId] = useState<string | null>(null);
 
   const signinArray = [
     {
@@ -101,7 +105,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
 
   const signIn = async () => {
     router.push(
-      "https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-82573d757bf7f76ec64fd426f2b6956cca48fda1f72cb2028a189dedcc8715f0&redirect_uri=http%3A%2F%2Fe3r10p12.1337.ma%3A3000%2Fintra_callback&response_type=code"
+		"https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-82573d757bf7f76ec64fd426f2b6956cca48fda1f72cb2028a189dedcc8715f0&redirect_uri=http%3A%2F%2Fe3r10p12.1337.ma%3A3000%2Fintra_callback&response_type=code"
     );
   };
 
@@ -161,19 +165,23 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
         try {
           setNeedsVerification(false);
           const res = await api.post(`auth/${props.Mode}/`, req);
-          const { token, statusCode } = res.data;
+          const { token, statusCode, id, twoFa } = res.data;
           localStorage.setItem("token", token);
-	
           const r = await localApi.post("/saveToken", { token }); //storing the token after the user validate the email only
-		  if (statusCode === 201) {
+		  if (props.Mode === "signup") {
             setNeedsVerification((prev) => !prev);
             setTimeout(() => {
               setNeedsVerification(false);
               router.push("/login");
             }, 2000);
-          } else if (statusCode == 200)
+          } else if (props.Mode === "signin")
 		  {
-			console.log('loged');
+			if (twoFa === true)
+			{
+				setId(id);
+				setOpenTwoFa(true);
+				return ;
+			}
             router.push(`/profile/${parseJwt(token).user}`);
           }
         } catch (error: any) {
@@ -214,9 +222,11 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
 	else
 		setNeedsVerification(false);
   }, [router.query]);
+
   return (
-    <div className="min-h-1 min-w-1 z-10 px-2 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
-      <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
+    <div className="min-h-1 min-w-1 z-10 px-6 md:px-24 md:py-20 py-6 flex items-center justify-center flex-col space-y-8 md:space-y-16 bg-DarkGrey rounded-xl">
+      {id && <TfaModel open={openTwoFa} setOpen={setOpenTwoFa} id={id} />}
+	  <div className="min-w-1 min-h-1 flex items-center justify-center flex-col space-y-4">
         <Image src={Logo} alt="Logo" className="" />
         <div className="text-2xl md:text-3xl font-teko font-bold">
           {props.Mode === "signin" ? "Welcome Back !" : "Welcome !"}
@@ -239,7 +249,7 @@ export default function Card(props: { Mode: "signin" | "signup" }) {
             isError={error}
             setError={setError}
             isDisabled={false}
-            lableColor="#222222"
+            lableColor="bg-[#222222]"
             regExp={
               props.Mode === "signin"
                 ? signinArray[step].RegExp

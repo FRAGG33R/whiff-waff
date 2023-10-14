@@ -1,103 +1,127 @@
 import React from "react";
-
-import { MenuItem, Typography } from "@material-tailwind/react";
-import { useState } from "react";
-import { motion, Variants } from "framer-motion";
-import IconChannel from "../../../../public/IconChannel.svg";
-import Ban from "../../../../public/Ban.svg";
-import IconKick from "../../../../public/Kick.svg";
-import Admin from "../../../../public/Admin.svg";
+import { motion } from "framer-motion";
+import SettingDrop from "../../../../public/drop.svg";
+import toast, { Toaster } from "react-hot-toast";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { api } from "@/components/axios/instance";
+import { channelUsersType } from "@/types/chatType";
 
-const itemVariants: Variants = {
-  open: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 },
-  },
-  closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
-};
+const UserChannelDropDown = (props: {
+  userId: string;
+  roomId: string;
+  channelUsers: channelUsersType[];
+  setChannelUsers: Function;
+}) => {
 
-const UserChannelDropDown = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const OptionClick = () => {};
+  const router = useRouter();
+
+  const handleChangeState = async (state : string) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return ;
+    }
+    const req = {
+      userId: props.userId,
+      roomId: props.roomId,
+      newStatus: state,
+    };
+    try {
+      const res = await api.patch("/chat/room/userStatus", req, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (state === "BANNED") {
+        props.setChannelUsers((prev: channelUsersType[]) => {
+          const updatedUsers = prev.filter(
+            (item: channelUsersType) => item?.user?.id !== props.userId
+          );
+          return updatedUsers;
+        });
+      }
+	  else if (state === "ADMIN") {
+		props.setChannelUsers((prev: channelUsersType[]) => {
+		  const updatedUsers = prev.map((item: channelUsersType) => {
+			if (item?.user?.id === props.userId) {
+			  item.status = "ADMIN";
+			}
+			return item;
+		  });
+		  return updatedUsers;
+		});
+	  }
+    } catch (err: any) {
+      toast.error(err.response.data.message, {
+        style: {
+          borderRadius: "12px",
+          padding: "12px",
+          background: "#6C7FA7",
+          color: "#fff",
+          fontFamily: "Poppins",
+          fontSize: "18px",
+        },
+      });
+    }
+  };
+  const handleKick = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+    const req = {
+      invitedId: props.userId,
+      channelId: props.roomId,
+    };
+    try {
+      const res = await api.post("/chat/room/kick", req, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      props.setChannelUsers((prev: channelUsersType[]) => {
+        const updatedUsers = prev.filter(
+          (item: channelUsersType) => item?.user?.id !== props?.userId
+        );
+        return updatedUsers;
+      });
+    } catch (error: any) {
+    }
+  };
 
   return (
-    <motion.nav
-      initial={false}
-      animate={isOpen ? "open" : "closed"}
-      className="flex flex-col items-center justify-center "
-    >
+    <div className="dropdown dropdown-bottom dropdown-end">
+      <Toaster position="top-right" />
       <motion.div
-        initial={{ scale: 0.9 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-center w-10 h-10"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="w-8 h-8 md:w-10 md:h-10 3xl:w-12 3xl:h-12 flex items-center justify-center rounded-[10px] 2xl:rounded-[18px]"
       >
-        <Image src={IconChannel} alt="channel" />
+        <Image
+          src={SettingDrop}
+          alt="dropdown icon"
+          className="w-[60%] h-[60%]"
+        />
       </motion.div>
-
-      <motion.ul
-        variants={{
-          open: {
-            clipPath: "inset(0% 0% 0% 0% round 10px)",
-            transition: {
-              type: "spring",
-              bounce: 0,
-              duration: 0.7,
-              delayChildren: 0.3,
-              staggerChildren: 0.05,
-            },
-          },
-          closed: {
-            clipPath: "inset(10% 50% 90% 50% round 10px)",
-            transition: {
-              type: "spring",
-              bounce: 0,
-              duration: 0.3,
-            },
-          },
-        }}
-        style={{
-          pointerEvents: isOpen ? "auto" : "none",
-          padding: "0.5rem",
-        }}
-        className="bg-HokiCl border-0 w-40  "
+      <ul
+        tabIndex={0}
+        className="dropdown-content text-white z-[99] menu p-2 shadow rounded-box w-44 mt-2 font-poppins font-meduim text-lg bg-HokiCl "
       >
-        <motion.li variants={itemVariants}>
-          <MenuItem
-            className="flex flex-row  -space-y-1 space-x-3  h-9 "
-            onClick={() => OptionClick()}
-          >
-            <Image src={Ban} alt="Ban" width={22} />
-            <Typography className="flex  font-teko text-2xl text-Mercury ">
-              Ban
-            </Typography>
-          </MenuItem>
-        </motion.li>
-        <motion.li variants={itemVariants}>
-          <MenuItem
-            className="flex flex-row -space-y-1 space-x-2 gap-2  h-9  "
-            onClick={() => OptionClick()}
-          >
-            <Image src={IconKick} alt="Kick" width={20} />
-            <Typography className="flex font-teko text-2xl text-Mercury">
-              Kick
-            </Typography>
-          </MenuItem>
-        </motion.li>
-        <motion.li variants={itemVariants}>
-          <MenuItem
-            className="flex flex-row -space-y-1 space-x-1 gap-2  h-9"
-            onClick={() => OptionClick()}
-          >
-            <Image src={Admin} alt="Admin" width={22} />
-            <Typography className="font-teko text-2xl text-Mercury">
-              As Admin
-            </Typography>
-          </MenuItem>
-        </motion.li>
-      </motion.ul>
-    </motion.nav>
+        <li className="">
+          <button onClick={handleKick}>Kick</button>
+        </li>
+        <li>
+          <button onClick={() => handleChangeState("BANNED")}>Ban</button>
+        </li>
+        <li>
+          <button onClick={() => handleChangeState("ADMIN")}>
+            Set as admin
+          </button>
+        </li>
+      </ul>
+    </div>
   );
 };
 export default UserChannelDropDown;

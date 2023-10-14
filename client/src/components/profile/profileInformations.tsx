@@ -17,27 +17,24 @@ import { api } from "../axios/instance";
 import PendingButton from "../ui/buttons/pendingButton";
 
 export default function ProfileInformations() {
-  const router = useRouter();
-  const [user, setUser] = useRecoilState(userAtom);
-  const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
-  const [userState, setUserState] = useState<userType>(user as userType);
-
-  const matchStatistics: matchStatistics[] = [
-    {
-      title: "Total Matches",
-      value: Number(userState.stat.wins) + Number(userState.stat.loses),
-      avatar: totalMatches,
-    },
-    { title: "Total Wins", value: userState.stat.wins, avatar: totalWins },
-    { title: "Total Loses", value: userState.stat.loses, avatar: totalLoses },
-  ];
+	const [user, setUser] = useRecoilState(userAtom);
+	const [loggedUser, setLoggedUser] = useRecoilState(loggedUserAtom);
+	const [userState, setUserState] = useState<userType>(user as userType);
+	const matchStatistics: matchStatistics[] = [
+		{
+			title: "Total Matches",
+			value: Number(userState.stat.wins) + Number(userState.stat.loses),
+			avatar: totalMatches,
+		},
+		{ title: "Total Wins", value: userState.stat.wins, avatar: totalWins },
+		{ title: "Total Loses", value: userState.stat.loses, avatar: totalLoses },
+	];
+	const router = useRouter();
   const handleConnect = async () => {
     const token = localStorage.getItem("token");
-    console.log("token => ", token);
-    console.log("id => ", (user as userType).id);
     if (!token) router.push("/login");
     try {
-      const res = await api.patch(
+      const res = await api.post(
         "/users/sendFriendship",
         { id: (user as userType).id },
         {
@@ -46,44 +43,67 @@ export default function ProfileInformations() {
           },
         }
       );
-      console.log("response : ", res.data);
+      setUserState({ ...userState, status: "PENDING" });
     } catch (error) {
-      console.log(error);
     }
   };
 
   const handleMessage = () => {
-    router.push(`/chat/${userState.userName}`)
+    router.push(`/chat/${userState.userName}`);
   };
+
   const handleChallenge = () => {
     router.push(`/game/${userState.userName}`);
   };
-  const handleBlock = async () => {
-	const token = localStorage.getItem("token");
-    console.log("token => ", token);
-    console.log("id => ", (user as userType).id);
 
+  const handleBlock = async () => {
+    const token = localStorage.getItem("token");
     if (!token) router.push("/login");
     try {
       const res = await api.patch(
         "/users/friendshipResponse",
-        { id: (user as userType).id, status : 'BLOCKED' },
+        {
+          id: (user as userType).id,
+          status: "BLOCKED",
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log("response : ", res.data);
+	  setUserState({ ...userState, status: "BLOCKED" });
     } catch (error) {
-      console.log(error);
     }
-  }
+  };
+
+  const handleUnblock = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) router.push("/login");
+    try {
+      const res = await api.patch(
+        "/users/friendshipResponse",
+        {
+          id: (user as userType).id,
+          status: "UNFRIEND",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+	  setUserState({ ...userState, status: "UNFRIEND" });
+
+    } catch (error) {
+
+    }
+  };
   return (
-    <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px]">
+    <div className="w-full min-h-1 md:h-full flex flex-col bg-[#606060]/[12%] rounded-[12px] md:rounded-[20px] py-2">
       <div className="w-full h-[80%] flex flex-col md:flex-row items-center xl:space-x-8">
         <div className="h-[70%] md:h-full max-w-[180px] w-[180px] md:w-[27%] xl:w-[25%] md:-space-y-5 xl:space-y-0 flex flex-col">
-          <div className="w-full h-[80%] flex items-center justify-center py-8 pl-2">
+          <div className="w-full h-[70%] flex items-center justify-center py-8 pl-2">
             <HexaGon avatar={userState.avatar} />
           </div>
           <button
@@ -97,29 +117,37 @@ export default function ProfileInformations() {
               color="#6C7FA7"
               stroke={1.5}
             />
-            <div className="font-teko font-normal text-xl xl:text-2xl text-HokiCl pt-1 ">
+            <div className="font-teko font-normal text-xl xl:text-2xl text-HokiCl pt-1 min-w-1">
               Edit Profile
             </div>
           </button>
         </div>
-        <div className="h-[30%] md:h-full w-[90%] md:w-[75%] flex flex-col">
-          <div className="h-full md:h-[70%] max-w-44 flex flex-col space-y-1 md:space-y-2">
+        <div className="h-[30%] md:h-full w-[90%] md:w-[80%] flex flex-col ">
+          <div className="h-full md:h-[70%] max-w-44 flex flex-col xl:space-y-2">
             <div className="w-full h-full flex items-end md:justify-start justify-center font-normal md:font-semibold font-teko text-3xl xl:text-4xl 2xl:text-5xl text-Mercury tracking-wider">
               {userState.userName}
             </div>
-            <div className="w-full h-full flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-6">
+            <div className="w-full min-h-1 flex flex-row items-center md:justify-start justify-center space-x-2 2xl:space-x-4">
               {userState.userName != (loggedUser as loggedUserType).userName ? (
                 <>
                   {userState.status === "PENDING" ? (
                     <PendingButton text="Pending" onClick={handleConnect} />
-                  ) : userState.status === 'ACCEPTED' ? (
+                  ) : userState.status === "ACCEPTED" ? (
                     <SecondaryButton text="Block" onClick={handleBlock} />
-				  ) :(
+                  ) : userState.status === "UNFRIEND" ? (
                     <SecondaryButton text="Connect" onClick={handleConnect} />
-
-				  )}
-                  <SecondaryButton text="Message" onClick={handleMessage} />
-                  <PrimaryButton text="Challenge" onClick={handleChallenge} />
+                  ) : (
+                    <SecondaryButton text="Unblock" onClick={handleUnblock} />
+                  )}
+                  {userState.status === "ACCEPTED" && (
+                    <>
+                      <SecondaryButton text="Message" onClick={handleMessage} />
+                      <PrimaryButton
+                        text="Challenge"
+                        onClick={handleChallenge}
+                      />
+                    </>
+                  )}
                 </>
               ) : (
                 <div className="text-md md:text-2xl text-[#6C7FA7] font-medium">

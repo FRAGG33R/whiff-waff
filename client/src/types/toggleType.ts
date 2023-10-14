@@ -3,3 +3,8 @@ export type  ToggleProps ={
     secondValue: string;
     tab: string;
 }
+export type ToggleChatProps={
+    firstValue: string;
+    secondValue: string;
+    onToggle: (value: string) => void;
+}

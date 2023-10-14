@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
-import { ButtonProps } from "../../../types/buttonsType";
-import { useRouter } from "next/router";
-import { ToggleProps } from "@/types/toggleType";
+import { ToggleChatProps } from "@/types/toggleType";
 
-const ChannelToggleSwitch: React.FC<ToggleProps> = ({
+const ChannelToggleSwitch: React.FC<ToggleChatProps> = ({
   firstValue,
   secondValue,
-//   firstFunction,
-//   secondFunction,
-  tab,
+  onToggle,
 }) => {
-  const router = useRouter();
-  const [activeTab, setActiveTab] = useState(tab);
+  const [activeTab, setActiveTab] = useState(firstValue);
 
   const data = [
     {
@@ -24,22 +19,18 @@ const ChannelToggleSwitch: React.FC<ToggleProps> = ({
       value: secondValue,
     },
   ];
+
   function switchTab(value: any) {
     setActiveTab(value);
-    // if (activeTab === firstValue) {
-    //   firstFunction();
-    // } else if (activeTab === secondValue) {
-    //   secondFunction();
-    // }
+    onToggle(value);
   }
-
   return (
     <Tabs value={activeTab}>
       <TabsHeader
-        className="rounded-full bg-black bg-opacity-100 font-teko w-40 md:w-40 lg:w-44 h-8 md:h-8 lg:h-10  "
+        className="rounded-md md:rounded-full bg-black bg-opacity-10 font-teko w-full lg:w-40 2xl:w-56 3xl:w-72 h-6 md:h-10 lg:h-12 xl:h-14"
         indicatorProps={{
           className:
-            "bg-GreenishYellow  shadow-none rounded-full font-teko text-Ceramic",
+            "bg-GreenishYellow shadow-none rounded-md md:rounded-full font-teko text-Ceramic",
         }}
       >
         {data.map(({ label, value }) => (
@@ -49,8 +40,8 @@ const ChannelToggleSwitch: React.FC<ToggleProps> = ({
             onClick={() => switchTab(value)}
             className={
               activeTab === value
-                ? "text-DarkBg font-teko "
-                : "font-teko text-Ceramic"
+                ? "text-DarkBg font-teko text-[8px] md:text-lg xl:text-2xl"
+                : "font-teko text-HokiCl text-[8px] md:text-lg xl:text-2xl"
             }
           >
             {label}

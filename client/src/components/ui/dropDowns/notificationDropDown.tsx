@@ -7,8 +7,8 @@ import {
   MenuItem,
   Avatar,
   Typography,
-  Badge,
 } from "@material-tailwind/react";
+import { Badge as MaterialUIBadge } from "@mui/material";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import Notification from "../../../../public/notifications.svg";
 import Image from "next/image";
@@ -29,12 +29,12 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
       <div className="flex min-w-1 items-center justify-center bg-opacity-10 rounded-lg">
         <Menu placement="bottom">
           <motion.div>
-            <Badge content={content}>
+            <MaterialUIBadge  color="error" badgeContent={content}>
               <MenuHandler>
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   whileHover={{ scale: 1.1 }}
-                  className="bg-[#606060]/[12%] w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 flex items-center justify-center rounded-[12px] md:rounded-[20px]"
+                  className="bg-[#606060]/[12%] w-10 h-10 sm:w-12 sm:h-12 md:h-14 md:w-14 xl:w-16 xl:h-16 flex items-center justify-center rounded-[12px] md:rounded-[20px]"
                 >
                   <Image
                     src={Notification}
@@ -43,7 +43,7 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
                   />
                 </motion.button>
               </MenuHandler>
-            </Badge>
+            </MaterialUIBadge>
           </motion.div>
           <MenuList className="flex flex-col  bg-HokiCl border-0 ">
             <p className="flex items-center justify-center text-Mercury font-teko text-2xl">
@@ -54,7 +54,7 @@ const NotificationDropDown: React.FC<NotificationProps> = (props) => {
               notifications.map((notification, index) => (
                 <MenuItem
                   key={index}
-                  className=" flex items-center gap-4 py-2 pr-8 pl-2 "
+                  className=" flex items-center gap-4 py-2 pr-8 pl-2 focus:bg-[#D2386D] "
                 >
                   <Avatar
                     className="border-4  border-DeepRose rounded-2xl"

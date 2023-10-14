@@ -31,6 +31,7 @@ export default function FriendGame({
   AcceptedFriends: User[];
   setAcceptedFriends: Function;
 }) {
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const rankItems: RankItem[] = [
     { rank: "ROOKIE", image: ROOKIE },
@@ -51,6 +52,7 @@ export default function FriendGame({
   const handleMessage = () => {
     router.push(`/chat/${friends.userName}`);
   };
+  
   const handleBlock = async () => {
     try {
       setAcceptedFriends(

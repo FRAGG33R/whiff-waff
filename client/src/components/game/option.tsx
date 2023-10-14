@@ -32,7 +32,6 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
   const [beginner, setBeginner] = useState(false);
   const [inrermediare, setInrermediare] = useState(false);
   const [advenced, setAdvenced] = useState(false);
-  const [time, setTime] = useState(false);
   const [defi, setDefi] = useState(false);
   const [open, setDialogOpen] = useState(false);
   const [isFindingPlayer, setIsFindingPlayer] = useState(true);
@@ -42,12 +41,10 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
     setDialogOpen(!open);
   };
   const handleTime = () => {
-    setTime(!time);
     setDefi(false);
   };
   const handleDefi = () => {
     setDefi(!defi);
-    setTime(false);
   };
   const handleBeginner = () => {
     setBeginner(!beginner);
@@ -78,10 +75,8 @@ const Option: React.FC<OptionProps> = ({ onPlay }) => {
     }
 
     let selectedMode: string | undefined;
-    if (time) {
-      selectedMode = "Time";
-    } else if (defi) {
-      selectedMode = "Defi";
+    if (defi) {
+      selectedMode = "CHALLENGE";
     }
     let selectedEvent: string | undefined = "notify";
     if (loggedUser && (loggedUser as userType).userName === name) {

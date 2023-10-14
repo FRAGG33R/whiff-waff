@@ -5,7 +5,7 @@ import Image from "next/image";
 import matchComponentType from "@/types/matchType";
 
 export default function MatchComponent(props: matchComponentType) {
-
+  console.log("props => ", props)
   return (
     <div
       className={`w-[95%] h-16 md:h-24 flex items-center justify-center rounded-[12px] md:rounded-[20px] ${

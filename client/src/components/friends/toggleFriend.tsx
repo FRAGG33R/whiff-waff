@@ -5,9 +5,7 @@ import FriendRequeste from "./friendRequeste";
 
 const TabSwitch = () => {
   const [activeTab, setActiveTab] = useState(1);
-
-
-
+  
   const handleTabClick = (tabNumber: number) => {
     setActiveTab(tabNumber);
   };
@@ -34,10 +32,10 @@ const TabSwitch = () => {
         <div className=" w-full h-[90%]  bg-CarbonGrey bg-opacity-10  rounded-xl flex flex-col justify-center">
           <div className={` w-full h-full b
           tab-content ${activeTab !== 1 ? "hidden" : ""}`}>
-            <FriendsComponent />
+            <FriendsComponent activeTab={activeTab} />
           </div>
           <div className={`w-full h-full tab-content ${activeTab !== 2 ? "hidden" : ""}`}>
-            <FriendRequeste/>
+            <FriendRequeste activeTab={activeTab}/>
           </div>
         </div>
         <style jsx>{`

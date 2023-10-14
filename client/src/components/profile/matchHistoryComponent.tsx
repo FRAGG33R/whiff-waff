@@ -35,6 +35,8 @@ export default function MatchComponents() {
         }
       );
       setDisplayedHistory(res.data.historyGame);
+      console.log("res.data.historyGame", res.data.historyGame);
+      
     } catch (error) {}
   };
 
@@ -56,23 +58,26 @@ export default function MatchComponents() {
       </div>
       <div className="w-full h-[90%] md:h-[95%] flex flex-col items-center justify-start ">
         {displayedMatchHistory.length > 0 ? (
-          <div className="w-full h-full flex items-center justify-start flex-col space-y-4">
+          <div className="w-full h-full flex items-start flex-col space-y-4">
             {displayedMatchHistory.map(
               (item: singleMatchType, index: number) => {
                 return (
-                  <div 
-				  key={index}
-				  className="w-full h-full flex items-center justify-center">
+                  <div
+                    key={index}
+                    className="w-full  flex items-start justify-center"
+                  >
                     <MatchComponent
                       Mode={
-                        (loggedUser as loggedUserType).userName ===
-                        (user as userType).userName
-                          ? item.scoreLeft < item.scoreRight
-                            ? "Lose"
-                            : "Win"
-                          : item.scoreLeft > item.scoreRight
-                          ? "Lose"
-                          : "Win"
+                        (loggedUser as loggedUserType).userName === item.game.playerOne.userName ?
+                        (
+                          item.scoreLeft > item.scoreRight
+                            ? "Win"
+                            : "Lose"
+                        ) : (
+                          item.scoreLeft < item.scoreRight
+                            ? "Win"
+                            : "Lose"
+                        )
                       }
                       firstUserName={
                         item.scoreLeft < item.scoreRight

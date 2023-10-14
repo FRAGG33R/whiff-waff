@@ -34,7 +34,8 @@ export class ChatController {
 		const loggedUserId = (req as any).user.id;
 		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const allConversation = await this.chatService.getAllConversationsById(loggedUserId, data);
-		return toObject.call({ allConversation, loggedUser } as any);
+		const blockedUsers = toObject.call(await this.chatService.getBlckedUsers(loggedUserId));
+		return toObject.call({ allConversation, loggedUser, blockedUsers } as any);
 	}
 
 	@ApiBearerAuth()

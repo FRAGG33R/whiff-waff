@@ -86,17 +86,17 @@ export class GameService {
 				this.player2?.emit('gameOver', { msg: 'You lost' });
 				this.stop();
 				const newGame = {rightUserId: this.user1ID, leftUserId: this.user2ID, rightScore: this.sccor1, leftScore: this.sccor2, map: this.tableOptions, mode: Mode.CHALLENGE, isAccept: true};
-				console.log('send ');
-			    // axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/save', newGame).then((res) => {}).catch((err) => {console.log(err.status);});
-				console.log('send finish');
+				console.log('send result');
+			    axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/save', newGame).then((res) => {}).catch((err) => {console.log(err.status);});
+				console.log('end result');
 			} else if (this.sccor2 > this.sccor1 && this.sccor2 == 5) {
 				this.player2?.emit('gameOver', { msg: 'You won' });
 				this.player1?.emit('gameOver', { msg: 'You lost' });
 				this.stop();
-				console.log('send ');
+				console.log('send result');
 				const newGame = {rightUserId: this.user2ID, leftUserId: this.user1ID, rightScore: this.sccor2, leftScore: this.sccor1, map: this.tableOptions,  mode: Mode.CHALLENGE, isAccept: true};
-			    // axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/save', newGame).then((res) => {}).catch((err) => {console.log(err.status);}); 
-				console.log('send finish');
+			    axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/save', newGame).then((res) => {}).catch((err) => {console.log(err.status);}); 
+				console.log('end result');
 			}
 			if (stoped) {
 				setTimeout(() => {

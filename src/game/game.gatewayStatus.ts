@@ -32,10 +32,10 @@ export class GameGatewayStatus implements OnGatewayConnection {
 		else if (this.connectedUsers) {
 			this.connectedUsers.set((validUser as any).user, client.id);
 			this.usersIds.set(client.id, (validUser as any).id);
-			const Status = {id: (validUser as any).id, status:PlayerStatus.ONLINE};
-			console.log('status from game global');
-			// await axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status);
-			console.log('status from game global');
+			const Status = { id: (validUser as any).id, status: PlayerStatus.ONLINE };
+			console.log('start connetion from game global : ', (validUser as any).user, 'with id : ', client.id);
+			axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status).then((res) => { }).catch((err) => {console.log(err)});
+			console.log('end connetion from game global');
 		}
 	}
 
@@ -48,9 +48,11 @@ export class GameGatewayStatus implements OnGatewayConnection {
 	}
 
 	async handleDisconnect(@ConnectedSocket() client: any) {
-		const Status = {id: this.usersIds.get(client.id), status:PlayerStatus.OFFLINE};
-		console.log('status from game global');
-		// await axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status);
-		console.log('status from game global off');
+		const Status = { id: this.usersIds.get(client.id), status: PlayerStatus.OFFLINE };
+		console.log('start disconnect from game global : ', client.id);
+		axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status).then((res) => { }).catch((err) => {
+			console.log(err);
+		});
+		console.log('end disconnect from game global');
 	}
 }

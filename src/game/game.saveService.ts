@@ -120,7 +120,6 @@ export class SaveGameService {
 				}
 			});
 		} catch (error) {
-			console.log(error);
 			throw new InternalServerErrorException(error);
 		}
 	}

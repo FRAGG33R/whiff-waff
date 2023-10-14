@@ -41,13 +41,14 @@ export class GameGateway implements OnGatewayConnection {
 			this.connectedUsers.set(client.id, { id: '', socket: client, username: '' })
 			client.disconnect();
 		}
-		else
-		{
+		else {
 			this.connectedUsers.set(client.id, { id: (validUser as any).id, socket: client, username: (validUser as any).user });
-			const Status = {id: (validUser as any).id, status:PlayerStatus.IN_GAME};
-			console.log('status from game');
-			// await axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status);
-			console.log('finsish from game');
+			const Status = { id: (validUser as any).id, status: PlayerStatus.IN_GAME };
+			console.log('start connetion from game', (validUser as any).user, 'with : ', client.id);
+			axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status).then((res) => { }).catch((err) => {
+				console.log(err);
+			});
+			console.log('finish connetion from game');
 		}
 	}
 
@@ -144,11 +145,13 @@ export class GameGateway implements OnGatewayConnection {
 
 	async handleDisconnect(client: any) {
 		let username: string = this.connectedUsers.get((client as any).id)?.username;
-		const Status = {id: this.connectedUsers.get((client as any).id)?.id, status:PlayerStatus.ONLINE};
+		const Status = { id: this.connectedUsers.get((client as any).id)?.id, status: PlayerStatus.ONLINE };
 		if (Status.id) {
-			console.log('status from game off');
-			// await axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status);
-			console.log('finsih from game off');
+			console.log('start disconnection from game', client.id);
+			axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status).then((res) => { }).catch((err) => {
+				console.log(err);
+			});
+			console.log('finish disconnection from game');
 		}
 		this.connectedUsers.delete(client.id);
 		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === username || element.id1 === username);

@@ -102,6 +102,7 @@ export class ChatService {
 		let receiver: any;
 		let allConversations: AllUserConversationsResponse[] = [];
 		conversationdata.forEach((element: any) => {
+			
 			const type = ((element as any).originalSender.id === sender) ? senderType : receiverType;
 			receiver = ((element as any).sender.id === sender) ? (element as any).receiver : (element as any).sender;
 			messages.push({
@@ -122,7 +123,7 @@ export class ChatService {
 			}
 		});
 		if (refactorType === refactoringOne) {
-			const individualConvesartion = { receiver, messages };
+			const individualConvesartion = { receiver, messages, status: conversationdata[0].status };
 			return new IndividualConversationResponse(individualConvesartion.messages, individualConvesartion.receiver);
 		}
 		return conversationdata;
@@ -130,7 +131,6 @@ export class ChatService {
 
 	async getAllConversationsById(loggedUserId: string, data: ConversationDto): Promise<AllUserConversationsResponse> {
 		try {
-			const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
 			let conversation = await this.prismaService.chat.findMany({
 				select: {
 					originalSender: {
@@ -146,7 +146,7 @@ export class ChatService {
 							id: true,
 							avatar: true,
 							email: true,
-							userName: true
+							userName: true,
 						}
 					},
 					receiver: {
@@ -154,8 +154,8 @@ export class ChatService {
 							id: true,
 							avatar: true,
 							email: true,
-							userName: true
-						}
+							userName: true,
+						},	
 					},
 					message: true,
 					date: true,
@@ -163,8 +163,6 @@ export class ChatService {
 				where: {
 					OR: [{ senderId: loggedUserId }, { receiverId: loggedUserId }]
 				},
-				take: (data as any).nbElements,
-				skip: skip,
 				orderBy: {
 					date: 'asc',
 				},
@@ -173,7 +171,6 @@ export class ChatService {
 			if (conversation.length > 0) {
 				const allConversation = this.formatConversationResponse(loggedUserId, conversation, refactoringAll) as AllUserConversationsResponse;
 				(allConversation[0] as any) = await this.getIndividualConversationById(loggedUserId, conversation[0].receiver.id, data);
-				console.log('trami lmla7 : ', conversation);
 				return allConversation;
 			}
 			return conversation as any;
@@ -227,7 +224,7 @@ export class ChatService {
 				}
 			});
 			if (conversation.length === 0)
-				return conversation as any;
+			return conversation as any;
 			return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
 		} catch (error) {
 			if (error.type === 'notFound')

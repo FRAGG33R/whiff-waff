@@ -1,39 +1,23 @@
 import { IsNotEmpty, IsOptional, Matches } from "class-validator";
 import { Map, Mode, PlayerStatus } from "@prisma/client";
 
-export class GameDto {
 
+export class GameDto {
 	@IsNotEmpty()
 	rightUserId: string;
-
-	@IsNotEmpty()
-	leftUserId: string;
-
-	@IsNotEmpty()
-	@Matches(Object.values(Map).filter(v => typeof v !== "number").join('|'))
-	gameMode: Mode;
-
-	@IsNotEmpty()
-	gameMap: Map;
-
-}
-
-export class GameHistoryDto {
-
-	@IsOptional()
-	game: GameDto
 	@IsNotEmpty()
 	leftUserId: string;
 	@IsNotEmpty()
-    rightUserId: string;
+	rightScore: number;
 	@IsNotEmpty()
-    scoreLeft:   number;
+	leftScore: number;
 	@IsNotEmpty()
-    scoreRight:  number;
+	map: Map;
 	@IsNotEmpty()
-    accepted:    boolean;
+	mode: Mode;
+	@IsNotEmpty()
+	isAccept: boolean;
 }
-
 export class StatusDto {
 	@IsNotEmpty()
 	id: string;

@@ -57,9 +57,11 @@ export class SignInDto {
 }
 
 export class TwoAuthDto {
+	@ApiProperty({ example: 's123fa3f2af12as3f12as3f1as' })
 	@IsNotEmpty()
 	id:	string;
 
+	@ApiProperty({ example: '1234656' })
 	@IsNotEmpty()
 	pin: string
 }

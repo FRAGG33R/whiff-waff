@@ -21,8 +21,7 @@ export class AchievementModule implements OnModuleInit {
 				achievementsData.ACHIEVEMENT_CATEGORY_1,
 				achievementsData.ACHIEVEMENT_CATEGORY_2,
 				achievementsData.ACHIEVEMENT_CATEGORY_3,
-				achievementsData.ACHIEVEMENT_CATEGORY_4,
-				achievementsData.ACHIEVEMENT_CATEGORY_5];
+				achievementsData.ACHIEVEMENT_CATEGORY_4,];
 			const existsAchievement = await this.achievementService.findManyAchivement();
 			if (existsAchievement.length == 0) {
 				await this.achievementService.createAchievement(achievementdata);

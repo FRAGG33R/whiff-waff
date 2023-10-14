@@ -111,8 +111,6 @@ model Message {
 model Play {
     rightUserId String        @map("right_user_id")
     leftUserId  String        @map("left_user_id")
-    gameMode    Mode          @map("game_mode")
-    gameMap     Map           @map("game_map")
     playerOne   User          @relation("left", fields: [leftUserId], references: [id], onDelete: Cascade)
     playerTwo   User          @relation("right", fields: [rightUserId], references: [id], onDelete: Cascade)
     gameHistory GameHistory[]
@@ -127,6 +125,8 @@ model GameHistory {
     rightUserId String  @map("right_user_id")
     scoreLeft   Int     @map("score_left")
     scoreRight  Int     @map("score_right")
+    gameMode    Mode    @map("game_mode")
+    gameMap     Map     @map("game_map")
     accepted    Boolean
     game        Play    @relation(fields: [leftUserId, rightUserId], references: [leftUserId, rightUserId], onDelete: Cascade)
 
@@ -147,7 +147,7 @@ model Stats {
 
 model Achievement {
     id              String            @id @default(uuid())
-    name            String
+    name            String            @unique
     description     String
     haveAchievement haveAchievement[]
 
@@ -190,8 +190,6 @@ model Friendship {
 
 enum Mode {
     CHALLENGE
-    TIME
-
     @@map("mode")
 }
 

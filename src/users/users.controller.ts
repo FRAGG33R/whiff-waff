@@ -67,6 +67,7 @@ export class UsersController {
 		const loggedUser: any = { avatar: (req as any).user.avatar, userName: (req as any).user.userName, level: (req as any).user.stat.level };
 		const user = await this.userService.findUserByUsername(req.params.userName, (req as any).user.id);
 		const gamesData = await this.userService.getHistoryGame(user.id, values.NUMBER_OF_FIRST_PAGE, elementsNumer);
+		console.log('game data : ', gamesData);
 		return new ResponseInfo(HttpStatus.OK, { loggedUser, user, gamesData });
 	}
 

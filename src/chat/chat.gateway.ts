@@ -11,11 +11,7 @@ import { UsersService } from 'src/users/users.service';
 import { toObject } from 'src/shared/responses/responses.sucess-response';
 
 const chatGateway = 'ChatGateway';
-// @WebSocketGateway(9998, {
-// 	cors: {
-// 		origin: "*"
-// 	}
-// })
+
 @WebSocketGateway(8889, {
 	cors: {
 		origin: "*"

@@ -60,7 +60,7 @@ export class AuthService {
 					this.sendEmail(user.email, this.config.get(env.EMAIL_SUBJECT), token, fullName);
 					throw new ForbiddenException(messages.REQUIRED_VALIDATION_EMAIL);
 				}
-				return { statusCode: HttpStatus.OK, token: token };
+				return { statusCode: HttpStatus.CREATED, token: token, twoFa: user.twoFactorAuth, id: user.id };
 			}
 		}
 		return (null);
@@ -114,9 +114,9 @@ export class AuthService {
 				existsUser = await this.userService.createUser(dto);
 			}
 			if (existsUser.twoFactorAuth == true)
-				return {id: existsUser.id, twoFa: true};
+				return { id: existsUser.id, twoFa: true };
 			const token = await this.signToken({ id: existsUser.id, email: existsUser.email, user: existsUser.userName }, this.config.get(env.JWT_SECRET), this.config.get(env.JWT_EXPIRATION_TIME));
-			return ({token: token});
+			return ({ token: token });
 		} catch (error) {
 			throw new InternalServerErrorException();
 		}

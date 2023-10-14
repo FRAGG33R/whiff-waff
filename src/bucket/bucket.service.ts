@@ -53,7 +53,7 @@ export class BucketService extends BucketStorageService {
 
 	async deleteImage(file: string): Promise<any>{
 		try {
-			await this.bucket.file(file).delete({ ignoreNotFound: false });
+			await this.bucket.file(file).delete({ ignoreNotFound: true });
 		} catch (e) {
 			this.logger.error(bucketService);
 		}

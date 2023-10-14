@@ -51,8 +51,8 @@ export class AuthController {
 
 	@UseGuards(LocalGuard)
 	@Post(signinAuthEndPoint)
-	signIn(@Body() dto: SignInDto, @Req() req: Request) {
-		return (req.user);
+	signIn(@Body() dto: SignInDto, @Req() req: Request, @Res() res: Response) {
+		res.send(req.user);
 	}
 
 	@ApiQuery({
@@ -76,7 +76,7 @@ export class AuthController {
 			this.logger.error(error.message)
 		}
 	}
-	
+
 	@ApiBearerAuth()
 	@ApiConsumes(dataType)
 	@ApiBody({
@@ -98,8 +98,8 @@ export class AuthController {
 		const token = await this.authService.insertIntraUser(newUser);
 		return {newUser: newUser, token: token};
 	}
-
-
+	
+	
 	@ApiParam({
 		name: token,
 		description: tokenDescription,
@@ -109,26 +109,34 @@ export class AuthController {
 		const loginUrl = await this.authService.verfyEmail(req.params.token);//TODO reject email
 		res.redirect((loginUrl).toString());
 	}
+
+	@ApiBearerAuth()
 	@Get(generateTwoFactorAuth)
 	async TwoAuthGen(@Req() req: Request) {
 		return (this.authService.TwoAuthGen(req.params.userName));
 	}
-
+	
+	@ApiBearerAuth()
+	@ApiBearerAuth()
 	@Post(verifyTwoFactorAuth)
 	async TwoAuthVer(@Body() dto: TwoAuthDto){
 		return (this.authService.TwoAuthVer(dto));
 	}
-
+	
+	@ApiBearerAuth()
 	@Post(validTwoFactorAuth)
 	async TwoAuthValid(@Body() dto: TwoAuthDto){
 		return (this.authService.TwoAuthValid(dto));
 	}
-
-
+	
+	
+	@ApiBearerAuth()
 	@Post(disableTwoFactorAuth)
 	async TwoAuthDisable(@Body() dto: TwoAuthDto){
 		return (this.authService.TwoAuthDisable(dto));
 	}
+	
+	@ApiBearerAuth()
 	@Post(enableTwoFactorAuth)
 	async TwoAuthEnable(@Body() dto: TwoAuthDto){
 		return (this.authService.TwoAuthEnable(dto));

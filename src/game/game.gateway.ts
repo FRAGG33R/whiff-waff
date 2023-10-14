@@ -6,6 +6,8 @@ import { GameService } from './game.service';
 import { Vector, Body } from 'matter-js';
 import { EventService } from './game.emitter';
 import { GameGatewayStatus } from './game.gatewayStatus';
+import axios from 'axios';
+import { PlayerStatus } from '@prisma/client';
 
 interface RandomGame {
 	game: GameService;
@@ -17,11 +19,6 @@ interface RandomGame {
 	gameId?: string;
 }
 
-// @WebSocketGateway(9999, {
-// 	cors: {
-// 		origin: "*"
-// 	}
-// })
 @WebSocketGateway(8888, {
 	cors: {
 		origin: "*"
@@ -45,7 +42,13 @@ export class GameGateway implements OnGatewayConnection {
 			client.disconnect();
 		}
 		else
+		{
 			this.connectedUsers.set(client.id, { id: (validUser as any).id, socket: client, username: (validUser as any).user });
+			const Status = {id: (validUser as any).id, status:PlayerStatus.IN_GAME};
+			console.log('status from game');
+			// await axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status);
+			console.log('finsish from game');
+		}
 	}
 
 	findRandomGame(map: string, mode: string, started: boolean): RandomGame | null {
@@ -94,7 +97,6 @@ export class GameGateway implements OnGatewayConnection {
 		let username: string = this.connectedUsers.get((client as any).id)?.username;
 		let index = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === username && element.id1 === data.id);
 		if (index >= 0) {
-			console.log("username: " + username + " inviter: " + data.id);
 			let game: GameService = this.inviteFriendsArray[index];
 			game.setPlayer2(client);
 			game.ready = true;
@@ -142,6 +144,12 @@ export class GameGateway implements OnGatewayConnection {
 
 	async handleDisconnect(client: any) {
 		let username: string = this.connectedUsers.get((client as any).id)?.username;
+		const Status = {id: this.connectedUsers.get((client as any).id)?.id, status:PlayerStatus.ONLINE};
+		if (Status.id) {
+			console.log('status from game off');
+			// await axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status);
+			console.log('finsih from game off');
+		}
 		this.connectedUsers.delete(client.id);
 		let index: number = this.inviteFriendsArray.findIndex((element: GameService) => element.id2 === username || element.id1 === username);
 		if (index >= 0) {

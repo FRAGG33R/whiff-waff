@@ -4,13 +4,10 @@ import { GuardsService } from 'src/chat/guards/guards.service';
 import { GameService } from './game.service';
 import { EventService } from './game.emitter';
 import { OnEvent } from '@nestjs/event-emitter';
+import { PlayerStatus } from '@prisma/client';
+import axios from 'axios';
 
-// to date
-// @WebSocketGateway(9997, {
-// 	cors: {
-// 		origin: "*"
-// 	}
-// })
+
 @WebSocketGateway(8887, {
 	cors: {
 		origin: "*"
@@ -22,6 +19,7 @@ export class GameGatewayStatus implements OnGatewayConnection {
 
 	//array connected users
 	private readonly connectedUsers: Map<string, string> = new Map<string, string>();
+	private readonly usersIds: Map<string, string> = new Map<string, string>();
 
 	async handleConnection(@ConnectedSocket() client: any) {
 		const validUser = (client.handshake.headers.authorization) ?
@@ -33,6 +31,11 @@ export class GameGatewayStatus implements OnGatewayConnection {
 		}
 		else if (this.connectedUsers) {
 			this.connectedUsers.set((validUser as any).user, client.id);
+			this.usersIds.set(client.id, (validUser as any).id);
+			const Status = {id: (validUser as any).id, status:PlayerStatus.ONLINE};
+			console.log('status from game global');
+			// await axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status);
+			console.log('status from game global');
 		}
 	}
 
@@ -42,5 +45,12 @@ export class GameGatewayStatus implements OnGatewayConnection {
 		if (!socketId || "" === socketId)
 			throw new WsException('your friend is not connected');
 		client.to(socketId).emit('notification', { username: data.username, inviter: data.inviter, map: data.map, mode: data.mode });
+	}
+
+	async handleDisconnect(@ConnectedSocket() client: any) {
+		const Status = {id: this.usersIds.get(client.id), status:PlayerStatus.OFFLINE};
+		console.log('status from game global');
+		// await axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/status', Status);
+		console.log('status from game global off');
 	}
 }

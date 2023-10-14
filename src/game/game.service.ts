@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Socket } from 'dgram';
 import Matter, { Engine, Bodies, World, Runner, Events, IEventCollision, Vector } from 'matter-js';
-import { Map } from '@prisma/client'
+import { Map, Mode } from '@prisma/client'
+import axios from 'axios';
+import { GameDto } from 'src/dto';
 @Injectable()
 export class GameService {
 
@@ -38,6 +40,8 @@ export class GameService {
 		{ x: 600, y: 600, width: 100, height: 100 },
 		{ x: 600, y: 200, width: 100, height: 100 },
 		{ x: 0, y: 600, width: 100, height: 100 },
+		{ x: 0, y: 400, width: 30, height: 50 },
+		{ x: 600, y: 400, width: 30, height: 50 },
 	];
 
 	constructor(client: Socket, tableOptions: string) {
@@ -48,8 +52,8 @@ export class GameService {
 		this.player2 = null;
 		this.engine = Engine.create({ gravity: { x: 0, y: 0 } });
 		this.world = this.engine.world;
-		this.p2 = Bodies.rectangle(this.width / 2, 50, 100, 10, { isStatic: true });
-		this.p1 = Bodies.rectangle(this.width / 2, this.height - 50, 100, 10, { isStatic: true });
+		this.p2 = Bodies.rectangle(this.width / 2, 50, 120, 10, { isStatic: true });
+		this.p1 = Bodies.rectangle(this.width / 2, this.height - 50, 120, 10, { isStatic: true });
 		this.ball = Bodies.circle(this.width / 2, this.height / 2, 15, { friction: 0, restitution: 1, inertia: Infinity, density: 0.1, frictionAir: 0, force: { x: 1.5, y: 1.2 }, label: "ball" });
 		this.walls = [
 			Bodies.rectangle(this.width / 2, 0, this.width, 10, { isStatic: true, label: "top" }),
@@ -81,12 +85,18 @@ export class GameService {
 				this.player1?.emit('gameOver', { msg: 'You won' });
 				this.player2?.emit('gameOver', { msg: 'You lost' });
 				this.stop();
-				// DOTO : add score to db
+				const newGame = {rightUserId: this.user1ID, leftUserId: this.user2ID, rightScore: this.sccor1, leftScore: this.sccor2, map: this.tableOptions, mode: Mode.CHALLENGE, isAccept: true};
+				console.log('send ');
+			    // axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/save', newGame).then((res) => {}).catch((err) => {console.log(err.status);});
+				console.log('send finish');
 			} else if (this.sccor2 > this.sccor1 && this.sccor2 == 5) {
 				this.player2?.emit('gameOver', { msg: 'You won' });
 				this.player1?.emit('gameOver', { msg: 'You lost' });
 				this.stop();
-				// DOTO : add score to db
+				console.log('send ');
+				const newGame = {rightUserId: this.user2ID, leftUserId: this.user1ID, rightScore: this.sccor2, leftScore: this.sccor1, map: this.tableOptions,  mode: Mode.CHALLENGE, isAccept: true};
+			    // axios.post('http://e3r10p16.1337.ma:3001/api/v1/game/save', newGame).then((res) => {}).catch((err) => {console.log(err.status);}); 
+				console.log('send finish');
 			}
 			if (stoped) {
 				setTimeout(() => {
@@ -127,16 +137,18 @@ export class GameService {
 			Runner.run(this.runner, this.engine);
 			return;
 		}
-		let forceX: number = -1.9;
-		let forceY: number = -1.6;
+		let forceX: number = -1.3;
+		let forceY: number = -1.2;
 		if (this.serve) {
-			forceX = 1.9;
-			forceY = 1.6;
+			forceX = 1.3;
+			forceY = 1.2;
 			this.serve = !this.serve;
 		} else
 			this.serve = !this.serve;
-		this.ball = Bodies.circle(this.width / 2, this.height / 2, 15, { friction: 0, restitution: 1, inertia: Infinity, density: 0.071, frictionAir: 0, force: { x: forceX, y: forceY }, label: "ball" });
-		World.add(this.world, this.ball);
+		this.ball = Bodies.circle(this.width / 2, this.height / 2, 13, { friction: 0, restitution: 1, inertia: Infinity, density: 0.071, frictionAir: 0, force: { x: forceX, y: forceY }, label: "ball" });
+		setTimeout(() => {
+			World.add(this.world, this.ball);
+		}, 1500);
 	}
 
 	stop(): void {

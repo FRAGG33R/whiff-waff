@@ -173,6 +173,7 @@ export class ChatService {
 			if (conversation.length > 0) {
 				const allConversation = this.formatConversationResponse(loggedUserId, conversation, refactoringAll) as AllUserConversationsResponse;
 				(allConversation[0] as any) = await this.getIndividualConversationById(loggedUserId, conversation[0].receiver.id, data);
+				console.log('trami lmla7 : ', conversation);
 				return allConversation;
 			}
 			return conversation as any;
@@ -185,8 +186,8 @@ export class ChatService {
 		try {
 			const skip = ((data as any).nbElements && (data as any).nbPage) ? (data as any).nbPage * (data as any).nbElements : 0;
 			const sorted = Array(loggedUserId, receiverId).sort();
-			if (await this.checkFriendship(sorted[0], sorted[1]) === false)
-				throw { type: 'notFound' };
+			// if (await this.checkFriendship(sorted[0], sorted[1]) === false)
+			// 	throw { type: 'notFound' };
 			const conversation = await this.prismaService.chat.findMany({
 				select: {
 					originalSender: {
@@ -224,7 +225,7 @@ export class ChatService {
 				where: {
 					AND: [{ senderId: sorted[0] }, { receiverId: sorted[1] }]
 				}
-			})
+			});
 			if (conversation.length === 0)
 				return conversation as any;
 			return this.formatConversationResponse(loggedUserId, conversation, refactoringOne) as IndividualConversationResponse;
@@ -569,7 +570,7 @@ export class ChatService {
 						date: 'desc'
 					}
 				},
-				
+
 			},
 			where: {
 				AND: [{ status: { not: UserStatus.BANNED } }, { userId: loggedUserId }],

@@ -11,8 +11,6 @@ import * as variables from 'src/shared/constants/constants.name-variables'
 import { BucketStorageService } from "src/bucket/bucket.storage-service";
 import * as message from 'src/shared/constants/constants.messages'
 
-
-
 const userService = 'userService';
 const prefixImage = 'cloud'
 @Injectable()
@@ -135,6 +133,7 @@ export class UsersService {
 					lastName: true,
 					avatar: true,
 					email: true,
+					otpEnable: true,
 					stat: {
 						select: {
 							wins: true,
@@ -293,6 +292,7 @@ export class UsersService {
 						id: true,
 						avatar: true,
 						userName: true,
+						status: true,
 						stat: {
 							select: {
 								level: true,
@@ -320,6 +320,7 @@ export class UsersService {
 						id: true,
 						avatar: true,
 						userName: true,
+						status: true,
 						stat: {
 							select: {
 								level: true,
@@ -333,6 +334,7 @@ export class UsersService {
 						id: true,
 						avatar: true,
 						userName: true,
+						status: true,
 						stat: {
 							select: {
 								level: true,
@@ -574,7 +576,6 @@ export class UsersService {
 				}
 			})
 		} catch (error) {
-			console.log(error);
 			throw new InternalServerErrorException();
 		}
 	}

@@ -2,4 +2,3 @@ export const ACHIEVEMENT_CATEGORY_1 = {name: "WHIF-WHAF ROOKIE", description: "w
 export const ACHIEVEMENT_CATEGORY_2 = {name: "WHIF-WHAF LEGEND", description: "win 100 match"};
 export const ACHIEVEMENT_CATEGORY_3 = {name: "COMPOLITIONIST", description: "collect all in-game achievements"};
 export const ACHIEVEMENT_CATEGORY_4 = {name: "PERFECT GAME", description: "wins 4 matches without losing any points"};
-export const ACHIEVEMENT_CATEGORY_5 = {name: "FAST AND FURIOUS", description: "COMPLETE A MATCH IN UNDER 1 MINUTE" };
